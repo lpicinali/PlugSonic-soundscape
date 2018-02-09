@@ -1,0 +1,12 @@
+# Logs
+logs
+*.log
+
+# Dependency directory
+node_modules
+
+# Project
+trash
+
+# Mac
+*.DS_Store
