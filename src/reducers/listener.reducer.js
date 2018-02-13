@@ -18,10 +18,6 @@ export default function(state = initialState, { type, payload }) {
   if (type === ActionType.SET_LISTENER_POSITION) {
     const newListener = Object.assign({},state.listener);
     Object.assign(newListener.position, payload.position);
-    // console.log("Action: SET TARGET POSITION");
-    // console.log(`Payload: ${payload}`);
-    // console.log("NEW STATE");
-    // console.log({ ...state, targets: newTargets });
     return { ...state, listener: newListener };
   }
   // if (type === ActionType.SET_HEAD_RADIUS) {
