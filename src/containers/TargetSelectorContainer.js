@@ -3,10 +3,6 @@
 
 /* ------------------- NOTES -------------------- *//*
 
-    from z_TargetSelectorContainer_0.0_original
-
-     - propTypes
-
 *//* ---------------------------------------------- */
 
 import React, { Component } from 'react'
