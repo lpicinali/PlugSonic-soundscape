@@ -1,17 +1,8 @@
 /* ------------------- NOTES -------------------- *//*
 
-    from z_target.reducer_0.0_original
-
-     - changed selected to Array
-     - changed action
-     - changed state to include position and volume
-     - changed reducer to manage SET_TARGET_POSITION
-
 *//* ---------------------------------------------- */
 
-import {
-  ActionType,
-} from 'src/constants.js';
+import { ActionType } from 'src/constants.js';
 import { audioFiles } from 'src/audio/audio-files.js';
 
 const initialState = {

@@ -2,11 +2,6 @@
 
 /* ------------------- NOTES -------------------- *//*
 
-    from z_target.actions_0.0_original
-
-     - setTargetPosition moved from controls.actions
-     - setTargetPosition changed for multiple sources (id,position)
-
 *//* ---------------------------------------------- */
 
 import { ActionType } from 'src/constants.js';

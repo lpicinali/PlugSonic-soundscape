@@ -20,6 +20,7 @@ import { connect } from 'react-redux'
 
 import * as CustomPropTypes from 'src/prop-types.js'
 import { setTargetPosition } from 'src/actions/target.actions.js'
+import { setListenerPosition } from 'src/actions/listener.actions.js'
 import ContainerDimensionsWithScrollUpdates from 'src/components/ContainerDimensionsWithScrollUpdates.js'
 import PositionController from 'src/components/PositionController.js'
 
@@ -30,17 +31,26 @@ const BoundsRelay = rect => {}
  */
 class PositionControllerContainer extends Component {
   static propTypes = {
+    listenerPosition: PropTypes.object.isRequired,
     headRadius: PropTypes.number.isRequired,
     targets: PropTypes.object.isRequired,
     selected: PropTypes.array.isRequired,
     onTargetMove: PropTypes.func.isRequired,
+    onListenerMove: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
   }
 
   render() {
-    const { headRadius, targets, selected, onTargetMove } = this.props
+    const {
+      listenerPosition,
+      headRadius,
+      targets,
+      selected,
+      onTargetMove,
+      onListenerMove
+    } = this.props
 
     const objects = selected.map(
       (target) => (
@@ -66,8 +76,10 @@ class PositionControllerContainer extends Component {
             <PositionController
               bounds={rect}
               objects={objects}
+              listenerPosition={listenerPosition}
               headRadius={headRadius}
               onPositionChange={(id, position) => onTargetMove(id, position)}
+              onListenerChange={position => onListenerMove(position)}
             />
           )}
         </ContainerDimensionsWithScrollUpdates>
@@ -78,11 +90,13 @@ class PositionControllerContainer extends Component {
 
 export default connect(
   state => ({
-    headRadius: state.controls.headRadius,
+    listenerPosition: state.listener.position,
+    headRadius: state.listener.headRadius,
     targets: state.target.targets,
     selected: state.target.selected,
   }),
   dispatch => ({
     onTargetMove: (id, position) => dispatch(setTargetPosition(id, position)),
+    onListenerMove: position => dispatch(setListenerPosition(position))
   })
 )(PositionControllerContainer)

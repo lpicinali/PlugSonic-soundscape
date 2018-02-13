@@ -16,11 +16,15 @@ import { reduce } from 'lodash'
 
 import { circumferenceToRadius, radiusToCircumference } from 'src/utils.js'
 import {
-  setHeadRadius,
-  setPerformanceMode,
+  // setHeadRadius,
+  // setPerformanceMode,
   setTargetVolume,
 } from 'src/actions/controls.actions.js'
 import { setTarget } from 'src/actions/target.actions.js'
+import {
+  setHeadRadius,
+  setPerformanceMode,
+} from 'src/actions/listener.actions.js'
 // import DirectionalityContainer from 'src/containers/DirectionalityContainer.js'
 import ButtonGroup from 'src/components/ButtonGroup.js'
 import Slider from 'src/components/Slider.js'
@@ -131,8 +135,8 @@ export default connect(
     targets: state.target.targets,
     target: state.target.selected,
     volume: state.controls.targetVolume,
-    isPerformanceModeEnabled: state.controls.isPerformanceModeEnabled,
-    headRadius: state.controls.headRadius,
+    isPerformanceModeEnabled: state.listener.isPerformanceModeEnabled,
+    headRadius: state.listener.headRadius,
   }),
   dispatch => ({
     onSelect: target => dispatch(setTarget(target)),

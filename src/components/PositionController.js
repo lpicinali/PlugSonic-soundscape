@@ -1,4 +1,7 @@
 /* global window */
+/* eslint react/forbid-prop-types: 0 */
+/* eslint react/no-unused-prop-types: 0 */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { clamp } from 'lodash'
@@ -6,7 +9,7 @@ import { autobind } from 'core-decorators'
 import styled from 'styled-components'
 
 import * as CustomPropTypes from 'src/prop-types.js'
-import { BLUE, TURQOISE, WHITESMOKE } from 'src/styles/colors.js'
+import { BLUE, TURQOISE, WHITESMOKE, BLACK } from 'src/styles/colors.js'
 
 const StyledPositionController = styled.div`
   position: relative;
@@ -16,15 +19,17 @@ const StyledPositionController = styled.div`
   border: 1px solid ${BLUE};
   border-radius: 100%;
 `
-
-const HeadCircle = styled.div`
+// width: ${props => props.size};
+// height: ${props => props.size};
+const ListenerHandle = styled.div`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: ${props => props.size};
-  height: ${props => props.size};
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 100%;
+  width: 16px;
+  height: 16px;
+  background: ${BLACK};
+  border-radius: 10px;
+  text-indent: -9999px;
+  overflow: hidden;
+  cursor: pointer;
   transform: translate3d(-50%, -50%, 0);
 `
 
@@ -55,8 +60,10 @@ class PositionController extends Component {
         distance: PropTypes.number.isRequired,
       })
     ).isRequired,
+    listenerPosition: PropTypes.object.isRequired,
     headRadius: PropTypes.number.isRequired,
     onPositionChange: PropTypes.func.isRequired,
+    onListenerChange: PropTypes.func.isRequired
   }
 
   static defaultProps = {
@@ -71,7 +78,12 @@ class PositionController extends Component {
 
   @autobind
   handlePress(objectId) {
-    const object = this.props.objects.find(x => x.id === objectId)
+    let object;
+    if (objectId === 'listener'){
+      object = this.props.listenerPosition;
+    } else {
+      object = this.props.objects.find(x => x.id === objectId);
+    }
 
     this.setState(() => ({
       isDragging: true,
@@ -85,7 +97,7 @@ class PositionController extends Component {
 
   @autobind
   handleDrag(evt) {
-    const { bounds, size, onPositionChange } = this.props
+    const { bounds, size, onPositionChange, onListenerChange } = this.props
     const { isDragging, currentObjectId } = this.state
 
     if (isDragging) {
@@ -121,7 +133,11 @@ class PositionController extends Component {
         position: newPos,
       })
 
-      onPositionChange(currentObjectId, newPos)
+      if (currentObjectId === 'listener') {
+        onListenerChange(newPos);
+      } else {
+        onPositionChange(currentObjectId, newPos)
+      }
     }
   }
 
@@ -138,15 +154,25 @@ class PositionController extends Component {
   }
 
   render() {
-    const { bounds, size, objects, headRadius } = this.props
+    const { bounds, size, objects, listenerPosition, headRadius } = this.props
 
     // console.log('PositionController.render()', bounds.top)
 
     return (
       <StyledPositionController width={bounds.width} height={bounds.height}>
-        <HeadCircle
+        <ListenerHandle
+          key='listener'
+          style={{
+            top: `${50 -
+              50 * (Math.sin(listenerPosition.azimuth) * listenerPosition.distance / size)}%`,
+            left: `${50 +
+              50 * (Math.cos(listenerPosition.azimuth) * listenerPosition.distance / size)}%`,
+          }}
           size={`calc(${100 * (headRadius / 0.5) * (size / 12) / size}% + 8px)`}
-        />
+          onMouseDown={() => this.handlePress('listener')}
+        >
+          <span>listener</span>
+        </ListenerHandle>
 
         {objects.map(object => (
           <SourceHandle
