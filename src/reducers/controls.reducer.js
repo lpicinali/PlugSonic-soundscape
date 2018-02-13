@@ -7,8 +7,8 @@ import { ActionType, PlaybackState } from 'src/constants.js'
 const initialState = {
   playbackState: PlaybackState.PAUSED,
   targetVolume: 0.5,
-  // isPerformanceModeEnabled: false,
-  // headRadius: 0.0875,
+  isPerformanceModeEnabled: false,
+  headRadius: 0.0875,
   // isDirectionalityEnabled: true,
   // directionalityValue: 0,
 }
@@ -17,19 +17,19 @@ export default function(state = initialState, { type, payload }) {
   if (type === ActionType.SET_TARGET_VOLUME) {
     return { ...state, targetVolume: payload.volume }
   }
-  // if (type === ActionType.SET_HEAD_RADIUS) {
-  //   return { ...state, headRadius: payload.radius }
-  // }
+  if (type === ActionType.SET_HEAD_RADIUS) {
+    return { ...state, headRadius: payload.radius }
+  }
   if (type === ActionType.SET_PLAYBACK_STATE) {
     return { ...state, playbackState: payload.state }
   }
-  // if (type === ActionType.SET_PERFORMANCE_MODE_ENABLED) {
-  //   // console.log("Action: SET PERFORMANCE MODE");
-  //   // console.log(`Payload: ${payload}`);
-  //   // console.log("NEW STATE");
-  //   // console.log({ ...state, isPerformanceModeEnabled: payload.isEnabled });
-  //   return { ...state, isPerformanceModeEnabled: payload.isEnabled }
-  // }
+  if (type === ActionType.SET_PERFORMANCE_MODE_ENABLED) {
+    // console.log("Action: SET PERFORMANCE MODE");
+    // console.log(`Payload: ${payload}`);
+    // console.log("NEW STATE");
+    // console.log({ ...state, isPerformanceModeEnabled: payload.isEnabled });
+    return { ...state, isPerformanceModeEnabled: payload.isEnabled }
+  }
 
   return state
 
