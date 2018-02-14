@@ -2,13 +2,6 @@
 
 /* ------------------- NOTES --------------------------------------------------- *//*
 
-    from z_rootSaga_0.0_original:
-      - rename import to play as enginePlay etc. etc.
-      - functions modified to new audioFiles data structure (no SonicComponent.TARGET)
-
-    from z_rootSaga_0.1_renaming_filestructure:
-      -
-
 *//* ----------------------------------------------------------------------------- */
 
 import {
@@ -37,6 +30,7 @@ import {
   unsetTargetSource as engineUnsetTargetSource,
   setComponentVolume as engineSetComponentVolume,
   setComponentPosition as engineSetComponentPosition,
+  setListenerPosition as engineSetListenerPosition,
   setHeadRadius as engineSetHeadRadius,
   setPerformanceMode as engineSetPerformanceMode
 } from 'src/audio/engine.js';
@@ -92,10 +86,19 @@ function* applyTargetPosition() {
     const { azimuth, distance } = payload.position;
     // console.log("rootSaga: SET TARGET POSITION");
     // console.log(`filename: ${payload.target} , azimuth: ${azimuth} , distance: ${distance}`);
-
     engineSetComponentPosition(filename, { azimuth, distance });
     // engineSetComponentPosition(SonicComponent.TARGET, { azimuth, distance })
     // console.log(`rootSaga: SET TARGET POSITION -> DONE`)
+  }
+}
+
+function* applyListenerPosition() {
+  while(true) {
+    const { payload } = yield take(ActionType.SET_LISTENER_POSITION);
+    const { azimuth, distance } = payload.position;
+    // console.log("rootSaga: SET LISTENER POSITION");
+    // console.log(`azimuth: ${azimuth} , distance: ${distance}`);
+    engineSetListenerPosition( { azimuth, distance } );
   }
 }
 
@@ -146,5 +149,6 @@ export default function* rootSaga() {
     // applyDirectionalityEnabled(),
     // applyDirectionalityAttenuation(),
     applyTargetPosition(),
+    applyListenerPosition()
   ]
 }

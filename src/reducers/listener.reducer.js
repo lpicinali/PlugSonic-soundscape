@@ -5,20 +5,19 @@
 import { ActionType } from 'src/constants.js'
 
 const initialState = {
-  listener: {
-    position: { azimuth: 0, distance: 0 },
-    // isPerformanceModeEnabled: false,
-    // headRadius: 0.0875,
-    // isDirectionalityEnabled: true,
-    // directionalityValue: 0,
-  }
+  position: { azimuth: 0, distance: 0 },
+  // isPerformanceModeEnabled: false,
+  // headRadius: 0.0875,
+  // isDirectionalityEnabled: true,
+  // directionalityValue: 0,
 }
+
 
 export default function(state = initialState, { type, payload }) {
   if (type === ActionType.SET_LISTENER_POSITION) {
-    const newListener = Object.assign({},state.listener);
-    Object.assign(newListener.position, payload.position);
-    return { ...state, listener: newListener };
+    const newPosition = Object.assign({},state.position);
+    Object.assign(newPosition, payload.position);
+    return { ...state, position: newPosition };
   }
   // if (type === ActionType.SET_HEAD_RADIUS) {
   //   const newListener = Object.assign({},state.listener);

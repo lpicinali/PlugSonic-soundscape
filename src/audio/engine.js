@@ -3,13 +3,6 @@
 
 /* ------------------- NOTES -------------------- *//*
 
-    from z_engine_0.0_original
-      - rename import to createNode as chainCreateNode etc. etc.
-
-    from z_engine_0.1_renaming
-      - setTargetSource extended with channels
-      -
-
 *//* ---------------------------------------------- */
 
 import { fetchAudioBuffer } from 'src/utils.js'
@@ -69,6 +62,15 @@ export const setComponentPosition = (filename, { azimuth, distance }) => {
   getInstance()
     .then(spatializer => {
     spatializer.setSourcePosition(spatializer.targets[filename].source, azimuth, distance)
+  });
+}
+
+export const setListenerPosition = ( { azimuth, distance } ) => {
+  // console.log("engine: setComponentPosition");
+  // console.log(`filename: ${filename} , azimuth: ${azimuth} , distance: ${distance}`);
+  getInstance()
+    .then(spatializer => {
+    spatializer.setListenerPosition(azimuth, distance)
   });
 }
 

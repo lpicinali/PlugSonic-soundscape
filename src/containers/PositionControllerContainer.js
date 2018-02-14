@@ -6,12 +6,6 @@
 
 /* ------------------- NOTES -------------------- *//*
 
-    from z_PositionControllerContainer_0.0_original
-
-     - propTypes
-     - remapped targetPosition
-     - changes to manage multple active sources (selected)
-
 *//* ---------------------------------------------- */
 
 import React, { Component } from 'react'

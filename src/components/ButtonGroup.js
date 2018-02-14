@@ -3,11 +3,6 @@
 
 /* ------------------- NOTES -------------------- *//*
 
-    from z_ButtonGroup_0.0_original
-
-     - propTypes
-     - isActive
-
 *//* ---------------------------------------------- */
 
 import React, { Component } from 'react'

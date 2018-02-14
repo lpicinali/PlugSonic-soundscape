@@ -4,12 +4,21 @@
 /* eslint no-console: 0 */
 /* eslint no-restricted-syntax: 0 */
 
-/* ------------------- NOTES -------------------- *//*
+/* ---------------------------- NOTES --------------------------- *//*
 
-    from z_binauralSpatializer_0.0_original
-     - extend for multiple sources
+  BinauralAPI - one instance per listener
 
-*//* ---------------------------------------------- */
+  Listener Initialisation:
+    Fetch HRIRs vector
+    Create Listener instance
+    Set Listener transform (position and orientation)
+    Enable Directionality
+    Enable Customized ITD
+
+  Source(s):
+    Create one instance for each Source
+
+*//* -------------------------------------------------------------- */
 
 import {
   BinauralAPI,
@@ -32,41 +41,15 @@ import { fetchHrirsVector } from 'src/audio/hrir.js';
 import hrirUrls from 'src/audio/hrir-files.js';
 import { audioFiles } from 'src/audio/audio-files.js';
 
-
-/* ---------------------------- NOTES --------------------------- *//*
-
-  BinauralAPI - one instance per listener
-
-  Listener Initialisation:
-    Fetch HRIRs vector
-    Create Listener instance
-    Set Listener transform (position and orientation)
-    Enable Directionality
-    Enable Customized ITD
-
-  Source(s):
-    Create one instance for each Source
-
-  from z_binauralSpatializer_0.0_original:
-    - extend to multiple sources
-
-
-
-*//* -------------------------------------------------------------- */
 const binauralApi = new BinauralAPI()
 
 let instancePromise = null
 
 let listener
-// let source
-// let maskLeft
-// let maskRight
 let targets
-// = audioFiles.reduce(
-//   (aggr, file) => ({...aggr, [file.filename]: null}),{});
 
 /* --------------- SET POSITION ----------------- */
-function setPosition(source, azimuth, distance) {
+function setSPosition(source, azimuth, distance) {
   const transform = new CTransform()
 
   const x = Math.cos(azimuth) * distance
@@ -81,19 +64,37 @@ function setPosition(source, azimuth, distance) {
     // source = ${target} , azimuth = ${azimuth} , distance = ${distance}`);
 }
 
+function setLPosition(azimuth, distance) {
+  const transform = new CTransform()
+
+  const x = Math.cos(azimuth) * distance
+  const z = -Math.sin(azimuth) * distance
+  const position = new CVector3(x, 0, z)
+
+  transform.SetPosition(position)
+  listener.SetListenerTransform(transform)
+
+  transform.delete()
+  // console.log(`called setPosition with
+    // source = ${target} , azimuth = ${azimuth} , distance = ${distance}`);
+}
+
 
 /* --------------- CREATE INSTANCE --------------- */
 function createInstance() {
 
-
   return fetchHrirsVector(hrirUrls, context).then(hrirsVector => {
 
-    // SET SOURCE POSITION - returned
+    // SET SOURCE POSITION
     function setSourcePosition(source, azimuth, distance) {
-      setPosition(source, azimuth, distance)
+      setSPosition(source, azimuth, distance);
     }
 
-    // SET PERFORMANCE MODE - returned
+    function setListenerPosition(azimuth, distance) {
+      setLPosition(azimuth, distance);
+    }
+
+    // SET PERFORMANCE MODE
     function setPerformanceMode(isEnabled) {
       map(targets, target =>
         target[target].SetSpatializationMode(
@@ -104,7 +105,7 @@ function createInstance() {
       )
     }
 
-    // SET HEAD RADIUS - returned
+    // SET HEAD RADIUS
     function setHeadRadius(radius) {
       listener.SetHeadRadius(radius)
       // console.log(`called setHeadRadius with radius = ${radius}`);
@@ -182,92 +183,11 @@ function createInstance() {
       }
     }, {}) // end of .reduce
 
-
-
-
-
-
-    // source = binauralApi.CreateSource()
-    // setSourcePosition(Math.PI / 2, 30)
-    //
-    //
-    // const inputMonoBuffer = new CMonoBuffer()
-    // inputMonoBuffer.resize(512, 0)
-    //
-    // const outputStereoBuffer = new CStereoBuffer()
-    // outputStereoBuffer.resize(1024, 0)
-    // // create a Script Node - used for direct audio processing
-    // // (buffer size, # input channels, # output channels)
-    // const processor = context.createScriptProcessor(512, 1, 2)
-    // // PROCESSING FUNCTION
-    // processor.onaudioprocess = audioProcessingEvent => {
-    //   const { inputBuffer, outputBuffer } = audioProcessingEvent
-    //   const inputData = inputBuffer.getChannelData(0)
-    //
-    //   for (let i = 0; i < inputData.length; i++) {
-    //     inputMonoBuffer.set(i, inputData[i])
-    //   }
-    //   // process data
-    //   // if (window.processBinaural === true) {
-    //   source.ProcessAnechoic(inputMonoBuffer, outputStereoBuffer)
-    //   // }
-    //   // get output buffer data and write processed input into it
-    //   const outputDataLeft = outputBuffer.getChannelData(0)
-    //   const outputDataRight = outputBuffer.getChannelData(1)
-    //
-    //   for (let i = 0; i < outputDataLeft.length; i++) {
-    //     outputDataLeft[i] = outputStereoBuffer.get(i * 2)
-    //     outputDataRight[i] = outputStereoBuffer.get(i * 2 + 1)
-    //   }
-    // }
-    //
-    // // CREATE and SETUP MASK SOURCE - stereo
-    // const masks = [Ear.LEFT, Ear.RIGHT].reduce((aggr, channel) => {
-    //   const maskSource = binauralApi.CreateSource()
-    //   const azimuth = channel === Ear.LEFT ? Math.PI : 0
-    //   setPosition(maskSource, azimuth, 3)
-    //
-    //   const maskInputBuffer = new CMonoBuffer()
-    //   maskInputBuffer.resize(512, 0)
-    //   const maskOutputBuffer = new CStereoBuffer()
-    //   maskOutputBuffer.resize(1024, 0)
-    //   // Script Node (bufferSize, numInputChannels, numOutputChannels)
-    //   const maskProcessor = context.createScriptProcessor(512, 2, 2)
-    //   // PROCESSING FUNCTION
-    //   maskProcessor.onaudioprocess = audioProcessingEvent => {
-    //     const { inputBuffer, outputBuffer } = audioProcessingEvent
-    //     const inputData = inputBuffer.getChannelData(0)
-    //
-    //     for (let i = 0; i < inputData.length; i++) {
-    //       maskInputBuffer.set(i, inputData[i])
-    //     }
-    //     // process data
-    //     maskSource.ProcessAnechoic(maskInputBuffer, maskOutputBuffer)
-    //     const outputDataLeft = outputBuffer.getChannelData(0)
-    //     const outputDataRight = outputBuffer.getChannelData(1)
-    //
-    //     for (let i = 0; i < outputDataLeft.length; i++) {
-    //       outputDataLeft[i] = maskOutputBuffer.get(i * 2)
-    //       outputDataRight[i] = maskOutputBuffer.get(i * 2 + 1)
-    //     }
-    //   }
-    //
-    //   return {
-    //     ...aggr,
-    //     [channel]: {
-    //       source: maskSource,
-    //       processor: maskProcessor,
-    //     },
-    //   }
-    // }, {}) // end of .reduce
-
     return {
       listener,
-      // source,
-      // processor,
       targets,
-      // masks,
       setSourcePosition,
+      setListenerPosition,
       setPerformanceMode,
       setHeadRadius,
       // setDirectionalityEnabled,
@@ -275,7 +195,6 @@ function createInstance() {
     }
   }) // end of .then
 }
-
 
 
 /* ------------------- GET INSTANCE ------------------ */

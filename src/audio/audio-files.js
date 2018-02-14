@@ -3,10 +3,6 @@
 
 /* ------------------- NOTES -------------------- *//*
 
-    from z_audio-files-0.0-original
-
-     - change data structure to Array of Objects
-
 *//* ---------------------------------------------- */
 
 import {

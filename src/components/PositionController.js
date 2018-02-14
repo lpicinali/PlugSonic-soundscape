@@ -155,7 +155,7 @@ class PositionController extends Component {
 
   render() {
     const { bounds, size, objects, listenerPosition, headRadius } = this.props
-
+    
     // console.log('PositionController.render()', bounds.top)
 
     return (

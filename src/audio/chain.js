@@ -3,9 +3,6 @@
 
 /* ------------------- NOTES -------------------- *//*
 
-    from z_chain_0.0_original
-     - extend to multiple sources
-
 *//* ---------------------------------------------- */
 
 import toolkit from '3dti-toolkit'
