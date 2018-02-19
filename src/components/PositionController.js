@@ -72,8 +72,104 @@ class PositionController extends Component {
 
   state = {
     isDragging: false,
+    keys: {},
+    // isMoving: false,
     currentObjectId: null,
     position: { azimuth: 0, distance: 0 },
+  }
+
+  componentDidMount(){
+    window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("keyup", this.handleKeyUp)
+  }
+
+  componentWillUnmount(){
+    window.removeEventListener("keydown", this.handleKeyDown);
+    window.removeEventListener("keyup", this.handleKeyUp);
+  }
+
+  // @autobind
+  // handleClick(){
+  //   if (!this.state.isMoving) {
+  //     console.log(`MOVING`);
+  //     const listener = this.props.listenerPosition;
+  //     this.setState(() => ({
+  //       ...this.state,
+  //       isMoving: true,
+  //       currentObjectId: 'listener',
+  //       position: { azimuth: listener.azimuth, distance: listener.distance },
+  //     }))
+  //     console.log(`from POSITION: ${this.state.position.azimuth} , ${this.state.position.distance}`)
+  //     window.addEventListener("keydown", this.handleKeyPress);
+  //   } else {
+  //     console.log('STOPPED');
+  //     this.setState(() => ({
+  //       ...this.state,
+  //       isMoving: false,
+  //       currentObjectId: null,
+  //     }))
+  //     window.removeEventListener("keydown", this.handleKeyPress);
+  //   }
+  // }
+
+  @autobind
+  handleKeyDown(evt) {
+    const { size, onListenerChange } = this.props
+    const { keys, position } = this.state
+
+    if (evt.keyCode === 37 || evt.keyCode === 38 || evt.keyCode === 39 || evt.keyCode === 40 ){
+      evt.preventDefault();
+      keys[evt.keyCode] = true;
+    }
+
+    // if (isMoving) {
+      const speed = 0.5;
+      let newX = Math.cos(position.azimuth) * position.distance;
+      let newZ = Math.sin(position.azimuth) * position.distance;
+      // console.log(`X = ${newX}`);
+      // console.log(`Z = ${newZ}`);
+      if (keys && keys[37]) {
+        // console.log('LEFT');
+        newX -= speed;
+      }
+      if (keys && keys[38] ) {
+        // console.log('UP');
+        newZ += speed;
+      }
+      if (keys && keys[39] ) {
+        // console.log('RIGHT');
+        newX += speed;
+      }
+      if (keys && keys[40] ) {
+        // console.log('DOWN');
+        newZ -= speed;
+      }
+      // console.log(`newX = ${newX}`);
+      // console.log(`newZ = ${newZ}`);
+      const azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
+      let distance = Math.sqrt(newX ** 2 + newZ ** 2)
+      distance = Math.max(0.3, distance)
+      distance = Math.min(distance, size)
+      // console.log(`NEW AZIMUTH -> ${azimuth}`);
+      // console.log(`NEW DISTANCE -> ${distance}`);
+      const newPos = { azimuth, distance }
+
+      this.setState({
+        ...this.state,
+        position: newPos,
+      })
+
+      onListenerChange(newPos);
+    // }
+  }
+
+  @autobind
+  handleKeyUp(evt) {
+    const { keys } = this.state;
+
+    if (evt.keyCode === 37 || evt.keyCode === 38 || evt.keyCode === 39 || evt.keyCode === 40 ){
+      keys[evt.keyCode] = false;
+    }
   }
 
   @autobind
@@ -155,24 +251,27 @@ class PositionController extends Component {
 
   render() {
     const { bounds, size, objects, listenerPosition, headRadius } = this.props
-    
+
     // console.log('PositionController.render()', bounds.top)
 
     return (
-      <StyledPositionController width={bounds.width} height={bounds.height}>
-        <ListenerHandle
-          key='listener'
-          style={{
-            top: `${50 -
-              50 * (Math.sin(listenerPosition.azimuth) * listenerPosition.distance / size)}%`,
-            left: `${50 +
-              50 * (Math.cos(listenerPosition.azimuth) * listenerPosition.distance / size)}%`,
-          }}
-          size={`calc(${100 * (headRadius / 0.5) * (size / 12) / size}% + 8px)`}
-          onMouseDown={() => this.handlePress('listener')}
-        >
-          <span>listener</span>
-        </ListenerHandle>
+      <StyledPositionController
+        width={bounds.width}
+        height={bounds.height}
+      >
+          <ListenerHandle
+            key='listener'
+            style={{
+              top: `${50 -
+                50 * (Math.sin(listenerPosition.azimuth) * listenerPosition.distance / size)}%`,
+              left: `${50 +
+                50 * (Math.cos(listenerPosition.azimuth) * listenerPosition.distance / size)}%`,
+            }}
+            size={`calc(${100 * (headRadius / 0.5) * (size / 12) / size}% + 8px)`}
+            onMouseDown={() => this.handlePress('listener')}
+          >
+            <span>listener</span>
+          </ListenerHandle>
 
         {objects.map(object => (
           <SourceHandle

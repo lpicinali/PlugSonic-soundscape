@@ -30,6 +30,7 @@
     "prettier": "^1.6.1"
   },
   "dependencies": {
+    "arrow-keys-react": "^1.0.6",
     "audio-decode": "^1.2.5",
     "babel-core": "^6.24.1",
     "babel-eslint": "^8.2.1",
