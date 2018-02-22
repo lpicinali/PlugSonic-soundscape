@@ -1,11 +1,14 @@
 /* ------------------- NOTES -------------------- *//*
 
+TO DO:
+  - transfer listener controls/actions from controls to listener.reducer
+
 *//* ---------------------------------------------- */
 
 import { ActionType } from 'src/constants.js'
 
 const initialState = {
-  position: { azimuth: 0, distance: 0 },
+  position: { azimuth: Math.PI/2, distance: 0, rotYAxis: 0 },
   // isPerformanceModeEnabled: false,
   // headRadius: 0.0875,
   // isDirectionalityEnabled: true,
@@ -17,6 +20,10 @@ export default function(state = initialState, { type, payload }) {
   if (type === ActionType.SET_LISTENER_POSITION) {
     const newPosition = Object.assign({},state.position);
     Object.assign(newPosition, payload.position);
+      // console.log("Action: SET LISTENER POSITION");
+      // console.log(`Payload: ${payload}`);
+      // console.log("NEW STATE");
+      // console.log({ ...state, position: newPosition });
     return { ...state, position: newPosition };
   }
   // if (type === ActionType.SET_HEAD_RADIUS) {

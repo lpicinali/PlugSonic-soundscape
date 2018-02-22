@@ -26,8 +26,9 @@ import {
   CStereoBuffer,
   CTransform,
   CVector3,
+  CQuaternion,
   // T_ear,
- TSpatializationMode,
+  TSpatializationMode,
 } from '3dti-toolkit'
 import { map } from 'lodash'
 // import { reduce } from 'lodash'
@@ -64,17 +65,21 @@ function setSPosition(source, azimuth, distance) {
     // source = ${target} , azimuth = ${azimuth} , distance = ${distance}`);
 }
 
-function setLPosition(azimuth, distance) {
-  const transform = new CTransform()
+function setLPosition(azimuth, distance, rotYAxis) {
+  const transform = new CTransform();
+  // let orientation = new CQuaternion();
 
-  const x = Math.cos(azimuth) * distance
-  const z = -Math.sin(azimuth) * distance
-  const position = new CVector3(x, 0, z)
+  const x = Math.cos(azimuth) * distance;
+  const z = -Math.sin(azimuth) * distance;
+  const position = new CVector3(x, 0, z);
+  const yAxis = new CVector3(0, -1, 0);
+  const orientation = CQuaternion.FromAxisAngle(yAxis, rotYAxis);
 
-  transform.SetPosition(position)
-  listener.SetListenerTransform(transform)
+  transform.SetPosition(position);
+  transform.SetOrientation(orientation);
+  listener.SetListenerTransform(transform);
 
-  transform.delete()
+  transform.delete();
   // console.log(`called setPosition with
     // source = ${target} , azimuth = ${azimuth} , distance = ${distance}`);
 }
@@ -90,8 +95,8 @@ function createInstance() {
       setSPosition(source, azimuth, distance);
     }
 
-    function setListenerPosition(azimuth, distance) {
-      setLPosition(azimuth, distance);
+    function setListenerPosition(azimuth, distance, rotYAxis) {
+      setLPosition(azimuth, distance, rotYAxis);
     }
 
     // SET PERFORMANCE MODE

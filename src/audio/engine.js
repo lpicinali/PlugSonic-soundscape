@@ -65,12 +65,12 @@ export const setComponentPosition = (filename, { azimuth, distance }) => {
   });
 }
 
-export const setListenerPosition = ( { azimuth, distance } ) => {
+export const setListenerPosition = ( { azimuth, distance, rotYAxis } ) => {
   // console.log("engine: setComponentPosition");
   // console.log(`filename: ${filename} , azimuth: ${azimuth} , distance: ${distance}`);
   getInstance()
     .then(spatializer => {
-    spatializer.setListenerPosition(azimuth, distance)
+    spatializer.setListenerPosition(azimuth, distance, rotYAxis)
   });
 }
 

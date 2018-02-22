@@ -95,10 +95,10 @@ function* applyTargetPosition() {
 function* applyListenerPosition() {
   while(true) {
     const { payload } = yield take(ActionType.SET_LISTENER_POSITION);
-    const { azimuth, distance } = payload.position;
+    const { azimuth, distance, rotYAxis } = payload.position;
     // console.log("rootSaga: SET LISTENER POSITION");
     // console.log(`azimuth: ${azimuth} , distance: ${distance}`);
-    engineSetListenerPosition( { azimuth, distance } );
+    engineSetListenerPosition( { azimuth, distance, rotYAxis } );
   }
 }
 

@@ -1,6 +1,18 @@
 /* global window */
 /* eslint react/forbid-prop-types: 0 */
 /* eslint react/no-unused-prop-types: 0 */
+/* eslint prefer-destructuring: 0 */
+
+/* ------------------- NOTES -------------------- *//*
+
+TO DO:
+  - minimum distance between sources and/or listener:
+    - circle constraint
+  - listener keyboard movement bug:
+    - listener stops when changing from 2 to 1 keys pressed
+  - allow only for rotation when dragging listener with mouse
+
+*//* ---------------------------------------------- */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -21,16 +33,19 @@ const StyledPositionController = styled.div`
 `
 // width: ${props => props.size};
 // height: ${props => props.size};
+// transform: rotate(${props => props.listenerPosition.azimuth} rad)
+  // transform: translate3d(-8px, -10px, 0);
+
 const ListenerHandle = styled.div`
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 20px 8px;
+  border-color: transparent transparent ${BLACK} transparent;
   position: absolute;
-  width: 16px;
-  height: 16px;
-  background: ${BLACK};
-  border-radius: 10px;
   text-indent: -9999px;
   overflow: hidden;
   cursor: pointer;
-  transform: translate3d(-50%, -50%, 0);
 `
 
 const SourceHandle = styled.div`
@@ -42,7 +57,7 @@ const SourceHandle = styled.div`
   text-indent: -9999px;
   overflow: hidden;
   cursor: pointer;
-  transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0)
 `
 
 /**
@@ -72,10 +87,10 @@ class PositionController extends Component {
 
   state = {
     isDragging: false,
+    isMoving: false,
     keys: {},
-    // isMoving: false,
     currentObjectId: null,
-    position: { azimuth: 0, distance: 0 },
+    position: { azimuth: 0, distance: 0, rotYAxis: 0 },
   }
 
   componentDidMount(){
@@ -114,45 +129,71 @@ class PositionController extends Component {
 
   @autobind
   handleKeyDown(evt) {
-    const { size, onListenerChange } = this.props
-    const { keys, position } = this.state
-
     if (evt.keyCode === 37 || evt.keyCode === 38 || evt.keyCode === 39 || evt.keyCode === 40 ){
       evt.preventDefault();
-      keys[evt.keyCode] = true;
-    }
 
-    // if (isMoving) {
-      const speed = 0.5;
-      let newX = Math.cos(position.azimuth) * position.distance;
-      let newZ = Math.sin(position.azimuth) * position.distance;
-      // console.log(`X = ${newX}`);
-      // console.log(`Z = ${newZ}`);
+      const { size, onListenerChange, listenerPosition } = this.props
+      const { keys } = this.state
+      keys[evt.keyCode] = true;
+
+      this.setState(() => ({
+        ...this.state,
+        isMoving: true,
+        currentObjectId: 'listener',
+        keys,
+        position: {
+          azimuth: listenerPosition.azimuth,
+          distance: listenerPosition.distance,
+          rotYAxis: listenerPosition.rotYAxis
+        },
+      }))
+
+      const metresPerStep = 1;
+      const radiansPerStep = Math.PI/24;
+
+      let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance;
+      let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance;
+      let rotYAxis = listenerPosition.rotYAxis;
+      const deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep;
+      const deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep;
       if (keys && keys[37]) {
         // console.log('LEFT');
-        newX -= speed;
+        // newX -= metresPerStep;
+        rotYAxis = (rotYAxis - radiansPerStep) % (2*Math.PI);
       }
       if (keys && keys[38] ) {
         // console.log('UP');
-        newZ += speed;
+        // newZ += metresPerStep;
+        newX += deltaX;
+        newZ += deltaZ;
       }
       if (keys && keys[39] ) {
         // console.log('RIGHT');
-        newX += speed;
+        // newX += metresPerStep;
+        rotYAxis = (rotYAxis + radiansPerStep) % (2*Math.PI);
       }
       if (keys && keys[40] ) {
         // console.log('DOWN');
-        newZ -= speed;
+        // newZ -= metresPerStep;
+        newX -= deltaX;
+        newZ -= deltaZ;
       }
       // console.log(`newX = ${newX}`);
       // console.log(`newZ = ${newZ}`);
-      const azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
+      // console.log(`newRotation = ${rotYAxis}`);
+      let azimuth;
+      if (newX === 0 && newZ === 0){
+        azimuth = listenerPosition.azimuth;
+      } else {
+        azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
+      }
       let distance = Math.sqrt(newX ** 2 + newZ ** 2)
-      distance = Math.max(0.3, distance)
+      // distance = Math.max(0.3, distance)
       distance = Math.min(distance, size)
       // console.log(`NEW AZIMUTH -> ${azimuth}`);
       // console.log(`NEW DISTANCE -> ${distance}`);
-      const newPos = { azimuth, distance }
+      // console.log(`NEW ROTATION -> ${rotYAxis*180/Math.PI}`);
+      const newPos = { azimuth, distance, rotYAxis };
 
       this.setState({
         ...this.state,
@@ -160,15 +201,27 @@ class PositionController extends Component {
       })
 
       onListenerChange(newPos);
-    // }
+    }
   }
 
   @autobind
   handleKeyUp(evt) {
-    const { keys } = this.state;
-
     if (evt.keyCode === 37 || evt.keyCode === 38 || evt.keyCode === 39 || evt.keyCode === 40 ){
+      const { keys } = this.state;
       keys[evt.keyCode] = false;
+      if ( !keys[37] && !keys[38] && !keys[39] && !keys[40]) {
+        this.setState(() => ({
+          ...this.state,
+          isMoving: false,
+          currentObjectId: null,
+          keys: {},
+          }))
+      } else {
+        this.setState(() => ({
+          ...this.state,
+          keys,
+        }))
+      }
     }
   }
 
@@ -194,7 +247,7 @@ class PositionController extends Component {
   @autobind
   handleDrag(evt) {
     const { bounds, size, onPositionChange, onListenerChange } = this.props
-    const { isDragging, currentObjectId } = this.state
+    const { isDragging, currentObjectId, position } = this.state
 
     if (isDragging) {
       const rect = bounds
@@ -216,12 +269,19 @@ class PositionController extends Component {
       const newZ =
         (constrainedMouseY - (window.scrollY + rect.top + rect.height / 2)) /
         (rect.height / 2)
-
-      const azimuth = Math.atan(-newZ / newX) + (newX < 0 ? Math.PI : 0)
-      let distance = size * Math.sqrt(newX ** 2 + newZ ** 2)
-      distance = Math.max(0.3, distance)
-      distance = Math.min(distance, size)
-
+      // console.log(`newX = ${newX}`);
+      // console.log(`newZ = ${newZ}`);
+      let azimuth;
+      if (newX === 0 && newZ === 0){
+        azimuth = position.azimuth;
+      } else {
+        azimuth = Math.atan(-newZ / newX) + (newX < 0 ? Math.PI : 0)
+      }
+      const distance = size * Math.sqrt(newX ** 2 + newZ ** 2)
+      // distance = Math.max(20, distance)
+      // distance = Math.min(distance, size)
+      // console.log(`NEW AZIMUTH -> ${azimuth}`);
+      // console.log(`NEW DISTANCE -> ${Math.floor(distance)}`);
       const newPos = { azimuth, distance }
 
       this.setState({
@@ -253,6 +313,8 @@ class PositionController extends Component {
     const { bounds, size, objects, listenerPosition, headRadius } = this.props
 
     // console.log('PositionController.render()', bounds.top)
+    // console.log(this.props.listenerPosition.azimuth);
+    // transform: translate3d(`-50%, -50%, 0`),
 
     return (
       <StyledPositionController
@@ -266,6 +328,7 @@ class PositionController extends Component {
                 50 * (Math.sin(listenerPosition.azimuth) * listenerPosition.distance / size)}%`,
               left: `${50 +
                 50 * (Math.cos(listenerPosition.azimuth) * listenerPosition.distance / size)}%`,
+              transform: `translate3d(-50%, -50%, 0) rotate(${listenerPosition.rotYAxis}rad)`
             }}
             size={`calc(${100 * (headRadius / 0.5) * (size / 12) / size}% + 8px)`}
             onMouseDown={() => this.handlePress('listener')}
