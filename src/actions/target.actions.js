@@ -13,5 +13,10 @@ export const setTarget = target => ({
 
 export const setTargetPosition = (target, position) => ({
   type: ActionType.SET_TARGET_POSITION,
-  payload: {target, position},
+  payload: { target , position},
+})
+
+export const setTargetVolume = (target, volume) => ({
+  type: ActionType.SET_TARGET_VOLUME,
+  payload: { target , volume },
 })

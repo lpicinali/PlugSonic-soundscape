@@ -11,7 +11,7 @@ import {
   createNode as chainCreateNode,
   setTargetNode as chainSetTargetNode,
   unsetTargetNode as chainUnsetTargetNode,
-  setTargetVolume as chainSetTargetVolume,
+  setMasterVolume as chainSetMasterVolume,
   startNodes as chainStartNodes,
   stopNodes as chainStopNodes,
 } from 'src/audio/chain.js'
@@ -74,9 +74,9 @@ export const setListenerPosition = ( { azimuth, distance, rotYAxis } ) => {
   });
 }
 
-export const setComponentVolume = (volume) => {
+export const setMasterVolume = (volume) => {
   // console.log('setComponentVolume', { volume })
-    chainSetTargetVolume(volume)
+    chainSetMasterVolume(volume)
 }
 
 export const setHeadRadius = radius => {

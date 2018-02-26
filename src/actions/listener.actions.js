@@ -11,15 +11,15 @@ export const setListenerPosition = position => ({
   payload: { position },
 })
 
-// export const setHeadRadius = radius => ({
-//   type: ActionType.SET_HEAD_RADIUS,
-//   payload: { radius },
-// })
-// 
-// export const setPerformanceMode = isEnabled => ({
-//   type: ActionType.SET_PERFORMANCE_MODE_ENABLED,
-//   payload: { isEnabled },
-// })
+export const setHeadRadius = radius => ({
+  type: ActionType.SET_HEAD_RADIUS,
+  payload: { radius },
+})
+//
+export const setPerformanceMode = isEnabled => ({
+  type: ActionType.SET_PERFORMANCE_MODE_ENABLED,
+  payload: { isEnabled },
+})
 
 // export const setDirectionalityEnabled = isEnabled => ({
 //   type: ActionType.SET_DIRECTIONALITY_ENABLED,

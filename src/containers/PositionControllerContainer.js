@@ -85,7 +85,7 @@ class PositionControllerContainer extends Component {
 export default connect(
   state => ({
     listenerPosition: state.listener.position,
-    headRadius: state.controls.headRadius,
+    headRadius: state.listener.headRadius,
     targets: state.target.targets,
     selected: state.target.selected,
   }),

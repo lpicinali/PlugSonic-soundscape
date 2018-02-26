@@ -11,6 +11,7 @@ TO DO:
   - listener keyboard movement bug:
     - listener stops when changing from 2 to 1 keys pressed
   - allow only for rotation when dragging listener with mouse
+  - bug continue to drag listener after drag and rotation
 
 *//* ---------------------------------------------- */
 
@@ -230,15 +231,19 @@ class PositionController extends Component {
     let object;
     if (objectId === 'listener'){
       object = this.props.listenerPosition;
+      this.setState(() => ({
+        isDragging: true,
+        currentObjectId: objectId,
+        position: { azimuth: object.azimuth, distance: object.distance, rotYAxis: object.rotYAxis },
+      }))
     } else {
       object = this.props.objects.find(x => x.id === objectId);
+      this.setState(() => ({
+        isDragging: true,
+        currentObjectId: objectId,
+        position: { azimuth: object.azimuth, distance: object.distance },
+      }))
     }
-
-    this.setState(() => ({
-      isDragging: true,
-      currentObjectId: objectId,
-      position: { azimuth: object.azimuth, distance: object.distance },
-    }))
 
     window.addEventListener('mousemove', this.handleDrag)
     window.addEventListener('mouseup', this.handleRelease)
@@ -277,22 +282,22 @@ class PositionController extends Component {
       } else {
         azimuth = Math.atan(-newZ / newX) + (newX < 0 ? Math.PI : 0)
       }
-      const distance = size * Math.sqrt(newX ** 2 + newZ ** 2)
+      let distance = size * Math.sqrt(newX ** 2 + newZ ** 2)
+      const rotYAxis = position.rotYAxis;
       // distance = Math.max(20, distance)
-      // distance = Math.min(distance, size)
+      distance = Math.min(distance, size)
       // console.log(`NEW AZIMUTH -> ${azimuth}`);
       // console.log(`NEW DISTANCE -> ${Math.floor(distance)}`);
-      const newPos = { azimuth, distance }
 
       this.setState({
         ...this.state,
-        position: newPos,
+        position: { azimuth, distance, rotYAxis },
       })
 
       if (currentObjectId === 'listener') {
-        onListenerChange(newPos);
+        onListenerChange({ azimuth, distance, rotYAxis });
       } else {
-        onPositionChange(currentObjectId, newPos)
+        onPositionChange(currentObjectId, { azimuth, distance });
       }
     }
   }

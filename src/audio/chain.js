@@ -74,7 +74,7 @@ export const unsetTargetNode = (channel) => {
   // console.log(`targetNodes[channel]: ${targetNodes[channel]}`);
 }
 
-export const setTargetVolume = newVolume => {
+export const setMasterVolume = newVolume => {
   volume.gain.value = newVolume
 }
 

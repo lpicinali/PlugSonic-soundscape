@@ -9,8 +9,8 @@ import { ActionType } from 'src/constants.js'
 
 const initialState = {
   position: { azimuth: Math.PI/2, distance: 0, rotYAxis: 0 },
-  // isPerformanceModeEnabled: false,
-  // headRadius: 0.0875,
+  isPerformanceModeEnabled: false,
+  headRadius: 0.0875,
   // isDirectionalityEnabled: true,
   // directionalityValue: 0,
 }
@@ -26,24 +26,12 @@ export default function(state = initialState, { type, payload }) {
       // console.log({ ...state, position: newPosition });
     return { ...state, position: newPosition };
   }
-  // if (type === ActionType.SET_HEAD_RADIUS) {
-  //   const newListener = Object.assign({},state.listener);
-  //   Object.assign(newListener.headRadius, payload.radius);
-  //   console.log("Action: SET LISTENER HEAD RADIUS");
-  //   console.log(`Payload: ${payload}`);
-  //   console.log("NEW STATE");
-  //   console.log({ ...state, listener: newListener });
-  //   return { ...state, listener: newListener }
-  // }
-  // if (type === ActionType.SET_PERFORMANCE_MODE_ENABLED) {
-  //   const newListener = Object.assign({},state.listener);
-  //   Object.assign(newListener.isPerformanceModeEnabled, payload.isEnabled);
-  //   console.log("Action: SET PERFORMANCE MODE ENABLED");
-  //   console.log(`Payload: ${payload}`);
-  //   console.log("NEW STATE");
-  //   console.log({ ...state, listener: newListener });
-  //   return { ...state, listener: newListener }
-  // }
+  if (type === ActionType.SET_HEAD_RADIUS) {
+    return { ...state, headRadius: payload.radius }
+  }
+  if (type === ActionType.SET_PERFORMANCE_MODE_ENABLED) {
+    return { ...state, isPerformanceModeEnabled: payload.isEnabled }
+  }
 
   return state
 

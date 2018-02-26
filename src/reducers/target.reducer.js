@@ -44,6 +44,15 @@ export default function(state = initialState, {type, payload}) {
     // console.log({ ...state, targets: newTargets });
     return { ...state, targets: newTargets };
   }
+  if (type === ActionType.SET_TARGET_VOLUME) {
+    const newTargets = Object.assign({},state.targets);
+    Object.assign(newTargets[payload.target].volume, payload.volume);
+    // console.log("Action: SET TARGET VOLUME");
+    // console.log(`Payload: ${payload}`);
+    // console.log("NEW STATE");
+    // console.log({ ...state, targets: newTargets });
+    return { ...state, targets: newTargets };
+  }
 
   return state;
 }

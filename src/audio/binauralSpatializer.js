@@ -102,7 +102,7 @@ function createInstance() {
     // SET PERFORMANCE MODE
     function setPerformanceMode(isEnabled) {
       map(targets, target =>
-        target[target].SetSpatializationMode(
+        target.source.SetSpatializationMode(
           isEnabled
             ? TSpatializationMode.HighPerformance
             : TSpatializationMode.HighQuality
