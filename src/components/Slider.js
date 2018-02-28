@@ -31,12 +31,17 @@ class Slider extends Component {
     const numericValue = parseFloat(evt.target.value)
 
     if (Math.abs(numericValue - value) >= step) {
+      // console.log('SLIDER')
+      // console.log(numericValue)
       onChange(numericValue)
     }
   }
 
   render() {
     const { value, min, max, step } = this.props
+
+    // console.log('ID');
+    // console.log(id);
 
     return (
       <div className="Slider">

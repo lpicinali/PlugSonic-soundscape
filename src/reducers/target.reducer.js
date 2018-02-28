@@ -38,19 +38,29 @@ export default function(state = initialState, {type, payload}) {
   if (type === ActionType.SET_TARGET_POSITION) {
     const newTargets = Object.assign({},state.targets);
     Object.assign(newTargets[payload.target].position, payload.position);
+    // console.log();
+    // console.log();
     // console.log("Action: SET TARGET POSITION");
-    // console.log(`Payload: ${payload}`);
+    // console.log(`Payload.target: ${payload.target}`);
+    // console.log(`Payload.position: ${payload.position}`);
     // console.log("NEW STATE");
     // console.log({ ...state, targets: newTargets });
+    // console.log();
+    // console.log();
     return { ...state, targets: newTargets };
   }
   if (type === ActionType.SET_TARGET_VOLUME) {
     const newTargets = Object.assign({},state.targets);
-    Object.assign(newTargets[payload.target].volume, payload.volume);
+    newTargets[payload.target].volume = payload.volume;
+    // console.log();
+    // console.log();
     // console.log("Action: SET TARGET VOLUME");
-    // console.log(`Payload: ${payload}`);
+    // console.log(`Payload.target: ${payload.target}`);
+    // console.log(`Payload.volume: ${payload.volume}`);
     // console.log("NEW STATE");
     // console.log({ ...state, targets: newTargets });
+    // console.log();
+    // console.log();
     return { ...state, targets: newTargets };
   }
 

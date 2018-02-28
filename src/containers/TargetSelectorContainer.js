@@ -16,8 +16,9 @@ import {
   // setPerformanceMode,
   setMasterVolume,
 } from 'src/actions/controls.actions.js'
-import { setTarget,
-  // setTargetVolume
+import {
+  setTarget,
+  setTargetVolume
 } from 'src/actions/target.actions.js'
 import {
   // setHeadRadius,
@@ -41,7 +42,7 @@ class TargetSelectorContainer extends Component {
     // isPerformanceModeEnabled: PropTypes.bool.isRequired,
     // headRadius: PropTypes.number.isRequired,
     onSelect: PropTypes.func.isRequired,
-    // onChangeTargetVolume: PropTypes.func.isRequired,
+    onChangeTargetVolume: PropTypes.func.isRequired,
     onChangeMasterVolume: PropTypes.func.isRequired,
     // onChangePerformanceMode: PropTypes.func.isRequired,
     // onChangeHeadRadius: PropTypes.func.isRequired,
@@ -59,38 +60,34 @@ class TargetSelectorContainer extends Component {
       // isPerformanceModeEnabled,
       // headRadius,
       onSelect,
-      // onChangeTargetVolume,
+      onChangeTargetVolume,
       onChangeMasterVolume,
       // onChangePerformanceMode,
       // onChangeHeadRadius,
     } = this.props;
 
+    // const options = reduce(
+    //   targets,
+    //   (aggr, file) => ({
+    //     ...aggr,
+    //     [file.filename]: file.title,
+    //   }),
+    //   {}
+    // );
+
+
     const options = reduce(
       targets,
       (aggr, file) => ({
         ...aggr,
-        [file.filename]: file.title,
-      }),
+        [file.filename]: {
+          id: file.filename,
+          label: file.title,
+          volume: file.volume
+      }}),
       {}
     );
 
-    // const volumes = reduce(
-    //   targets,
-    //   (aggr, file) => ({
-    //     ...aggr,
-    //     [file.filename]: file.volume,
-    //   }),
-    //   {}
-    // );
-
-    // const volumes = reduce(
-    //   targets,
-    //   (aggr, file) => ({
-    //     ...aggr,
-    //     [file.filename]: file.volume,
-    //   }),
-    //   {}
-    // );
 
     // List of buttons
     // options = { file#0.filename: file#0.title#0 ... file#N.filename: file#N.title }
@@ -113,8 +110,7 @@ class TargetSelectorContainer extends Component {
             value={selected}
             isVertical
             onSelect={onSelect}
-            volumes={masterVolume}
-            onChange={onChangeMasterVolume}
+            onVolumeChange={(id, volume) => onChangeTargetVolume(id, volume)}
           />
         </div>
 
@@ -140,7 +136,7 @@ export default connect(
   }),
   dispatch => ({
     onSelect: target => dispatch(setTarget(target)),
-    // onChangeTargetVolume: (id, volume) => dispatch(setTargetVolume(id, volume)),
+    onChangeTargetVolume: (id, volume) => dispatch(setTargetVolume(id, volume)),
     onChangeMasterVolume: volume => dispatch(setMasterVolume(volume)),
     // onChangePerformanceMode: isEnabled =>
     //   dispatch(setPerformanceMode(isEnabled)),

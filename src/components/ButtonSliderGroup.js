@@ -11,7 +11,7 @@ import { map } from 'lodash'
 import styled from 'styled-components'
 
 import Button from 'src/components/Button.js'
-import VolumeSlider from 'src/components/VolumeSlider.js';
+import TargetVolumeSlider from 'src/components/TargetVolumeSlider.js';
 
 // import { H3 } from 'src/styles/elements.js'
 
@@ -32,8 +32,7 @@ class ButtonSliderGroup extends Component {
     value: PropTypes.array,
     isVertical: PropTypes.bool,
     onSelect: PropTypes.func.isRequired,
-    volumes: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
+    onVolumeChange: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -42,21 +41,25 @@ class ButtonSliderGroup extends Component {
   };
 
 
-  // <div>
-  //   <Button
-  //     key={optionValue}
-  //     isEnabled={enabledOptions.indexOf(optionValue) >= 0}
-  //     isActive={value.indexOf(optionValue) >= 0}
-  //     onClick={() => onSelect(optionValue)}
-  //   >
-  //     {optionLabel}
-  //   </Button>
-  //   <VolumeSlider key={optionValue} volume={volume} onChange={onChange} />
-  // </div>
+  // <StyledButtonGroup isVertical={isVertical}>
+  //   {map(options, (optionLabel, optionValue) => (
+  //     <div key={optionValue}>
+  //       <Button
+  //         isEnabled={enabledOptions.indexOf(optionValue) >= 0}
+  //         isActive={value.indexOf(optionValue) >= 0}
+  //         onClick={() => onSelect(optionValue)}
+  //       >
+  //         {optionLabel}
+  //       </Button>
+  //       <TargetVolumeSlider volume={volumes} onChange={onChange} />
+  //     </div>
+  //   ))}
+  // </StyledButtonGroup>
 
 
   render() {
-    const { options, enabledOptions, value , isVertical, onSelect, volumes, onChange } = this.props;
+    const { options, enabledOptions, value , isVertical, onSelect, onVolumeChange } = this.props;
+
     // Each button:
     // key = file.filename
     // isEnabled = true
@@ -64,16 +67,19 @@ class ButtonSliderGroup extends Component {
     // onClick = setTarget(file.filename)
     return (
       <StyledButtonGroup isVertical={isVertical}>
-        {map(options, (optionLabel, optionValue) => (
-          <div key={optionValue}>
+        {map(options, (option) => (
+          <div key={option.id}>
             <Button
-              isEnabled={enabledOptions.indexOf(optionValue) >= 0}
-              isActive={value.indexOf(optionValue) >= 0}
-              onClick={() => onSelect(optionValue)}
+              isEnabled={enabledOptions.indexOf(option.id) >= 0}
+              isActive={value.indexOf(option.id) >= 0}
+              onClick={() => onSelect(option.id)}
             >
-              {optionLabel}
+              {option.label}
             </Button>
-            <VolumeSlider volume={volumes} onChange={onChange} />
+            <TargetVolumeSlider
+              id={option.id}
+              volume={option.volume}
+              onVolumeChange={onVolumeChange} />
           </div>
         ))}
       </StyledButtonGroup>

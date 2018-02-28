@@ -78,6 +78,10 @@ export const setMasterVolume = newVolume => {
   volume.gain.value = newVolume
 }
 
+export const setTargetVolume = (filename, newVolume) => {
+  targetVolumes[filename].gain.value = newVolume;
+}
+
 export const startNodes = () => {
   for (const filename in targetNodes) {
     if (Object.prototype.hasOwnProperty.call(targetNodes, filename)) {

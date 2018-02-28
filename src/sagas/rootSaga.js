@@ -29,6 +29,7 @@ import {
   setTargetSource as engineSetTargetSource,
   unsetTargetSource as engineUnsetTargetSource,
   setMasterVolume as engineSetMasterVolume,
+  setTargetVolume as engineSetTargetVolume,
   setComponentPosition as engineSetComponentPosition,
   setListenerPosition as engineSetListenerPosition,
   setHeadRadius as engineSetHeadRadius,
@@ -109,6 +110,14 @@ function* applyMasterVolume() {
   }
 }
 
+function* applyTargetVolume() {
+  while (true) {
+    const { type, payload } = yield take(ActionType.SET_TARGET_VOLUME)
+    const { target, volume } = payload;
+    engineSetTargetVolume(target, volume)
+  }
+}
+
 function* applyHeadRadius() {
   while (true) {
     const { payload } = yield take(ActionType.SET_HEAD_RADIUS);
@@ -144,6 +153,7 @@ export default function* rootSaga() {
     applyPlayPause(),
     applyComponentSource(),
     applyMasterVolume(),
+    applyTargetVolume(),
     applyPerformanceMode(),
     applyHeadRadius(),
     // applyDirectionalityEnabled(),

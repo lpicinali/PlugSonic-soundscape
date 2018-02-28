@@ -8,21 +8,26 @@ import Slider from 'src/components/Slider.js'
 /**
  * Volume Slider
  */
-class MasterVolumeSlider extends PureComponent {
+class TargetVolumeSlider extends PureComponent {
   static propTypes = {
+    id: PropTypes.string.isRequired,
     volume: PropTypes.number.isRequired,
-    onChange: PropTypes.func.isRequired,
+    onVolumeChange: PropTypes.func.isRequired,
   }
 
   @autobind
   handleSliderChange(value) {
-    // console.log('MASTER VOLUME SLIDER');
-    // console.log(toGain(value))
-    this.props.onChange(toGain(value))
+    // console.log('TARGET VOLUME SLIDER');
+    // console.log(this.props.id, toGain(value))
+    this.props.onVolumeChange(this.props.id, toGain(value))
   }
 
   render() {
+
     const { volume } = this.props
+
+    // console.log('ID');
+    // console.log(id);
 
     return (
       <Slider
@@ -36,4 +41,4 @@ class MasterVolumeSlider extends PureComponent {
   }
 }
 
-export default MasterVolumeSlider
+export default TargetVolumeSlider
