@@ -16,6 +16,14 @@ export const H3 = styled.h3`
   letter-spacing: 1px;
 `
 
+export const H4 = styled.h3`
+  margin: 5px 0 5px 0;
+  color: gray;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+`
+
 export const P = styled.p`
   font-size: 16px;
   color: ${BLACK};

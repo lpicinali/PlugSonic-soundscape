@@ -128,6 +128,8 @@ function* applyHeadRadius() {
 function* applyPerformanceMode() {
   while (true) {
     const { payload } = yield take(ActionType.SET_PERFORMANCE_MODE_ENABLED)
+    // console.log("Saga: APPLY PERFORMANCE MODE");
+    // console.log(`Payload: ${payload}`);
     engineSetPerformanceMode(payload.isEnabled)
   }
 }

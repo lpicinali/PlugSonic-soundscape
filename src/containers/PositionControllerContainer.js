@@ -11,14 +11,20 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import styled from 'styled-components'
 
 import * as CustomPropTypes from 'src/prop-types.js'
 import { setTargetPosition } from 'src/actions/target.actions.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import ContainerDimensionsWithScrollUpdates from 'src/components/ContainerDimensionsWithScrollUpdates.js'
 import PositionController from 'src/components/PositionController.js'
+import Button from 'src/components/Button.js'
 
 const BoundsRelay = rect => {}
+
+const StyledResetButton = styled.div`
+  padding: 20px 0 0 68px;
+`
 
 /**
  * Position Controller Container
@@ -58,25 +64,35 @@ class PositionControllerContainer extends Component {
     );
 
     return (
-      <div
-        style={{
-          position: 'relative',
-          width: 200,
-          height: 200,
-        }}
-      >
-        <ContainerDimensionsWithScrollUpdates scrollTarget={window}>
-          {rect => (
-            <PositionController
-              bounds={rect}
-              objects={objects}
-              listenerPosition={listenerPosition}
-              headRadius={headRadius}
-              onPositionChange={(id, position) => onTargetMove(id, position)}
-              onListenerChange={position => onListenerMove(position)}
-            />
-          )}
-        </ContainerDimensionsWithScrollUpdates>
+      <div>
+        <div
+          style={{
+            position: 'relative',
+            width: 200,
+            height: 200,
+          }}
+        >
+          <ContainerDimensionsWithScrollUpdates scrollTarget={window}>
+            {rect => (
+              <PositionController
+                bounds={rect}
+                objects={objects}
+                listenerPosition={listenerPosition}
+                headRadius={headRadius}
+                onPositionChange={(id, position) => onTargetMove(id, position)}
+                onListenerChange={position => onListenerMove(position)}
+              />
+            )}
+          </ContainerDimensionsWithScrollUpdates>
+        </div>
+        <StyledResetButton>
+          <Button
+            key='reset'
+            onClick={() => onListenerMove({ azimuth: Math.PI/2, distance: 0, rotYAxis: 0 })}
+          >
+            Reset
+          </Button>
+        </StyledResetButton>
       </div>
     )
   }

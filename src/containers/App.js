@@ -11,7 +11,7 @@ import PositionControllerContainer from 'src/containers/PositionControllerContai
 import TargetSelectorContainer from 'src/containers/TargetSelectorContainer.js'
 import ListenerOptionsContainer from 'src/containers/ListenerOptionsContainer.js'
 import { BLUE } from 'src/styles/colors.js'
-import { H2, H3 } from 'src/styles/elements.js'
+import { H2, H3, H4 } from 'src/styles/elements.js'
 import { MAX_WIDTH } from 'src/styles/layout.js'
 
 injectGlobal`
@@ -80,6 +80,8 @@ export default function App() {
             <div style={{ flex: '1 0 33.333%' }}>
               <H2>Surface</H2>
               <H3>Position (radius of 30 meters)</H3>
+              <H4>- mouse to move sources</H4>
+              <H4>- mouse/arrow-keys to move listener</H4>
               <PositionControllerContainer />
             </div>
 

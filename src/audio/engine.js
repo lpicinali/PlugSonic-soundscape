@@ -92,6 +92,8 @@ export const setHeadRadius = radius => {
 }
 
 export const setPerformanceMode = isEnabled => {
+  // console.log("Engine: SET PERFORMANCE MODE");
+  // console.log(`isEnabled: ${isEnabled}`);
   getInstance().then(spatializer => {
     spatializer.setPerformanceMode(isEnabled)
   })

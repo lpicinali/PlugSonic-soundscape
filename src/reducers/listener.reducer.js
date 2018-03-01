@@ -30,6 +30,8 @@ export default function(state = initialState, { type, payload }) {
     return { ...state, headRadius: payload.radius }
   }
   if (type === ActionType.SET_PERFORMANCE_MODE_ENABLED) {
+    // console.log("Reducer: SET PERFORMANCE MODE");
+    // console.log(`Payload: ${payload}`);
     return { ...state, isPerformanceModeEnabled: payload.isEnabled }
   }
 

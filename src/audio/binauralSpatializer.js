@@ -27,7 +27,7 @@ import {
   CTransform,
   CVector3,
   CQuaternion,
-  // T_ear,
+  T_ear,
   TSpatializationMode,
 } from '3dti-toolkit'
 import { map } from 'lodash'
@@ -47,7 +47,7 @@ const binauralApi = new BinauralAPI()
 let instancePromise = null
 
 let listener
-let targets
+let targets = null;
 
 /* --------------- SET POSITION ----------------- */
 function setSPosition(source, azimuth, distance) {
@@ -101,12 +101,17 @@ function createInstance() {
 
     // SET PERFORMANCE MODE
     function setPerformanceMode(isEnabled) {
-      map(targets, target =>
+      console.log("Spatializer: SET PERFORMANCE MODE");
+      console.log(`isEnabled: ${isEnabled}`);
+      map(targets, target => {
+        // console.log(target.source);
         target.source.SetSpatializationMode(
           isEnabled
             ? TSpatializationMode.HighPerformance
             : TSpatializationMode.HighQuality
         )
+        console.log(target.source.GetSpatializationMode());
+      }
       )
     }
 
@@ -142,11 +147,10 @@ function createInstance() {
     // CREATE and SETUP LISTENER
     listener = binauralApi.CreateListener(hrirsVector, 0.0875)
     listener.SetListenerTransform(new CTransform())
-    // listener.EnableDirectionality(T_ear.LEFT)
-    // listener.EnableDirectionality(T_ear.RIGHT)
+    listener.EnableDirectionality(T_ear.LEFT)
+    listener.EnableDirectionality(T_ear.RIGHT)
     // Customized ITD is required for the HighPerformance mode to work
-    // listener.EnableCustomizedITD()
-    // console.log('Listener OK');
+    listener.EnableCustomizedITD()
 
     // CREATE and SETUP TARGET SOURCE(S) - mono
     targets = audioFiles.reduce((aggr, file, index) => {
