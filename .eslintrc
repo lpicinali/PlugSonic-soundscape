@@ -8,6 +8,9 @@
   "plugins": [
     "prettier"
   ],
+  "env": {
+    "browser": true
+  },
   "settings": {
     "import/resolver": "webpack"
   },

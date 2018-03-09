@@ -20,8 +20,12 @@ export default function(state = initialState, { type, payload }) {
   if (type === ActionType.SET_LISTENER_POSITION) {
     const newPosition = Object.assign({},state.position);
     Object.assign(newPosition, payload.position);
+      // console.log();
+      // console.log();
       // console.log("Action: SET LISTENER POSITION");
-      // console.log(`Payload: ${payload}`);
+      // console.log(`Payload.position: ${payload.position.azimuth} , ${payload.position.distance}`);
+      // console.log();
+      // console.log();
       // console.log("NEW STATE");
       // console.log({ ...state, position: newPosition });
     return { ...state, position: newPosition };

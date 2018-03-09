@@ -71,24 +71,24 @@ export default function App() {
           </Header>
 
           <AppContent>
-            <PlaybackControlsContainer />
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', flex: '0 1 33.333%' }}>
-              <TargetSelectorContainer />
-            </div>
+              <PlaybackControlsContainer />
 
-            <div style={{ flex: '1 0 33.333%' }}>
-              <H2>Surface</H2>
-              <H3>Position (radius of 30 meters)</H3>
-              <H4>- mouse to move sources</H4>
-              <H4>- mouse/arrow-keys to move listener</H4>
-              <PositionControllerContainer />
-            </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', flex: '0 1 33.333%' }}>
+                <TargetSelectorContainer />
+              </div>
 
-            <div style={{ flex: '0 1 33.333%' }}>
-              <ListenerOptionsContainer />
-            </div>
+              <div style={{ flex: '0 1 33.333%' }}>
+                <H2>Surface</H2>
+                <H3>Position (radius of 30 meters)</H3>
+                <H4>- mouse to move sources</H4>
+                <H4>- mouse/arrow-keys to move listener</H4>
+                <PositionControllerContainer />
+              </div>
 
+              <div style={{ flex: '0 1 33.333%' }}>
+                <ListenerOptionsContainer />
+              </div>
           </AppContent>
         </div>
       </Provider>

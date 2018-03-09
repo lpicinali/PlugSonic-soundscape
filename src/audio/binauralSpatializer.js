@@ -6,6 +6,9 @@
 
 /* ---------------------------- NOTES --------------------------- *//*
 
+  TO DO:
+    - initialise only selected sources
+
   BinauralAPI - one instance per listener
 
   Listener Initialisation:

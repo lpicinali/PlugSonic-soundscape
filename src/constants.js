@@ -10,6 +10,9 @@ export const ActionType = {
   // SET_DIRECTIONALITY_ENABLED: 'SET_DIRECTIONALITY_ENABLED',
   // SET_DIRECTIONALITY_VALUE: 'SET_DIRECTIONALITY_VALUE',
 
+  SET_ROOM_SHAPE: 'SET_ROOM_SHAPE',
+  SET_ROOM_SIZE: 'SET_ROOM_SIZE',
+
   SET_PLAYBACK_STATE: 'SET_PLAYBACK_STATE',
 }
 
@@ -21,4 +24,9 @@ export const Ear = {
 export const PlaybackState = {
   PAUSED: 'PAUSED',
   PLAYING: 'PLAYING',
+}
+
+export const RoomShape = {
+  ROUND: 'ROUND',
+  RECTANGULAR: 'RECTANGULAR',
 }

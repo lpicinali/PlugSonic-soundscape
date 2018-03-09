@@ -11,7 +11,7 @@ const initialState = {
       ...aggr, [file.filename]: {
           title: file.title,
           filename: file.filename,
-          position: { azimuth: index * Math.PI/6, distance: 30},
+          position: { azimuth: index * Math.PI/6, distance: 10},
           volume: 0
       }
     }),
@@ -42,7 +42,7 @@ export default function(state = initialState, {type, payload}) {
     // console.log();
     // console.log("Action: SET TARGET POSITION");
     // console.log(`Payload.target: ${payload.target}`);
-    // console.log(`Payload.position: ${payload.position}`);
+    // console.log(`Payload.position: ${payload.position.azimuth} , ${payload.position.distance}`);
     // console.log("NEW STATE");
     // console.log({ ...state, targets: newTargets });
     // console.log();

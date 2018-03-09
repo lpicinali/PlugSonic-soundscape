@@ -13,7 +13,7 @@ import { BLUE, TURQOISE, WHITE } from 'src/styles/colors.js'
 const FloatingPlaybackController = styled.div`
   position: fixed;
   bottom: 32px;
-  left: 50%;
+  left: 80%;
   transform: translateX(-50%);
 `
 

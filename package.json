@@ -50,6 +50,7 @@
     "express": "4.16.2",
     "got": "^6.7.1",
     "lodash": "^4.17.4",
+    "material-ui": "^0.20.0",
     "morgan": "^1.8.1",
     "prop-types": "^15.5.9",
     "react": "^15.5.4",
