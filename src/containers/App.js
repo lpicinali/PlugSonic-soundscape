@@ -80,7 +80,7 @@ export default function App() {
 
               <div style={{ flex: '0 1 33.333%' }}>
                 <H2>Surface</H2>
-                <H3>Position (radius of 30 meters)</H3>
+                <H3>Position</H3>
                 <H4>- mouse to move sources</H4>
                 <H4>- mouse/arrow-keys to move listener</H4>
                 <PositionControllerContainer />

@@ -11,8 +11,8 @@ const initialState = {
       ...aggr, [file.filename]: {
           title: file.title,
           filename: file.filename,
-          position: { azimuth: index * Math.PI/6, distance: 10},
-          volume: 0
+          position: { azimuth: index * Math.PI/6, distance: 3},
+          volume: 0.5
       }
     }),
     {}

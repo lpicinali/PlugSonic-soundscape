@@ -90,6 +90,7 @@ export const startNodes = () => {
       }
     }
   }
+  // console.log("chain: START NODES");
 }
 
 export const stopNodes = () => {
@@ -102,4 +103,5 @@ export const stopNodes = () => {
       }
     }
   }
+  // console.log("chain: STOP NODES");
 }

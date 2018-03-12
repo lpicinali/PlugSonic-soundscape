@@ -19,7 +19,7 @@ import {
 
 
 export const play = () => {
-  // console.log('play')
+  // console.log("engine: PLAY");
   try {
     chainStartNodes()
   } catch (err) {
@@ -29,7 +29,7 @@ export const play = () => {
 }
 
 export const pause = () => {
-  // console.log('pause')
+  // console.log("engine: PAUSE");
   try {
     chainStopNodes()
   } catch (err) {

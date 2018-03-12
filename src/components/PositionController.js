@@ -69,8 +69,8 @@ class PositionController extends Component {
   static propTypes = {
     bounds: CustomPropTypes.rect.isRequired,
     isRound: PropTypes.bool.isRequired,
-    sizeX: PropTypes.number,
-    sizeZ: PropTypes.number,
+    sizeX: PropTypes.number.isRequired,
+    sizeZ: PropTypes.number.isRequired,
     objects: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string.isRequired,
@@ -86,8 +86,6 @@ class PositionController extends Component {
   }
 
   static defaultProps = {
-    sizeX: 50,
-    sizeZ: 50
   }
 
   state = {
@@ -153,8 +151,8 @@ class PositionController extends Component {
         },
       }))
 
-      const metresPerStep = 1;
-      const radiansPerStep = Math.PI/24;
+      const metresPerStep = (1 - (1.05 ** (-Math.max(sizeX,sizeZ)))) * 0.75 ;
+      const radiansPerStep = Math.min(Math.PI/((1.05 ** (-Math.max(sizeX,sizeZ)))*48),Math.PI/24);
 
       let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance;
       let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance;

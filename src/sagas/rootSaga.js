@@ -43,8 +43,10 @@ function* applyPlayPause() {
     const { payload: { state } } = yield take(ActionType.SET_PLAYBACK_STATE)
 
     if (state === PlaybackState.PLAYING) {
+      // console.log("rootSaga: PLAY");
       enginePlay()
     } else if (state === PlaybackState.PAUSED) {
+      // console.log("rootSaga: PAUSE");
       enginePause()
     }
   }
