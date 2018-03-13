@@ -241,6 +241,7 @@ class PositionControllerContainer extends Component {
         <MuiThemeProvider>
           <TextField
             id='width'
+            type='number'
             value={this.state.size.width}
             errorText={this.state.errorTextW}
             floatingLabelText='Width (m)'
@@ -251,6 +252,7 @@ class PositionControllerContainer extends Component {
         <MuiThemeProvider>
           <TextField
             id='height'
+            type='number'
             value={this.state.size.height}
             errorText={this.state.errorTextH}
             floatingLabelText='Height (m)'
