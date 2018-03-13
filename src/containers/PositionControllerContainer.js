@@ -1,7 +1,5 @@
 /* global window */
-/* global document */
 /* eslint react/prefer-stateless-function: 0 */
-/* eslint no-unused-vars: 0 */
 /* eslint react/forbid-prop-types: 0 */
 /* eslint react/no-unused-prop-types: 0 */
 /* eslint no-lonely-if: 0 */
@@ -11,20 +9,20 @@
 *//* ---------------------------------------------- */
 
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import TextField from 'material-ui/TextField';
+// import styled from 'styled-components'
 import { autobind } from 'core-decorators'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+import TextField from 'material-ui/TextField';
 import { RoomShape } from 'src/constants.js'
 import { values, toNumber, isNaN, forEach } from 'lodash'
 
-import * as CustomPropTypes from 'src/prop-types.js'
+// import * as CustomPropTypes from 'src/prop-types.js'
 import { setTargetPosition } from 'src/actions/target.actions.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { setRoomShape, setRoomSize } from 'src/actions/room.actions.js'
@@ -32,24 +30,14 @@ import ContainerDimensionsWithScrollUpdates from 'src/components/ContainerDimens
 import PositionController from 'src/components/PositionController.js'
 import Button from 'src/components/Button.js'
 
-import { H2, H3, H4 } from 'src/styles/elements.js'
+import { H3 } from 'src/styles/elements.js'
 
-const BoundsRelay = rect => {}
-
-// const StyledResetButton = styled.div`
-//   padding: 5px 5px 5px 5px;
-// `
-
-// const StyledDropDownMenu = styled.div`
-//   width: 300px;
-// `
-
+// const BoundsRelay = rect => {}
 
 const minWidth = 3;
 const maxWidth = 100;
 const minHeight = 3;
 const maxHeight = 100;
-
 
 /**
  * Position Controller Container
@@ -84,10 +72,8 @@ class PositionControllerContainer extends Component {
       const newSize = { width: this.props.roomSize.width, height: this.props.roomSize.width }
       this.setState({ ...this.state, size: newSize });
       this.props.onSizeChange(newSize);
-      // console.log(`state = ${this.state.isRound} ${this.state.shape} ${this.state.value}`);
     } else if (value === 'RECTANGULAR') {
       this.props.onShapeChange(RoomShape.RECTANGULAR);
-      // console.log(`state = ${this.state.isRound} ${this.state.shape} ${this.state.value}`);
     }
   }
 
