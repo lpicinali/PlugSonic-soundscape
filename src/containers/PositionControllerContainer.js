@@ -156,24 +156,34 @@ class PositionControllerContainer extends Component {
             });
             console.log('handleTextFieldChange - state update');
             this.props.onSizeChange(newSize);
-            console.log('handleTextFieldChange - store update');
+            console.log('handleTextFieldChange - state update');
           } else {
             const newSize = { ...this.state.size, height: toNumber(val), };
             this.setState({
               ...this.state, size: newSize, errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`
             });
-            console.log('handleTextFieldChange - state update');
           }
         } else {
           const newSize = { ...this.state.size, height: val, };
           this.setState({
             ...this.state, size: newSize, errorTextH: 'Invalid: NaN'
           });
-          console.log('handleTextFieldChange - state update');
         }
       }
     }
   }
+  // <MuiThemeProvider>
+  //   <TextField
+  //     id='height'
+  //     type='text'
+  //     value={this.state.size.height}
+  //     errorText={this.state.errorTextH}
+  //     floatingLabelText='Height (m)'
+  //     onChange={this.handleTextFieldChange}
+  //     disabled={roomShape === RoomShape.ROUND}
+  //     style={{width: `35%`, paddingLeft: `5%`}}
+  //   />
+  // </MuiThemeProvider>
 
   render() {
     const {
@@ -262,18 +272,7 @@ class PositionControllerContainer extends Component {
             style={{width: `35%`, paddingRight: `5%`, float: `left`}}
           />
         </MuiThemeProvider>
-        <MuiThemeProvider>
-          <TextField
-            id='height'
-            type='text'
-            value={this.state.size.height}
-            errorText={this.state.errorTextH}
-            floatingLabelText='Height (m)'
-            onChange={this.handleTextFieldChange}
-            disabled={roomShape === RoomShape.ROUND}
-            style={{width: `35%`, paddingLeft: `5%`}}
-          />
-        </MuiThemeProvider>
+
       </div>
     )
   }
