@@ -67,7 +67,6 @@ class PositionControllerContainer extends Component {
 
   @autobind
   handleDropDownChange(event, index, value){
-    console.log('handleDropDownChange');
     if(value === 'ROUND') {
       this.props.onShapeChange(RoomShape.ROUND);
       const newSize = { width: this.props.roomSize.width, height: this.props.roomSize.width }
@@ -96,7 +95,6 @@ class PositionControllerContainer extends Component {
 
   @autobind
   handleTextFieldChange(event) {
-    console.log('handleTextFieldChange');
     const val = event.target.value;
     if ( this.props.roomShape === RoomShape.ROUND ) {
       if ( !isNaN(toNumber(val)) ) {
