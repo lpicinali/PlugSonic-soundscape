@@ -64,8 +64,8 @@ function setSPosition(source, azimuth, distance) {
   source.SetSourceTransform(transform)
 
   transform.delete()
-  // console.log(`called setPosition with
-    // source = ${target} , azimuth = ${azimuth} , distance = ${distance}`);
+  // console.log(`called setSPosition with
+  //   source = ${source} , azimuth = ${azimuth} , distance = ${distance}`);
 }
 
 function setLPosition(azimuth, distance, rotYAxis) {
@@ -83,8 +83,8 @@ function setLPosition(azimuth, distance, rotYAxis) {
   listener.SetListenerTransform(transform);
 
   transform.delete();
-  // console.log(`called setPosition with
-    // source = ${target} , azimuth = ${azimuth} , distance = ${distance}`);
+  // console.log(`called setLPosition with
+  //   azimuth = ${azimuth} , distance = ${distance}, rotYAxis = ${rotYAxis}`);
 }
 
 

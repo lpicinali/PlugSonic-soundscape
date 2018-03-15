@@ -6,6 +6,9 @@
 
 /* ------------------- NOTES -------------------- *//*
 
+  TO DO:
+  - tune roome resizing function
+
 *//* ---------------------------------------------- */
 
 import React, { Component } from 'react'

@@ -12,6 +12,7 @@ TO DO:
     - listener stops when changing from 2 to 1 keys pressed
   - allow only for rotation when dragging listener with mouse
   - bug continue to drag listener after drag and rotation
+  - tune listener movement with room resizing
 
 *//* ---------------------------------------------- */
 
