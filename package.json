@@ -13,7 +13,6 @@
     "build": "webpack -p --verbose",
     "dev": "webpack-dev-server --inline --config webpack.config.dev.js",
     "heroku-postbuild": "npm run build",
-    "prestart": "npm run build",
     "start": "node server.js"
   },
   "keywords": [],
