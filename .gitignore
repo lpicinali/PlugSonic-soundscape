@@ -10,3 +10,6 @@ trash
 
 # Mac
 *.DS_Store
+
+# Build artifacts
+public/assets/js/app.js
