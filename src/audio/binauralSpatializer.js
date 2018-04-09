@@ -4,7 +4,7 @@
 /* eslint no-console: 0 */
 /* eslint no-restricted-syntax: 0 */
 
-/* ---------------------------- NOTES --------------------------- *//*
+/* ---------------------------- NOTES --------------------------- */ /*
 
   TO DO:
     - initialise only selected sources
@@ -21,7 +21,7 @@
   Source(s):
     Create one instance for each Source
 
-*//* -------------------------------------------------------------- */
+*/ /* -------------------------------------------------------------- */
 
 import {
   BinauralAPI,
@@ -38,21 +38,20 @@ import {
   // reduce
 } from 'lodash'
 
-import {
-  // Ear,
-} from 'src/constants.js';
+import // Ear,
+'src/constants.js'
 
-import context from 'src/audio/context.js';
-import { fetchHrirsVector } from 'src/audio/hrir.js';
-import hrirUrls from 'src/audio/hrir-files.js';
-import { audioFiles } from 'src/audio/audio-files.js';
+import context from 'src/audio/context.js'
+import { fetchHrirsVector } from 'src/audio/hrir.js'
+import hrirUrls from 'src/audio/hrir-files.js'
+import { audioFiles } from 'src/audio/audio-files.js'
 
 const binauralApi = new BinauralAPI()
 
 let instancePromise = null
 
-let listener = null;
-let targets = null;
+let listener = null
+let targets = null
 
 /* --------------- SET POSITION ----------------- */
 function setSPosition(source, azimuth, distance) {
@@ -71,58 +70,50 @@ function setSPosition(source, azimuth, distance) {
 }
 
 function setLPosition(azimuth, distance, rotYAxis) {
-  const transform = new CTransform();
+  const transform = new CTransform()
   // let orientation = new CQuaternion();
 
-  const x = Math.cos(azimuth) * distance;
-  const z = -Math.sin(azimuth) * distance;
-  const position = new CVector3(x, 0, z);
-  const yAxis = new CVector3(0, -1, 0);
-  const orientation = CQuaternion.FromAxisAngle(yAxis, rotYAxis);
+  const x = Math.cos(azimuth) * distance
+  const z = -Math.sin(azimuth) * distance
+  const position = new CVector3(x, 0, z)
+  const yAxis = new CVector3(0, -1, 0)
+  const orientation = CQuaternion.FromAxisAngle(yAxis, rotYAxis)
 
-  transform.SetPosition(position);
-  transform.SetOrientation(orientation);
-  listener.SetListenerTransform(transform);
+  transform.SetPosition(position)
+  transform.SetOrientation(orientation)
+  listener.SetListenerTransform(transform)
 
-  transform.delete();
+  transform.delete()
   // console.log(`called setLPosition with
   //   azimuth = ${azimuth} , distance = ${distance}, rotYAxis = ${rotYAxis}`);
 }
 
-
-
-
 /* ------------------------------------------------------------------------------------------------------------------------------- */
 
-
 function createInstance() {
-
   // SET SOURCE POSITION
   function setSourcePosition(source, azimuth, distance) {
-    setSPosition(source, azimuth, distance);
+    setSPosition(source, azimuth, distance)
   }
 
   // SET LISTENER POSITION
   function setListenerPosition(azimuth, distance, rotYAxis) {
-    setLPosition(azimuth, distance, rotYAxis);
+    setLPosition(azimuth, distance, rotYAxis)
   }
 
   // SET PERFORMANCE MODE
   function setPerformanceMode(isEnabled) {
     // console.log("Spatializer: SET PERFORMANCE MODE");
     // console.log(`isEnabled: ${isEnabled}`);
-    map(
-      targets,
-      target => {
-        // console.log(target.source);
-        target.source.SetSpatializationMode(
-          isEnabled
-            ? TSpatializationMode.HighPerformance
-            : TSpatializationMode.HighQuality
-        )
-        // console.log(target.source.GetSpatializationMode());
-      }
-    )
+    map(targets, target => {
+      // console.log(target.source);
+      target.source.SetSpatializationMode(
+        isEnabled
+          ? TSpatializationMode.HighPerformance
+          : TSpatializationMode.HighQuality
+      )
+      // console.log(target.source.GetSpatializationMode());
+    })
   }
 
   // SET HEAD RADIUS
@@ -132,10 +123,13 @@ function createInstance() {
   }
 
   // ADD SOURCE
-  function addSource(sourceObject){
-
+  function addSource(sourceObject) {
     const targetSource = binauralApi.CreateSource()
-    setSourcePosition(targetSource, sourceObject.position.azimuth, sourceObject.position.distance);
+    setSourcePosition(
+      targetSource,
+      sourceObject.position.azimuth,
+      sourceObject.position.distance
+    )
 
     const targetInputMonoBuffer = new CMonoBuffer()
     targetInputMonoBuffer.resize(512, 0)
@@ -154,7 +148,10 @@ function createInstance() {
         targetInputMonoBuffer.set(i, inputData[i])
       }
       // process data
-      targetSource.ProcessAnechoic(targetInputMonoBuffer, targetOutputStereoBuffer)
+      targetSource.ProcessAnechoic(
+        targetInputMonoBuffer,
+        targetOutputStereoBuffer
+      )
       const outputDataLeft = outputBuffer.getChannelData(0)
       const outputDataRight = outputBuffer.getChannelData(1)
 
@@ -177,12 +174,9 @@ function createInstance() {
     })
   }
 
-
-
   return fetchHrirsVector(hrirUrls, context).then(hrirsVector => {
-
-    console.log("");
-    console.log(`binauralSpatializer: INIT - begins`);
+    console.log('')
+    console.log(`binauralSpatializer: INIT - begins`)
     // CREATE and SETUP LISTENER
     listener = binauralApi.CreateListener(hrirsVector, 0.0875)
     listener.SetListenerTransform(new CTransform())
@@ -191,11 +185,10 @@ function createInstance() {
     // Customized ITD is required for the HighPerformance mode to work
     listener.EnableCustomizedITD()
 
-
     // CREATE and SETUP TARGET SOURCE(S) - mono
     targets = audioFiles.reduce((aggr, file, index) => {
       const targetSource = binauralApi.CreateSource()
-      setSourcePosition(targetSource, index * Math.PI/6, 3)
+      setSourcePosition(targetSource, index * Math.PI / 6, 3)
 
       const targetInputMonoBuffer = new CMonoBuffer()
       targetInputMonoBuffer.resize(512, 0)
@@ -213,7 +206,10 @@ function createInstance() {
           targetInputMonoBuffer.set(i, inputData[i])
         }
         // process data
-        targetSource.ProcessAnechoic(targetInputMonoBuffer, targetOutputStereoBuffer)
+        targetSource.ProcessAnechoic(
+          targetInputMonoBuffer,
+          targetOutputStereoBuffer
+        )
         const outputDataLeft = outputBuffer.getChannelData(0)
         const outputDataRight = outputBuffer.getChannelData(1)
 
@@ -231,8 +227,8 @@ function createInstance() {
         },
       }
     }, {}) // end of .reduce
-    console.log(`binauralSpatializer: INIT - ends`);
-    console.log("");
+    console.log(`binauralSpatializer: INIT - ends`)
+    console.log('')
 
     return {
       listener,
@@ -247,13 +243,9 @@ function createInstance() {
       deleteSources,
     }
   }) // end of .then
-
 }
 
-
-
 /* ------------------------------------------------------------------------------------------------------------------------------- */
-
 
 /* --------------- CREATE INSTANCE --------------- */
 // function createInstance() {
@@ -440,8 +432,6 @@ function createInstance() {
 // }
 /* ---------------------------------------------------------------------------------------------------------------- */
 
-
-
 /* ------------------- GET INSTANCE ------------------ */
 export function getInstance() {
   if (instancePromise !== null) {
@@ -454,20 +444,20 @@ export function getInstance() {
   }
 
   instancePromise = createInstance()
-  console.log("");
-  console.log(instancePromise);
-  console.log("");
+  console.log('')
+  console.log(instancePromise)
+  console.log('')
   return instancePromise
 }
 
 export function deleteInstance() {
   instancePromise = null
-  listener = null;
-  targets = null;
+  listener = null
+  targets = null
   // return instancePromise
 }
 
 export function setTargets(newTargets) {
-  targets = newTargets;
-  console.log(`set targets: ${JSON.stringify(targets)}`);
+  targets = newTargets
+  console.log(`set targets: ${JSON.stringify(targets)}`)
 }

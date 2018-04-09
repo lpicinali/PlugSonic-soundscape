@@ -10,6 +10,7 @@
   "scripts": {
     "format": "prettier --single-quote --trailing-comma es5 --no-semi --write 'src/**/*.js'",
     "lint": "./node_modules/.bin/eslint ./src",
+    "build": "webpack -p --verbose",
     "dev": "webpack-dev-server --inline --config webpack.config.dev.js",
     "heroku-postbuild": "npm run build",
     "start": "node server.js"

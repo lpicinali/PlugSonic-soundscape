@@ -1,9 +1,9 @@
 /* eslint react/prefer-stateless-function: 0 */
 /* eslint react/forbid-prop-types: 0 */
 
-/* ------------------- NOTES -------------------- *//*
+/* ------------------- NOTES -------------------- */ /*
 
-*//* ---------------------------------------------- */
+*/ /* ---------------------------------------------- */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -11,7 +11,7 @@ import { map } from 'lodash'
 import styled from 'styled-components'
 
 import Button from 'src/components/Button.js'
-import TargetVolumeSlider from 'src/components/TargetVolumeSlider.js';
+import TargetVolumeSlider from 'src/components/TargetVolumeSlider.js'
 
 // import { H3 } from 'src/styles/elements.js'
 
@@ -33,13 +33,12 @@ class ButtonSliderGroup extends Component {
     isVertical: PropTypes.bool,
     onSelect: PropTypes.func.isRequired,
     onVolumeChange: PropTypes.func.isRequired,
-  };
+  }
 
   static defaultProps = {
     value: [],
     isVertical: false,
-  };
-
+  }
 
   // <StyledButtonGroup isVertical={isVertical}>
   //   {map(options, (optionLabel, optionValue) => (
@@ -56,9 +55,15 @@ class ButtonSliderGroup extends Component {
   //   ))}
   // </StyledButtonGroup>
 
-
   render() {
-    const { options, enabledOptions, value , isVertical, onSelect, onVolumeChange } = this.props;
+    const {
+      options,
+      enabledOptions,
+      value,
+      isVertical,
+      onSelect,
+      onVolumeChange,
+    } = this.props
 
     // Each button:
     // key = file.filename
@@ -67,7 +72,7 @@ class ButtonSliderGroup extends Component {
     // onClick = setTarget(file.filename)
     return (
       <StyledButtonGroup isVertical={isVertical}>
-        {map(options, (option) => (
+        {map(options, option => (
           <div key={option.id}>
             <Button
               isEnabled={enabledOptions.indexOf(option.id) >= 0}
@@ -79,7 +84,8 @@ class ButtonSliderGroup extends Component {
             <TargetVolumeSlider
               id={option.id}
               volume={option.volume}
-              onVolumeChange={onVolumeChange} />
+              onVolumeChange={onVolumeChange}
+            />
           </div>
         ))}
       </StyledButtonGroup>

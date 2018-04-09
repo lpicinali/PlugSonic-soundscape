@@ -61,38 +61,44 @@ const AppContent = styled.div`
 
 export default function App() {
   return (
-      <Provider store={store}>
-        <div>
-          <Header>
-            <Logo src={`${location.origin}/assets/img/pluggy_final_logo_RGB_small.png`} alt="" />
-            <HeaderContent>
-              <div>PlugSonic Demo</div>
-              <Heading>PlugSonic - Create</Heading>
-            </HeaderContent>
-          </Header>
+    <Provider store={store}>
+      <div>
+        <Header>
+          <Logo
+            src={`${
+              location.origin
+            }/assets/img/pluggy_final_logo_RGB_small.png`}
+            alt=""
+          />
+          <HeaderContent>
+            <div>PlugSonic Demo</div>
+            <Heading>PlugSonic - Create</Heading>
+          </HeaderContent>
+        </Header>
 
-          <AppContent>
+        <AppContent>
+          <PlaybackControlsContainer />
 
-              <PlaybackControlsContainer />
+          <div
+            style={{ display: 'flex', flexWrap: 'wrap', flex: '0 1 33.333%' }}
+          >
+            <TargetSelectorContainer />
+          </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', flex: '0 1 33.333%' }}>
-                <TargetSelectorContainer />
-              </div>
+          <div style={{ flex: '0 1 33.333%' }}>
+            <H2>Surface</H2>
+            <H3>Position</H3>
+            <H4>- mouse to move sources</H4>
+            <H4>- mouse/arrow-keys to move listener</H4>
+            <PositionControllerContainer />
+          </div>
 
-              <div style={{ flex: '0 1 33.333%' }}>
-                <H2>Surface</H2>
-                <H3>Position</H3>
-                <H4>- mouse to move sources</H4>
-                <H4>- mouse/arrow-keys to move listener</H4>
-                <PositionControllerContainer />
-              </div>
-
-              <div style={{ flex: '0 1 33.333%' }}>
-                <ListenerOptionsContainer />
-                <ImportExportContainer />
-              </div>
-          </AppContent>
-        </div>
-      </Provider>
+          <div style={{ flex: '0 1 33.333%' }}>
+            <ListenerOptionsContainer />
+            <ImportExportContainer />
+          </div>
+        </AppContent>
+      </div>
+    </Provider>
   )
 }

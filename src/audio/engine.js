@@ -1,14 +1,12 @@
 /* eslint no-console: 0 */
 /* eslint arrow-body-style: 0 */
 
-/* ------------------- NOTES -------------------- *//*
+/* ------------------- NOTES -------------------- */ /*
 
-*//* ---------------------------------------------- */
+*/ /* ---------------------------------------------- */
 
 import { fetchAudioBuffer } from 'src/utils.js'
-import {
-  getInstance as getBinauralSpatializer
-} from 'src/audio/binauralSpatializer.js'
+import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   createNode as chainCreateNode,
   setTargetNode as chainSetTargetNode,
@@ -20,7 +18,6 @@ import {
   addSource as chainAddSource,
   deleteSources as chainDeleteSources,
 } from 'src/audio/chain.js'
-
 
 export const play = () => {
   // console.log("engine: PLAY - begins");
@@ -46,7 +43,7 @@ export const pause = () => {
 
 export const setTargetSource = (filename, url) => {
   // console.log("engine: SET TargetSource - begins");
-  pause();
+  pause()
   // console.log(`filename: ${filename}, url: ${url}`);
   // fetchAudioBuffer(url);
   return fetchAudioBuffer(url)
@@ -56,22 +53,21 @@ export const setTargetSource = (filename, url) => {
       // console.log("engine: SET TargetSource - ends");
     })
     .catch(err => console.error(err))
-
 }
 
-export const unsetTargetSource = (filename) => {
+export const unsetTargetSource = filename => {
   // console.log("engine: UNSET TargetSource - begins");
-  pause();
+  pause()
   // console.log(`filename: ${filename}`);
-  chainUnsetTargetNode(filename);
+  chainUnsetTargetNode(filename)
   // console.log("engine: UNSET TargetSource - ends");
 }
 
-export const addSource = (source) => {
+export const addSource = source => {
   // console.log("");
   // console.log("");
   // console.log("engine: SET Sources - begins");
-  pause();
+  pause()
   chainAddSource(source)
   // const instancePromise = getBinauralSpatializer();
   // console.log(instancePromise);
@@ -80,37 +76,39 @@ export const addSource = (source) => {
   // console.log("");
 }
 
-export const deleteSources = (sourcesFilenames) => {
-  chainDeleteSources(sourcesFilenames);
+export const deleteSources = sourcesFilenames => {
+  chainDeleteSources(sourcesFilenames)
 }
 
 export const setComponentPosition = (filename, { azimuth, distance }) => {
   // console.log("engine: setComponentPosition");
   // console.log(`filename: ${filename} , azimuth: ${azimuth} , distance: ${distance}`);
 
-  getBinauralSpatializer()
-    .then(spatializer => {
-    spatializer.setSourcePosition(spatializer.targets[filename].source, azimuth, distance)
-  });
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.setSourcePosition(
+      spatializer.targets[filename].source,
+      azimuth,
+      distance
+    )
+  })
 }
 
-export const setListenerPosition = ( { azimuth, distance, rotYAxis } ) => {
+export const setListenerPosition = ({ azimuth, distance, rotYAxis }) => {
   // console.log("engine: setComponentPosition");
   // console.log(`filename: ${filename} , azimuth: ${azimuth} , distance: ${distance}`);
-  getBinauralSpatializer()
-    .then(spatializer => {
+  getBinauralSpatializer().then(spatializer => {
     spatializer.setListenerPosition(azimuth, distance, rotYAxis)
-  });
+  })
 }
 
-export const setMasterVolume = (volume) => {
+export const setMasterVolume = volume => {
   // console.log('setComponentVolume', { volume })
-    chainSetMasterVolume(volume)
+  chainSetMasterVolume(volume)
 }
 
 export const setTargetVolume = (target, volume) => {
   // console.log('setComponentVolume', { volume })
-    chainSetTargetVolume(target, volume)
+  chainSetTargetVolume(target, volume)
 }
 
 export const setHeadRadius = radius => {

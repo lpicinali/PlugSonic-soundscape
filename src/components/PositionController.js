@@ -3,7 +3,7 @@
 /* eslint react/no-unused-prop-types: 0 */
 /* eslint prefer-destructuring: 0 */
 
-/* ------------------- NOTES -------------------- *//*
+/* ------------------- NOTES -------------------- */ /*
 
 TO DO:
   - minimum distance between sources and/or listener:
@@ -14,7 +14,7 @@ TO DO:
   - bug continue to drag listener after drag and rotation
   - tune listener movement with room resizing
 
-*//* ---------------------------------------------- */
+*/ /* ---------------------------------------------- */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -31,13 +31,13 @@ const StyledPositionController = styled.div`
   height: ${props => props.height}px;
   background-color: ${WHITESMOKE};
   border: 1px solid ${BLUE};
-  border-radius: ${props => props.isRound ? '9999px' : '5px'};
+  border-radius: ${props => (props.isRound ? '9999px' : '5px')};
   transition: all 1s;
 `
 // width: ${props => props.size};
 // height: ${props => props.size};
 // transform: rotate(${props => props.listenerPosition.azimuth} rad)
-  // transform: translate3d(-8px, -10px, 0);
+// transform: translate3d(-8px, -10px, 0);
 
 const ListenerHandle = styled.div`
   width: 0;
@@ -60,7 +60,7 @@ const SourceHandle = styled.div`
   text-indent: -9999px;
   overflow: hidden;
   cursor: pointer;
-  transform: translate3d(-50%, -50%, 0)
+  transform: translate3d(-50%, -50%, 0);
 `
 
 /**
@@ -83,11 +83,10 @@ class PositionController extends Component {
     listenerPosition: PropTypes.object.isRequired,
     headRadius: PropTypes.number.isRequired,
     onPositionChange: PropTypes.func.isRequired,
-    onListenerChange: PropTypes.func.isRequired
+    onListenerChange: PropTypes.func.isRequired,
   }
 
-  static defaultProps = {
-  }
+  static defaultProps = {}
 
   state = {
     isDragging: false,
@@ -97,14 +96,14 @@ class PositionController extends Component {
     position: { azimuth: 0, distance: 0, rotYAxis: 0 },
   }
 
-  componentDidMount(){
-    window.addEventListener("keydown", this.handleKeyDown);
-    window.addEventListener("keyup", this.handleKeyUp)
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown)
+    window.addEventListener('keyup', this.handleKeyUp)
   }
 
-  componentWillUnmount(){
-    window.removeEventListener("keydown", this.handleKeyDown);
-    window.removeEventListener("keyup", this.handleKeyUp);
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown)
+    window.removeEventListener('keyup', this.handleKeyUp)
   }
 
   // @autobind
@@ -133,12 +132,23 @@ class PositionController extends Component {
 
   @autobind
   handleKeyDown(evt) {
-    if (evt.keyCode === 37 || evt.keyCode === 38 || evt.keyCode === 39 || evt.keyCode === 40 ){
-      evt.preventDefault();
+    if (
+      evt.keyCode === 37 ||
+      evt.keyCode === 38 ||
+      evt.keyCode === 39 ||
+      evt.keyCode === 40
+    ) {
+      evt.preventDefault()
 
-      const { isRound, sizeX, sizeZ, onListenerChange, listenerPosition } = this.props
+      const {
+        isRound,
+        sizeX,
+        sizeZ,
+        onListenerChange,
+        listenerPosition,
+      } = this.props
       const { keys } = this.state
-      keys[evt.keyCode] = true;
+      keys[evt.keyCode] = true
 
       this.setState(() => ({
         ...this.state,
@@ -148,74 +158,77 @@ class PositionController extends Component {
         position: {
           azimuth: listenerPosition.azimuth,
           distance: listenerPosition.distance,
-          rotYAxis: listenerPosition.rotYAxis
+          rotYAxis: listenerPosition.rotYAxis,
         },
       }))
 
-      const metresPerStep = (1 - (1.05 ** (-Math.max(sizeX,sizeZ)))) * 0.75 ;
-      const radiansPerStep = Math.min(Math.PI/((1.05 ** (-Math.max(sizeX,sizeZ)))*48),Math.PI/24);
+      const metresPerStep = (1 - 1.05 ** -Math.max(sizeX, sizeZ)) * 0.75
+      const radiansPerStep = Math.min(
+        Math.PI / (1.05 ** -Math.max(sizeX, sizeZ) * 48),
+        Math.PI / 24
+      )
 
-      let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance;
-      let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance;
-      let rotYAxis = listenerPosition.rotYAxis;
-      let deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep;
-      let deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep;
+      let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance
+      let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance
+      let rotYAxis = listenerPosition.rotYAxis
+      let deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep
+      let deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep
       if (!isRound) {
-        if ( Math.abs(newX+deltaX) > sizeX ) {
-          if ( newX >= 0 ) {
-            deltaX = sizeX - newX;
+        if (Math.abs(newX + deltaX) > sizeX) {
+          if (newX >= 0) {
+            deltaX = sizeX - newX
           } else {
             deltaX = -sizeX - newX
           }
-          if ( Math.abs(deltaZ) >= 0.01 ) {
-            deltaZ = deltaX * (Math.tan(rotYAxis));
+          if (Math.abs(deltaZ) >= 0.01) {
+            deltaZ = deltaX * Math.tan(rotYAxis)
           } else {
-            deltaZ = 0;
+            deltaZ = 0
           }
         }
-        if ( Math.abs(newZ+deltaZ) > sizeZ ) {
-          if ( newZ >= 0 ) {
-            deltaZ = sizeZ - newZ;
+        if (Math.abs(newZ + deltaZ) > sizeZ) {
+          if (newZ >= 0) {
+            deltaZ = sizeZ - newZ
           } else {
-            deltaZ = -sizeZ - newZ;
+            deltaZ = -sizeZ - newZ
           }
-          if ( Math.abs(deltaX) >= 0.01 ) {
-            deltaX = deltaZ * (1 / Math.tan(rotYAxis));
+          if (Math.abs(deltaX) >= 0.01) {
+            deltaX = deltaZ * (1 / Math.tan(rotYAxis))
           } else {
-            deltaX = 0;
+            deltaX = 0
           }
         }
       }
       if (keys && keys[37]) {
         // console.log('LEFT');
         // newX -= metresPerStep;
-        rotYAxis = (rotYAxis - radiansPerStep) % (2*Math.PI);
+        rotYAxis = (rotYAxis - radiansPerStep) % (2 * Math.PI)
       }
-      if (keys && keys[38] ) {
+      if (keys && keys[38]) {
         // console.log('UP');
         // newZ += metresPerStep;
-        newX += deltaX;
-        newZ += deltaZ;
+        newX += deltaX
+        newZ += deltaZ
       }
-      if (keys && keys[39] ) {
+      if (keys && keys[39]) {
         // console.log('RIGHT');
         // newX += metresPerStep;
-        rotYAxis = (rotYAxis + radiansPerStep) % (2*Math.PI);
+        rotYAxis = (rotYAxis + radiansPerStep) % (2 * Math.PI)
       }
-      if (keys && keys[40] ) {
+      if (keys && keys[40]) {
         // console.log('DOWN');
         // newZ -= metresPerStep;
-        newX -= deltaX;
-        newZ -= deltaZ;
+        newX -= deltaX
+        newZ -= deltaZ
       }
       // console.log(`deltaX = ${deltaX}`);
       // console.log(`deltaZ = ${deltaZ}`);
       // console.log(`newX = ${newX}`);
       // console.log(`newZ = ${newZ}`);
       // console.log(`newRotation = ${rotYAxis}`);
-      let azimuth;
-      if (newX === 0 && newZ === 0){
-        azimuth = listenerPosition.azimuth;
+      let azimuth
+      if (newX === 0 && newZ === 0) {
+        azimuth = listenerPosition.azimuth
       } else {
         azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
       }
@@ -227,29 +240,34 @@ class PositionController extends Component {
       // console.log(`NEW AZIMUTH -> ${azimuth}`);
       // console.log(`NEW DISTANCE -> ${distance}`);
       // console.log(`NEW ROTATION -> ${rotYAxis*180/Math.PI}`);
-      const newPos = { azimuth, distance, rotYAxis };
+      const newPos = { azimuth, distance, rotYAxis }
 
       this.setState({
         ...this.state,
         position: newPos,
       })
 
-      onListenerChange(newPos);
+      onListenerChange(newPos)
     }
   }
 
   @autobind
   handleKeyUp(evt) {
-    if (evt.keyCode === 37 || evt.keyCode === 38 || evt.keyCode === 39 || evt.keyCode === 40 ){
-      const { keys } = this.state;
-      keys[evt.keyCode] = false;
-      if ( !keys[37] && !keys[38] && !keys[39] && !keys[40]) {
+    if (
+      evt.keyCode === 37 ||
+      evt.keyCode === 38 ||
+      evt.keyCode === 39 ||
+      evt.keyCode === 40
+    ) {
+      const { keys } = this.state
+      keys[evt.keyCode] = false
+      if (!keys[37] && !keys[38] && !keys[39] && !keys[40]) {
         this.setState(() => ({
           ...this.state,
           isMoving: false,
           currentObjectId: null,
           keys: {},
-          }))
+        }))
       } else {
         this.setState(() => ({
           ...this.state,
@@ -261,16 +279,20 @@ class PositionController extends Component {
 
   @autobind
   handlePress(objectId) {
-    let object;
-    if (objectId === 'listener'){
-      object = this.props.listenerPosition;
+    let object
+    if (objectId === 'listener') {
+      object = this.props.listenerPosition
       this.setState(() => ({
         isDragging: true,
         currentObjectId: objectId,
-        position: { azimuth: object.azimuth, distance: object.distance, rotYAxis: object.rotYAxis },
+        position: {
+          azimuth: object.azimuth,
+          distance: object.distance,
+          rotYAxis: object.rotYAxis,
+        },
       }))
     } else {
-      object = this.props.objects.find(x => x.id === objectId);
+      object = this.props.objects.find(x => x.id === objectId)
       this.setState(() => ({
         isDragging: true,
         currentObjectId: objectId,
@@ -284,7 +306,14 @@ class PositionController extends Component {
 
   @autobind
   handleDrag(evt) {
-    const { bounds, isRound, sizeX, sizeZ, onPositionChange, onListenerChange } = this.props
+    const {
+      bounds,
+      isRound,
+      sizeX,
+      sizeZ,
+      onPositionChange,
+      onListenerChange,
+    } = this.props
     const { isDragging, currentObjectId, position } = this.state
 
     if (isDragging) {
@@ -316,17 +345,17 @@ class PositionController extends Component {
       //   }
       // }
       if (isRound) {
-        newX *= sizeX;
-        newZ *= sizeX;
+        newX *= sizeX
+        newZ *= sizeX
       } else {
-        newX *= sizeX;
-        newZ *= sizeZ;
+        newX *= sizeX
+        newZ *= sizeZ
       }
       // console.log(`newX = ${newX}`);
       // console.log(`newZ = ${newZ}`);
-      let azimuth;
-      if (newX === 0 && newZ === 0){
-        azimuth = position.azimuth;
+      let azimuth
+      if (newX === 0 && newZ === 0) {
+        azimuth = position.azimuth
       } else {
         azimuth = Math.atan(-newZ / newX) + (newX < 0 ? Math.PI : 0)
       }
@@ -334,7 +363,7 @@ class PositionController extends Component {
       if (isRound) {
         distance = Math.min(distance, sizeX)
       }
-      const rotYAxis = position.rotYAxis;
+      const rotYAxis = position.rotYAxis
       // console.log(`NEW AZIMUTH -> ${azimuth}`);
       // console.log(`NEW DISTANCE -> ${Math.floor(distance)}`);
 
@@ -344,9 +373,9 @@ class PositionController extends Component {
       })
 
       if (currentObjectId === 'listener') {
-        onListenerChange({ azimuth, distance, rotYAxis });
+        onListenerChange({ azimuth, distance, rotYAxis })
       } else {
-        onPositionChange(currentObjectId, { azimuth, distance });
+        onPositionChange(currentObjectId, { azimuth, distance })
       }
     }
   }
@@ -364,7 +393,15 @@ class PositionController extends Component {
   }
 
   render() {
-    const { bounds, isRound, sizeX, sizeZ, objects, listenerPosition, headRadius } = this.props
+    const {
+      bounds,
+      isRound,
+      sizeX,
+      sizeZ,
+      objects,
+      listenerPosition,
+      headRadius,
+    } = this.props
 
     // console.log('PositionController.render()', bounds.top)
     // console.log(this.props.listenerPosition.azimuth);
@@ -381,71 +418,93 @@ class PositionController extends Component {
         height={bounds.height}
         isRound={isRound}
       >
-        { isRound ?
-          (
-            <ListenerHandle
-              key='listener'
-              style={{
-                top: `${50 -
-                  50 * (Math.sin(listenerPosition.azimuth) * listenerPosition.distance / sizeX)}%`,
-                left: `${50 +
-                  50 * (Math.cos(listenerPosition.azimuth) * listenerPosition.distance / sizeX)}%`,
-                transform: `translate3d(-50%, -50%, 0) rotate(${listenerPosition.rotYAxis}rad)`
-              }}
-              size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
-              onMouseDown={() => this.handlePress('listener')}
-            >
-              <span>listener</span>
-            </ListenerHandle>
-          ) : (
-            <ListenerHandle
-              key='listener'
-              style={{
-                top: `${50 -
-                  50 * (Math.sin(listenerPosition.azimuth) * listenerPosition.distance / sizeZ)}%`,
-                left: `${50 +
-                  50 * (Math.cos(listenerPosition.azimuth) * listenerPosition.distance / sizeX)}%`,
-                transform: `translate3d(-50%, -50%, 0) rotate(${listenerPosition.rotYAxis}rad)`
-              }}
-              size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
-              onMouseDown={() => this.handlePress('listener')}
-            >
-              <span>listener</span>
-            </ListenerHandle>
-          )
-        }
+        {isRound ? (
+          <ListenerHandle
+            key="listener"
+            style={{
+              top: `${50 -
+                50 *
+                  (Math.sin(listenerPosition.azimuth) *
+                    listenerPosition.distance /
+                    sizeX)}%`,
+              left: `${50 +
+                50 *
+                  (Math.cos(listenerPosition.azimuth) *
+                    listenerPosition.distance /
+                    sizeX)}%`,
+              transform: `translate3d(-50%, -50%, 0) rotate(${
+                listenerPosition.rotYAxis
+              }rad)`,
+            }}
+            size={`calc(${100 *
+              (headRadius / 0.5) *
+              (sizeX / 12) /
+              sizeX}% + 8px)`}
+            onMouseDown={() => this.handlePress('listener')}
+          >
+            <span>listener</span>
+          </ListenerHandle>
+        ) : (
+          <ListenerHandle
+            key="listener"
+            style={{
+              top: `${50 -
+                50 *
+                  (Math.sin(listenerPosition.azimuth) *
+                    listenerPosition.distance /
+                    sizeZ)}%`,
+              left: `${50 +
+                50 *
+                  (Math.cos(listenerPosition.azimuth) *
+                    listenerPosition.distance /
+                    sizeX)}%`,
+              transform: `translate3d(-50%, -50%, 0) rotate(${
+                listenerPosition.rotYAxis
+              }rad)`,
+            }}
+            size={`calc(${100 *
+              (headRadius / 0.5) *
+              (sizeX / 12) /
+              sizeX}% + 8px)`}
+            onMouseDown={() => this.handlePress('listener')}
+          >
+            <span>listener</span>
+          </ListenerHandle>
+        )}
 
-        { isRound ?
-          (
-            objects.map(object => (
+        {isRound
+          ? objects.map(object => (
               <SourceHandle
                 key={object.id}
                 style={{
                   top: `${50 -
-                    50 * (Math.sin(object.azimuth) * object.distance / sizeX)}%`,
+                    50 *
+                      (Math.sin(object.azimuth) * object.distance / sizeX)}%`,
                   left: `${50 +
-                    50 * (Math.cos(object.azimuth) * object.distance / sizeX)}%`,
+                    50 *
+                      (Math.cos(object.azimuth) * object.distance / sizeX)}%`,
                 }}
                 onMouseDown={() => this.handlePress(object.id)}
               >
                 <span>{object.label}</span>
               </SourceHandle>
-          ))) : (
-            objects.map(object => (
+            ))
+          : objects.map(object => (
               <SourceHandle
                 key={object.id}
                 style={{
                   top: `${50 -
-                    50 * (Math.sin(object.azimuth) * object.distance / sizeZ)}%`,
+                    50 *
+                      (Math.sin(object.azimuth) * object.distance / sizeZ)}%`,
                   left: `${50 +
-                    50 * (Math.cos(object.azimuth) * object.distance / sizeX)}%`,
+                    50 *
+                      (Math.cos(object.azimuth) * object.distance / sizeX)}%`,
                 }}
                 onMouseDown={() => this.handlePress(object.id)}
               >
                 <span>{object.label}</span>
               </SourceHandle>
-          )))
-        }
+            ))}
       </StyledPositionController>
     )
   }

@@ -30,10 +30,6 @@ export function fetchAudioBuffer(url) {
   // })();
 
   return got(url, { encoding: null })
-    .then(response =>
-      bufferToArrayBuffer(response.body)
-    )
-    .then(arrayBuffer =>
-      decode(arrayBuffer, context)
-    )
+    .then(response => bufferToArrayBuffer(response.body))
+    .then(arrayBuffer => decode(arrayBuffer, context))
 }

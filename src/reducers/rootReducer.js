@@ -9,5 +9,5 @@ export default combineReducers({
   controls: controlsReducer,
   target: targetReducer,
   listener: listenerReducer,
-  room: roomReducer
+  room: roomReducer,
 })

@@ -16,9 +16,9 @@ function makeRequirable(validate) {
     if (props[propName] === null || props[propName] === undefined) {
       if (isRequired === true) {
         return new Error(
-          `The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`${prop[
-            propName
-          ]}\`.`
+          `The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`${
+            prop[propName]
+          }\`.`
         )
       }
 
@@ -58,10 +58,11 @@ export const scrollable = makeRequirable((props, propName, componentName) => {
     return new Error(
       `Invalid prop ${propName} supplied to ${componentName}. ` +
         `\`${propName}\` needs to have a pair of scroll offsets, either { scrollTop, scrollLeft } or { scrollX, scrollY }. ` +
-        `Current values are: \n\tscrollLeft: ${props[propName]
-          .scrollLeft} \n\tscrollTop: ${props[propName]
-          .scrollTop} \n\tscrollX: ${props[propName]
-          .scrollX} \n\tscrollY: ${props[propName].scrollY}`
+        `Current values are: \n\tscrollLeft: ${
+          props[propName].scrollLeft
+        } \n\tscrollTop: ${props[propName].scrollTop} \n\tscrollX: ${
+          props[propName].scrollX
+        } \n\tscrollY: ${props[propName].scrollY}`
     )
   }
 

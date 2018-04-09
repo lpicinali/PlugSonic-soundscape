@@ -1,9 +1,9 @@
 /* eslint react/prefer-stateless-function: 0 */
 /* eslint react/forbid-prop-types: 0 */
 
-/* ------------------- NOTES -------------------- *//*
+/* ------------------- NOTES -------------------- */ /*
 
-*//* ---------------------------------------------- */
+*/ /* ---------------------------------------------- */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -29,15 +29,15 @@ class ButtonGroup extends Component {
     value: PropTypes.array,
     isVertical: PropTypes.bool,
     onSelect: PropTypes.func.isRequired,
-  };
+  }
 
   static defaultProps = {
     value: [],
     isVertical: false,
-  };
+  }
 
   render() {
-    const { options, enabledOptions, value , isVertical, onSelect } = this.props;
+    const { options, enabledOptions, value, isVertical, onSelect } = this.props
     // Each button:
     // key = file.filename
     // isEnabled = true

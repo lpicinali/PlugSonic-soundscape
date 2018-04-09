@@ -1,6 +1,6 @@
-/* ------------------- NOTES -------------------- *//*
+/* ------------------- NOTES -------------------- */ /*
 
-*//* ---------------------------------------------- */
+*/ /* ---------------------------------------------- */
 
 import { ActionType, RoomShape } from 'src/constants.js'
 
@@ -16,13 +16,13 @@ export default function(state = initialState, { type, payload }) {
     return { ...state, shape: payload.shape }
   }
   if (type === ActionType.SET_ROOM_SIZE) {
-    const newSize = Object.assign({},state.size);
-    Object.assign(newSize, payload.size);
+    const newSize = Object.assign({}, state.size)
+    Object.assign(newSize, payload.size)
     // console.log("Action: SET ROOM SIZE");
     // console.log(`Payload: ${payload}`);
     // console.log("NEW STATE");
     // console.log({ ...state, size: newSize });
-    return { ...state, size: newSize };
+    return { ...state, size: newSize }
   }
   return state
 }

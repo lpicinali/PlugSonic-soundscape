@@ -12,7 +12,7 @@ import { CMonoBuffer, HRIR, HRIRVector } from '3dti-toolkit'
 const getAnglesFromUrl = url => {
   const [, azimuth, elevation] = url
     .split(/.+T(\d{3})_P(\d{3})/)
-    .map(x => parseInt(x,10))
+    .map(x => parseInt(x, 10))
   return { azimuth, elevation }
 }
 

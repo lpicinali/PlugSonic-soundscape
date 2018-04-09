@@ -17,7 +17,7 @@ class ContainerDimensionsWithScrollUpdates extends Component {
     ]).isRequired,
   }
 
-//  $el = null
+  //  $el = null
 
   constructor(props) {
     super(props)

@@ -1,6 +1,6 @@
-/* ------------------- NOTES -------------------- *//*
+/* ------------------- NOTES -------------------- */ /*
 
-*//* ---------------------------------------------- */
+*/ /* ---------------------------------------------- */
 
 import { ActionType, PlaybackState } from 'src/constants.js'
 
@@ -32,7 +32,6 @@ export default function(state = initialState, { type, payload }) {
   // }
 
   return state
-
 
   // if (type === ActionType.SET_DIRECTIONALITY_ENABLED) {
   //   return { ...state, isDirectionalityEnabled: payload.isEnabled }

@@ -1,29 +1,26 @@
 /* eslint no-unused-vars:0 */
 /* eslint prefer-destructuring: 0 */
 
-/* ------------------- NOTES --------------------------------------------------- *//*
+/* ------------------- NOTES --------------------------------------------------- */ /*
 
-*//* ----------------------------------------------------------------------------- */
+*/ /* ----------------------------------------------------------------------------- */
 
 import {
   call,
-//  put,
+  //  put,
   select,
   take,
   fork,
-  spawn
+  spawn,
 } from 'redux-saga/effects'
 import {
   // get,
   // reduce,
   // values
-  map
+  map,
 } from 'lodash'
 
-import {
-  ActionType,
-  PlaybackState,
-} from 'src/constants.js'
+import { ActionType, PlaybackState } from 'src/constants.js'
 import { getFileUrl } from 'src/audio/audio-files.js'
 import {
   play as enginePlay,
@@ -38,7 +35,7 @@ import {
   setPerformanceMode as engineSetPerformanceMode,
   addSource as engineAddSource,
   deleteSources as engineDeleteSources,
-} from 'src/audio/engine.js';
+} from 'src/audio/engine.js'
 
 // const selected = [];
 
@@ -57,24 +54,23 @@ function* applyPlayPause() {
 }
 
 function* manageComponentSource(target, url) {
-  const selected = yield select(state => state.target.selected);
+  const selected = yield select(state => state.target.selected)
   // console.log(`selected: ${selected}`);
-  const index = selected.indexOf(target);
-  if (index  >= 0) {
+  const index = selected.indexOf(target)
+  if (index >= 0) {
     // selected.splice(index,1);
     // console.log("rootSaga: SET TARGET");
     // console.log(`target: ${target}`);
     // console.log(`selected: ${selected}`);
-    yield call(engineSetTargetSource, target, url);
+    yield call(engineSetTargetSource, target, url)
   } else {
     // selected.push(target);
     // console.log("rootSaga: UNSET TARGET");
     // console.log(`target: ${target}`);
     // console.log(`selected: ${selected}`);
     // yield call(engineSetTargetSource, getFileUrl(target), target);
-    yield call(engineUnsetTargetSource, target);
-
-  };
+    yield call(engineUnsetTargetSource, target)
+  }
   const playbackState = yield select(state => state.controls.playbackState)
 
   if (playbackState === PlaybackState.PLAYING) {
@@ -85,20 +81,20 @@ function* manageComponentSource(target, url) {
 
 function* applyComponentSource() {
   while (true) {
-    const { type, payload } = yield take(ActionType.SET_TARGET);
-    yield spawn(manageComponentSource, payload.target, payload.url);
+    const { type, payload } = yield take(ActionType.SET_TARGET)
+    yield spawn(manageComponentSource, payload.target, payload.url)
   }
 }
 
-function* manageAddSource(filename){
-  const targets = yield select(state => state.target.targets);
-  yield call (engineAddSource, targets[filename]);
+function* manageAddSource(filename) {
+  const targets = yield select(state => state.target.targets)
+  yield call(engineAddSource, targets[filename])
 
-  const selected = yield select(state => state.target.selected);
+  const selected = yield select(state => state.target.selected)
   for (let i = 0; i < selected.length; i++) {
-    const file = selected[i];
-    const url = targets[file].url;
-    yield call(engineSetTargetSource, file, url);
+    const file = selected[i]
+    const url = targets[file].url
+    yield call(engineSetTargetSource, file, url)
   }
 
   const playbackState = yield select(state => state.controls.playbackState)
@@ -107,10 +103,10 @@ function* manageAddSource(filename){
   }
 }
 
-function* applyAddSource(){
-  while(true) {
-    const { type, payload } = yield take(ActionType.ADD_TARGET);
-    yield spawn(manageAddSource, payload.filename);
+function* applyAddSource() {
+  while (true) {
+    const { type, payload } = yield take(ActionType.ADD_TARGET)
+    yield spawn(manageAddSource, payload.filename)
   }
 }
 
@@ -133,24 +129,24 @@ function* applyDeleteSources() {
 
 function* applyTargetPosition() {
   while (true) {
-    const { payload } = yield take(ActionType.SET_TARGET_POSITION);
-    const filename = payload.target;
-    const { azimuth, distance } = payload.position;
+    const { payload } = yield take(ActionType.SET_TARGET_POSITION)
+    const filename = payload.target
+    const { azimuth, distance } = payload.position
     // console.log("rootSaga: SET TARGET POSITION");
     // console.log(`filename: ${payload.target} , azimuth: ${azimuth} , distance: ${distance}`);
-    engineSetComponentPosition(filename, { azimuth, distance });
+    engineSetComponentPosition(filename, { azimuth, distance })
     // engineSetComponentPosition(SonicComponent.TARGET, { azimuth, distance })
     // console.log(`rootSaga: SET TARGET POSITION -> DONE`)
   }
 }
 
 function* applyListenerPosition() {
-  while(true) {
-    const { payload } = yield take(ActionType.SET_LISTENER_POSITION);
-    const { azimuth, distance, rotYAxis } = payload.position;
+  while (true) {
+    const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
+    const { azimuth, distance, rotYAxis } = payload.position
     // console.log("rootSaga: SET LISTENER POSITION");
     // console.log(`azimuth: ${azimuth} , distance: ${distance}`);
-    engineSetListenerPosition( { azimuth, distance, rotYAxis } );
+    engineSetListenerPosition({ azimuth, distance, rotYAxis })
   }
 }
 
@@ -164,15 +160,15 @@ function* applyMasterVolume() {
 function* applyTargetVolume() {
   while (true) {
     const { type, payload } = yield take(ActionType.SET_TARGET_VOLUME)
-    const { target, volume } = payload;
+    const { target, volume } = payload
     engineSetTargetVolume(target, volume)
   }
 }
 
 function* applyHeadRadius() {
   while (true) {
-    const { payload } = yield take(ActionType.SET_HEAD_RADIUS);
-    engineSetHeadRadius(payload.radius);
+    const { payload } = yield take(ActionType.SET_HEAD_RADIUS)
+    engineSetHeadRadius(payload.radius)
   }
 }
 
@@ -214,6 +210,6 @@ export default function* rootSaga() {
     // applyDirectionalityEnabled(),
     // applyDirectionalityAttenuation(),
     applyTargetPosition(),
-    applyListenerPosition()
+    applyListenerPosition(),
   ]
 }
