@@ -13,7 +13,27 @@ export function radiusToCircumference(radius) {
 }
 
 export function fetchAudioBuffer(url) {
+  // console.log("utils: FETCH audio buffer - begins");
+  // (async () => {
+  //   try {
+  //     const response = await got(url);
+  //     console.log(`response._readableState: ${response._readableState}`);
+  //     console.log(`response.readable: ${response.readable}`);
+  //     console.log(`response._events: ${response._events}`);
+  //     console.log(`response.url: ${response.url}`);
+  //     console.log(`response.statusCode: ${response.statusCode}`);
+  //     console.log(`response.statusMessage: ${response.statusMessage}`);
+  //     console.log(`response.requestUrl: ${response.requestUrl}`);
+  //   } catch (error) {
+  //       console.log(error.response.body);
+  //   }
+  // })();
+
   return got(url, { encoding: null })
-    .then(response => bufferToArrayBuffer(response.body))
-    .then(arrayBuffer => decode(arrayBuffer, context))
+    .then(response =>
+      bufferToArrayBuffer(response.body)
+    )
+    .then(arrayBuffer =>
+      decode(arrayBuffer, context)
+    )
 }

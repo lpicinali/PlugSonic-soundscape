@@ -72,7 +72,7 @@ class ButtonSliderGroup extends Component {
             <Button
               isEnabled={enabledOptions.indexOf(option.id) >= 0}
               isActive={value.indexOf(option.id) >= 0}
-              onClick={() => onSelect(option.id)}
+              onClick={() => onSelect(option.id, option.url)}
             >
               {option.label}
             </Button>

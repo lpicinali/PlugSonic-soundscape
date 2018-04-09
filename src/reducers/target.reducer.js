@@ -11,6 +11,7 @@ const initialState = {
       ...aggr, [file.filename]: {
           title: file.title,
           filename: file.filename,
+          url: file.url,
           position: { azimuth: index * Math.PI/6, distance: 3},
           volume: 0.5
       }
@@ -19,6 +20,8 @@ const initialState = {
   ),
   selected: [],
 }
+
+let azimuthIndex = Object.keys(initialState.targets).length;
 
 export default function(state = initialState, {type, payload}) {
   if (type === ActionType.SET_TARGET) {
@@ -62,6 +65,37 @@ export default function(state = initialState, {type, payload}) {
     // console.log();
     // console.log();
     return { ...state, targets: newTargets };
+  }
+  if (type === ActionType.ADD_TARGET) {
+    const newTargets = Object.assign({},state.targets);
+    const newTarget = {
+      title: payload.title,
+      filename: payload.filename,
+      url: payload.url,
+      position: { azimuth: azimuthIndex * Math.PI/6, distance: 3},
+      volume: 0.5
+    }
+    azimuthIndex += 1;
+    // console.log(`n = ${n}`);
+    // console.log(newTarget);
+    newTargets[payload.filename] = newTarget;
+    console.log();
+    console.log();
+    console.log("Action: ADD TARGET");
+    console.log(`Payload.title: ${payload.title}`);
+    console.log(`Payload.filename: ${payload.filename}`);
+    console.log(`Payload.url: ${payload.url}`);
+    console.log();
+    console.log();
+    return { ...state, targets: newTargets };
+  }
+  if (type === ActionType.DELETE_TARGETS) {
+    const newTargets = Object.assign({}, state.targets);
+    payload.targets.forEach(filename => {
+      delete newTargets[filename]
+    })
+    const newSelected = [];
+    return { ...state, targets: newTargets, selected: newSelected};
   }
 
   return state;

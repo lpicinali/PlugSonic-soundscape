@@ -6,7 +6,9 @@
 *//* ---------------------------------------------- */
 
 import { fetchAudioBuffer } from 'src/utils.js'
-import { getInstance } from 'src/audio/binauralSpatializer.js'
+import {
+  getInstance as getBinauralSpatializer
+} from 'src/audio/binauralSpatializer.js'
 import {
   createNode as chainCreateNode,
   setTargetNode as chainSetTargetNode,
@@ -15,52 +17,78 @@ import {
   setTargetVolume as chainSetTargetVolume,
   startNodes as chainStartNodes,
   stopNodes as chainStopNodes,
+  addSource as chainAddSource,
+  deleteSources as chainDeleteSources,
 } from 'src/audio/chain.js'
 
 
 export const play = () => {
-  // console.log("engine: PLAY");
+  // console.log("engine: PLAY - begins");
   try {
     chainStartNodes()
   } catch (err) {
     console.log('could not start nodes:')
     console.error(err)
   }
+  // console.log("engine: PLAY - ends");
 }
 
 export const pause = () => {
-  // console.log("engine: PAUSE");
+  // console.log("engine: PAUSE - begins");
   try {
     chainStopNodes()
   } catch (err) {
     console.log('could not stop nodes:')
     console.error(err)
   }
+  // console.log("engine: PAUSE - ends");
 }
 
-export const setTargetSource = (url, filename) => {
+export const setTargetSource = (filename, url) => {
+  // console.log("engine: SET TargetSource - begins");
   pause();
-  // console.log("engine: setTargetSource");
-  // console.log(`url: ${url} , filename: ${filename}`);
+  // console.log(`filename: ${filename}, url: ${url}`);
+  // fetchAudioBuffer(url);
   return fetchAudioBuffer(url)
     .then(audioBuffer => {
       const node = chainCreateNode(audioBuffer)
       chainSetTargetNode(node, filename)
+      // console.log("engine: SET TargetSource - ends");
     })
     .catch(err => console.error(err))
+
 }
 
 export const unsetTargetSource = (filename) => {
+  // console.log("engine: UNSET TargetSource - begins");
   pause();
-  // console.log("engine: unsetTargetSource");
   // console.log(`filename: ${filename}`);
   chainUnsetTargetNode(filename);
+  // console.log("engine: UNSET TargetSource - ends");
+}
+
+export const addSource = (source) => {
+  // console.log("");
+  // console.log("");
+  // console.log("engine: SET Sources - begins");
+  pause();
+  chainAddSource(source)
+  // const instancePromise = getBinauralSpatializer();
+  // console.log(instancePromise);
+  // console.log("engine: SET Sources - ends");
+  // console.log("");
+  // console.log("");
+}
+
+export const deleteSources = (sourcesFilenames) => {
+  chainDeleteSources(sourcesFilenames);
 }
 
 export const setComponentPosition = (filename, { azimuth, distance }) => {
   // console.log("engine: setComponentPosition");
   // console.log(`filename: ${filename} , azimuth: ${azimuth} , distance: ${distance}`);
-  getInstance()
+
+  getBinauralSpatializer()
     .then(spatializer => {
     spatializer.setSourcePosition(spatializer.targets[filename].source, azimuth, distance)
   });
@@ -69,7 +97,7 @@ export const setComponentPosition = (filename, { azimuth, distance }) => {
 export const setListenerPosition = ( { azimuth, distance, rotYAxis } ) => {
   // console.log("engine: setComponentPosition");
   // console.log(`filename: ${filename} , azimuth: ${azimuth} , distance: ${distance}`);
-  getInstance()
+  getBinauralSpatializer()
     .then(spatializer => {
     spatializer.setListenerPosition(azimuth, distance, rotYAxis)
   });
@@ -86,7 +114,10 @@ export const setTargetVolume = (target, volume) => {
 }
 
 export const setHeadRadius = radius => {
-  getInstance().then(spatializer => {
+  // const spatializer = getBinauralSpatializer();
+  // spatializer.setHeadRadius(radius);
+
+  getBinauralSpatializer().then(spatializer => {
     spatializer.setHeadRadius(radius)
   })
 }
@@ -94,19 +125,19 @@ export const setHeadRadius = radius => {
 export const setPerformanceMode = isEnabled => {
   // console.log("Engine: SET PERFORMANCE MODE");
   // console.log(`isEnabled: ${isEnabled}`);
-  getInstance().then(spatializer => {
+  getBinauralSpatializer().then(spatializer => {
     spatializer.setPerformanceMode(isEnabled)
   })
 }
 
 // export const setDirectionalityEnabled = isEnabled => {
-//   getInstance().then(spatializer => {
+//   getBinauralSpatializer().then(spatializer => {
 //     spatializer.setDirectionalityEnabled(isEnabled)
 //   })
 // }
 
 // export const setDirectionalityAttenuation = (ear, attenuation) => {
-//   getInstance().then(spatializer => {
+//   getBinauralSpatializer().then(spatializer => {
 //     spatializer.setDirectionalityAttenuation(ear, attenuation)
 //   })
 // }

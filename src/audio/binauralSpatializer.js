@@ -33,8 +33,10 @@ import {
   // T_ear,
   TSpatializationMode,
 } from '3dti-toolkit'
-import { map } from 'lodash'
-// import { reduce } from 'lodash'
+import {
+  map,
+  // reduce
+} from 'lodash'
 
 import {
   // Ear,
@@ -49,7 +51,7 @@ const binauralApi = new BinauralAPI()
 
 let instancePromise = null
 
-let listener
+let listener = null;
 let targets = null;
 
 /* --------------- SET POSITION ----------------- */
@@ -88,25 +90,30 @@ function setLPosition(azimuth, distance, rotYAxis) {
 }
 
 
-/* --------------- CREATE INSTANCE --------------- */
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------- */
+
+
 function createInstance() {
 
-  return fetchHrirsVector(hrirUrls, context).then(hrirsVector => {
+  // SET SOURCE POSITION
+  function setSourcePosition(source, azimuth, distance) {
+    setSPosition(source, azimuth, distance);
+  }
 
-    // SET SOURCE POSITION
-    function setSourcePosition(source, azimuth, distance) {
-      setSPosition(source, azimuth, distance);
-    }
+  // SET LISTENER POSITION
+  function setListenerPosition(azimuth, distance, rotYAxis) {
+    setLPosition(azimuth, distance, rotYAxis);
+  }
 
-    function setListenerPosition(azimuth, distance, rotYAxis) {
-      setLPosition(azimuth, distance, rotYAxis);
-    }
-
-    // SET PERFORMANCE MODE
-    function setPerformanceMode(isEnabled) {
-      // console.log("Spatializer: SET PERFORMANCE MODE");
-      // console.log(`isEnabled: ${isEnabled}`);
-      map(targets, target => {
+  // SET PERFORMANCE MODE
+  function setPerformanceMode(isEnabled) {
+    // console.log("Spatializer: SET PERFORMANCE MODE");
+    // console.log(`isEnabled: ${isEnabled}`);
+    map(
+      targets,
+      target => {
         // console.log(target.source);
         target.source.SetSpatializationMode(
           isEnabled
@@ -115,38 +122,67 @@ function createInstance() {
         )
         // console.log(target.source.GetSpatializationMode());
       }
-      )
+    )
+  }
+
+  // SET HEAD RADIUS
+  function setHeadRadius(radius) {
+    listener.SetHeadRadius(radius)
+    // console.log(`called setHeadRadius with radius = ${radius}`);
+  }
+
+  // ADD SOURCE
+  function addSource(sourceObject){
+
+    const targetSource = binauralApi.CreateSource()
+    setSourcePosition(targetSource, sourceObject.position.azimuth, sourceObject.position.distance);
+
+    const targetInputMonoBuffer = new CMonoBuffer()
+    targetInputMonoBuffer.resize(512, 0)
+
+    const targetOutputStereoBuffer = new CStereoBuffer()
+    targetOutputStereoBuffer.resize(1024, 0)
+    // Script Node (bufferSize, # InputChannels, # OutputChannels)
+    const targetProcessor = context.createScriptProcessor(512, 1, 2)
+
+    // PROCESSING FUNCTION
+    targetProcessor.onaudioprocess = audioProcessingEvent => {
+      const { inputBuffer, outputBuffer } = audioProcessingEvent
+      const inputData = inputBuffer.getChannelData(0)
+
+      for (let i = 0; i < inputData.length; i++) {
+        targetInputMonoBuffer.set(i, inputData[i])
+      }
+      // process data
+      targetSource.ProcessAnechoic(targetInputMonoBuffer, targetOutputStereoBuffer)
+      const outputDataLeft = outputBuffer.getChannelData(0)
+      const outputDataRight = outputBuffer.getChannelData(1)
+
+      for (let i = 0; i < outputDataLeft.length; i++) {
+        outputDataLeft[i] = targetOutputStereoBuffer.get(i * 2)
+        outputDataRight[i] = targetOutputStereoBuffer.get(i * 2 + 1)
+      }
     }
 
-    // SET HEAD RADIUS
-    function setHeadRadius(radius) {
-      listener.SetHeadRadius(radius)
-      // console.log(`called setHeadRadius with radius = ${radius}`);
+    targets[sourceObject.filename] = {
+      source: targetSource,
+      processor: targetProcessor,
     }
+  }
 
-    // SET DIRECTIONALITY ENABLED - returned
-    // function setDirectionalityEnabled(isEnabled) {
-    //   if (isEnabled === true) {
-    //     listener.EnableDirectionality(T_ear.LEFT)
-    //     listener.EnableDirectionality(T_ear.RIGHT)
-    //   } else {
-    //     listener.DisableDirectionality(T_ear.LEFT)
-    //     listener.DisableDirectionality(T_ear.RIGHT)
-    //   }
-    //   console.log(`called setDirectionalityEnabled with isEnabled = ${isEnabled}`);
-    // }
+  // DELETE Source
+  function deleteSources(sourcesFilenames) {
+    sourcesFilenames.forEach(source => {
+      delete targets[source]
+    })
+  }
 
-    // SET DIRECTIONALITY ATTENUATION - returned
-    // function setDirectionalityAttenuation(ear, attenuation) {
-    //   if (ear === Ear.LEFT) {
-    //     listener.SetDirectionality_dB(T_ear.LEFT, attenuation)
-    //   } else if (ear === Ear.RIGHT) {
-    //     listener.SetDirectionality_dB(T_ear.RIGHT, attenuation)
-    //   }
-    //   console.log(`called setDirectionalityAttenuation with
-    //     ear = ${ear} , attenuation = ${attenuation}`);
-    // }
 
+
+  return fetchHrirsVector(hrirUrls, context).then(hrirsVector => {
+
+    console.log("");
+    console.log(`binauralSpatializer: INIT - begins`);
     // CREATE and SETUP LISTENER
     listener = binauralApi.CreateListener(hrirsVector, 0.0875)
     listener.SetListenerTransform(new CTransform())
@@ -154,6 +190,7 @@ function createInstance() {
     // listener.EnableDirectionality(T_ear.RIGHT)
     // Customized ITD is required for the HighPerformance mode to work
     listener.EnableCustomizedITD()
+
 
     // CREATE and SETUP TARGET SOURCE(S) - mono
     targets = audioFiles.reduce((aggr, file, index) => {
@@ -194,6 +231,8 @@ function createInstance() {
         },
       }
     }, {}) // end of .reduce
+    console.log(`binauralSpatializer: INIT - ends`);
+    console.log("");
 
     return {
       listener,
@@ -204,17 +243,231 @@ function createInstance() {
       setHeadRadius,
       // setDirectionalityEnabled,
       // setDirectionalityAttenuation,
+      addSource,
+      deleteSources,
     }
   }) // end of .then
+
 }
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------- */
+
+
+/* --------------- CREATE INSTANCE --------------- */
+// function createInstance() {
+//
+//   return fetchHrirsVector(hrirUrls, context).then(hrirsVector => {
+//
+//     // SET SOURCE POSITION
+//     function setSourcePosition(source, azimuth, distance) {
+//       setSPosition(source, azimuth, distance);
+//     }
+//
+//     // SET LISTENER POSITION
+//     function setListenerPosition(azimuth, distance, rotYAxis) {
+//       setLPosition(azimuth, distance, rotYAxis);
+//     }
+//
+//     // SET PERFORMANCE MODE
+//     function setPerformanceMode(isEnabled) {
+//       // console.log("Spatializer: SET PERFORMANCE MODE");
+//       // console.log(`isEnabled: ${isEnabled}`);
+//       map(
+//         targets,
+//         target => {
+//           // console.log(target.source);
+//           target.source.SetSpatializationMode(
+//             isEnabled
+//               ? TSpatializationMode.HighPerformance
+//               : TSpatializationMode.HighQuality
+//           )
+//           // console.log(target.source.GetSpatializationMode());
+//         }
+//       )
+//     }
+//
+//     // SET HEAD RADIUS
+//     function setHeadRadius(radius) {
+//       listener.SetHeadRadius(radius)
+//       // console.log(`called setHeadRadius with radius = ${radius}`);
+//     }
+//
+//     // SET SOURCES
+//     function setSources(newSources) {
+//       console.log("");
+//       console.log("");
+//       console.log("binauralSpatializer: SET Sources - begins");
+//       console.log("");
+//       targets = reduce(
+//         newSources,
+//         (aggr, file) => {
+//           console.log(`title: ${file.title}`);
+//           console.log(`filename: ${file.filename}`);
+//           console.log(`url: ${file.url}`);
+//           console.log(`azimuth: ${file.position.azimuth}`);
+//           console.log(`distance: ${file.position.distance}`);
+//           console.log(`volume: ${file.volume}`);
+//
+//           const targetSource = binauralApi.CreateSource()
+//           setSourcePosition(targetSource, file.position.azimuth, file.position.distance);
+//
+//           const targetInputMonoBuffer = new CMonoBuffer()
+//           targetInputMonoBuffer.resize(512, 0)
+//
+//           const targetOutputStereoBuffer = new CStereoBuffer()
+//           targetOutputStereoBuffer.resize(1024, 0)
+//           // Script Node (bufferSize, # InputChannels, # OutputChannels)
+//           const targetProcessor = context.createScriptProcessor(512, 1, 2)
+//           // PROCESSING FUNCTION
+//           targetProcessor.onaudioprocess = audioProcessingEvent => {
+//             const { inputBuffer, outputBuffer } = audioProcessingEvent
+//             const inputData = inputBuffer.getChannelData(0)
+//
+//             for (let i = 0; i < inputData.length; i++) {
+//               targetInputMonoBuffer.set(i, inputData[i])
+//             }
+//             // process data
+//             targetSource.ProcessAnechoic(targetInputMonoBuffer, targetOutputStereoBuffer)
+//             const outputDataLeft = outputBuffer.getChannelData(0)
+//             const outputDataRight = outputBuffer.getChannelData(1)
+//
+//             for (let i = 0; i < outputDataLeft.length; i++) {
+//               outputDataLeft[i] = targetOutputStereoBuffer.get(i * 2)
+//               outputDataRight[i] = targetOutputStereoBuffer.get(i * 2 + 1)
+//             }
+//           }
+//           console.log("");
+//           console.log("binauralSpatializer: SET Sources - ends");
+//           console.log("");
+//           console.log("");
+//           return {
+//             ...aggr,
+//             [file.filename]: {
+//               source: targetSource,
+//               processor: targetProcessor,
+//             },
+//           }
+//         },
+//         {}
+//       ); // end of .reduce
+//     }
+//
+//     // SET DIRECTIONALITY ENABLED - returned
+//     // function setDirectionalityEnabled(isEnabled) {
+//     //   if (isEnabled === true) {
+//     //     listener.EnableDirectionality(T_ear.LEFT)
+//     //     listener.EnableDirectionality(T_ear.RIGHT)
+//     //   } else {
+//     //     listener.DisableDirectionality(T_ear.LEFT)
+//     //     listener.DisableDirectionality(T_ear.RIGHT)
+//     //   }
+//     //   console.log(`called setDirectionalityEnabled with isEnabled = ${isEnabled}`);
+//     // }
+//
+//     // SET DIRECTIONALITY ATTENUATION - returned
+//     // function setDirectionalityAttenuation(ear, attenuation) {
+//     //   if (ear === Ear.LEFT) {
+//     //     listener.SetDirectionality_dB(T_ear.LEFT, attenuation)
+//     //   } else if (ear === Ear.RIGHT) {
+//     //     listener.SetDirectionality_dB(T_ear.RIGHT, attenuation)
+//     //   }
+//     //   console.log(`called setDirectionalityAttenuation with
+//     //     ear = ${ear} , attenuation = ${attenuation}`);
+//     // }
+//
+//     // CREATE and SETUP LISTENER
+//     listener = binauralApi.CreateListener(hrirsVector, 0.0875)
+//     listener.SetListenerTransform(new CTransform())
+//     // listener.EnableDirectionality(T_ear.LEFT)
+//     // listener.EnableDirectionality(T_ear.RIGHT)
+//     // Customized ITD is required for the HighPerformance mode to work
+//     listener.EnableCustomizedITD()
+//
+//     // CREATE and SETUP TARGET SOURCE(S) - mono
+//     targets = audioFiles.reduce((aggr, file, index) => {
+//       const targetSource = binauralApi.CreateSource()
+//       setSourcePosition(targetSource, index * Math.PI/6, 3)
+//
+//       const targetInputMonoBuffer = new CMonoBuffer()
+//       targetInputMonoBuffer.resize(512, 0)
+//
+//       const targetOutputStereoBuffer = new CStereoBuffer()
+//       targetOutputStereoBuffer.resize(1024, 0)
+//       // Script Node (bufferSize, # InputChannels, # OutputChannels)
+//       const targetProcessor = context.createScriptProcessor(512, 1, 2)
+//       // PROCESSING FUNCTION
+//       targetProcessor.onaudioprocess = audioProcessingEvent => {
+//         const { inputBuffer, outputBuffer } = audioProcessingEvent
+//         const inputData = inputBuffer.getChannelData(0)
+//
+//         for (let i = 0; i < inputData.length; i++) {
+//           targetInputMonoBuffer.set(i, inputData[i])
+//         }
+//         // process data
+//         targetSource.ProcessAnechoic(targetInputMonoBuffer, targetOutputStereoBuffer)
+//         const outputDataLeft = outputBuffer.getChannelData(0)
+//         const outputDataRight = outputBuffer.getChannelData(1)
+//
+//         for (let i = 0; i < outputDataLeft.length; i++) {
+//           outputDataLeft[i] = targetOutputStereoBuffer.get(i * 2)
+//           outputDataRight[i] = targetOutputStereoBuffer.get(i * 2 + 1)
+//         }
+//       }
+//
+//       return {
+//         ...aggr,
+//         [file.filename]: {
+//           source: targetSource,
+//           processor: targetProcessor,
+//         },
+//       }
+//     }, {}) // end of .reduce
+//
+//     return {
+//       listener,
+//       targets,
+//       setSourcePosition,
+//       setListenerPosition,
+//       setPerformanceMode,
+//       setHeadRadius,
+//       setSources
+//       // setDirectionalityEnabled,
+//       // setDirectionalityAttenuation,
+//     }
+//   }) // end of .then
+// }
+/* ---------------------------------------------------------------------------------------------------------------- */
+
 
 
 /* ------------------- GET INSTANCE ------------------ */
 export function getInstance() {
   if (instancePromise !== null) {
+    // console.log("");
+    // console.log("");
+    // console.log(instancePromise);
+    // console.log("");
+    // console.log("");
     return instancePromise
   }
 
   instancePromise = createInstance()
+  console.log("");
+  console.log(instancePromise);
+  console.log("");
   return instancePromise
+}
+
+export function deleteInstance() {
+  instancePromise = null
+  listener = null;
+  targets = null;
+  // return instancePromise
+}
+
+export function setTargets(newTargets) {
+  targets = newTargets;
+  console.log(`set targets: ${JSON.stringify(targets)}`);
 }

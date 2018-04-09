@@ -10,6 +10,7 @@ import PlaybackControlsContainer from 'src/containers/PlaybackControlsContainer.
 import PositionControllerContainer from 'src/containers/PositionControllerContainer.js'
 import TargetSelectorContainer from 'src/containers/TargetSelectorContainer.js'
 import ListenerOptionsContainer from 'src/containers/ListenerOptionsContainer.js'
+import ImportExportContainer from 'src/containers/ImportExportContainer.js'
 import { BLUE } from 'src/styles/colors.js'
 import { H2, H3, H4 } from 'src/styles/elements.js'
 import { MAX_WIDTH } from 'src/styles/layout.js'
@@ -88,6 +89,7 @@ export default function App() {
 
               <div style={{ flex: '0 1 33.333%' }}>
                 <ListenerOptionsContainer />
+                <ImportExportContainer />
               </div>
           </AppContent>
         </div>

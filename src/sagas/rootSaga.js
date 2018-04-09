@@ -1,4 +1,5 @@
 /* eslint no-unused-vars:0 */
+/* eslint prefer-destructuring: 0 */
 
 /* ------------------- NOTES --------------------------------------------------- *//*
 
@@ -16,6 +17,7 @@ import {
   // get,
   // reduce,
   // values
+  map
 } from 'lodash'
 
 import {
@@ -33,10 +35,12 @@ import {
   setComponentPosition as engineSetComponentPosition,
   setListenerPosition as engineSetListenerPosition,
   setHeadRadius as engineSetHeadRadius,
-  setPerformanceMode as engineSetPerformanceMode
+  setPerformanceMode as engineSetPerformanceMode,
+  addSource as engineAddSource,
+  deleteSources as engineDeleteSources,
 } from 'src/audio/engine.js';
 
-const selected = [];
+// const selected = [];
 
 function* applyPlayPause() {
   while (true) {
@@ -52,20 +56,24 @@ function* applyPlayPause() {
   }
 }
 
-function* manageComponentSource(target) {
+function* manageComponentSource(target, url) {
+  const selected = yield select(state => state.target.selected);
+  // console.log(`selected: ${selected}`);
   const index = selected.indexOf(target);
   if (index  >= 0) {
-    selected.splice(index,1);
-    // console.log("rootSaga: UNSET TARGET");
-    // console.log(`target: ${target}`);
-    // console.log(`selected: ${selected}`);
-    yield call(engineUnsetTargetSource, target);
-  } else {
-    selected.push(target);
+    // selected.splice(index,1);
     // console.log("rootSaga: SET TARGET");
     // console.log(`target: ${target}`);
     // console.log(`selected: ${selected}`);
-    yield call(engineSetTargetSource, getFileUrl(target), target);
+    yield call(engineSetTargetSource, target, url);
+  } else {
+    // selected.push(target);
+    // console.log("rootSaga: UNSET TARGET");
+    // console.log(`target: ${target}`);
+    // console.log(`selected: ${selected}`);
+    // yield call(engineSetTargetSource, getFileUrl(target), target);
+    yield call(engineUnsetTargetSource, target);
+
   };
   const playbackState = yield select(state => state.controls.playbackState)
 
@@ -78,7 +86,48 @@ function* manageComponentSource(target) {
 function* applyComponentSource() {
   while (true) {
     const { type, payload } = yield take(ActionType.SET_TARGET);
-    yield spawn(manageComponentSource, payload.target);
+    yield spawn(manageComponentSource, payload.target, payload.url);
+  }
+}
+
+function* manageAddSource(filename){
+  const targets = yield select(state => state.target.targets);
+  yield call (engineAddSource, targets[filename]);
+
+  const selected = yield select(state => state.target.selected);
+  for (let i = 0; i < selected.length; i++) {
+    const file = selected[i];
+    const url = targets[file].url;
+    yield call(engineSetTargetSource, file, url);
+  }
+
+  const playbackState = yield select(state => state.controls.playbackState)
+  if (playbackState === PlaybackState.PLAYING) {
+    yield call(enginePlay)
+  }
+}
+
+function* applyAddSource(){
+  while(true) {
+    const { type, payload } = yield take(ActionType.ADD_TARGET);
+    yield spawn(manageAddSource, payload.filename);
+  }
+}
+
+function* applyDeleteSources() {
+  while (true) {
+    const { type, payload } = yield take(ActionType.DELETE_TARGETS)
+    const selected = payload.targets
+    console.log(`rootSaga: DELETE TARGETS`)
+    console.log(`selected: ${selected}`)
+    enginePause()
+
+    yield call(engineDeleteSources, selected)
+
+    const playbackState = yield select(state => state.controls.playbackState)
+    if (playbackState === PlaybackState.PLAYING) {
+      yield call(enginePlay)
+    }
   }
 }
 
@@ -156,6 +205,8 @@ export default function* rootSaga() {
   yield [
     applyPlayPause(),
     applyComponentSource(),
+    applyAddSource(),
+    applyDeleteSources(),
     applyMasterVolume(),
     applyTargetVolume(),
     applyPerformanceMode(),
