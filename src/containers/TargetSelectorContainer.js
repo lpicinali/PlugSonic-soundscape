@@ -12,7 +12,6 @@ import { connect } from 'react-redux'
 import { reduce, map } from 'lodash'
 import got from 'got'
 
-import { checkUrl } from 'src/utils.js'
 import {
   // setHeadRadius,
   // setPerformanceMode,
