@@ -11,7 +11,7 @@
 
 *//* ---------------------------------------------- */
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 // import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -21,12 +21,13 @@ import { autobind } from 'core-decorators'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import Slider from 'material-ui/Slider'
 import TextField from 'material-ui/TextField';
 import { RoomShape } from 'src/constants.js'
 import { values, toNumber, isNaN, forEach } from 'lodash'
 
 // import * as CustomPropTypes from 'src/prop-types.js'
-import { setTargetPosition } from 'src/actions/target.actions.js'
+import { setEditingTarget, setTargetPosition, setTargetReach } from 'src/actions/target.actions.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { setRoomShape, setRoomSize } from 'src/actions/room.actions.js'
 import ContainerDimensionsWithScrollUpdates from 'src/components/ContainerDimensionsWithScrollUpdates.js'
@@ -51,8 +52,11 @@ class PositionControllerContainer extends Component {
     headRadius: PropTypes.number.isRequired,
     targets: PropTypes.object.isRequired,
     selected: PropTypes.array.isRequired,
+    editingTarget: PropTypes.string,
     roomShape: PropTypes.oneOf(values(RoomShape)).isRequired,
     roomSize: PropTypes.object.isRequired,
+    onSelectTarget: PropTypes.func.isRequired,
+    onSetTargetReach: PropTypes.func.isRequired,
     onTargetMove: PropTypes.func.isRequired,
     onListenerMove: PropTypes.func.isRequired,
     onShapeChange: PropTypes.func.isRequired,
@@ -60,6 +64,7 @@ class PositionControllerContainer extends Component {
   }
 
   static defaultProps = {
+    editingTarget: null,
   }
 
   state = {
@@ -172,8 +177,11 @@ class PositionControllerContainer extends Component {
       headRadius,
       targets,
       selected,
+      editingTarget,
       roomShape,
       roomSize,
+      onSelectTarget,
+      onSetTargetReach,
       onTargetMove,
       onListenerMove,
     } = this.props
@@ -208,6 +216,8 @@ class PositionControllerContainer extends Component {
                 headRadius={headRadius}
                 sizeX = {roomSize.width/2}
                 sizeZ = {roomSize.height/2}
+                editingTarget={editingTarget}
+                onSelectTarget={onSelectTarget}
                 onPositionChange={(id, position) => onTargetMove(id, position)}
                 onListenerChange={position => onListenerMove(position)}
               />
@@ -267,6 +277,28 @@ class PositionControllerContainer extends Component {
           />
         </MuiThemeProvider>
 
+        <H3>Source reach</H3>
+        {editingTarget === null ? (
+          <p>Select a target first</p>
+        ) : (
+          <Fragment>
+            <MuiThemeProvider>
+              <Slider
+                name="reach"
+                value={targets[editingTarget].reach}
+                min={0}
+                max={Math.max(roomSize.width, roomSize.height)}
+                step={0.5}
+                onChange={(event, newReach) => onSetTargetReach(editingTarget, newReach)}
+                sliderStyle={{
+                  marginBottom: 16,
+                }}
+              />
+            </MuiThemeProvider>
+
+            <p>{targets[editingTarget].reach} m</p>
+          </Fragment>
+        )}
       </div>
     )
   }
@@ -278,11 +310,14 @@ export default connect(
     headRadius: state.listener.headRadius,
     targets: state.target.targets,
     selected: state.target.selected,
+    editingTarget: state.target.editing,
     roomShape: state.room.shape,
     roomSize: state.room.size
   }),
   dispatch => ({
+    onSelectTarget: (id) => dispatch(setEditingTarget(id)),
     onTargetMove: (id, position) => dispatch(setTargetPosition(id, position)),
+    onSetTargetReach: (id, reach) => dispatch(setTargetReach(id, reach)),
     onListenerMove: position => dispatch(setListenerPosition(position)),
     onShapeChange: shape => dispatch(setRoomShape(shape)),
     onSizeChange: size => dispatch(setRoomSize(size))

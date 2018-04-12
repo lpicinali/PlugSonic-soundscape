@@ -16,15 +16,14 @@ TO DO:
 
 *//* ---------------------------------------------- */
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { clamp } from 'lodash'
 import { autobind } from 'core-decorators'
 import styled from 'styled-components'
 
 import * as CustomPropTypes from 'src/prop-types.js'
-import SourceHandle from 'src/components/SourceHandle.js'
-import { BLUE, WHITESMOKE, BLACK } from 'src/styles/colors.js'
+import { BLUE, TURQOISE, WHITESMOKE, BLACK } from 'src/styles/colors.js'
 
 const StyledPositionController = styled.div`
   position: relative;
@@ -43,7 +42,7 @@ const StyledPositionController = styled.div`
 
 const ListenerHandle = styled.div`
   position: relative;
-  z-index: 3;
+  z-index: 5;
   width: 0;
   height: 0;
   border-style: solid;
@@ -54,6 +53,35 @@ const ListenerHandle = styled.div`
   overflow: hidden;
   cursor: pointer;
 `
+
+const SourceReach = styled.div`
+  position: absolute;
+  z-index: ${props => props.isEditing ? 2 : 1};
+  width: ${props => props.reach * props.pixelsPerMeter.x}px;
+  height: ${props => props.reach * props.pixelsPerMeter.z}px;
+  background: ${props => props.isEditing ? 'rgba(243, 36, 106, 0.1)' : '#e8e8eb'};
+  border: 1px solid ${props => props.isEditing ? '#f3246a' : 'transparent'};
+  border-radius: 100%;
+  transform: translate3d(-50%, -50%, 0);
+`
+
+const SourceHandle = styled.div`
+  position: absolute;
+  z-index: 2;
+  width: 12px;
+  height: 12px;
+  background: ${TURQOISE};
+  border-radius: 100%;
+  cursor: pointer;
+  transform: translate3d(-25%, -25%, 0);
+`
+
+function calculateObjectCssPosition(object, container) {
+  const top = Math.sin(object.azimuth) * object.distance / container.height
+  const left = Math.cos(object.azimuth) * object.distance / container.width
+
+  return { top, left }
+}
 
 /**
  * Position Controller
@@ -72,13 +100,16 @@ class PositionController extends Component {
         distance: PropTypes.number.isRequired,
       })
     ).isRequired,
+    editingTarget: PropTypes.string,
     listenerPosition: PropTypes.object.isRequired,
     headRadius: PropTypes.number.isRequired,
+    onSelectTarget: PropTypes.func.isRequired,
     onPositionChange: PropTypes.func.isRequired,
     onListenerChange: PropTypes.func.isRequired
   }
 
   static defaultProps = {
+    editingTarget: null,
   }
 
   state = {
@@ -268,6 +299,8 @@ class PositionController extends Component {
         currentObjectId: objectId,
         position: { azimuth: object.azimuth, distance: object.distance },
       }))
+
+      this.props.onSelectTarget(objectId)
     }
 
     window.addEventListener('mousemove', this.handleDrag)
@@ -356,7 +389,7 @@ class PositionController extends Component {
   }
 
   render() {
-    const { bounds, isRound, sizeX, sizeZ, objects, listenerPosition, headRadius } = this.props
+    const { bounds, isRound, sizeX, sizeZ, objects, editingTarget, listenerPosition, headRadius } = this.props
 
     // console.log('PositionController.render()', bounds.top)
     // console.log(this.props.listenerPosition.azimuth);
@@ -367,89 +400,57 @@ class PositionController extends Component {
     // console.log(`bounds.width = ${bounds.width}`)
     // console.log(`bounds.height = ${bounds.height}`)
 
+    const pixelsPerMeter = {
+      x: bounds.width / sizeX,
+      z: bounds.height / (isRound === true ? sizeX : sizeZ),
+    }
+    const areaSize = {
+      width: sizeX,
+      height: isRound === true ? sizeX : sizeZ,
+    }
+    const listenerCssPosition = calculateObjectCssPosition(listenerPosition, areaSize)
+
     return (
       <StyledPositionController
         width={bounds.width}
         height={bounds.height}
         isRound={isRound}
       >
-        { isRound ?
-          (
-            <ListenerHandle
-              key='listener'
-              style={{
-                top: `${50 -
-                  50 * (Math.sin(listenerPosition.azimuth) * listenerPosition.distance / sizeX)}%`,
-                left: `${50 +
-                  50 * (Math.cos(listenerPosition.azimuth) * listenerPosition.distance / sizeX)}%`,
-                transform: `translate3d(-50%, -50%, 0) rotate(${listenerPosition.rotYAxis}rad)`
-              }}
-              size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
-              onMouseDown={() => this.handlePress('listener')}
-            >
-              <span>listener</span>
-            </ListenerHandle>
-          ) : (
-            <ListenerHandle
-              key='listener'
-              style={{
-                top: `${50 -
-                  50 * (Math.sin(listenerPosition.azimuth) * listenerPosition.distance / sizeZ)}%`,
-                left: `${50 +
-                  50 * (Math.cos(listenerPosition.azimuth) * listenerPosition.distance / sizeX)}%`,
-                transform: `translate3d(-50%, -50%, 0) rotate(${listenerPosition.rotYAxis}rad)`
-              }}
-              size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
-              onMouseDown={() => this.handlePress('listener')}
-            >
-              <span>listener</span>
-            </ListenerHandle>
-          )
-        }
+        <ListenerHandle
+          key='listener'
+          style={{
+            top: `${50 - 50 * listenerCssPosition.top}%`,
+            left: `${50 + 50 * listenerCssPosition.left}%`,
+            transform: `translate3d(-50%, -50%, 0) rotate(${listenerPosition.rotYAxis}rad)`,
+          }}
+          size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
+          onMouseDown={() => this.handlePress('listener')}
+        >
+          <span>listener</span>
+        </ListenerHandle>
 
-        { isRound ?
-          (
-            objects.map(object => (
-              <SourceHandle
-                key={object.id}
-                style={{
-                  top: `${50 -
-                    50 * (Math.sin(object.azimuth) * object.distance / sizeX)}%`,
-                  left: `${50 +
-                    50 * (Math.cos(object.azimuth) * object.distance / sizeX)}%`,
-                }}
+        {objects.map(object => {
+          const objectCssPosition = calculateObjectCssPosition(object, areaSize)
+          const objectStyles = {
+            top: `${50 - 50 * objectCssPosition.top}%`,
+            left: `${50 + 50 * objectCssPosition.left}%`,
+          }
+
+          return (
+            <Fragment key={object.id}>
+              <SourceReach
                 reach={object.reach}
-                pixelsPerMeter={{
-                  x: bounds.width / sizeX,
-                  z: bounds.height / sizeZ,
-                }}
-                isEditing={false}
-                onPress={() => this.handlePress(object.id)}
-              >
-                <span>{object.label}</span>
-              </SourceHandle>
-          ))) : (
-            objects.map(object => (
+                pixelsPerMeter={pixelsPerMeter}
+                isEditing={editingTarget === object.id}
+                style={objectStyles}
+              />
               <SourceHandle
-                key={object.id}
-                style={{
-                  top: `${50 -
-                    50 * (Math.sin(object.azimuth) * object.distance / sizeZ)}%`,
-                  left: `${50 +
-                    50 * (Math.cos(object.azimuth) * object.distance / sizeX)}%`,
-                }}
-                reach={object.reach}
-                pixelsPerMeter={{
-                  x: bounds.width / sizeX,
-                  z: bounds.height / sizeZ,
-                }}
-                isEditing={false}
-                onPress={() => this.handlePress(object.id)}
-              >
-                <span>{object.label}</span>
-              </SourceHandle>
-          )))
-        }
+                onMouseDown={() => this.handlePress(object.id)}
+                style={objectStyles}
+              />
+            </Fragment>
+          )
+        })}
       </StyledPositionController>
     )
   }
