@@ -12,6 +12,7 @@ const initialState = {
           title: file.title,
           filename: file.filename,
           position: { azimuth: index * Math.PI/6, distance: 3},
+          reach: 3,
           volume: 0.5
       }
     }),

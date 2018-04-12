@@ -23,12 +23,14 @@ import { autobind } from 'core-decorators'
 import styled from 'styled-components'
 
 import * as CustomPropTypes from 'src/prop-types.js'
-import { BLUE, TURQOISE, WHITESMOKE, BLACK } from 'src/styles/colors.js'
+import SourceHandle from 'src/components/SourceHandle.js'
+import { BLUE, WHITESMOKE, BLACK } from 'src/styles/colors.js'
 
 const StyledPositionController = styled.div`
   position: relative;
   width: ${props => props.width}px;
   height: ${props => props.height}px;
+  overflow: hidden;
   background-color: ${WHITESMOKE};
   border: 1px solid ${BLUE};
   border-radius: ${props => props.isRound ? '9999px' : '5px'};
@@ -40,6 +42,8 @@ const StyledPositionController = styled.div`
   // transform: translate3d(-8px, -10px, 0);
 
 const ListenerHandle = styled.div`
+  position: relative;
+  z-index: 3;
   width: 0;
   height: 0;
   border-style: solid;
@@ -49,18 +53,6 @@ const ListenerHandle = styled.div`
   text-indent: -9999px;
   overflow: hidden;
   cursor: pointer;
-`
-
-const SourceHandle = styled.div`
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: ${TURQOISE};
-  border-radius: 10px;
-  text-indent: -9999px;
-  overflow: hidden;
-  cursor: pointer;
-  transform: translate3d(-50%, -50%, 0)
 `
 
 /**
@@ -426,7 +418,13 @@ class PositionController extends Component {
                   left: `${50 +
                     50 * (Math.cos(object.azimuth) * object.distance / sizeX)}%`,
                 }}
-                onMouseDown={() => this.handlePress(object.id)}
+                reach={object.reach}
+                pixelsPerMeter={{
+                  x: bounds.width / sizeX,
+                  z: bounds.height / sizeZ,
+                }}
+                isEditing={false}
+                onPress={() => this.handlePress(object.id)}
               >
                 <span>{object.label}</span>
               </SourceHandle>
@@ -440,7 +438,13 @@ class PositionController extends Component {
                   left: `${50 +
                     50 * (Math.cos(object.azimuth) * object.distance / sizeX)}%`,
                 }}
-                onMouseDown={() => this.handlePress(object.id)}
+                reach={object.reach}
+                pixelsPerMeter={{
+                  x: bounds.width / sizeX,
+                  z: bounds.height / sizeZ,
+                }}
+                isEditing={false}
+                onPress={() => this.handlePress(object.id)}
               >
                 <span>{object.label}</span>
               </SourceHandle>

@@ -185,6 +185,7 @@ class PositionControllerContainer extends Component {
           label: targets[target].title,
           azimuth: targets[target].position.azimuth,
           distance: targets[target].position.distance,
+          reach: targets[target].reach,
         }
       )
     );
