@@ -73,7 +73,7 @@ const SourceHandle = styled.div`
   background: ${TURQOISE};
   border-radius: 100%;
   cursor: pointer;
-  transform: translate3d(-25%, -25%, 0);
+  transform: translate3d(-50%, -50%, 0);
 `
 
 function calculateObjectCssPosition(object, container) {
