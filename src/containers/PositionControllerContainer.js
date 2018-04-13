@@ -15,7 +15,7 @@ import React, { Component, Fragment } from 'react'
 // import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-// import styled from 'styled-components'
+import styled from 'styled-components'
 import { autobind } from 'core-decorators'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -42,6 +42,10 @@ const minWidth = 3;
 const maxWidth = 100;
 const minHeight = 3;
 const maxHeight = 100;
+
+const SourceEditingDoneButton = styled(Button)`
+  float: right;
+`
 
 /**
  * Position Controller Container
@@ -296,7 +300,12 @@ class PositionControllerContainer extends Component {
               />
             </MuiThemeProvider>
 
-            <p>{targets[editingTarget].reach} m</p>
+            <div>
+              <span>{targets[editingTarget].reach} m</span>
+              <SourceEditingDoneButton onClick={() => onSelectTarget(null)}>
+                Done
+              </SourceEditingDoneButton>
+            </div>
           </Fragment>
         )}
       </div>
