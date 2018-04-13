@@ -48,8 +48,21 @@ const NoSelectedSourcePlaceholder = styled.p`
   font-size: 12px;
 `
 
+const SourceEditingWrapper = styled.div`
+  display: flex;
+`
+
+const SourceReachRadiusField = styled.div`
+  flex-grow: 1;
+`
+
+const SourceReachFadeDurationField = styled.div`
+  width: 30%;
+  padding: 0 16px;
+`
+
 const SourceEditingDoneButton = styled(Button)`
-  float: right;
+  margin-top: 24px;
 `
 
 /**
@@ -293,26 +306,43 @@ class PositionControllerContainer extends Component {
           </NoSelectedSourcePlaceholder>
         ) : (
           <Fragment>
-            <MuiThemeProvider>
-              <Slider
-                name="reach"
-                value={targets[editingTarget].reach}
-                min={0}
-                max={Math.max(roomSize.width, roomSize.height)}
-                step={0.5}
-                onChange={(event, newReach) => onSetTargetReach(editingTarget, newReach)}
-                sliderStyle={{
-                  marginBottom: 16,
-                }}
-              />
-            </MuiThemeProvider>
+            <SourceEditingWrapper>
+              <SourceReachRadiusField>
+                <MuiThemeProvider>
+                  <Slider
+                    value={targets[editingTarget].reach.radius}
+                    min={0}
+                    max={Math.max(roomSize.width, roomSize.height)}
+                    step={0.5}
+                    onChange={(event, newRadius) =>
+                      onSetTargetReach(editingTarget, newRadius, targets[editingTarget].reach.fadeDuration)
+                    }
+                    sliderStyle={{ marginBottom: 16 }}
+                  />
+                </MuiThemeProvider>
+                <div>Reach: {targets[editingTarget].reach.radius} meters</div>
+              </SourceReachRadiusField>
 
-            <div>
-              <span>{targets[editingTarget].reach} m</span>
-              <SourceEditingDoneButton onClick={() => onSelectTarget(null)}>
-                Done
-              </SourceEditingDoneButton>
-            </div>
+              <SourceReachFadeDurationField>
+                <MuiThemeProvider>
+                  <Slider
+                    value={targets[editingTarget].reach.fadeDuration}
+                    min={500}
+                    max={10000}
+                    step={250}
+                    onChange={(event, newDuration) =>
+                      onSetTargetReach(editingTarget, targets[editingTarget].reach.radius, newDuration)
+                    }
+                    sliderStyle={{ marginBottom: 16 }}
+                  />
+                </MuiThemeProvider>
+                <div>Fade: {targets[editingTarget].reach.fadeDuration / 1000} sec</div>
+              </SourceReachFadeDurationField>
+            </SourceEditingWrapper>
+
+            <SourceEditingDoneButton onClick={() => onSelectTarget(null)}>
+              Done
+            </SourceEditingDoneButton>
           </Fragment>
         )}
       </div>
@@ -333,7 +363,7 @@ export default connect(
   dispatch => ({
     onSelectTarget: (id) => dispatch(setEditingTarget(id)),
     onTargetMove: (id, position) => dispatch(setTargetPosition(id, position)),
-    onSetTargetReach: (id, reach) => dispatch(setTargetReach(id, reach)),
+    onSetTargetReach: (id, radius, fadeDuration) => dispatch(setTargetReach(id, radius, fadeDuration)),
     onListenerMove: position => dispatch(setListenerPosition(position)),
     onShapeChange: shape => dispatch(setRoomShape(shape)),
     onSizeChange: size => dispatch(setRoomSize(size))

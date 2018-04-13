@@ -23,6 +23,8 @@ const targetVolumes = audioFiles.reduce(
 const volume = context.createGain()
 volume.gain.value = 0.5;
 
+const targetVolumeValues = {}
+
 getBinauralSpatializer().then(spatializer => {
 
   for (const filename in targetInputs) {
@@ -80,13 +82,24 @@ export const setMasterVolume = newVolume => {
 }
 
 export const setTargetVolume = (filename, newVolume, fadeDuration = 0) => {
-  // Ramping in the Web Audio API does not allow end values
-  // of 0, so we need to make sure to have a tiny little
-  // fraction left
-  targetVolumes[filename].gain.exponentialRampToValueAtTime(
-    clamp(newVolume, 0.00001, Infinity),
-    context.currentTime + (fadeDuration / 1000)
-  )
+  if (newVolume !== targetVolumeValues[filename]) {
+    targetVolumeValues[filename] = newVolume
+
+    const gainNode = targetVolumes[filename].gain
+
+    // This makes fades act sort of naturally when you change
+    // volume again within the duration
+    gainNode.cancelScheduledValues(context.currentTime)
+    gainNode.setValueAtTime(gainNode.value, context.currentTime)
+
+    // Ramping in the Web Audio API does not allow end values
+    // of 0, so we need to make sure to have a tiny little
+    // fraction left
+    gainNode.exponentialRampToValueAtTime(
+      clamp(newVolume, 0.00001, Infinity),
+      context.currentTime + (fadeDuration / 1000)
+    )
+  }
 }
 
 export const startNodes = () => {

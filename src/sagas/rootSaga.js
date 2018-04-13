@@ -134,9 +134,9 @@ function* rampTargetVolumesByTheirReach() {
     // eslint-disable-next-line
     for (const target of targets) {
       const distanceToListener = getDistanceBetweenSphericalPoints(listener.position, target.position)
-      const volume = distanceToListener <= target.reach ? target.volume : 0
+      const volume = distanceToListener <= target.reach.radius ? target.volume : 0
 
-      yield call(engineSetTargetVolume, target.filename, volume, 1000)
+      yield call(engineSetTargetVolume, target.filename, volume, target.reach.fadeDuration)
     }
   }
 }

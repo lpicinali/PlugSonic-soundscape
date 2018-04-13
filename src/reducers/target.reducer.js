@@ -13,7 +13,10 @@ const initialState = {
           title: file.title,
           filename: file.filename,
           position: { azimuth: index * Math.PI/6, distance: 3},
-          reach: 3,
+          reach: {
+            radius: 3,
+            fadeDuration: 1000,
+          },
           volume: 0.5
       }
     }),
@@ -56,7 +59,12 @@ export default function(state = initialState, {type, payload}) {
     return { ...state, targets: newTargets };
   }
   if (type === ActionType.SET_TARGET_REACH) {
-    return set(['targets', payload.target, 'reach'], payload.reach, state)
+    const { radius, fadeDuration } = payload
+    return set(
+      ['targets', payload.target, 'reach'],
+      { radius, fadeDuration },
+      state
+    )
   }
   if (type === ActionType.SET_TARGET_VOLUME) {
     const newTargets = Object.assign({},state.targets);

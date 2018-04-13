@@ -21,9 +21,9 @@ export const setTargetPosition = (target, position) => ({
   payload: { target , position},
 })
 
-export const setTargetReach = (target, reach) => ({
+export const setTargetReach = (target, radius, fadeDuration) => ({
   type: ActionType.SET_TARGET_REACH,
-  payload: { target, reach },
+  payload: { target, radius, fadeDuration },
 })
 
 export const setTargetVolume = (target, volume) => ({

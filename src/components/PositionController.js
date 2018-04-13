@@ -439,7 +439,7 @@ class PositionController extends Component {
           return (
             <Fragment key={object.id}>
               <SourceReach
-                reach={object.reach}
+                reach={object.reach.radius}
                 pixelsPerMeter={pixelsPerMeter}
                 isEditing={editingTarget === object.id}
                 style={objectStyles}
