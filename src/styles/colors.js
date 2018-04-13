@@ -1,5 +1,6 @@
 export const BLACK = '#1C252B'
 export const BLUE = '#2B365D'
+export const GRAY = '#b2b2b2'
 export const TURQOISE = '#00D7CC'
 export const WHITE = '#fefefe'
 export const WHITESMOKE = '#F0F0F3'

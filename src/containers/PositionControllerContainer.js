@@ -33,7 +33,7 @@ import { setRoomShape, setRoomSize } from 'src/actions/room.actions.js'
 import ContainerDimensionsWithScrollUpdates from 'src/components/ContainerDimensionsWithScrollUpdates.js'
 import PositionController from 'src/components/PositionController.js'
 import Button from 'src/components/Button.js'
-
+import { GRAY } from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements.js'
 
 // const BoundsRelay = rect => {}
@@ -42,6 +42,11 @@ const minWidth = 3;
 const maxWidth = 100;
 const minHeight = 3;
 const maxHeight = 100;
+
+const NoSelectedSourcePlaceholder = styled.p`
+  color: ${GRAY};
+  font-size: 12px;
+`
 
 const SourceEditingDoneButton = styled(Button)`
   float: right;
@@ -283,7 +288,9 @@ class PositionControllerContainer extends Component {
 
         <H3>Source reach</H3>
         {editingTarget === null ? (
-          <p>Select a target first</p>
+          <NoSelectedSourcePlaceholder>
+            Select a source on the map to edit its reach
+          </NoSelectedSourcePlaceholder>
         ) : (
           <Fragment>
             <MuiThemeProvider>
