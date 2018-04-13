@@ -80,9 +80,9 @@ export const setMasterVolume = (volume) => {
     chainSetMasterVolume(volume)
 }
 
-export const setTargetVolume = (target, volume) => {
+export const setTargetVolume = (target, volume, fadeDuration) => {
   // console.log('setComponentVolume', { volume })
-    chainSetTargetVolume(target, volume)
+    chainSetTargetVolume(target, volume, fadeDuration)
 }
 
 export const setHeadRadius = radius => {

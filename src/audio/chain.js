@@ -4,8 +4,9 @@
 /* ------------------- NOTES -------------------- *//*
 
 *//* ---------------------------------------------- */
-
+import { clamp } from 'lodash'
 import toolkit from '3dti-toolkit'
+
 import { audioFiles } from 'src/audio/audio-files.js';
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
@@ -78,8 +79,14 @@ export const setMasterVolume = newVolume => {
   volume.gain.value = newVolume
 }
 
-export const setTargetVolume = (filename, newVolume) => {
-  targetVolumes[filename].gain.value = newVolume;
+export const setTargetVolume = (filename, newVolume, fadeDuration = 0) => {
+  // Ramping in the Web Audio API does not allow end values
+  // of 0, so we need to make sure to have a tiny little
+  // fraction left
+  targetVolumes[filename].gain.exponentialRampToValueAtTime(
+    clamp(newVolume, 0.00001, Infinity),
+    context.currentTime + (fadeDuration / 1000)
+  )
 }
 
 export const startNodes = () => {

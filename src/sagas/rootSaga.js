@@ -136,7 +136,7 @@ function* rampTargetVolumesByTheirReach() {
       const distanceToListener = getDistanceBetweenSphericalPoints(listener.position, target.position)
       const volume = distanceToListener <= target.reach ? target.volume : 0
 
-      yield call(engineSetTargetVolume, target.filename, volume)
+      yield call(engineSetTargetVolume, target.filename, volume, 1000)
     }
   }
 }
