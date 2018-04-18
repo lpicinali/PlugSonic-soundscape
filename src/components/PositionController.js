@@ -13,6 +13,7 @@ TO DO:
   - allow only for rotation when dragging listener with mouse
   - bug continue to drag listener after drag and rotation
   - tune listener movement with room resizing
+  - arow keys listeners only when click on the room
 
 */ /* ---------------------------------------------- */
 

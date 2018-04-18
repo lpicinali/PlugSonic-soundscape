@@ -24,5 +24,9 @@ export default function(state = initialState, { type, payload }) {
     // console.log({ ...state, size: newSize });
     return { ...state, size: newSize }
   }
+  if (type === ActionType.IMPORT_ROOM) {
+    const newRoom = Object.assign({}, payload.room)
+    return { ...state, shape: newRoom.shape, size: newRoom.size }
+  }
   return state
 }

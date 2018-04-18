@@ -1,5 +1,6 @@
 /* eslint no-console: 0 */
 /* eslint arrow-body-style: 0 */
+/* eslint no-restricted-syntax: 0 */
 
 /* ------------------- NOTES -------------------- */ /*
 
@@ -17,7 +18,11 @@ import {
   stopNodes as chainStopNodes,
   addSource as chainAddSource,
   deleteSources as chainDeleteSources,
+  deleteAllSources as chainDeleteAllSources,
+  // importSources as chainImportSources,
 } from 'src/audio/chain.js'
+
+// import { map } from 'lodash'
 
 export const play = () => {
   // console.log("engine: PLAY - begins");
@@ -63,12 +68,12 @@ export const unsetTargetSource = filename => {
   // console.log("engine: UNSET TargetSource - ends");
 }
 
-export const addSource = source => {
+export const addSource = sourceObject => {
   // console.log("");
   // console.log("");
   // console.log("engine: SET Sources - begins");
   pause()
-  chainAddSource(source)
+  chainAddSource(sourceObject)
   // const instancePromise = getBinauralSpatializer();
   // console.log(instancePromise);
   // console.log("engine: SET Sources - ends");
@@ -77,7 +82,30 @@ export const addSource = source => {
 }
 
 export const deleteSources = sourcesFilenames => {
+  // console.log('ENGINE deleteSources')
+  // console.log(`with filenames = ${sourcesFilenames}`)
   chainDeleteSources(sourcesFilenames)
+}
+
+export const importSources = sourcesObject => {
+  // console.log('ENGINE importSources')
+  // console.log('ENGINE - sourcesObject')
+  // console.log(sourcesObject)
+  // chainDeleteAllSources()
+
+  // const filenames = map(sourcesObject, source => source.filename)
+  // console.log('ENGINE - filenames')
+  // console.log(filenames)
+
+  for ( const filename in sourcesObject) {
+    // console.log('FOR')
+    // console.log(filename)
+    if (Object.prototype.hasOwnProperty.call(sourcesObject, filename)) {
+      // console.log('IF')
+      chainAddSource(sourcesObject[filename])
+    }
+  }
+  // chainImportSources(sourcesObject)
 }
 
 export const setComponentPosition = (filename, { azimuth, distance }) => {

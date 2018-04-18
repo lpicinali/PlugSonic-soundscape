@@ -30,3 +30,8 @@ export const deleteTargets = targets => ({
   type: ActionType.DELETE_TARGETS,
   payload: { targets },
 })
+
+export const importTargets = targets => ({
+  type: ActionType.IMPORT_TARGETS,
+  payload: { targets },
+})

@@ -15,6 +15,7 @@ const initialState = {
         url: file.url,
         position: { azimuth: index * Math.PI / 6, distance: 3 },
         volume: 0.5,
+        raw: [],
       },
     }),
     {}
@@ -80,14 +81,14 @@ export default function(state = initialState, { type, payload }) {
     // console.log(`n = ${n}`);
     // console.log(newTarget);
     newTargets[payload.filename] = newTarget
-    console.log()
-    console.log()
-    console.log('Action: ADD TARGET')
-    console.log(`Payload.title: ${payload.title}`)
-    console.log(`Payload.filename: ${payload.filename}`)
-    console.log(`Payload.url: ${payload.url}`)
-    console.log()
-    console.log()
+    // console.log()
+    // console.log()
+    // console.log('Action: ADD TARGET')
+    // console.log(`Payload.title: ${payload.title}`)
+    // console.log(`Payload.filename: ${payload.filename}`)
+    // console.log(`Payload.url: ${payload.url}`)
+    // console.log()
+    // console.log()
     return { ...state, targets: newTargets }
   }
   if (type === ActionType.DELETE_TARGETS) {
@@ -95,6 +96,11 @@ export default function(state = initialState, { type, payload }) {
     payload.targets.forEach(filename => {
       delete newTargets[filename]
     })
+    const newSelected = []
+    return { ...state, targets: newTargets, selected: newSelected }
+  }
+  if (type === ActionType.IMPORT_TARGETS) {
+    const newTargets = Object.assign({}, payload.targets)
     const newSelected = []
     return { ...state, targets: newTargets, selected: newSelected }
   }

@@ -7,7 +7,7 @@
 
 import {
   call,
-  //  put,
+  put,
   select,
   take,
   fork,
@@ -35,6 +35,7 @@ import {
   setPerformanceMode as engineSetPerformanceMode,
   addSource as engineAddSource,
   deleteSources as engineDeleteSources,
+  importSources as engineImportSources
 } from 'src/audio/engine.js'
 
 // const selected = [];
@@ -127,6 +128,15 @@ function* applyDeleteSources() {
   }
 }
 
+function* applyImportSources() {
+  while (true) {
+    const { type, payload } = yield take(ActionType.IMPORT_TARGETS)
+    const sources = payload.targets
+    console.log(sources)
+    engineImportSources(sources)
+  }
+}
+
 function* applyTargetPosition() {
   while (true) {
     const { payload } = yield take(ActionType.SET_TARGET_POSITION)
@@ -203,6 +213,7 @@ export default function* rootSaga() {
     applyComponentSource(),
     applyAddSource(),
     applyDeleteSources(),
+    applyImportSources(),
     applyMasterVolume(),
     applyTargetVolume(),
     applyPerformanceMode(),

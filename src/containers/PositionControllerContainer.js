@@ -42,6 +42,12 @@ const maxWidth = 100
 const minHeight = 3
 const maxHeight = 100
 
+let gState = {
+  size: { width: 20, height: 10 },
+  errorTextW: '',
+  errorTextH: '',
+}
+
 /**
  * Position Controller Container
  */
@@ -104,6 +110,13 @@ class PositionControllerContainer extends Component {
       if (!isNaN(toNumber(val))) {
         if (val >= minWidth && val <= maxWidth) {
           const newSize = { width: toNumber(val), height: toNumber(val) }
+          // gState = {
+          //   ...this.state,
+          //   size: newSize,
+          //   errorTextW: '',
+          //   errorTextH: '',
+          // }
+          // this.setState(gState)
           this.setState({
             ...this.state,
             size: newSize,
@@ -113,6 +126,13 @@ class PositionControllerContainer extends Component {
           this.props.onSizeChange(newSize)
         } else {
           const newSize = { width: toNumber(val), height: toNumber(val) }
+          // gState = {
+          //   ...this.state,
+          //   size: newSize,
+          //   errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+          //   errorTextH: '',
+          // }
+          // this.setState(gState)
           this.setState({
             ...this.state,
             size: newSize,
@@ -122,6 +142,13 @@ class PositionControllerContainer extends Component {
         }
       } else {
         const newSize = { ...this.state.size, width: val }
+        // gState = {
+        //   ...this.state,
+        //   size: newSize,
+        //   errorTextW: 'Invalid: NaN',
+        //   errorTextH: '',
+        // }
+        // this.setState(gState)
         this.setState({
           ...this.state,
           size: newSize,
@@ -134,6 +161,12 @@ class PositionControllerContainer extends Component {
         if (!isNaN(toNumber(val))) {
           if (val >= minWidth && val <= maxWidth) {
             const newSize = { ...this.state.size, width: toNumber(val) }
+            // gState = {
+            //   ...this.state,
+            //   size: newSize,
+            //   errorTextW: '',
+            // }
+            // this.setState(gState)
             this.setState({
               ...this.state,
               size: newSize,
@@ -142,6 +175,12 @@ class PositionControllerContainer extends Component {
             this.props.onSizeChange(newSize)
           } else {
             const newSize = { ...this.state.size, width: toNumber(val) }
+            // gState = {
+            //   ...this.state,
+            //   size: newSize,
+            //   errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+            // }
+            // this.setState(gState)
             this.setState({
               ...this.state,
               size: newSize,
@@ -150,6 +189,12 @@ class PositionControllerContainer extends Component {
           }
         } else {
           const newSize = { ...this.state.size, width: val }
+          // gState = {
+          //   ...this.state,
+          //   size: newSize,
+          //   errorTextW: 'Invalid: NaN',
+          // }
+          // this.setState(gState)
           this.setState({
             ...this.state,
             size: newSize,
@@ -160,6 +205,12 @@ class PositionControllerContainer extends Component {
         if (!isNaN(toNumber(val))) {
           if (val >= minHeight && val <= maxHeight) {
             const newSize = { ...this.state.size, height: toNumber(val) }
+            // gState = {
+            //   ...this.state,
+            //   size: newSize,
+            //   errorTextH: '',
+            // }
+            // this.setState(gState)
             this.setState({
               ...this.state,
               size: newSize,
@@ -168,6 +219,12 @@ class PositionControllerContainer extends Component {
             this.props.onSizeChange(newSize)
           } else {
             const newSize = { ...this.state.size, height: toNumber(val) }
+            // gState = {
+            //   ...this.state,
+            //   size: newSize,
+            //   errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`,
+            // }
+            // this.setState(gState)
             this.setState({
               ...this.state,
               size: newSize,
@@ -176,6 +233,12 @@ class PositionControllerContainer extends Component {
           }
         } else {
           const newSize = { ...this.state.size, height: val }
+          // gState = {
+          //   ...this.state,
+          //   size: newSize,
+          //   errorTextH: 'Invalid: NaN',
+          // }
+          // this.setState(gState)
           this.setState({
             ...this.state,
             size: newSize,
@@ -292,6 +355,17 @@ class PositionControllerContainer extends Component {
       </div>
     )
   }
+}
+
+export function handleImportRoom(roomObject) {
+  console.log('handleImportRoom')
+  gState = {
+    size: roomObject.size,
+    errorTextW: '',
+    errorTextH: '',
+  }
+  console.log('STATE')
+  console.log(gState)
 }
 
 export default connect(

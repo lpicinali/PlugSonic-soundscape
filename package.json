@@ -20,7 +20,6 @@
   "license": "ISC",
   "private": true,
   "devDependencies": {
-    "@types/file-saver": "^1.3.0",
     "babel-core": "^6.24.1",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^7.0.0",
@@ -31,7 +30,7 @@
     "babel-plugin-transform-exponentiation-operator": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "eslint": "^4.16.0",
     "eslint-config-airbnb": "^16.1.0",
@@ -46,8 +45,10 @@
     "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
+    "@types/file-saver": "^1.3.0",
     "arrow-keys-react": "^1.0.6",
     "audio-decode": "^1.2.5",
+    "blob": "0.0.4",
     "buffer-to-arraybuffer": "0.0.4",
     "core-decorators": "^0.18.0",
     "decibels": "^2.0.0",
@@ -55,19 +56,21 @@
     "file-saver": "^1.3.8",
     "got": "^6.7.1",
     "lodash": "^4.17.4",
+    "material-design-icons": "^3.0.1",
     "material-ui": "^0.20.0",
     "morgan": "^1.8.1",
     "prop-types": "^15.5.9",
     "react": "^15.5.4",
     "react-container-dimensions": "^1.3.2",
     "react-dom": "^15.5.4",
+    "react-file-reader-input": "^1.1.4",
     "react-hot-loader": "^3.1.3",
+    "react-md": "^1.2.13",
     "react-player-controls": "^0.5.11",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
     "redux-saga": "^0.15.3",
-    "styled-components": "^1.4.6",
-    "typescript": "^2.8.1"
+    "styled-components": "^1.4.6"
   }
 }
