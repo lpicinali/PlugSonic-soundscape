@@ -59,7 +59,9 @@ export const addSource = sourceObject => {
     // console.log('')
     // console.log(spatializer)
     // console.log('')
-    targetInputs[sourceObject.filename].connect(targetVolumes[sourceObject.filename])
+    targetInputs[sourceObject.filename].connect(
+      targetVolumes[sourceObject.filename]
+    )
     targetVolumes[sourceObject.filename].connect(
       spatializer.targets[sourceObject.filename].processor
     )

@@ -33,10 +33,7 @@ import {
   // T_ear,
   TSpatializationMode,
 } from '3dti-toolkit'
-import {
-  map,
-  reduce
-} from 'lodash'
+import { map, reduce } from 'lodash'
 
 import // Ear,
 'src/constants.js'
@@ -176,67 +173,64 @@ function createInstance() {
 
   // DELETE ALL sources
   function deleteAllSources() {
-    map(
-      targets,
-      source => {
-        delete targets[source]
+    map(targets, source => {
+      delete targets[source]
     })
   }
 
   // IMPORT sources
   function importSources(sourcesObject) {
-
     targets = reduce(
       sourcesObject,
       (aggr, source) => {
-      const targetSource = binauralApi.CreateSource()
-      setSourcePosition(
-        targetSource,
-        source.position.azimuth,
-        source.position.distance
-      )
-
-      const targetInputMonoBuffer = new CMonoBuffer()
-      targetInputMonoBuffer.resize(512, 0)
-
-      const targetOutputStereoBuffer = new CStereoBuffer()
-      targetOutputStereoBuffer.resize(1024, 0)
-      // Script Node (bufferSize, # InputChannels, # OutputChannels)
-      const targetProcessor = context.createScriptProcessor(512, 1, 2)
-      // PROCESSING FUNCTION
-      targetProcessor.onaudioprocess = audioProcessingEvent => {
-        const { inputBuffer, outputBuffer } = audioProcessingEvent
-        const inputData = inputBuffer.getChannelData(0)
-
-        for (let i = 0; i < inputData.length; i++) {
-          targetInputMonoBuffer.set(i, inputData[i])
-        }
-        // process data
-        targetSource.ProcessAnechoic(
-          targetInputMonoBuffer,
-          targetOutputStereoBuffer
+        const targetSource = binauralApi.CreateSource()
+        setSourcePosition(
+          targetSource,
+          source.position.azimuth,
+          source.position.distance
         )
-        const outputDataLeft = outputBuffer.getChannelData(0)
-        const outputDataRight = outputBuffer.getChannelData(1)
 
-        for (let i = 0; i < outputDataLeft.length; i++) {
-          outputDataLeft[i] = targetOutputStereoBuffer.get(i * 2)
-          outputDataRight[i] = targetOutputStereoBuffer.get(i * 2 + 1)
+        const targetInputMonoBuffer = new CMonoBuffer()
+        targetInputMonoBuffer.resize(512, 0)
+
+        const targetOutputStereoBuffer = new CStereoBuffer()
+        targetOutputStereoBuffer.resize(1024, 0)
+        // Script Node (bufferSize, # InputChannels, # OutputChannels)
+        const targetProcessor = context.createScriptProcessor(512, 1, 2)
+        // PROCESSING FUNCTION
+        targetProcessor.onaudioprocess = audioProcessingEvent => {
+          const { inputBuffer, outputBuffer } = audioProcessingEvent
+          const inputData = inputBuffer.getChannelData(0)
+
+          for (let i = 0; i < inputData.length; i++) {
+            targetInputMonoBuffer.set(i, inputData[i])
+          }
+          // process data
+          targetSource.ProcessAnechoic(
+            targetInputMonoBuffer,
+            targetOutputStereoBuffer
+          )
+          const outputDataLeft = outputBuffer.getChannelData(0)
+          const outputDataRight = outputBuffer.getChannelData(1)
+
+          for (let i = 0; i < outputDataLeft.length; i++) {
+            outputDataLeft[i] = targetOutputStereoBuffer.get(i * 2)
+            outputDataRight[i] = targetOutputStereoBuffer.get(i * 2 + 1)
+          }
         }
-      }
 
-      return {
-        ...aggr,
-        [source.filename]: {
-          source: targetSource,
-          processor: targetProcessor,
-        },
-      }
-    },
-    {})
+        return {
+          ...aggr,
+          [source.filename]: {
+            source: targetSource,
+            processor: targetProcessor,
+          },
+        }
+      },
+      {}
+    )
     console.log('binauralSpatializer - targets')
     console.log(targets)
-
   }
 
   return fetchHrirsVector(hrirUrls, context).then(hrirsVector => {

@@ -5,14 +5,7 @@
 
 */ /* ----------------------------------------------------------------------------- */
 
-import {
-  call,
-  put,
-  select,
-  take,
-  fork,
-  spawn,
-} from 'redux-saga/effects'
+import { call, put, select, take, fork, spawn } from 'redux-saga/effects'
 import {
   // get,
   // reduce,
@@ -35,7 +28,7 @@ import {
   setPerformanceMode as engineSetPerformanceMode,
   addSource as engineAddSource,
   deleteSources as engineDeleteSources,
-  importSources as engineImportSources
+  importSources as engineImportSources,
 } from 'src/audio/engine.js'
 
 // const selected = [];

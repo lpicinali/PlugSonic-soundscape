@@ -21,12 +21,8 @@ import decode from 'src/audio/decode.js'
 import { map } from 'lodash'
 import fetchWavFile from 'src/utils'
 import FileReaderInput from 'react-file-reader-input'
-import {
-  importTargets
-} from 'src/actions/target.actions.js'
-import {
-  importRoom
-} from 'src/actions/room.actions.js'
+import { importTargets } from 'src/actions/target.actions.js'
+import { importRoom } from 'src/actions/room.actions.js'
 import { PlaybackState } from 'src/constants.js'
 import { setPlaybackState } from 'src/actions/controls.actions.js'
 import { handleImportRoom } from 'src/containers/PositionControllerContainer'
@@ -63,7 +59,7 @@ class ImportExportContainer extends Component {
     room: PropTypes.object.isRequired,
     onPauseApp: PropTypes.func.isRequired,
     onImportTargets: PropTypes.func.isRequired,
-    onImportRoom: PropTypes.func.isRequired
+    onImportRoom: PropTypes.func.isRequired,
   }
 
   @autobind
@@ -74,19 +70,19 @@ class ImportExportContainer extends Component {
     }
 
     const promises = map(soundscape.targets, target =>
-      got(target.url, { encoding: null })
-      .then(response => ({ [target.filename] : response.body }))
+      got(target.url, { encoding: null }).then(response => ({
+        [target.filename]: response.body,
+      }))
     )
 
-    Promise.all(promises)
-    .then(promises.map(promise => promise)
-    .then(objects => {
-      console.log(objects)
-    })
+    Promise.all(promises).then(
+      promises.map(promise => promise).then(objects => {
+        console.log(objects)
+      })
       // map(soundscape.targets, (target, index) => {
       //   console.log(pro)
-        // const file = new File(promises[index].body, {type: 'audio'});
-        // FileSaver.saveAs(file, target.filename)
+      // const file = new File(promises[index].body, {type: 'audio'});
+      // FileSaver.saveAs(file, target.filename)
     )
     //
     // const json = JSON.stringify(soundscape, null, 2);
@@ -97,9 +93,9 @@ class ImportExportContainer extends Component {
   @autobind
   handleExportMetadata() {
     try {
-      const isFileSaverSupported = !!new Blob;
+      const isFileSaverSupported = !!new Blob()
     } catch (e) {
-      alert('The File APIs are not fully supported in this browser.');
+      alert('The File APIs are not fully supported in this browser.')
     }
 
     const soundscape = {
@@ -107,8 +103,8 @@ class ImportExportContainer extends Component {
       room: this.props.room,
     }
 
-    const json = JSON.stringify(soundscape, null, 2);
-    const blob = new Blob([json], {type: 'application/json'});
+    const json = JSON.stringify(soundscape, null, 2)
+    const blob = new Blob([json], { type: 'application/json' })
     FileSaver.saveAs(blob, 'soundscape.json')
   }
 
@@ -120,24 +116,21 @@ class ImportExportContainer extends Component {
     }
 
     const promises = map(soundscape.targets, target =>
-      got(target.url, { encoding: null })
-      .then(response => {
-          soundscape.targets[target.filename].raw = response.body
+      got(target.url, { encoding: null }).then(response => {
+        soundscape.targets[target.filename].raw = response.body
       })
     )
 
-    Promise.all(promises)
-    .then(responses => {
+    Promise.all(promises).then(responses => {
       const json = JSON.stringify(soundscape)
-      const blob = new Blob([json], {type: 'application/json'})
+      const blob = new Blob([json], { type: 'application/json' })
       FileSaver.saveAs(blob, 'soundscape.json')
     })
   }
 
   handleImportMetadata = (evt, results) => {
-
     results.forEach(result => {
-      const [e, file] = result;
+      const [e, file] = result
       const soundscape = JSON.parse(e.target.result)
       // console.log(soundscape)
       // PAUSE
@@ -147,8 +140,7 @@ class ImportExportContainer extends Component {
       // IMPORT ROOM
       // handleImportRoom(soundscape.room)
       this.props.onImportRoom(soundscape.room)
-    });
-
+    })
   }
 
   render() {
@@ -158,27 +150,28 @@ class ImportExportContainer extends Component {
 
         <H3>Soundscape</H3>
 
-          <FileReaderInput type= "file" accept=".json" as="binary" id="importmeta" onChange={this.handleImportMetadata}>
-            <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
-          </FileReaderInput>
+        <FileReaderInput
+          type="file"
+          accept=".json"
+          as="binary"
+          id="importmeta"
+          onChange={this.handleImportMetadata}
+        >
+          <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
+        </FileReaderInput>
 
-          <Button
-            key="exportmeta"
-            onClick={this.handleExportMetadata}
-            style={{}}
-          >
-            Export
-          </Button>
+        <Button key="exportmeta" onClick={this.handleExportMetadata} style={{}}>
+          Export
+        </Button>
 
         <H3>Soundscape + Assets</H3>
-          <Button
-            key="exportrawscape"
-            onClick={this.handleExportSoundscapeRaw}
-            style={{ float: `left` }}
-          >
-            Export
-          </Button>
-
+        <Button
+          key="exportrawscape"
+          onClick={this.handleExportSoundscapeRaw}
+          style={{ float: `left` }}
+        >
+          Export
+        </Button>
       </div>
     )
   }
@@ -193,6 +186,6 @@ export default connect(
     onPauseApp: state => dispatch(setPlaybackState(state)),
     onImportTargets: targets => dispatch(importTargets(targets)),
     onImportRoom: room => dispatch(importRoom(room)),
-  //   // onChangeVolume: volume => dispatch(setTargetVolume(volume)),
+    //   // onChangeVolume: volume => dispatch(setTargetVolume(volume)),
   })
 )(ImportExportContainer)

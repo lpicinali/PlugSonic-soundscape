@@ -18,7 +18,7 @@ import {
   stopNodes as chainStopNodes,
   addSource as chainAddSource,
   deleteSources as chainDeleteSources,
-  deleteAllSources as chainDeleteAllSources,
+  // deleteAllSources as chainDeleteAllSources,
   // importSources as chainImportSources,
 } from 'src/audio/chain.js'
 
@@ -97,7 +97,7 @@ export const importSources = sourcesObject => {
   // console.log('ENGINE - filenames')
   // console.log(filenames)
 
-  for ( const filename in sourcesObject) {
+  for (const filename in sourcesObject) {
     // console.log('FOR')
     // console.log(filename)
     if (Object.prototype.hasOwnProperty.call(sourcesObject, filename)) {
