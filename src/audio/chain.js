@@ -107,61 +107,6 @@ export const deleteAllSources = () => {
   })
 }
 
-// export const importSources = sourcesObject => {
-//   console.log('CHAIN importSources')
-//
-//   targetNodes = {}
-//   targetInputs = {}
-//   targetVolumes = {}
-//
-//   map(
-//     sourcesObject,
-//     source => {
-//       targetNodes[source.filename] = null
-//       targetInputs[source.filename] = context.createGain()
-//       targetVolumes[source.filename] = context.createGain()
-//     }
-//   )
-//
-//   // console.log('targetsInputs')
-//   // console.log(targetInputs)
-//
-//   getBinauralSpatializer().then(spatializer => {
-//       console.log('')
-//       console.log('SPATIALIZER - targets')
-//       console.log(spatializer.targets)
-//       console.log('')
-//       spatializer.importSources(sourcesObject)
-//     })
-//
-//       // for (const filename in targetInputs) {
-//       //   console.log('in the FOR')
-//       //   console.log(`filename - ${filename}`)
-//       //   if (
-//       //     Object.prototype.hasOwnProperty.call(targetInputs, filename)
-//       //     Object.prototype.hasOwnProperty.call(targetVolumes, filename) &&
-//       //     Object.prototype.hasOwnProperty.call(spatializer.targets, filename)
-//       //   ) {
-//       //     console.log('in the IF')
-//       //     targetInputs[filename].connect(targetVolumes[filename])
-//       //     targetVolumes[filename].connect(spatializer.targets[filename].processor)
-//       //     spatializer.targets[filename].processor.connect(volume)
-//       //     console.log(`${filename} volume`)
-//       //     console.log(sourcesObject.targets[filename].volume)
-//       //     targetVolumes[filename].gain.value = sourcesObject.targets[filename].volume
-//       //   }
-//       // }
-//       // console.log('chain - targetVolumes');
-//       // console.log(targetVolumes)
-//
-//     // getBinauralSpatializer().then(newspatializer => {
-//     //   console.log('')
-//     //   console.log('NEW SPATIALIZER')
-//     //   console.log(newspatializer)
-//     //   console.log('')
-//     // })
-// }
-
 export const createNode = audioBuffer => {
   const node = context.createBufferSource()
   node.buffer = audioBuffer

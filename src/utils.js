@@ -12,24 +12,68 @@ export function radiusToCircumference(radius) {
   return radius * 2 * Math.PI
 }
 
-export function fetchAudioBuffer(url) {
-  // console.log("utils: FETCH audio buffer - begins");
-  // (async () => {
-  //   try {
-  //     const response = await got(url);
-  //     console.log(`response._readableState: ${response._readableState}`);
-  //     console.log(`response.readable: ${response.readable}`);
-  //     console.log(`response._events: ${response._events}`);
-  //     console.log(`response.url: ${response.url}`);
-  //     console.log(`response.statusCode: ${response.statusCode}`);
-  //     console.log(`response.statusMessage: ${response.statusMessage}`);
-  //     console.log(`response.requestUrl: ${response.requestUrl}`);
-  //   } catch (error) {
-  //       console.log(error.response.body);
-  //   }
-  // })();
+export function findTypeOfArray(array) {
+  const protType = Object.prototype.toString.call(array)
+  switch(protType) {
+    case '[object Int8Array]':
+      return 'Int8Array'
+    case '[object Uint8Array]':
+      return 'Uint8Array'
+    case '[object Uint8ClampedArray]':
+      return 'Uint8ClampedArray'
+    case '[object Int16Array]':
+      return 'Int16Array'
+    case '[object Uint16Array]':
+      return 'Uint16Array'
+    case '[object Int32Array]':
+      return 'Int32Array'
+    case '[object Uint32Array]':
+      return 'Uint32Array'
+    case '[object Float32Array]':
+      return 'Float32Array'
+    case '[object Float64Array]':
+      return 'Float64Array'
+    default:
+      return 'Uint8Array'
+  }
+}
 
+export function arrayToTypedArray(type, array) {
+  switch(type) {
+    case 'Int8Array':
+      return Int8Array.from(array)
+    case 'Uint8Array':
+      return Uint8Array.from(array)
+    case 'Uint8ClampedArray':
+      return Uint8ClampedArray.from(array)
+    case 'Int16Array':
+      return Int16Array.from(array)
+    case 'Uint16Array':
+      return Uint16Array.from(array)
+    case 'Int32Array':
+      return Int32Array.from(array)
+    case 'Uint32Array':
+      return Uint32Array.from(array)
+    case 'Float32Array':
+      return Float32Array.from(array)
+    case 'Float64Array':
+      return Float64Array.from(array)
+    default:
+      return Uint8Array.from(array)
+  }
+}
+
+export function fetchAudioBuffer(url) {
+  console.log('fetchAudioBuffer')
   return got(url, { encoding: null })
     .then(response => bufferToArrayBuffer(response.body))
     .then(arrayBuffer => decode(arrayBuffer, context))
+}
+
+export function fetchAudioBufferRaw(rawObject){
+  // rawObject = { type: typedArray.constructor.name , body: Buffer }
+  console.log('fetchAudioBufferRaw')
+  const typedArray = arrayToTypedArray(rawObject.type, rawObject.body.data)
+  const arrayBuffer = bufferToArrayBuffer(typedArray)
+  return decode(arrayBuffer, context)
 }

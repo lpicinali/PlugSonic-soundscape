@@ -6,7 +6,7 @@
 
 */ /* ---------------------------------------------- */
 
-import { fetchAudioBuffer } from 'src/utils.js'
+import { fetchAudioBuffer, fetchAudioBufferRaw } from 'src/utils.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   createNode as chainCreateNode,
@@ -18,11 +18,11 @@ import {
   stopNodes as chainStopNodes,
   addSource as chainAddSource,
   deleteSources as chainDeleteSources,
-  // deleteAllSources as chainDeleteAllSources,
+  deleteAllSources as chainDeleteAllSources,
   // importSources as chainImportSources,
 } from 'src/audio/chain.js'
 
-// import { map } from 'lodash'
+import { isEmpty } from 'lodash'
 
 export const play = () => {
   // console.log("engine: PLAY - begins");
@@ -46,16 +46,35 @@ export const pause = () => {
   // console.log("engine: PAUSE - ends");
 }
 
-export const setTargetSource = (filename, url) => {
-  // console.log("engine: SET TargetSource - begins");
+// export const setTargetSource = (filename, url) => {
+//   // console.log("engine: SET TargetSource - begins");
+//   pause()
+//   // console.log(`filename: ${filename}, url: ${url}`);
+//   // fetchAudioBuffer(url);
+//   return fetchAudioBuffer(url)
+//     .then(audioBuffer => {
+//       const node = chainCreateNode(audioBuffer)
+//       chainSetTargetNode(node, filename)
+//       // console.log("engine: SET TargetSource - ends");
+//     })
+//     .catch(err => console.error(err))
+// }
+
+export const setTargetSource = (targetObject) => {
   pause()
-  // console.log(`filename: ${filename}, url: ${url}`);
-  // fetchAudioBuffer(url);
-  return fetchAudioBuffer(url)
+  if (isEmpty(targetObject.raw)){
+    return fetchAudioBuffer(targetObject.url)
+      .then(audioBuffer => {
+        const node = chainCreateNode(audioBuffer)
+        chainSetTargetNode(node, targetObject.filename)
+      })
+      .catch(err => console.error(err))
+  }
+
+  return fetchAudioBufferRaw(targetObject.raw)
     .then(audioBuffer => {
       const node = chainCreateNode(audioBuffer)
-      chainSetTargetNode(node, filename)
-      // console.log("engine: SET TargetSource - ends");
+      chainSetTargetNode(node, targetObject.filename)
     })
     .catch(err => console.error(err))
 }
@@ -91,7 +110,7 @@ export const importSources = sourcesObject => {
   // console.log('ENGINE importSources')
   // console.log('ENGINE - sourcesObject')
   // console.log(sourcesObject)
-  // chainDeleteAllSources()
+  chainDeleteAllSources()
 
   // const filenames = map(sourcesObject, source => source.filename)
   // console.log('ENGINE - filenames')

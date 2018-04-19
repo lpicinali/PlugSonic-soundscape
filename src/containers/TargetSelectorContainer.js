@@ -117,11 +117,7 @@ class TargetSelectorContainer extends Component {
       url = newBegin.concat(url)
 
       got(url, { encoding: null })
-        .then(response => {
-          console.log('SUCCESS')
-          console.log(`response.url: ${response.url}`)
-          // console.log(`response.statusCode: ${response.statusCode}`);
-          // console.log(`response.statusMessage: ${response.statusMessage}`);
+        .then(() => {
           this.props.onAddSource(this.state.title, this.state.filename, url)
           this.setState({
             ...this.state,

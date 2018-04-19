@@ -505,20 +505,8 @@ export function getInstance() {
   }
 
   instancePromise = createInstance()
-  console.log('')
-  console.log(instancePromise)
-  console.log('')
+  // console.log('')
+  // console.log(instancePromise)
+  // console.log('')
   return instancePromise
-}
-
-export function deleteInstance() {
-  instancePromise = null
-  listener = null
-  targets = null
-  // return instancePromise
-}
-
-export function setTargets(newTargets) {
-  targets = newTargets
-  console.log(`set targets: ${JSON.stringify(targets)}`)
 }

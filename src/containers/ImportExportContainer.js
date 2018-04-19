@@ -2,6 +2,7 @@
 /* eslint react/forbid-prop-types: 0 */
 /* eslint no-unused-vars: 0 */
 /* eslint no-alert: 0 */
+/* eslint prefer-destructuring: 0 */
 
 /* ------------------- NOTES -------------------- */ /*
 
@@ -19,7 +20,7 @@ import bufferToArrayBuffer from 'buffer-to-arraybuffer'
 import context from 'src/audio/context.js'
 import decode from 'src/audio/decode.js'
 import { map } from 'lodash'
-import fetchWavFile from 'src/utils'
+import { fetchWavFile, findTypeOfArray } from 'src/utils'
 import FileReaderInput from 'react-file-reader-input'
 import { importTargets } from 'src/actions/target.actions.js'
 import { importRoom } from 'src/actions/room.actions.js'
@@ -64,6 +65,7 @@ class ImportExportContainer extends Component {
 
   @autobind
   handleExportAssets() {
+
     const soundscape = {
       targets: this.props.targets,
       room: this.props.room,
@@ -76,22 +78,28 @@ class ImportExportContainer extends Component {
     )
 
     Promise.all(promises).then(
-      promises.map(promise => promise).then(objects => {
-        console.log(objects)
-      })
-      // map(soundscape.targets, (target, index) => {
-      //   console.log(pro)
-      // const file = new File(promises[index].body, {type: 'audio'});
-      // FileSaver.saveAs(file, target.filename)
+      promises.map(promise => promise)
+      // .then(objects => { console.log(objects) })
     )
-    //
-    // const json = JSON.stringify(soundscape, null, 2);
-    // const blob = new File([json], {type: 'application/json'});
-    // FileSaver.saveAs(blob, 'soundscape.json')
+  }
+
+  handleImportSoundscape = (evt, results) => {
+    results.forEach(result => {
+      const [e, file] = result
+      const soundscape = JSON.parse(e.target.result)
+      // console.log(soundscape)
+      // PAUSE
+      this.props.onPauseApp(PlaybackState.PAUSED)
+      // IMPORT TARGETS
+      this.props.onImportTargets(soundscape.targets)
+      // IMPORT ROOM
+      handleImportRoom(soundscape.room)
+      this.props.onImportRoom(soundscape.room)
+    })
   }
 
   @autobind
-  handleExportMetadata() {
+  handleExportSoundscape(id) {
     try {
       const isFileSaverSupported = !!new Blob()
     } catch (e) {
@@ -103,44 +111,27 @@ class ImportExportContainer extends Component {
       room: this.props.room,
     }
 
-    const json = JSON.stringify(soundscape, null, 2)
-    const blob = new Blob([json], { type: 'application/json' })
-    FileSaver.saveAs(blob, 'soundscape.json')
-  }
-
-  @autobind
-  handleExportSoundscapeRaw() {
-    const soundscape = {
-      targets: this.props.targets,
-      room: this.props.room,
-    }
-
-    const promises = map(soundscape.targets, target =>
-      got(target.url, { encoding: null }).then(response => {
-        soundscape.targets[target.filename].raw = response.body
-      })
-    )
-
-    Promise.all(promises).then(responses => {
-      const json = JSON.stringify(soundscape)
+    if(id === 'meta') {
+      const json = JSON.stringify(soundscape, null, 2)
       const blob = new Blob([json], { type: 'application/json' })
       FileSaver.saveAs(blob, 'soundscape.json')
-    })
-  }
+    }
+    else if (id === 'raw'){
+      const promises = map(soundscape.targets, target =>
+        got(target.url, { encoding: null }).then(response => {
+          const body = response.body
+          const type = findTypeOfArray(response.body)
+          soundscape.targets[target.filename].raw = { type, body }
+          // console.log(soundscape.targets[target.filename].raw)
+        })
+      )
 
-  handleImportMetadata = (evt, results) => {
-    results.forEach(result => {
-      const [e, file] = result
-      const soundscape = JSON.parse(e.target.result)
-      // console.log(soundscape)
-      // PAUSE
-      this.props.onPauseApp(PlaybackState.PAUSED)
-      // IMPORT TARGETS
-      this.props.onImportTargets(soundscape.targets)
-      // IMPORT ROOM
-      // handleImportRoom(soundscape.room)
-      this.props.onImportRoom(soundscape.room)
-    })
+      Promise.all(promises).then(responses => {
+        const json = JSON.stringify(soundscape)
+        const blob = new Blob([json], { type: 'application/json' })
+        FileSaver.saveAs(blob, 'soundscape.json')
+      })
+    }
   }
 
   render() {
@@ -155,21 +146,27 @@ class ImportExportContainer extends Component {
           accept=".json"
           as="binary"
           id="importmeta"
-          onChange={this.handleImportMetadata}
+          onChange={this.handleImportSoundscape}
         >
           <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
         </FileReaderInput>
 
-        <Button key="exportmeta" onClick={this.handleExportMetadata} style={{}}>
+        <Button key="exportmeta" onClick={() => this.handleExportSoundscape('meta')}>
           Export
         </Button>
 
         <H3>Soundscape + Assets</H3>
-        <Button
-          key="exportrawscape"
-          onClick={this.handleExportSoundscapeRaw}
-          style={{ float: `left` }}
+        <FileReaderInput
+          type="file"
+          accept=".json"
+          as="binary"
+          id="importraw"
+          onChange={this.handleImportSoundscape}
         >
+          <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
+        </FileReaderInput>
+
+        <Button key="exportraw" onClick={() => this.handleExportSoundscape('raw')}>
           Export
         </Button>
       </div>

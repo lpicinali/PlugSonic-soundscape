@@ -47,23 +47,25 @@ function* applyPlayPause() {
   }
 }
 
-function* manageComponentSource(target, url) {
+function* manageComponentSource(filename, url) {
   const selected = yield select(state => state.target.selected)
   // console.log(`selected: ${selected}`);
-  const index = selected.indexOf(target)
+  const index = selected.indexOf(filename)
   if (index >= 0) {
     // selected.splice(index,1);
     // console.log("rootSaga: SET TARGET");
     // console.log(`target: ${target}`);
     // console.log(`selected: ${selected}`);
-    yield call(engineSetTargetSource, target, url)
+    // yield call(engineSetTargetSource, filename, url)
+    const targetObject = yield select(state => state.target.targets[filename])
+    yield call(engineSetTargetSource, targetObject)
   } else {
     // selected.push(target);
     // console.log("rootSaga: UNSET TARGET");
     // console.log(`target: ${target}`);
     // console.log(`selected: ${selected}`);
     // yield call(engineSetTargetSource, getFileUrl(target), target);
-    yield call(engineUnsetTargetSource, target)
+    yield call(engineUnsetTargetSource, filename)
   }
   const playbackState = yield select(state => state.controls.playbackState)
 
@@ -86,9 +88,8 @@ function* manageAddSource(filename) {
 
   const selected = yield select(state => state.target.selected)
   for (let i = 0; i < selected.length; i++) {
-    const file = selected[i]
-    const url = targets[file].url
-    yield call(engineSetTargetSource, file, url)
+    const targetObject = targets[selected[i]]
+    yield call(engineSetTargetSource, targetObject)
   }
 
   const playbackState = yield select(state => state.controls.playbackState)
@@ -108,8 +109,8 @@ function* applyDeleteSources() {
   while (true) {
     const { type, payload } = yield take(ActionType.DELETE_TARGETS)
     const selected = payload.targets
-    console.log(`rootSaga: DELETE TARGETS`)
-    console.log(`selected: ${selected}`)
+    // console.log(`rootSaga: DELETE TARGETS`)
+    // console.log(`selected: ${selected}`)
     enginePause()
 
     yield call(engineDeleteSources, selected)
@@ -125,7 +126,7 @@ function* applyImportSources() {
   while (true) {
     const { type, payload } = yield take(ActionType.IMPORT_TARGETS)
     const sources = payload.targets
-    console.log(sources)
+    // console.log(sources)
     engineImportSources(sources)
   }
 }

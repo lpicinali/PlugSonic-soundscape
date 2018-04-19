@@ -43,6 +43,7 @@ const minHeight = 3
 const maxHeight = 100
 
 let gState = {
+  shape: RoomShape.RECTANGULAR,
   size: { width: 20, height: 10 },
   errorTextW: '',
   errorTextH: '',
@@ -68,7 +69,8 @@ class PositionControllerContainer extends Component {
   static defaultProps = {}
 
   state = {
-    size: { width: 20, height: 10 },
+    shape: gState.shape,
+    size: { width: gState.size.width, height: gState.size.width },
     errorTextW: '',
     errorTextH: '',
   }
@@ -76,15 +78,22 @@ class PositionControllerContainer extends Component {
   @autobind
   handleDropDownChange(event, index, value) {
     if (value === 'ROUND') {
-      this.props.onShapeChange(RoomShape.ROUND)
       const newSize = {
         width: this.props.roomSize.width,
         height: this.props.roomSize.width,
       }
-      this.setState({ ...this.state, size: newSize })
+      gState = { ...gState, size: newSize, shape: RoomShape.ROUND }
+      this.setState({ ...this.state, size: newSize, shape: RoomShape.ROUND })
+      this.props.onShapeChange(RoomShape.ROUND)
       this.props.onSizeChange(newSize)
+      // console.log('gState')
+      // console.log(gState)
     } else if (value === 'RECTANGULAR') {
+      gState = { ...gState, shape: RoomShape.RECTANGULAR }
+      this.setState({ ...this.state, shape: RoomShape.RECTANGULAR })
       this.props.onShapeChange(RoomShape.RECTANGULAR)
+      // console.log('gState')
+      // console.log(gState)
     }
   }
 
@@ -110,13 +119,12 @@ class PositionControllerContainer extends Component {
       if (!isNaN(toNumber(val))) {
         if (val >= minWidth && val <= maxWidth) {
           const newSize = { width: toNumber(val), height: toNumber(val) }
-          // gState = {
-          //   ...this.state,
-          //   size: newSize,
-          //   errorTextW: '',
-          //   errorTextH: '',
-          // }
-          // this.setState(gState)
+          gState = {
+            ...gState,
+            size: newSize,
+            errorTextW: '',
+            errorTextH: '',
+          }
           this.setState({
             ...this.state,
             size: newSize,
@@ -124,126 +132,136 @@ class PositionControllerContainer extends Component {
             errorTextH: '',
           })
           this.props.onSizeChange(newSize)
+          // console.log('gState')
+          // console.log(gState)
         } else {
           const newSize = { width: toNumber(val), height: toNumber(val) }
-          // gState = {
-          //   ...this.state,
-          //   size: newSize,
-          //   errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
-          //   errorTextH: '',
-          // }
-          // this.setState(gState)
+          gState = {
+            ...gState,
+            size: newSize,
+            errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+            errorTextH: '',
+          }
           this.setState({
             ...this.state,
             size: newSize,
             errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
             errorTextH: '',
           })
+          // console.log('gState')
+          // console.log(gState)
         }
       } else {
         const newSize = { ...this.state.size, width: val }
-        // gState = {
-        //   ...this.state,
-        //   size: newSize,
-        //   errorTextW: 'Invalid: NaN',
-        //   errorTextH: '',
-        // }
-        // this.setState(gState)
+        gState = {
+          ...gState,
+          size: newSize,
+          errorTextW: 'Invalid: NaN',
+          errorTextH: '',
+        }
         this.setState({
           ...this.state,
           size: newSize,
           errorTextW: 'Invalid: NaN',
           errorTextH: '',
         })
+        // console.log('gState')
+        // console.log(gState)
       }
     } else {
       if (event.target.id === 'width') {
         if (!isNaN(toNumber(val))) {
           if (val >= minWidth && val <= maxWidth) {
             const newSize = { ...this.state.size, width: toNumber(val) }
-            // gState = {
-            //   ...this.state,
-            //   size: newSize,
-            //   errorTextW: '',
-            // }
-            // this.setState(gState)
+            gState = {
+              ...gState,
+              size: newSize,
+              errorTextW: '',
+            }
             this.setState({
               ...this.state,
               size: newSize,
               errorTextW: '',
             })
             this.props.onSizeChange(newSize)
+            // console.log('gState')
+            // console.log(gState)
           } else {
             const newSize = { ...this.state.size, width: toNumber(val) }
-            // gState = {
-            //   ...this.state,
-            //   size: newSize,
-            //   errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
-            // }
-            // this.setState(gState)
+            gState = {
+              ...gState,
+              size: newSize,
+              errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+            }
             this.setState({
               ...this.state,
               size: newSize,
               errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
             })
+            // console.log('gState')
+            // console.log(gState)
           }
         } else {
           const newSize = { ...this.state.size, width: val }
-          // gState = {
-          //   ...this.state,
-          //   size: newSize,
-          //   errorTextW: 'Invalid: NaN',
-          // }
-          // this.setState(gState)
+          gState = {
+            ...gState,
+            size: newSize,
+            errorTextW: 'Invalid: NaN',
+          }
           this.setState({
             ...this.state,
             size: newSize,
             errorTextW: 'Invalid: NaN',
           })
+          // console.log('gState')
+          // console.log(gState)
         }
       } else {
         if (!isNaN(toNumber(val))) {
           if (val >= minHeight && val <= maxHeight) {
             const newSize = { ...this.state.size, height: toNumber(val) }
-            // gState = {
-            //   ...this.state,
-            //   size: newSize,
-            //   errorTextH: '',
-            // }
-            // this.setState(gState)
+            gState = {
+              ...gState,
+              size: newSize,
+              errorTextH: '',
+            }
             this.setState({
               ...this.state,
               size: newSize,
               errorTextH: '',
             })
             this.props.onSizeChange(newSize)
+            // console.log('gState')
+            // console.log(gState)
           } else {
             const newSize = { ...this.state.size, height: toNumber(val) }
-            // gState = {
-            //   ...this.state,
-            //   size: newSize,
-            //   errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`,
-            // }
-            // this.setState(gState)
+            gState = {
+              ...gState,
+              size: newSize,
+              errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`,
+            }
             this.setState({
               ...this.state,
               size: newSize,
               errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`,
             })
+            // console.log('gState')
+            // console.log(gState)
           }
         } else {
           const newSize = { ...this.state.size, height: val }
-          // gState = {
-          //   ...this.state,
-          //   size: newSize,
-          //   errorTextH: 'Invalid: NaN',
-          // }
-          // this.setState(gState)
+          gState = {
+            ...gState,
+            size: newSize,
+            errorTextH: 'Invalid: NaN',
+          }
           this.setState({
             ...this.state,
             size: newSize,
             errorTextH: 'Invalid: NaN',
           })
+          // console.log('gState')
+          // console.log(gState)
         }
       }
     }
@@ -267,6 +285,10 @@ class PositionControllerContainer extends Component {
       azimuth: targets[target].position.azimuth,
       distance: targets[target].position.distance,
     }))
+
+    if (gState !== this.state) {
+      this.state = gState
+    }
 
     return (
       <div>
@@ -316,16 +338,13 @@ class PositionControllerContainer extends Component {
         <div>
           <MuiThemeProvider>
             <DropDownMenu
-              value={roomShape}
+              value={gState.shape}
               onChange={this.handleDropDownChange}
               autoWidth={false}
               style={{ width: `50%` }}
             >
               <MenuItem value={RoomShape.ROUND} primaryText="Round" />
-              <MenuItem
-                value={RoomShape.RECTANGULAR}
-                primaryText="Rectangular"
-              />
+              <MenuItem value={RoomShape.RECTANGULAR} primaryText="Rectangular" />
             </DropDownMenu>
           </MuiThemeProvider>
         </div>
@@ -333,8 +352,8 @@ class PositionControllerContainer extends Component {
           <TextField
             id="width"
             type="text"
-            value={this.state.size.width}
-            errorText={this.state.errorTextW}
+            value={gState.size.width}
+            errorText={gState.errorTextW}
             floatingLabelText="Width (m)"
             onChange={this.handleTextFieldChange}
             style={{ width: `35%`, paddingRight: `5%`, float: `left` }}
@@ -344,8 +363,8 @@ class PositionControllerContainer extends Component {
           <TextField
             id="height"
             type="text"
-            value={this.state.size.height}
-            errorText={this.state.errorTextH}
+            value={gState.size.height}
+            errorText={gState.errorTextH}
             floatingLabelText="Height (m)"
             onChange={this.handleTextFieldChange}
             disabled={roomShape === RoomShape.ROUND}
@@ -358,14 +377,14 @@ class PositionControllerContainer extends Component {
 }
 
 export function handleImportRoom(roomObject) {
-  console.log('handleImportRoom')
   gState = {
+    shape: roomObject.shape,
     size: roomObject.size,
     errorTextW: '',
     errorTextH: '',
   }
-  console.log('STATE')
-  console.log(gState)
+  // console.log('gState')
+  // console.log(gState)
 }
 
 export default connect(
