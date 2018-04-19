@@ -1,8 +1,7 @@
 {
   "presets": [
     ["env"],
-    "react",
-    ["minify"]
+    "react"
   ],
   "plugins": [
     "transform-object-rest-spread",
