@@ -1,8 +1,7 @@
 {
   "presets": [
     ["env"],
-    "react",
-    ["minify"]
+    "react"
   ],
   "plugins": [
     "transform-object-rest-spread",
@@ -15,9 +14,6 @@
   "env": {
     "development": {
       "plugins": ["react-hot-loader/babel"]
-    },
-    "production": {
-      "presets": ["minify"]
     }
   }
 }
