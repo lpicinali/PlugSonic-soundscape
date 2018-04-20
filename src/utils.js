@@ -14,7 +14,7 @@ export function radiusToCircumference(radius) {
 
 export function findTypeOfArray(array) {
   const protType = Object.prototype.toString.call(array)
-  switch(protType) {
+  switch (protType) {
     case '[object Int8Array]':
       return 'Int8Array'
     case '[object Uint8Array]':
@@ -39,7 +39,7 @@ export function findTypeOfArray(array) {
 }
 
 export function arrayToTypedArray(type, array) {
-  switch(type) {
+  switch (type) {
     case 'Int8Array':
       return Int8Array.from(array)
     case 'Uint8Array':
@@ -70,7 +70,7 @@ export function fetchAudioBuffer(url) {
     .then(arrayBuffer => decode(arrayBuffer, context))
 }
 
-export function fetchAudioBufferRaw(rawObject){
+export function fetchAudioBufferRaw(rawObject) {
   // rawObject = { type: typedArray.constructor.name , body: Buffer }
   console.log('fetchAudioBufferRaw')
   const typedArray = arrayToTypedArray(rawObject.type, rawObject.body.data)

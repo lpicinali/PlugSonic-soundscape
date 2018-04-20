@@ -344,7 +344,10 @@ class PositionControllerContainer extends Component {
               style={{ width: `50%` }}
             >
               <MenuItem value={RoomShape.ROUND} primaryText="Round" />
-              <MenuItem value={RoomShape.RECTANGULAR} primaryText="Rectangular" />
+              <MenuItem
+                value={RoomShape.RECTANGULAR}
+                primaryText="Rectangular"
+              />
             </DropDownMenu>
           </MuiThemeProvider>
         </div>

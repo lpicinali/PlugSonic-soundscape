@@ -60,9 +60,9 @@ export const pause = () => {
 //     .catch(err => console.error(err))
 // }
 
-export const setTargetSource = (targetObject) => {
+export const setTargetSource = targetObject => {
   pause()
-  if (isEmpty(targetObject.raw)){
+  if (isEmpty(targetObject.raw)) {
     return fetchAudioBuffer(targetObject.url)
       .then(audioBuffer => {
         const node = chainCreateNode(audioBuffer)

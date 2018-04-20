@@ -76,7 +76,7 @@ export default function(state = initialState, { type, payload }) {
       url: payload.url,
       position: { azimuth: azimuthIndex * Math.PI / 6, distance: 3 },
       volume: 0.5,
-      raw: {}
+      raw: {},
     }
     azimuthIndex += 1
     // console.log(`n = ${n}`);

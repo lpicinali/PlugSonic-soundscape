@@ -65,7 +65,6 @@ class ImportExportContainer extends Component {
 
   @autobind
   handleExportAssets() {
-
     const soundscape = {
       targets: this.props.targets,
       room: this.props.room,
@@ -111,12 +110,11 @@ class ImportExportContainer extends Component {
       room: this.props.room,
     }
 
-    if(id === 'meta') {
+    if (id === 'meta') {
       const json = JSON.stringify(soundscape, null, 2)
       const blob = new Blob([json], { type: 'application/json' })
       FileSaver.saveAs(blob, 'soundscape.json')
-    }
-    else if (id === 'raw'){
+    } else if (id === 'raw') {
       const promises = map(soundscape.targets, target =>
         got(target.url, { encoding: null }).then(response => {
           const body = response.body
@@ -151,7 +149,10 @@ class ImportExportContainer extends Component {
           <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
         </FileReaderInput>
 
-        <Button key="exportmeta" onClick={() => this.handleExportSoundscape('meta')}>
+        <Button
+          key="exportmeta"
+          onClick={() => this.handleExportSoundscape('meta')}
+        >
           Export
         </Button>
 
@@ -166,7 +167,10 @@ class ImportExportContainer extends Component {
           <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
         </FileReaderInput>
 
-        <Button key="exportraw" onClick={() => this.handleExportSoundscape('raw')}>
+        <Button
+          key="exportraw"
+          onClick={() => this.handleExportSoundscape('raw')}
+        >
           Export
         </Button>
       </div>
