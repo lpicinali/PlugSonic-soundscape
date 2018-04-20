@@ -63,10 +63,10 @@ class TargetSelectorContainer extends Component {
 
   state = {
     title: '',
-    filename: '',
+    // filename: '',
     url: '',
     errorTextT: '',
-    errorTextF: '',
+    // errorTextF: '',
     errorTextU: '',
   }
 
@@ -85,18 +85,20 @@ class TargetSelectorContainer extends Component {
       } else {
         this.setState({ ...this.state, title: val, errorTextT: '' })
       }
-    } else if (event.target.id === 'filename') {
-      const filenames = map(this.props.targets, file => file.filename)
-      if (filenames.indexOf(val) >= 0) {
-        this.setState({
-          ...this.state,
-          filename: val,
-          errorTextF: `Already in use`,
-        })
-      } else {
-        this.setState({ ...this.state, filename: val, errorTextF: '' })
-      }
-    } else if (event.target.id === 'url') {
+    }
+    // else if (event.target.id === 'filename') {
+    //   const filenames = map(this.props.targets, file => file.filename)
+    //   if (filenames.indexOf(val) >= 0) {
+    //     this.setState({
+    //       ...this.state,
+    //       filename: val,
+    //       errorTextF: `Already in use`,
+    //     })
+    //   } else {
+    //     this.setState({ ...this.state, filename: val, errorTextF: '' })
+    //   }
+    // }
+    else if (event.target.id === 'url') {
       const urls = map(this.props.targets, file => file.url)
       if (urls.indexOf(val) >= 0) {
         this.setState({ ...this.state, url: val, errorTextU: `Already in use` })
@@ -118,14 +120,16 @@ class TargetSelectorContainer extends Component {
 
       got(url, { encoding: null })
         .then(() => {
-          this.props.onAddSource(this.state.title, this.state.filename, url)
+          const title = this.state.title.trim()
+          const filename = title.replace(/\s/g,'').toLowerCase()
+          this.props.onAddSource(title, filename, url)
           this.setState({
             ...this.state,
             title: '',
-            filename: '',
+            // filename: '',
             url: '',
             errorTextT: '',
-            errorTextF: '',
+            // errorTextF: '',
             errorTextU: '',
           })
         })
@@ -204,44 +208,32 @@ class TargetSelectorContainer extends Component {
             </MuiThemeProvider>
             <MuiThemeProvider>
               <TextField
-                id="filename"
-                type="text"
-                value={this.state.filename}
-                errorText={this.state.errorTextF}
-                floatingLabelText="Filename"
-                onChange={this.handleTextFieldChange}
-                style={{ width: `40%`, paddingLeft: `5%` }}
-              />
-            </MuiThemeProvider>
-          </div>
-          <div>
-            <MuiThemeProvider>
-              <TextField
                 id="url"
                 type="url"
                 value={this.state.url}
                 errorText={this.state.errorTextU}
                 floatingLabelText="Dropbox URL"
                 onChange={this.handleTextFieldChange}
-                style={{ width: `50%` }}
+                style={{ width: `40%`, paddingLeft: `5%`}}
               />
             </MuiThemeProvider>
           </div>
 
-          <Button
-            key="add"
-            onClick={this.handleAddSource}
-            style={{ float: `left` }}
-          >
-            Add Source
-          </Button>
-          <Button
-            key="delete"
-            onClick={() => this.props.onDeleteSource(this.props.selected)}
-            style={{ float: `left` }}
-          >
-            Delete Selected
-          </Button>
+          <div style={{ paddingTop: 18 }}>
+            <Button
+              key="add"
+              onClick={this.handleAddSource}
+              style={{ float: `left` }}
+            >
+              Add Source
+            </Button>
+            <Button
+              key="delete"
+              onClick={() => this.props.onDeleteSource(this.props.selected)}
+            >
+              Delete Selected
+            </Button>
+          </div>
         </div>
 
         <div>
