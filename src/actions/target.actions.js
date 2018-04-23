@@ -11,9 +11,19 @@ export const setTarget = (target, url) => ({
   payload: { target, url },
 })
 
+export const setEditingTarget = (target) => ({
+  type: ActionType.SET_EDITING_TARGET,
+  payload: { target },
+})
+
 export const setTargetPosition = (target, position) => ({
   type: ActionType.SET_TARGET_POSITION,
   payload: { target, position },
+})
+
+export const setTargetReach = (target, radius, fadeDuration) => ({
+  type: ActionType.SET_TARGET_REACH,
+  payload: { target, radius, fadeDuration },
 })
 
 export const setTargetVolume = (target, volume) => ({

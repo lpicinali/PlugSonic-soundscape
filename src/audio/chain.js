@@ -3,10 +3,11 @@
 
 /* ------------------- NOTES -------------------- */ /*
 
-*/ /* ---------------------------------------------- */
-
+*//* ---------------------------------------------- */
+import { clamp } from 'lodash'
 import toolkit from '3dti-toolkit'
-import { audioFiles } from 'src/audio/audio-files.js'
+
+import { audioFiles } from 'src/audio/audio-files.js';
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 
@@ -29,6 +30,8 @@ let targetVolumes = audioFiles.reduce(
 
 const volume = context.createGain()
 volume.gain.value = 0.5
+
+const targetVolumeValues = {}
 
 getBinauralSpatializer().then(spatializer => {
   for (const filename in targetInputs) {
@@ -143,8 +146,25 @@ export const setMasterVolume = newVolume => {
   volume.gain.value = newVolume
 }
 
-export const setTargetVolume = (filename, newVolume) => {
-  targetVolumes[filename].gain.value = newVolume
+export const setTargetVolume = (filename, newVolume, fadeDuration = 0) => {
+  if (newVolume !== targetVolumeValues[filename]) {
+    targetVolumeValues[filename] = newVolume
+
+    const gainNode = targetVolumes[filename].gain
+
+    // This makes fades act sort of naturally when you change
+    // volume again within the duration
+    gainNode.cancelScheduledValues(context.currentTime)
+    gainNode.setValueAtTime(gainNode.value, context.currentTime)
+
+    // Ramping in the Web Audio API does not allow end values
+    // of 0, so we need to make sure to have a tiny little
+    // fraction left
+    gainNode.exponentialRampToValueAtTime(
+      clamp(newVolume, 0.00001, Infinity),
+      context.currentTime + (fadeDuration / 1000)
+    )
+  }
 }
 
 export const startNodes = () => {

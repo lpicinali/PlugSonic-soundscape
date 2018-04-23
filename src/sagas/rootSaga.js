@@ -5,13 +5,8 @@
 
 */ /* ----------------------------------------------------------------------------- */
 
-import { call, put, select, take, fork, spawn } from 'redux-saga/effects'
-import {
-  // get,
-  // reduce,
-  // values
-  map,
-} from 'lodash'
+import { all, call, put, select, take, fork, spawn } from 'redux-saga/effects'
+import { map } from 'lodash'
 
 import { ActionType, PlaybackState } from 'src/constants.js'
 import { getFileUrl } from 'src/audio/audio-files.js'
@@ -30,6 +25,7 @@ import {
   deleteSources as engineDeleteSources,
   importSources as engineImportSources,
 } from 'src/audio/engine.js'
+import { getDistanceBetweenSphericalPoints } from 'src/utils.js'
 
 // const selected = [];
 
@@ -169,6 +165,30 @@ function* applyTargetVolume() {
   }
 }
 
+function* rampTargetVolumesByTheirReach() {
+  while (true) {
+    yield take([
+      ActionType.SET_LISTENER_POSITION,
+      ActionType.SET_TARGET_POSITION,
+      ActionType.SET_TARGET_REACH,
+      ActionType.SET_PLAYBACK_STATE,
+    ])
+
+    const [listener, targets] = yield all([
+      select(state => state.listener),
+      select(state => state.target.selected.map(filename => state.target.targets[filename])),
+    ])
+
+    // eslint-disable-next-line
+    for (const target of targets) {
+      const distanceToListener = getDistanceBetweenSphericalPoints(listener.position, target.position)
+      const volume = distanceToListener <= target.reach.radius ? target.volume : 0
+
+      yield call(engineSetTargetVolume, target.filename, volume, target.reach.fadeDuration)
+    }
+  }
+}
+
 function* applyHeadRadius() {
   while (true) {
     const { payload } = yield take(ActionType.SET_HEAD_RADIUS)
@@ -210,6 +230,7 @@ export default function* rootSaga() {
     applyImportSources(),
     applyMasterVolume(),
     applyTargetVolume(),
+    rampTargetVolumesByTheirReach(),
     applyPerformanceMode(),
     applyHeadRadius(),
     // applyDirectionalityEnabled(),

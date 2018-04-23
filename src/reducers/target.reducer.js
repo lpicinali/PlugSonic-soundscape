@@ -1,6 +1,7 @@
 /* ------------------- NOTES -------------------- */ /*
 
-*/ /* ---------------------------------------------- */
+*//* ---------------------------------------------- */
+import { set } from 'lodash/fp'
 
 import { ActionType } from 'src/constants.js'
 import { audioFiles } from 'src/audio/audio-files.js'
@@ -15,12 +16,17 @@ const initialState = {
         url: file.url,
         position: { azimuth: index * Math.PI / 6, distance: 3 },
         volume: 0.5,
+        reach: {
+          radius: 3,
+          fadeDuration: 1000,
+        },
         raw: {},
       },
     }),
     {}
   ),
   selected: [],
+  editing: null,
 }
 
 let azimuthIndex = Object.keys(initialState.targets).length
@@ -40,6 +46,9 @@ export default function(state = initialState, { type, payload }) {
     // console.log({ ...state, selected: newSelected });
     return { ...state, selected: newSelected }
   }
+  if (type === ActionType.SET_EDITING_TARGET) {
+    return set('editing', payload.target, state)
+  }
   if (type === ActionType.SET_TARGET_POSITION) {
     const newTargets = Object.assign({}, state.targets)
     Object.assign(newTargets[payload.target].position, payload.position)
@@ -53,6 +62,14 @@ export default function(state = initialState, { type, payload }) {
     // console.log();
     // console.log();
     return { ...state, targets: newTargets }
+  }
+  if (type === ActionType.SET_TARGET_REACH) {
+    const { radius, fadeDuration } = payload
+    return set(
+      ['targets', payload.target, 'reach'],
+      { radius, fadeDuration },
+      state
+    )
   }
   if (type === ActionType.SET_TARGET_VOLUME) {
     const newTargets = Object.assign({}, state.targets)

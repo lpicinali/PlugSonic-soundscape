@@ -61,6 +61,14 @@ export function arrayToTypedArray(type, array) {
     default:
       return Uint8Array.from(array)
   }
+
+export function getDistanceBetweenSphericalPoints(a, b) {
+  const ax = Math.cos(a.azimuth) * a.distance
+  const az = Math.sin(a.azimuth) * a.distance
+  const bx = Math.cos(b.azimuth) * b.distance
+  const bz = Math.sin(b.azimuth) * b.distance
+
+  return Math.sqrt((bx - ax) ** 2 + (bz - az) ** 2)
 }
 
 export function fetchAudioBuffer(url) {
