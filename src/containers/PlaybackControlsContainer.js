@@ -43,8 +43,12 @@ const buttonStyles = `
   }
 `
 
-const StyledPlayButton = styled(PlayButton)`${buttonStyles};`
-const StyledPauseButton = styled(PauseButton)`${buttonStyles};`
+const StyledPlayButton = styled(PlayButton)`
+  ${buttonStyles};
+`
+const StyledPauseButton = styled(PauseButton)`
+  ${buttonStyles};
+`
 
 /**
  * Playback Controls Container

@@ -23,7 +23,6 @@ class TargetVolumeSlider extends PureComponent {
   }
 
   render() {
-
     const { volume } = this.props
 
     // console.log('ID');

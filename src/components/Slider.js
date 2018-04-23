@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   noop,
-//  round
-  } from 'lodash'
+  //  round
+} from 'lodash'
 import { autobind } from 'core-decorators'
 
 /**

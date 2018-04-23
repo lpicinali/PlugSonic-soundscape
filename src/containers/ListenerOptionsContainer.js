@@ -1,9 +1,9 @@
 /* eslint react/prefer-stateless-function: 0 */
 /* eslint react/forbid-prop-types: 0 */
 
-/* ------------------- NOTES -------------------- *//*
+/* ------------------- NOTES -------------------- */ /*
 
-*//* ---------------------------------------------- */
+*/ /* ---------------------------------------------- */
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -58,7 +58,7 @@ class ListenerOptionsContainer extends Component {
       // onChangeVolume,
       onChangePerformanceMode,
       onChangeHeadRadius,
-    } = this.props;
+    } = this.props
 
     // const options = reduce(
     //   targets,
@@ -81,9 +81,9 @@ class ListenerOptionsContainer extends Component {
         <div>
           <H3>Performance mode</H3>
           <input
-              type="checkbox"
-              checked={isPerformanceModeEnabled}
-              onClick={() => onChangePerformanceMode(!isPerformanceModeEnabled)}
+            type="checkbox"
+            checked={isPerformanceModeEnabled}
+            onClick={() => onChangePerformanceMode(!isPerformanceModeEnabled)}
           />
         </div>
 
@@ -99,11 +99,11 @@ class ListenerOptionsContainer extends Component {
               max={0.7}
               step={0.005}
               onChange={circumference =>
-                onChangeHeadRadius(circumferenceToRadius(circumference))}
+                onChangeHeadRadius(circumferenceToRadius(circumference))
+              }
             />
           </div>
         </div>
-
       </div>
     )
   }
