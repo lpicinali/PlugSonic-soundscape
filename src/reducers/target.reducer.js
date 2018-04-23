@@ -93,6 +93,10 @@ export default function(state = initialState, { type, payload }) {
       url: payload.url,
       position: { azimuth: azimuthIndex * Math.PI / 6, distance: 3 },
       volume: 0.5,
+      reach: {
+        radius: 3,
+        fadeDuration: 1000,
+      },
       raw: {},
     }
     azimuthIndex += 1
