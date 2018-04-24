@@ -12,24 +12,11 @@ import { connect } from 'react-redux'
 import { reduce, map } from 'lodash'
 import got from 'got'
 
-import {
-  // setHeadRadius,
-  // setPerformanceMode,
-  setMasterVolume,
-} from 'src/actions/controls.actions.js'
-import {
-  setTarget,
-  setTargetVolume,
-  addTarget,
-  deleteTargets,
-} from 'src/actions/target.actions.js'
-import // setHeadRadius,
-// setPerformanceMode,
-'src/actions/listener.actions.js'
-// import DirectionalityContainer from 'src/containers/DirectionalityContainer.js'
-// import ButtonGroup from 'src/components/ButtonGroup.js'
+import { setMasterVolume } from 'src/actions/controls.actions.js'
+import { setTarget, setTargetVolume, addTarget, deleteTargets,
+  } from 'src/actions/target.actions.js'
+
 import ButtonSliderGroup from 'src/components/ButtonSliderGroup.js'
-// import Slider from 'src/components/Slider.js'
 import MasterVolumeSlider from 'src/components/MasterVolumeSlider.js'
 import { H2, H3 } from 'src/styles/elements.js'
 
@@ -46,15 +33,11 @@ class TargetSelectorContainer extends Component {
     targets: PropTypes.object.isRequired,
     selected: PropTypes.array,
     masterVolume: PropTypes.number.isRequired,
-    // isPerformanceModeEnabled: PropTypes.bool.isRequired,
-    // headRadius: PropTypes.number.isRequired,
     onSelect: PropTypes.func.isRequired,
     onChangeTargetVolume: PropTypes.func.isRequired,
     onChangeMasterVolume: PropTypes.func.isRequired,
     onAddSource: PropTypes.func.isRequired,
     onDeleteSource: PropTypes.func.isRequired,
-    // onChangePerformanceMode: PropTypes.func.isRequired,
-    // onChangeHeadRadius: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -63,10 +46,8 @@ class TargetSelectorContainer extends Component {
 
   state = {
     title: '',
-    // filename: '',
     url: '',
     errorTextT: '',
-    // errorTextF: '',
     errorTextU: '',
   }
 
@@ -86,18 +67,6 @@ class TargetSelectorContainer extends Component {
         this.setState({ ...this.state, title: val, errorTextT: '' })
       }
     }
-    // else if (event.target.id === 'filename') {
-    //   const filenames = map(this.props.targets, file => file.filename)
-    //   if (filenames.indexOf(val) >= 0) {
-    //     this.setState({
-    //       ...this.state,
-    //       filename: val,
-    //       errorTextF: `Already in use`,
-    //     })
-    //   } else {
-    //     this.setState({ ...this.state, filename: val, errorTextF: '' })
-    //   }
-    // }
     else if (event.target.id === 'url') {
       const urls = map(this.props.targets, file => file.url)
       if (urls.indexOf(val) >= 0) {
@@ -126,10 +95,8 @@ class TargetSelectorContainer extends Component {
           this.setState({
             ...this.state,
             title: '',
-            // filename: '',
             url: '',
             errorTextT: '',
-            // errorTextF: '',
             errorTextU: '',
           })
         })
@@ -148,23 +115,10 @@ class TargetSelectorContainer extends Component {
       targets,
       selected,
       masterVolume,
-      // isPerformanceModeEnabled,
-      // headRadius,
       onSelect,
       onChangeTargetVolume,
       onChangeMasterVolume,
-      // onChangePerformanceMode,
-      // onChangeHeadRadius,
     } = this.props
-
-    // const options = reduce(
-    //   targets,
-    //   (aggr, file) => ({
-    //     ...aggr,
-    //     [file.filename]: file.title,
-    //   }),
-    //   {}
-    // );
 
     const options = reduce(
       targets,
@@ -180,14 +134,6 @@ class TargetSelectorContainer extends Component {
       {}
     )
 
-    // List of buttons
-    // options = { file#0.filename: file#0.title#0 ... file#N.filename: file#N.title }
-    // enabledOption = [ file#0.filename , ... , file#N.filename ]
-    // value = targets.selected
-    // isVertical = true
-    // onSelect = setTarget(targets.selected)
-
-    // onChange={(id, volume) => onChangeTargetVolume(id, volume)}
     return (
       <div>
         <H2>Soundscape</H2>
@@ -267,8 +213,6 @@ export default connect(
     targets: state.target.targets,
     selected: state.target.selected,
     masterVolume: state.controls.masterVolume,
-    // isPerformanceModeEnabled: state.controls.isPerformanceModeEnabled,
-    // headRadius: state.controls.headRadius,
   }),
   dispatch => ({
     onSelect: (target, url) => dispatch(setTarget(target, url)),
@@ -277,8 +221,5 @@ export default connect(
     onAddSource: (title, filename, url) =>
       dispatch(addTarget(title, filename, url)),
     onDeleteSource: targets => dispatch(deleteTargets(targets)),
-    // onChangePerformanceMode: isEnabled =>
-    //   dispatch(setPerformanceMode(isEnabled)),
-    // onChangeHeadRadius: radius => dispatch(setHeadRadius(radius)),
   })
 )(TargetSelectorContainer)

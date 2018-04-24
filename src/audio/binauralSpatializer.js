@@ -50,30 +50,42 @@ let instancePromise = null
 let listener = null
 let targets = null
 
+/* --------------- COORDINATE SYSTEM ------------ *//*
+
+      Y x ------> X
+        |
+        |
+        v
+        Z
+
+*//* ---------------------------------------------- */
+
+// const xAxis = new CVector3(1,0,0)
+const yAxis = new CVector3(0,-1,0)
+// const zAxis = new CVector3(0,0,-1)
+
 /* --------------- SET POSITION ----------------- */
-function setSPosition(source, azimuth, distance) {
+function setSPosition(source, azimuth, distance, /* elevation = 0 */ ) {
   const transform = new CTransform()
 
   const x = Math.cos(azimuth) * distance
+  // const y = -Math.sin(elevation) * distance
   const z = -Math.sin(azimuth) * distance
   const position = new CVector3(x, 0, z)
+  // const position = new CVector3(x, y, z)
 
   transform.SetPosition(position)
   source.SetSourceTransform(transform)
 
   transform.delete()
-  // console.log(`called setSPosition with
-  //   source = ${source} , azimuth = ${azimuth} , distance = ${distance}`);
 }
 
 function setLPosition(azimuth, distance, rotYAxis) {
   const transform = new CTransform()
-  // let orientation = new CQuaternion();
 
   const x = Math.cos(azimuth) * distance
   const z = -Math.sin(azimuth) * distance
   const position = new CVector3(x, 0, z)
-  const yAxis = new CVector3(0, -1, 0)
   const orientation = CQuaternion.FromAxisAngle(yAxis, rotYAxis)
 
   transform.SetPosition(position)
@@ -81,8 +93,6 @@ function setLPosition(azimuth, distance, rotYAxis) {
   listener.SetListenerTransform(transform)
 
   transform.delete()
-  // console.log(`called setLPosition with
-  //   azimuth = ${azimuth} , distance = ${distance}, rotYAxis = ${rotYAxis}`);
 }
 
 /* ------------------------------------------------------------------------------------------------------------------------------- */
@@ -296,8 +306,6 @@ function createInstance() {
       setListenerPosition,
       setPerformanceMode,
       setHeadRadius,
-      // setDirectionalityEnabled,
-      // setDirectionalityAttenuation,
       addSource,
       deleteSources,
       deleteAllSources,

@@ -131,29 +131,6 @@ class PositionController extends Component {
     window.removeEventListener('keyup', this.handleKeyUp)
   }
 
-  // @autobind
-  // handleClick(){
-  //   if (!this.state.isMoving) {
-  //     console.log(`MOVING`);
-  //     const listener = this.props.listenerPosition;
-  //     this.setState(() => ({
-  //       ...this.state,
-  //       isMoving: true,
-  //       currentObjectId: 'listener',
-  //       position: { azimuth: listener.azimuth, distance: listener.distance },
-  //     }))
-  //     console.log(`from POSITION: ${this.state.position.azimuth} , ${this.state.position.distance}`)
-  //     window.addEventListener("keydown", this.handleKeyPress);
-  //   } else {
-  //     console.log('STOPPED');
-  //     this.setState(() => ({
-  //       ...this.state,
-  //       isMoving: false,
-  //       currentObjectId: null,
-  //     }))
-  //     window.removeEventListener("keydown", this.handleKeyPress);
-  //   }
-  // }
 
   @autobind
   handleKeyDown(evt) {
@@ -228,6 +205,9 @@ class PositionController extends Component {
         // console.log('LEFT');
         // newX -= metresPerStep;
         rotYAxis = (rotYAxis - radiansPerStep) % (2 * Math.PI)
+        if (rotYAxis < 0) {
+          rotYAxis = 2 * Math.PI + rotYAxis
+        }
       }
       if (keys && keys[38]) {
         // console.log('UP');

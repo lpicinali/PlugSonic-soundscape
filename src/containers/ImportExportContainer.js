@@ -22,7 +22,7 @@ import decode from 'src/audio/decode.js'
 import { map } from 'lodash'
 import { fetchWavFile, findTypeOfArray } from 'src/utils'
 import FileReaderInput from 'react-file-reader-input'
-import { importTargets } from 'src/actions/target.actions.js'
+import { importTargets, importSelected } from 'src/actions/target.actions.js'
 import { importRoom } from 'src/actions/room.actions.js'
 import { PlaybackState } from 'src/constants.js'
 import { setPlaybackState } from 'src/actions/controls.actions.js'
@@ -57,16 +57,23 @@ const StyledFileInput = styled.button`
 class ImportExportContainer extends Component {
   static propTypes = {
     targets: PropTypes.object.isRequired,
+    selected: PropTypes.array,
     room: PropTypes.object.isRequired,
     onPauseApp: PropTypes.func.isRequired,
     onImportTargets: PropTypes.func.isRequired,
+    onImportSelected: PropTypes.func.isRequired,
     onImportRoom: PropTypes.func.isRequired,
+  }
+
+  static defaultProps = {
+    selected: [],
   }
 
   @autobind
   handleExportAssets() {
     const soundscape = {
       targets: this.props.targets,
+      selected: this.props.selected,
       room: this.props.room,
     }
 
@@ -87,11 +94,9 @@ class ImportExportContainer extends Component {
       const [e, file] = result
       const soundscape = JSON.parse(e.target.result)
       // console.log(soundscape)
-      // PAUSE
       this.props.onPauseApp(PlaybackState.PAUSED)
-      // IMPORT TARGETS
       this.props.onImportTargets(soundscape.targets)
-      // IMPORT ROOM
+      this.props.onImportSelected(soundscape.selected)
       handleImportRoom(soundscape.room)
       this.props.onImportRoom(soundscape.room)
     })
@@ -107,6 +112,7 @@ class ImportExportContainer extends Component {
 
     const soundscape = {
       targets: this.props.targets,
+      selected: this.props.selected,
       room: this.props.room,
     }
 
@@ -181,12 +187,13 @@ class ImportExportContainer extends Component {
 export default connect(
   state => ({
     targets: state.target.targets,
+    selected: state.target.selected,
     room: state.room,
   }),
   dispatch => ({
     onPauseApp: state => dispatch(setPlaybackState(state)),
     onImportTargets: targets => dispatch(importTargets(targets)),
+    onImportSelected: selected => dispatch(importSelected(selected)),
     onImportRoom: room => dispatch(importRoom(room)),
-    //   // onChangeVolume: volume => dispatch(setTargetVolume(volume)),
   })
 )(ImportExportContainer)

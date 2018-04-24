@@ -45,3 +45,8 @@ export const importTargets = targets => ({
   type: ActionType.IMPORT_TARGETS,
   payload: { targets },
 })
+
+export const importSelected = selected => ({
+  type: ActionType.IMPORT_SELECTED,
+  payload: { selected },
+})
