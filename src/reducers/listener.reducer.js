@@ -16,6 +16,27 @@ const initialState = {
 }
 
 export default function(state = initialState, { type, payload }) {
+
+//   switch (type) {
+//
+//     case 'SET_LISTENER_POSITION': {
+//       const newPosition = Object.assign({}, payload.position)
+//       return { ...state, position: newPosition }
+//     }
+//
+//     case 'SET_HEAD_RADIUS': {
+//       return { ...state, headRadius: payload.radius }
+//     }
+//
+//     case 'SET_PERFORMANCE_MODE_ENABLED': {
+//       return { ...state, isPerformanceModeEnabled: payload.isEnabled }
+//     }
+//
+//     default:
+//       return state
+//   }
+//
+// }
   if (type === ActionType.SET_LISTENER_POSITION) {
     const newPosition = Object.assign({}, state.position)
     Object.assign(newPosition, payload.position)

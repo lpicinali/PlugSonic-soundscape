@@ -17,16 +17,19 @@ import FileSaver from 'file-saver'
 import Blob from 'blob'
 import got from 'got'
 import bufferToArrayBuffer from 'buffer-to-arraybuffer'
+import FileReaderInput from 'react-file-reader-input'
+import { map } from 'lodash'
+
 import context from 'src/audio/context.js'
 import decode from 'src/audio/decode.js'
-import { map } from 'lodash'
 import { fetchWavFile, findTypeOfArray } from 'src/utils'
-import FileReaderInput from 'react-file-reader-input'
-import { importTargets, importSelected } from 'src/actions/target.actions.js'
-import { importRoom } from 'src/actions/room.actions.js'
 import { PlaybackState } from 'src/constants.js'
-import { setPlaybackState } from 'src/actions/controls.actions.js'
 import { handleImportRoom } from 'src/containers/PositionControllerContainer'
+
+import { setPlaybackState } from 'src/actions/controls.actions.js'
+import { importTargets, importSelected } from 'src/actions/target.actions.js'
+import { setListenerPosition } from 'src/actions/listener.actions.js'
+import { importRoom } from 'src/actions/room.actions.js'
 
 import Button from 'src/components/Button'
 
@@ -58,10 +61,12 @@ class ImportExportContainer extends Component {
   static propTypes = {
     targets: PropTypes.object.isRequired,
     selected: PropTypes.array,
+    listenerPosition: PropTypes.object.isRequired,
     room: PropTypes.object.isRequired,
-    onPauseApp: PropTypes.func.isRequired,
+    onSetPlaybackState: PropTypes.func.isRequired,
     onImportTargets: PropTypes.func.isRequired,
     onImportSelected: PropTypes.func.isRequired,
+    onImportListenerPosition: PropTypes.func.isRequired,
     onImportRoom: PropTypes.func.isRequired,
   }
 
@@ -74,6 +79,7 @@ class ImportExportContainer extends Component {
     const soundscape = {
       targets: this.props.targets,
       selected: this.props.selected,
+      listenerPosition: this.props.listenerPosition,
       room: this.props.room,
     }
 
@@ -94,9 +100,10 @@ class ImportExportContainer extends Component {
       const [e, file] = result
       const soundscape = JSON.parse(e.target.result)
       // console.log(soundscape)
-      this.props.onPauseApp(PlaybackState.PAUSED)
+      this.props.onSetPlaybackState(PlaybackState.PAUSED)
       this.props.onImportTargets(soundscape.targets)
       this.props.onImportSelected(soundscape.selected)
+      this.props.onImportListenerPosition(soundscape.listenerPosition)
       handleImportRoom(soundscape.room)
       this.props.onImportRoom(soundscape.room)
     })
@@ -113,6 +120,7 @@ class ImportExportContainer extends Component {
     const soundscape = {
       targets: this.props.targets,
       selected: this.props.selected,
+      listenerPosition: this.props.listenerPosition,
       room: this.props.room,
     }
 
@@ -188,12 +196,14 @@ export default connect(
   state => ({
     targets: state.target.targets,
     selected: state.target.selected,
+    listenerPosition: state.listener.position,
     room: state.room,
   }),
   dispatch => ({
-    onPauseApp: state => dispatch(setPlaybackState(state)),
+    onSetPlaybackState: state => dispatch(setPlaybackState(state)),
     onImportTargets: targets => dispatch(importTargets(targets)),
     onImportSelected: selected => dispatch(importSelected(selected)),
+    onImportListenerPosition: position => dispatch(setListenerPosition(position)),
     onImportRoom: room => dispatch(importRoom(room)),
   })
 )(ImportExportContainer)

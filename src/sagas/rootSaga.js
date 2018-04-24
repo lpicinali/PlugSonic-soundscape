@@ -127,6 +127,24 @@ function* applyImportSources() {
   }
 }
 
+function* applyImportSelected() {
+  while (true) {
+    yield take(ActionType.IMPORT_SELECTED)
+
+    const selected = yield select(state => state.target.selected.map(filename => state.target.targets[filename]))
+
+    // eslint-disable-next-line
+    for (const targetObject of selected) {
+      yield call(engineSetTargetSource, targetObject)
+    }
+
+    const playbackState = yield select(state => state.controls.playbackState)
+    if (playbackState === PlaybackState.PLAYING) {
+      yield call(enginePlay)
+    }
+  }
+}
+
 function* applyTargetPosition() {
   while (true) {
     const { payload } = yield take(ActionType.SET_TARGET_POSITION)
@@ -228,6 +246,7 @@ export default function* rootSaga() {
     applyAddSource(),
     applyDeleteSources(),
     applyImportSources(),
+    applyImportSelected(),
     applyMasterVolume(),
     applyTargetVolume(),
     rampTargetVolumesByTheirReach(),

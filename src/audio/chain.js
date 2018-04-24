@@ -52,49 +52,6 @@ getBinauralSpatializer().then(spatializer => {
   volume.connect(context.destination)
 })
 
-export const addSource = sourceObject => {
-  targetNodes[sourceObject.filename] = null
-  targetInputs[sourceObject.filename] = context.createGain()
-  targetVolumes[sourceObject.filename] = context.createGain()
-
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.addSource(sourceObject)
-    // console.log('')
-    // console.log(spatializer)
-    // console.log('')
-    targetInputs[sourceObject.filename].connect(
-      targetVolumes[sourceObject.filename]
-    )
-    targetVolumes[sourceObject.filename].connect(
-      spatializer.targets[sourceObject.filename].processor
-    )
-    spatializer.targets[sourceObject.filename].processor.connect(volume)
-
-    targetVolumes[sourceObject.filename].gain.value = sourceObject.volume
-    // console.log('chain - ADD source')
-    // console.log(sourceObject)
-  })
-}
-
-export const deleteSources = sourcesFilenames => {
-  // console.log(`chain: DELETE sources - begins`)
-  // console.log(`sources: ${sourcesFilenames}`)
-  sourcesFilenames.forEach(source => {
-    delete targetNodes[source]
-    delete targetInputs[source]
-    delete targetVolumes[source]
-  })
-  // console.log(`targetNodes updated: ${JSON.stringify(targetNodes)}`)
-  // console.log(`targetInputs updated: ${JSON.stringify(targetInputs)}`)
-  // console.log(`targetVolumes updated: ${JSON.stringify(targetVolumes)}`)
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.deleteSources(sourcesFilenames)
-    // console.log('')
-    // console.log(spatializer)
-    // console.log('')
-  })
-}
-
 export const deleteAllSources = () => {
   // console.log('CHAIN deleteAllSources')
   targetNodes = {}
@@ -165,6 +122,50 @@ export const setTargetVolume = (filename, newVolume, fadeDuration = 0) => {
       context.currentTime + (fadeDuration / 1000)
     )
   }
+}
+
+export const addSource = sourceObject => {
+  targetNodes[sourceObject.filename] = null
+  targetInputs[sourceObject.filename] = context.createGain()
+  targetVolumes[sourceObject.filename] = context.createGain()
+
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.addSource(sourceObject)
+    // console.log('')
+    // console.log(spatializer)
+    // console.log('')
+    targetInputs[sourceObject.filename].connect(
+      targetVolumes[sourceObject.filename]
+    )
+    targetVolumes[sourceObject.filename].connect(
+      spatializer.targets[sourceObject.filename].processor
+    )
+    spatializer.targets[sourceObject.filename].processor.connect(volume)
+
+    // targetVolumes[sourceObject.filename].gain.value = sourceObject.volume
+    setTargetVolume(sourceObject.filename, sourceObject.volume)
+    // console.log('chain - ADD source')
+    // console.log(sourceObject)
+  })
+}
+
+export const deleteSources = sourcesFilenames => {
+  // console.log(`chain: DELETE sources - begins`)
+  // console.log(`sources: ${sourcesFilenames}`)
+  sourcesFilenames.forEach(source => {
+    delete targetNodes[source]
+    delete targetInputs[source]
+    delete targetVolumes[source]
+  })
+  // console.log(`targetNodes updated: ${JSON.stringify(targetNodes)}`)
+  // console.log(`targetInputs updated: ${JSON.stringify(targetInputs)}`)
+  // console.log(`targetVolumes updated: ${JSON.stringify(targetVolumes)}`)
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.deleteSources(sourcesFilenames)
+    // console.log('')
+    // console.log(spatializer)
+    // console.log('')
+  })
 }
 
 export const startNodes = () => {
