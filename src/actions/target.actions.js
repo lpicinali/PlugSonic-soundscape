@@ -31,9 +31,9 @@ export const setTargetVolume = (target, volume) => ({
   payload: { target, volume },
 })
 
-export const addTarget = (title, filename, url) => ({
+export const addTarget = (title, filename, url, raw) => ({
   type: ActionType.ADD_TARGET,
-  payload: { title, filename, url },
+  payload: { title, filename, url, raw },
 })
 
 export const deleteTargets = targets => ({

@@ -28,61 +28,42 @@ export function fetchAudioBuffer(url) {
     .then(arrayBuffer => decode(arrayBuffer, context))
 }
 
-export function findTypeOfArray(array) {
-  const protType = Object.prototype.toString.call(array)
-  switch (protType) {
-    case '[object Int8Array]':
-      return 'Int8Array'
-    case '[object Uint8Array]':
-      return 'Uint8Array'
-    case '[object Uint8ClampedArray]':
-      return 'Uint8ClampedArray'
-    case '[object Int16Array]':
-      return 'Int16Array'
-    case '[object Uint16Array]':
-      return 'Uint16Array'
-    case '[object Int32Array]':
-      return 'Int32Array'
-    case '[object Uint32Array]':
-      return 'Uint32Array'
-    case '[object Float32Array]':
-      return 'Float32Array'
-    case '[object Float64Array]':
-      return 'Float64Array'
-    default:
-      return 'Uint8Array'
+function ArrayBufferCycle(array) {
+  const ab = new ArrayBuffer(array.length);
+  const view = new Uint8Array(ab);
+  for (let i = 0; i < array.length; ++i) {
+    view[i] = array[i];
   }
+  return ab;
 }
 
-export function arrayToTypedArray(type, array) {
-  switch (type) {
-    case 'Int8Array':
-      return Int8Array.from(array)
-    case 'Uint8Array':
-      return Uint8Array.from(array)
-    case 'Uint8ClampedArray':
-      return Uint8ClampedArray.from(array)
-    case 'Int16Array':
-      return Int16Array.from(array)
-    case 'Uint16Array':
-      return Uint16Array.from(array)
-    case 'Int32Array':
-      return Int32Array.from(array)
-    case 'Uint32Array':
-      return Uint32Array.from(array)
-    case 'Float32Array':
-      return Float32Array.from(array)
-    case 'Float64Array':
-      return Float64Array.from(array)
-    default:
-      return Uint8Array.from(array)
-  }
-}
-
-export function fetchAudioBufferRaw(rawObject) {
-  // rawObject = { type: typedArray.constructor.name , body: Buffer }
-  console.log('fetchAudioBufferRaw')
-  const typedArray = arrayToTypedArray(rawObject.type, rawObject.body.data)
-  const arrayBuffer = bufferToArrayBuffer(typedArray)
+export function fetchAudioBufferRaw(rawArray) {
+  const arrayBuffer = ArrayBufferCycle(rawArray)
   return decode(arrayBuffer, context)
 }
+
+// export function findTypeOfArray(array) {
+//   const protType = Object.prototype.toString.call(array)
+//   switch (protType) {
+//     case '[object Int8Array]':
+//       return 'Int8Array'
+//     case '[object Uint8Array]':
+//       return 'Uint8Array'
+//     case '[object Uint8ClampedArray]':
+//       return 'Uint8ClampedArray'
+//     case '[object Int16Array]':
+//       return 'Int16Array'
+//     case '[object Uint16Array]':
+//       return 'Uint16Array'
+//     case '[object Int32Array]':
+//       return 'Int32Array'
+//     case '[object Uint32Array]':
+//       return 'Uint32Array'
+//     case '[object Float32Array]':
+//       return 'Float32Array'
+//     case '[object Float64Array]':
+//       return 'Float64Array'
+//     default:
+//       return 'Uint8Array'
+//   }
+// }

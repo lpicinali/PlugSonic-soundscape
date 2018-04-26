@@ -18,12 +18,19 @@ import { setTarget, setTargetVolume, addTarget, deleteTargets,
 
 import ButtonSliderGroup from 'src/components/ButtonSliderGroup.js'
 import MasterVolumeSlider from 'src/components/MasterVolumeSlider.js'
+import Uploader from 'src/components/Uploader.js'
 import { H2, H3 } from 'src/styles/elements.js'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import TextField from 'material-ui/TextField'
+import styled from 'styled-components'
 import { autobind } from 'core-decorators'
 import Button from 'src/components/Button.js'
+
+const StyledTextField = styled(TextField)`
+  width: 40% !important;
+  margin-right: 10%;
+  margin-top: -20px;
+`
 
 /**
  * Target Selector Container
@@ -91,7 +98,7 @@ class TargetSelectorContainer extends Component {
         .then(() => {
           const title = this.state.title.trim()
           const filename = title.replace(/\s/g,'').toLowerCase()
-          this.props.onAddSource(title, filename, url)
+          this.props.onAddSource(title, filename, url, [])
           this.setState({
             ...this.state,
             title: '',
@@ -134,35 +141,41 @@ class TargetSelectorContainer extends Component {
       {}
     )
 
+    const titles = map(targets, file => file.title)
+
     return (
       <div>
         <H2>Soundscape</H2>
 
         <div>
           <H3>Add Source</H3>
+          <H3>Drag and drop</H3>
+          <Uploader
+            titles={titles}
+            onAddSource={this.props.onAddSource}
+          />
+
           <div>
-            <MuiThemeProvider>
-              <TextField
+            <H3>Load from dropbox</H3>
+
+              <StyledTextField
                 id="title"
                 type="text"
                 value={this.state.title}
                 errorText={this.state.errorTextT}
                 floatingLabelText="Title"
                 onChange={this.handleTextFieldChange}
-                style={{ width: `40%`, paddingRight: `5%`, float: `left` }}
               />
-            </MuiThemeProvider>
-            <MuiThemeProvider>
-              <TextField
+
+              <StyledTextField
                 id="url"
                 type="url"
                 value={this.state.url}
                 errorText={this.state.errorTextU}
                 floatingLabelText="Dropbox URL"
                 onChange={this.handleTextFieldChange}
-                style={{ width: `40%`, paddingLeft: `5%`}}
               />
-            </MuiThemeProvider>
+
           </div>
 
           <div style={{ paddingTop: 18 }}>
@@ -218,8 +231,8 @@ export default connect(
     onSelect: (target, url) => dispatch(setTarget(target, url)),
     onChangeTargetVolume: (id, volume) => dispatch(setTargetVolume(id, volume)),
     onChangeMasterVolume: volume => dispatch(setMasterVolume(volume)),
-    onAddSource: (title, filename, url) =>
-      dispatch(addTarget(title, filename, url)),
+    onAddSource: (title, filename, url, raw) =>
+      dispatch(addTarget(title, filename, url, raw)),
     onDeleteSource: targets => dispatch(deleteTargets(targets)),
   })
 )(TargetSelectorContainer)

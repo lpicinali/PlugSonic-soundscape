@@ -19,7 +19,7 @@ const initialState = {
           radius: 3,
           fadeDuration: 1000,
         },
-        raw: {},
+        raw: [],
       },
     }),
     {}
@@ -74,20 +74,32 @@ export default function(state = initialState, { type, payload }) {
 
     case 'ADD_TARGET': {
       const newTargets = Object.assign({}, state.targets)
-      const newTarget = {
-        title: payload.title,
-        filename: payload.filename,
-        url: payload.url,
-        position: { azimuth: azimuthIndex * Math.PI / 6, distance: 3 },
-        volume: 0.5,
-        reach: {
-          radius: 3,
-          fadeDuration: 1000,
-        },
-        raw: {},
+      if ( payload.filename in newTargets) {
+        if ( payload.url !== '' ) {
+          console.log('load URL')
+          newTargets[payload.filename].url = payload.url
+        } else {
+          console.log('load RAW')
+          console.log(payload.url)
+          newTargets[payload.filename].raw = payload.raw
+        }
+      } else {
+        console.log('load OBJECT')
+        const newTarget = {
+          title: payload.title,
+          filename: payload.filename,
+          url: payload.url,
+          position: { azimuth: azimuthIndex * Math.PI / 6, distance: 3 },
+          volume: 0.5,
+          reach: {
+            radius: 3,
+            fadeDuration: 1000,
+          },
+          raw: payload.raw,
+        }
+        azimuthIndex += 1
+        newTargets[payload.filename] = newTarget
       }
-      azimuthIndex += 1
-      newTargets[payload.filename] = newTarget
       return { ...state, targets: newTargets }
     }
 

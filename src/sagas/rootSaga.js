@@ -27,17 +27,13 @@ import {
 } from 'src/audio/engine.js'
 import { getDistanceBetweenSphericalPoints } from 'src/utils.js'
 
-// const selected = [];
-
 function* applyPlayPause() {
   while (true) {
     const { payload: { state } } = yield take(ActionType.SET_PLAYBACK_STATE)
 
     if (state === PlaybackState.PLAYING) {
-      // console.log("rootSaga: PLAY");
       enginePlay()
     } else if (state === PlaybackState.PAUSED) {
-      // console.log("rootSaga: PAUSE");
       enginePause()
     }
   }
@@ -45,22 +41,11 @@ function* applyPlayPause() {
 
 function* manageComponentSource(filename, url) {
   const selected = yield select(state => state.target.selected)
-  // console.log(`selected: ${selected}`);
   const index = selected.indexOf(filename)
   if (index >= 0) {
-    // selected.splice(index,1);
-    // console.log("rootSaga: SET TARGET");
-    // console.log(`target: ${target}`);
-    // console.log(`selected: ${selected}`);
-    // yield call(engineSetTargetSource, filename, url)
     const targetObject = yield select(state => state.target.targets[filename])
     yield call(engineSetTargetSource, targetObject)
   } else {
-    // selected.push(target);
-    // console.log("rootSaga: UNSET TARGET");
-    // console.log(`target: ${target}`);
-    // console.log(`selected: ${selected}`);
-    // yield call(engineSetTargetSource, getFileUrl(target), target);
     yield call(engineUnsetTargetSource, filename)
   }
   const playbackState = yield select(state => state.controls.playbackState)
@@ -68,7 +53,6 @@ function* manageComponentSource(filename, url) {
   if (playbackState === PlaybackState.PLAYING) {
     yield call(enginePlay)
   }
-  // console.log(`rootSaga: SET TARGET -> DONE`)
 }
 
 function* applyComponentSource() {
@@ -105,8 +89,6 @@ function* applyDeleteSources() {
   while (true) {
     const { type, payload } = yield take(ActionType.DELETE_TARGETS)
     const selected = payload.targets
-    // console.log(`rootSaga: DELETE TARGETS`)
-    // console.log(`selected: ${selected}`)
     enginePause()
 
     yield call(engineDeleteSources, selected)
@@ -122,7 +104,6 @@ function* applyImportSources() {
   while (true) {
     const { type, payload } = yield take(ActionType.IMPORT_TARGETS)
     const sources = payload.targets
-    // console.log(sources)
     engineImportSources(sources)
   }
 }
@@ -133,9 +114,21 @@ function* applyImportSelected() {
 
     const selected = yield select(state => state.target.selected.map(filename => state.target.targets[filename]))
 
+    let alertMessage = ''
     // eslint-disable-next-line
     for (const targetObject of selected) {
-      yield call(engineSetTargetSource, targetObject)
+      const response = yield call(engineSetTargetSource, targetObject)
+      if ( response === null ) {
+        if ( alertMessage === '' )
+          alertMessage = targetObject.title
+        else
+          alertMessage = `${alertMessage}, ${targetObject.title}`
+      }
+    }
+
+    if ( alertMessage !== '' ) {
+      // eslint-disable-next-line
+      alert(`Please import : ${alertMessage}`)
     }
 
     const playbackState = yield select(state => state.controls.playbackState)
@@ -150,11 +143,7 @@ function* applyTargetPosition() {
     const { payload } = yield take(ActionType.SET_TARGET_POSITION)
     const filename = payload.target
     const { azimuth, distance } = payload.position
-    // console.log("rootSaga: SET TARGET POSITION");
-    // console.log(`filename: ${payload.target} , azimuth: ${azimuth} , distance: ${distance}`);
     engineSetComponentPosition(filename, { azimuth, distance })
-    // engineSetComponentPosition(SonicComponent.TARGET, { azimuth, distance })
-    // console.log(`rootSaga: SET TARGET POSITION -> DONE`)
   }
 }
 
@@ -162,8 +151,6 @@ function* applyListenerPosition() {
   while (true) {
     const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
     const { azimuth, distance, rotYAxis } = payload.position
-    // console.log("rootSaga: SET LISTENER POSITION");
-    // console.log(`azimuth: ${azimuth} , distance: ${distance}`);
     engineSetListenerPosition({ azimuth, distance, rotYAxis })
   }
 }
@@ -217,8 +204,6 @@ function* applyHeadRadius() {
 function* applyPerformanceMode() {
   while (true) {
     const { payload } = yield take(ActionType.SET_PERFORMANCE_MODE_ENABLED)
-    // console.log("Saga: APPLY PERFORMANCE MODE");
-    // console.log(`Payload: ${payload}`);
     engineSetPerformanceMode(payload.isEnabled)
   }
 }

@@ -18,11 +18,11 @@ import Blob from 'blob'
 import got from 'got'
 import bufferToArrayBuffer from 'buffer-to-arraybuffer'
 import FileReaderInput from 'react-file-reader-input'
-import { map } from 'lodash'
+import { map, isEmpty } from 'lodash'
 
 import context from 'src/audio/context.js'
 import decode from 'src/audio/decode.js'
-import { fetchWavFile, findTypeOfArray } from 'src/utils'
+import { fetchWavFile } from 'src/utils'
 import { PlaybackState } from 'src/constants.js'
 import { handleImportRoom } from 'src/containers/PositionControllerContainer'
 
@@ -99,7 +99,6 @@ class ImportExportContainer extends Component {
     results.forEach(result => {
       const [e, file] = result
       const soundscape = JSON.parse(e.target.result)
-      // console.log(soundscape)
       this.props.onSetPlaybackState(PlaybackState.PAUSED)
       this.props.onImportTargets(soundscape.targets)
       this.props.onImportSelected(soundscape.selected)
@@ -110,7 +109,7 @@ class ImportExportContainer extends Component {
   }
 
   @autobind
-  handleExportSoundscape(id) {
+  handleExportSoundscapeMeta() {
     try {
       const isFileSaverSupported = !!new Blob()
     } catch (e) {
@@ -123,27 +122,50 @@ class ImportExportContainer extends Component {
       listenerPosition: this.props.listenerPosition,
       room: this.props.room,
     }
+    const clone = JSON.parse(JSON.stringify(soundscape))
 
-    if (id === 'meta') {
-      const json = JSON.stringify(soundscape, null, 2)
-      const blob = new Blob([json], { type: 'application/json' })
-      FileSaver.saveAs(blob, 'soundscape.json')
-    } else if (id === 'raw') {
-      const promises = map(soundscape.targets, target =>
-        got(target.url, { encoding: null }).then(response => {
-          const body = response.body
-          const type = findTypeOfArray(response.body)
-          soundscape.targets[target.filename].raw = { type, body }
-          // console.log(soundscape.targets[target.filename].raw)
-        })
-      )
+    console.log('export meta')
+    map(clone.targets, target => {
+      clone.targets[target.filename].raw = []
+    })
+    const json = JSON.stringify(clone, null, 2)
+    const blob = new File([json], { type: 'application/json' })
+    FileSaver.saveAs(blob, 'soundscape_meta.json')
+  }
 
-      Promise.all(promises).then(responses => {
-        const json = JSON.stringify(soundscape)
-        const blob = new Blob([json], { type: 'application/json' })
-        FileSaver.saveAs(blob, 'soundscape.json')
-      })
+  @autobind
+  handleExportSoundscapeRaw() {
+    try {
+      const isFileSaverSupported = !!new Blob()
+    } catch (e) {
+      alert('The File APIs are not fully supported in this browser.')
     }
+
+    const soundscape = {
+      targets: this.props.targets,
+      selected: this.props.selected,
+      listenerPosition: this.props.listenerPosition,
+      room: this.props.room,
+    }
+    const clone = JSON.parse(JSON.stringify(soundscape))
+
+    console.log('export raw')
+    const promises = map(clone.targets, target => {
+      if ( target.url !== '' ) {
+        return got(target.url, { encoding: null })
+          .then(response => {
+            clone.targets[target.filename].raw = Array.from(response.body)
+          })
+      }
+        clone.targets[target.filename].raw = target.raw
+        return target.raw
+    })
+
+    Promise.all(promises).then(responses => {
+      const json = JSON.stringify(clone)
+      const file = new File([json], { type: 'application/json' })
+      FileSaver.saveAs(file, 'soundscape_whole.json')
+    })
   }
 
   render() {
@@ -165,7 +187,7 @@ class ImportExportContainer extends Component {
 
         <Button
           key="exportmeta"
-          onClick={() => this.handleExportSoundscape('meta')}
+          onClick={this.handleExportSoundscapeMeta}
         >
           Export
         </Button>
@@ -183,7 +205,7 @@ class ImportExportContainer extends Component {
 
         <Button
           key="exportraw"
-          onClick={() => this.handleExportSoundscape('raw')}
+          onClick={this.handleExportSoundscapeRaw}
         >
           Export
         </Button>
