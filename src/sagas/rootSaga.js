@@ -128,7 +128,7 @@ function* applyImportSelected() {
 
     if ( alertMessage !== '' ) {
       // eslint-disable-next-line
-      alert(`Please import : ${alertMessage}`)
+      alert(`Please import the following source/s: ${alertMessage}.\nUse the same Title/s specified here and ignore the warning`)
     }
 
     const playbackState = yield select(state => state.controls.playbackState)

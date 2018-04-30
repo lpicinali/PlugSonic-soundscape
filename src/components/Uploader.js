@@ -9,10 +9,10 @@ import ReactDropzone from 'react-dropzone'
 import base64Arraybuffer from 'base64-arraybuffer'
 import context from 'src/audio/context.js'
 import decode from 'src/audio/decode.js'
-import fetchAudioBufferRaw from 'src/utils'
+import { fetchAudioBufferRaw } from 'src/utils'
 
 
-import { GRAY } from 'src/styles/colors'
+import { GRAY, BLACK } from 'src/styles/colors'
 import Icon from "material-ui/svg-icons/av/library-music"
 import TextField from 'material-ui/TextField'
 import Button from 'src/components/Button'
@@ -47,7 +47,7 @@ const Dropzone = styled(ReactDropzone)`
   border: dashed thin #666;
   border-radius: 5px;
 
-  color: ${GRAY};
+  color: ${BLACK};
   font-size: 12px;
 
 
@@ -78,7 +78,7 @@ class Uploader extends Component {
     file: {},
     filename: '',
     filesize: '',
-    errorFile: '',
+    errorFile: 'Supported formats: WAV and MP3',
     title: '',
     errorTextT: '',
   }
@@ -109,14 +109,26 @@ class Uploader extends Component {
       reader.onload = () => {
         const view = new Uint8Array(reader.result)
         const array = Array.from(view)
-          this.setState({
-            ...this.state,
-            raw:  array,
-            file: accepted[0],
-            filename: accepted[0].name,
-            filesize: accepted[0].size,
-            errorFile: ''
+
+        fetchAudioBufferRaw(array)
+          .then(audioBuffer => {
+            if ( audioBuffer.numberOfChannels >= 2 ) {
+              this.setState({
+                ...this.state,
+                filename: accepted[0].name, filesize: accepted[0].size, errorFile: 'Convert file to mono before loading it'
+              })
+            } else {
+              this.setState({
+                ...this.state,
+                raw:  array,
+                file: accepted[0],
+                filename: accepted[0].name,
+                filesize: accepted[0].size,
+                errorFile: ''
+              })
+            }
           })
+          .catch(err => console.error(err))
       }
 
       reader.onabort = () => {
@@ -126,7 +138,7 @@ class Uploader extends Component {
         this.setState({...this.state, filename: '', filesize: '', errorFile: 'File reading has failed'})
       }
 
-    }else{
+    } else {
       this.setState({...this.state, filename: '', filesize: '', errorFile: 'Unsupported file format'})
     }
   }
@@ -144,7 +156,7 @@ class Uploader extends Component {
       file: {},
       filename: '',
       filesize: '',
-      errorFile: '',
+      errorFile: 'Supported formats: WAV and MP3',
       title: '',
       errorTextT: '',
     })
@@ -154,16 +166,17 @@ class Uploader extends Component {
     return (
       <div>
         <Container>
-          <Dropzone className="dropzone" accept="audio/*"
+          <Dropzone className="dropzone" accept="audio/wav, audio/mpeg, audio/mp3"
             onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}>
             <div className="dropzone-call">
               <div><ActionIcon/></div>
               <div>
                 {this.state.filename === '' ? (
-                  `Drop an audio file here (or click) to load it.`
+                  'Drop a mono audio file here (or click) to load it.'
                 ) : (
                   `${this.state.filename} - ${this.state.filesize} bytes`
-                )}
+                )
+              }
               </div>
               <div style={{ height: `12px` }}>
                 {this.state.errorFile === '' ? '' : `${this.state.errorFile}`}
