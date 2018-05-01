@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { BLACK, BLUE, WHITE_SMOKE, } from 'src/styles/colors.js'
+import { BLACK, BLUE, WHITE_SMOKE, GRAY } from 'src/styles/colors.js'
 
 export const H2 = styled.h2`
   margin: 0 0 8px;
@@ -16,12 +16,9 @@ export const H3 = styled.h3`
   letter-spacing: 1px;
 `
 
-export const H4 = styled.h3`
-  margin: 5px 0 5px 0;
-  color: gray;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+export const H4 = styled.h4`
+color: ${GRAY};
+font-size: 12px;
 `
 
 export const P = styled.p`

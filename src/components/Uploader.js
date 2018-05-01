@@ -49,8 +49,6 @@ const Dropzone = styled(ReactDropzone)`
 
   color: ${BLACK};
   font-size: 12px;
-
-
 `
 
 const ActionIcon = styled(Icon)`

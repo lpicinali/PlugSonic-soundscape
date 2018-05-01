@@ -1,17 +1,20 @@
 /* eslint no-unused-expressions: 0 */
 /* global location */
 /* eslint no-restricted-globals: 0 */
-import React from 'react'
-import { Provider } from 'react-redux'
+import React, { PureComponent } from 'react'
+// import { Provider } from 'react-redux'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import styled, { injectGlobal } from 'styled-components'
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
-import store from 'src/store.js'
+// import store from 'src/store.js'
 import PlaybackControlsContainer from 'src/containers/PlaybackControlsContainer.js'
 import PositionControllerContainer from 'src/containers/PositionControllerContainer.js'
 import TargetSelectorContainer from 'src/containers/TargetSelectorContainer.js'
 import ListenerOptionsContainer from 'src/containers/ListenerOptionsContainer.js'
 import ImportExportContainer from 'src/containers/ImportExportContainer.js'
-import { BLUE } from 'src/styles/colors.js'
+import Disclaimer from 'src/containers/Disclaimer.js'
+import { BLUE, GRAY } from 'src/styles/colors.js'
 import { H2, H3, H4 } from 'src/styles/elements.js'
 import { MAX_WIDTH } from 'src/styles/layout.js'
 
@@ -51,6 +54,11 @@ const Logo = styled.img`
   padding: 16px 32px;
 `
 
+export const Instructions = styled.div`
+color: ${GRAY};
+font-size: 12px;
+`
+
 const AppContent = styled.div`
   display: flex;
   width: 100%;
@@ -59,48 +67,56 @@ const AppContent = styled.div`
   padding: 24px 16px;
 `
 
-export default function App() {
-  return (
-    <Provider store={store}>
-      <MuiThemeProvider>
-        <div>
-          <Header>
-            <Logo
-              src={`${
-                location.origin
-              }/assets/img/pluggy_final_logo_RGB_small.png`}
-              alt=""
-            />
-            <HeaderContent>
-              <div>PlugSonic Demo</div>
-              <Heading>PlugSonic - Create</Heading>
-            </HeaderContent>
-          </Header>
+// export default function App() {
+class App extends PureComponent {
+  static propTypes = {
+    hasReadDisclaimer: PropTypes.bool.isRequired,
+  }
 
-          <AppContent>
-            <PlaybackControlsContainer />
+  render() {
+    const { hasReadDisclaimer } = this.props
 
-            <div
-              style={{ display: 'flex', flexWrap: 'wrap', flex: '0 1 33.333%' }}
-            >
-              <TargetSelectorContainer />
-            </div>
+    return (
+      // <Provider store={store}>
+        <MuiThemeProvider>
+          <div>
+            <Header>
+              <Logo src={`${location.origin}/assets/img/pluggy_final_logo_RGB_small.png`} alt=""/>
+              <HeaderContent>
+                <div>PlugSonic Demo</div>
+                <Heading>PlugSonic - Create</Heading>
+              </HeaderContent>
+            </Header>
 
-            <div style={{ flex: '0 1 33.333%' }}>
-              <H2>Surface</H2>
-              <H3>Position</H3>
-              <H4>- mouse to move sources</H4>
-              <H4>- mouse/arrow-keys to move listener</H4>
-              <PositionControllerContainer />
-            </div>
+            <Disclaimer isRead={hasReadDisclaimer} />
 
-            <div style={{ flex: '0 1 33.333%' }}>
-              <ListenerOptionsContainer />
-              <ImportExportContainer />
-            </div>
-          </AppContent>
-        </div>
-      </MuiThemeProvider>
-    </Provider>
-  )
+            <AppContent>
+              <PlaybackControlsContainer />
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', flex: '0 1 33.333%' }}>
+                <TargetSelectorContainer />
+              </div>
+
+              <div style={{ flex: '0 1 33.333%' }}>
+                <H2>Surface</H2>
+                <H3>Position</H3>
+                <Instructions>- mouse to move sources</Instructions>
+                <Instructions style={{ marginBottom: `8px` }}>- mouse/arrow-keys to move listener</Instructions>
+                <PositionControllerContainer />
+              </div>
+
+              <div style={{ flex: '0 1 33.333%' }}>
+                <ListenerOptionsContainer />
+                <ImportExportContainer />
+              </div>
+            </AppContent>
+          </div>
+        </MuiThemeProvider>
+      // </Provider>
+    )
+  }
 }
+
+export default connect(state => ({
+  hasReadDisclaimer: state.alerts.hasReadDisclaimer,
+}))(App)
