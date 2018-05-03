@@ -47,16 +47,21 @@ const Heading = styled.h1`
   margin: 0;
   font-size: 24px;
   line-height: 32px;
+  display: inline-block;
 `
 const Logo = styled.img`
   max-height: 80px;
+  max-width: ${MAX_WIDTH}px;
+  margin-top: -24px;
+  padding-right: 16px;
   float: right;
-  padding: 16px 32px;
+  ${'' /* padding: 16px 32px; */}
 `
 
-export const Instructions = styled.div`
-color: ${GRAY};
-font-size: 12px;
+export const Instructions = styled.p`
+  color: ${GRAY};
+  font-size: 12px;
+  margin: 0px 0px;
 `
 
 const AppContent = styled.div`
@@ -81,24 +86,24 @@ class App extends PureComponent {
         <MuiThemeProvider>
           <div>
             <Header>
-              <Logo src={`${location.origin}/assets/img/pluggy_final_logo_RGB_small.png`} alt=""/>
               <HeaderContent>
-                <div>PlugSonic Demo</div>
+                {/* <div style={{ width: `50%` }}>PlugSonic Demo</div> */}
                 <Heading>PlugSonic - Create</Heading>
+                <Logo src={`${location.origin}/assets/img/pluggy_final_logo_RGB_small.png`} alt=""/>
               </HeaderContent>
             </Header>
 
             <Disclaimer isRead={hasReadDisclaimer} />
 
             <AppContent>
-              <PlaybackControlsContainer />
+              {/* <PlaybackControlsContainer /> */}
 
               <div style={{ display: 'flex', flexWrap: 'wrap', flex: '0 1 33.333%' }}>
                 <TargetSelectorContainer />
               </div>
 
               <div style={{ flex: '0 1 33.333%' }}>
-                <H2>Surface</H2>
+                <H2>Soundscape</H2>
                 <H3>Position</H3>
                 <Instructions>- mouse to move sources</Instructions>
                 <Instructions style={{ marginBottom: `8px` }}>- mouse/arrow-keys to move listener</Instructions>

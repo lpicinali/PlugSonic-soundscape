@@ -171,7 +171,7 @@ class ImportExportContainer extends Component {
   render() {
     return (
       <div>
-        <H2>Import/Export</H2>
+        <H2 style={{marginTop: `50px` }}>Files</H2>
 
         <H3>Soundscape</H3>
 
@@ -192,7 +192,7 @@ class ImportExportContainer extends Component {
           Export
         </Button>
 
-        <H3>Soundscape + Assets</H3>
+        <H3 style={{ marginTop: `50px`}}>Soundscape + Assets</H3>
         <FileReaderInput
           type="file"
           accept=".json"

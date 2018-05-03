@@ -3,13 +3,14 @@ import styled from 'styled-components'
 import { BLACK, BLUE, WHITE_SMOKE, GRAY } from 'src/styles/colors.js'
 
 export const H2 = styled.h2`
-  margin: 0 0 8px;
+  margin: 0 0 20px;
+  padding-left: 20%;
   font-size: 20px;
   color: ${BLUE};
 `
 
 export const H3 = styled.h3`
-  margin: 8px 0 8px;
+  margin: 0px 0 8px;
   color: gray;
   font-size: 12px;
   text-transform: uppercase;

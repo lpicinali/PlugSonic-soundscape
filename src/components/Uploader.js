@@ -18,8 +18,8 @@ import TextField from 'material-ui/TextField'
 import Button from 'src/components/Button'
 
 const StyledTextField = styled(TextField)`
-  width: 40% !important;
-  margin-right: 10%;
+  width: 50% !important;
+  margin-right: 5%;
   margin-top: -20px;
 `
 
@@ -37,7 +37,7 @@ const Container = styled.div`
 const Dropzone = styled(ReactDropzone)`
   width: 90%;
   height: 90%;
-  padding-bottom: 10px;
+  padding: 0px 20px 10px 20px;
 
   display: flex;
   align-items: left;
@@ -47,7 +47,7 @@ const Dropzone = styled(ReactDropzone)`
   border: dashed thin #666;
   border-radius: 5px;
 
-  color: ${BLACK};
+  color: ${GRAY};
   font-size: 12px;
 `
 

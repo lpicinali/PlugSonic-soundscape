@@ -39,15 +39,19 @@ class Disclaimer extends PureComponent {
       // <DisclaimerWrapper>
         <GutteredElement>
           <ModuleBox>
-            <H3>Disclaimer</H3>
-            <P>
-              This demo might produce audio of very loud levels. It is up to you
-              to make sure you take caution and keep your headphone volume low
-              and so on and so forth.
-            </P>
-            <Button onClick={onClose}>
-              Understood, don’t show me this again.
-            </Button>
+            <H3 style={{ textAlign: `center` }}>Disclaimer</H3>
+            <div style={{ width: `100%`, textAlign: `center` }}>
+              <P style={{ width: `60%`, display: `inline-block` }}>
+                This application might result in very loud audio levels,
+                which can cause damage to your hearing, especially if you are wearing headphones.
+                Please ensure you take caution and keep your headphones volume low.
+              </P>
+            </div>
+            <div style={{ textAlign: `center` }}>
+              <Button align='center' onClick={onClose}>
+                Understood, don’t show me this again.
+              </Button>
+            </div>
           </ModuleBox>
         </GutteredElement>
       // </DisclaimerWrapper>

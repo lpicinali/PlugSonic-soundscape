@@ -17,6 +17,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { autobind } from 'core-decorators'
+import PlaybackControlsContainer2 from 'src/containers/PlaybackControlsContainer2.js'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DropDownMenu from 'material-ui/DropDownMenu';
@@ -69,7 +70,7 @@ const SourceReachFadeDurationField = styled.div`
 `
 
 const SourceEditingDoneButton = styled(Button)`
-  margin-top: 24px;
+  margin-top: 8px;
 `
 
 /**
@@ -328,8 +329,7 @@ class PositionControllerContainer extends Component {
 
     return (
       <div>
-        <div
-          id="container"
+        <div id="container"
           style={{
             position: 'relative',
             width: `${(1 - 1.05 ** -roomSize.width) * 360 * 0.95}px`,
@@ -355,26 +355,31 @@ class PositionControllerContainer extends Component {
           </ContainerDimensionsWithScrollUpdates>
         </div>
 
-        <div>
-          <H3>Reset</H3>
 
-          <Button
-            key="resetL"
-            onClick={() =>
-              onListenerMove({ azimuth: Math.PI / 2, distance: 0, rotYAxis: 0 })
-            }
-            style={{ float: `left`, marginRight: `20px` }}
-          >
-            Listener
-          </Button>
-          <Button key="resetS" onClick={this.handleSourcesReset}>
-            Sources
-          </Button>
+
+        <div>
+          <div style={{float: `left`, marginRight: `8px`}}>
+            <PlaybackControlsContainer2/>
+          </div>
+
+          <H3 style= {{ width: `50%`, marginTop: `8px`, display: `inline-block` }}>Reset Position</H3>
+          <div>
+            <Button key="resetL"
+              onClick={() => onListenerMove({ azimuth: Math.PI / 2, distance: 0, rotYAxis: 0 })}
+              style={{ float: `left`, marginRight: `20px` }}
+            >
+              Listener
+            </Button>
+
+            <Button key="resetS" onClick={this.handleSourcesReset}>
+              Sources
+            </Button>
+          </div>
         </div>
 
-        <H3>Room shape and size</H3>
+        <H3 style={{ marginTop: `50px` }}>Room shape and size</H3>
         <div>
-          <MuiThemeProvider>
+          <div style={{ marginTop: `-10px`, marginLeft: `-24px` }}>
             <DropDownMenu
               value={gState.shape}
               onChange={this.handleDropDownChange}
@@ -387,9 +392,9 @@ class PositionControllerContainer extends Component {
                 primaryText="Rectangular"
               />
             </DropDownMenu>
-          </MuiThemeProvider>
+          </div>
         </div>
-        <MuiThemeProvider>
+        <div style={{ marginTop: `-22px`}}>
           <TextField
             id="width"
             type="text"
@@ -397,10 +402,8 @@ class PositionControllerContainer extends Component {
             errorText={gState.errorTextW}
             floatingLabelText="Width (m)"
             onChange={this.handleTextFieldChange}
-            style={{ width: `35%`, paddingRight: `5%`, float: `left` }}
+            style={{ width: `35%`, marginRight: `5%`, float: `left` }}
           />
-        </MuiThemeProvider>
-        <MuiThemeProvider>
           <TextField
             id="height"
             type="text"
@@ -409,11 +412,11 @@ class PositionControllerContainer extends Component {
             floatingLabelText="Height (m)"
             onChange={this.handleTextFieldChange}
             disabled={roomShape === RoomShape.ROUND}
-            style={{ width: `35%`, paddingLeft: `5%` }}
+            style={{ width: `35%` }}
           />
-        </MuiThemeProvider>
+        </div>
 
-        <H3>Source reach</H3>
+        <H3 style={{ marginTop: `50px` }}>Source reach</H3>
         {editingTarget === null ? (
           <NoSelectedSourcePlaceholder>
             Select a source on the map to edit its reach
@@ -422,34 +425,30 @@ class PositionControllerContainer extends Component {
           <Fragment>
             <SourceEditingWrapper>
               <SourceReachRadiusField>
-                <MuiThemeProvider>
-                  <Slider
-                    value={targets[editingTarget].reach.radius}
-                    min={0}
-                    max={Math.max(roomSize.width, roomSize.height)}
-                    step={0.5}
-                    onChange={(event, newRadius) =>
-                      onSetTargetReach(editingTarget, newRadius, targets[editingTarget].reach.fadeDuration)
-                    }
-                    sliderStyle={{ marginBottom: 16 }}
-                  />
-                </MuiThemeProvider>
+                <Slider
+                  value={targets[editingTarget].reach.radius}
+                  min={0}
+                  max={Math.max(roomSize.width, roomSize.height)}
+                  step={0.5}
+                  onChange={(event, newRadius) =>
+                    onSetTargetReach(editingTarget, newRadius, targets[editingTarget].reach.fadeDuration)
+                  }
+                  sliderStyle={{ marginBottom: `4px`, marginTop: `0px` }}
+                />
                 <div>Reach: {targets[editingTarget].reach.radius} meters</div>
               </SourceReachRadiusField>
 
               <SourceReachFadeDurationField>
-                <MuiThemeProvider>
-                  <Slider
-                    value={targets[editingTarget].reach.fadeDuration}
-                    min={500}
-                    max={10000}
-                    step={250}
-                    onChange={(event, newDuration) =>
-                      onSetTargetReach(editingTarget, targets[editingTarget].reach.radius, newDuration)
-                    }
-                    sliderStyle={{ marginBottom: 16 }}
-                  />
-                </MuiThemeProvider>
+                <Slider
+                  value={targets[editingTarget].reach.fadeDuration}
+                  min={500}
+                  max={10000}
+                  step={250}
+                  onChange={(event, newDuration) =>
+                    onSetTargetReach(editingTarget, targets[editingTarget].reach.radius, newDuration)
+                  }
+                  sliderStyle={{ marginBottom: `4px`, marginTop: `0px` }}
+                />
                 <div>Fade: {targets[editingTarget].reach.fadeDuration / 1000} sec</div>
               </SourceReachFadeDurationField>
             </SourceEditingWrapper>

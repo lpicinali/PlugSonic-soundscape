@@ -27,9 +27,9 @@ import { autobind } from 'core-decorators'
 import Button from 'src/components/Button.js'
 
 const StyledTextField = styled(TextField)`
-  width: 40% !important;
-  margin-right: 10%;
-  margin-top: -20px;
+  width: 50% !important;
+  margin-right: 5%;
+  margin-top: -25px;
 `
 
 /**
@@ -145,28 +145,15 @@ class TargetSelectorContainer extends Component {
 
     return (
       <div>
-        <H2>Soundscape</H2>
+        <H2>Sources</H2>
 
         <div>
           <H3>Add Source</H3>
-          <H3>Drag and drop</H3>
-          <Uploader
-            titles={titles}
-            onAddSource={this.props.onAddSource}
-          />
+          <Uploader titles={titles} onAddSource={this.props.onAddSource} />
 
+          <H3 style={{ marginTop: `50px`}}>Load from dropbox</H3>
           <div>
-            <H3>Load from dropbox</H3>
-
-              <StyledTextField
-                id="title"
-                type="text"
-                value={this.state.title}
-                errorText={this.state.errorTextT}
-                floatingLabelText="Title"
-                onChange={this.handleTextFieldChange}
-              />
-
+            <div style={{ width: `100%` }}>
               <StyledTextField
                 id="url"
                 type="url"
@@ -175,47 +162,55 @@ class TargetSelectorContainer extends Component {
                 floatingLabelText="Dropbox URL"
                 onChange={this.handleTextFieldChange}
               />
+            </div>
 
+            <div style={{ marginTop: `4px` }}>
+              <StyledTextField
+                id="title"
+                type="text"
+                value={this.state.title}
+                errorText={this.state.errorTextT}
+                floatingLabelText="Title"
+                onChange={this.handleTextFieldChange}
+              />
+              <Button key="add" onClick={this.handleAddSource}>
+                Add Source
+              </Button>
+            </div>
           </div>
 
-          <div style={{ paddingTop: 18 }}>
-            <Button
-              key="add"
-              onClick={this.handleAddSource}
-              style={{ float: `left` }}
-            >
-              Add Source
-            </Button>
-            <Button
-              key="delete"
-              onClick={() => this.props.onDeleteSource(this.props.selected)}
-            >
-              Delete Selected
-            </Button>
-          </div>
         </div>
 
         <div>
-          <H3>Sources</H3>
+          {/* <div style={{ width: `50%`, display: `inline-block`, float:`left` }}> */}
+          <H3 style= {{ width: `45%`, marginTop: `50px`, display: `inline-block` }}>Added Sources</H3>
+          {/* </div> */}
+
+          <H3 style={{ marginTop: `0px`, marginRight: `30%`, textAlign: `right` }}>Volume</H3>
           <ButtonSliderGroup
             options={options}
             enabledOptions={Object.keys(options)}
             value={selected}
-            isVertical
             onSelect={onSelect}
             onVolumeChange={(id, volume) => onChangeTargetVolume(id, volume)}
           />
         </div>
 
-        <div style={{ display: 'flex' }}>
-          <div style={{ paddingRight: 16 }}>
-            <H3>Master Volume</H3>
-            <MasterVolumeSlider
-              volume={masterVolume}
-              onChange={onChangeMasterVolume}
-            />
-          </div>
+        <div style={{ marginTop: `0px`, paddingLeft: `48%` }}>
+          <Button
+            key="delete"
+            onClick={() => this.props.onDeleteSource(this.props.selected)}
+
+          >
+            Delete Selected
+          </Button>
         </div>
+
+        <H3 style= {{ width: `50%`, marginTop: `50px`, display: `inline-block` }}>Master Volume</H3>
+        <div style={{ width: `50%`, float: `right`, marginTop: `47px` }}>
+          <MasterVolumeSlider volume={masterVolume} onChange={onChangeMasterVolume}/>
+        </div>
+
       </div>
     )
   }

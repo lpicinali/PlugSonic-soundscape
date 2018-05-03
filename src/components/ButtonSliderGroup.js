@@ -22,6 +22,12 @@ const StyledButtonGroup = styled.div`
   }
 `
 
+const StyledVolumeSlider = styled.div`
+  width: 50%;
+  float: right;
+  margin-top: 6px;
+`
+
 /**
  * Button Group
  */
@@ -39,21 +45,6 @@ class ButtonSliderGroup extends Component {
     value: [],
     isVertical: false,
   }
-
-  // <StyledButtonGroup isVertical={isVertical}>
-  //   {map(options, (optionLabel, optionValue) => (
-  //     <div key={optionValue}>
-  //       <Button
-  //         isEnabled={enabledOptions.indexOf(optionValue) >= 0}
-  //         isActive={value.indexOf(optionValue) >= 0}
-  //         onClick={() => onSelect(optionValue)}
-  //       >
-  //         {optionLabel}
-  //       </Button>
-  //       <TargetVolumeSlider volume={volumes} onChange={onChange} />
-  //     </div>
-  //   ))}
-  // </StyledButtonGroup>
 
   render() {
     const {
@@ -81,11 +72,13 @@ class ButtonSliderGroup extends Component {
             >
               {option.label}
             </Button>
-            <TargetVolumeSlider
-              id={option.id}
-              volume={option.volume}
-              onVolumeChange={onVolumeChange}
-            />
+            <StyledVolumeSlider>
+              <TargetVolumeSlider
+                id={option.id}
+                volume={option.volume}
+                onVolumeChange={onVolumeChange}
+              />
+            </StyledVolumeSlider>
           </div>
         ))}
       </StyledButtonGroup>
