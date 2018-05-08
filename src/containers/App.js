@@ -8,14 +8,14 @@ import { connect } from 'react-redux'
 import styled, { injectGlobal } from 'styled-components'
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
 // import store from 'src/store.js'
-import PlaybackControlsContainer from 'src/containers/PlaybackControlsContainer.js'
+// import PlaybackControlsContainer from 'src/containers/PlaybackControlsContainer.js'
 import PositionControllerContainer from 'src/containers/PositionControllerContainer.js'
 import TargetSelectorContainer from 'src/containers/TargetSelectorContainer.js'
 import ListenerOptionsContainer from 'src/containers/ListenerOptionsContainer.js'
 import ImportExportContainer from 'src/containers/ImportExportContainer.js'
 import Disclaimer from 'src/containers/Disclaimer.js'
 import { BLUE, GRAY } from 'src/styles/colors.js'
-import { H2, H3, H4 } from 'src/styles/elements.js'
+import { H2, H3 } from 'src/styles/elements.js'
 import { MAX_WIDTH } from 'src/styles/layout.js'
 
 injectGlobal`
