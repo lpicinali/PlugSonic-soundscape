@@ -19,7 +19,7 @@ export const audioFiles = [
     url: 'https://dl.dropboxusercontent.com/s/fjryls9cuymcquy/river_gentle_flow.mp3?dl=0',
   },
   {
-    title: 'Pidgeon',
+    title: 'Pigeon',
     filename: 'bird_pigeon.mp3',
     url:
       'https://dl.dropboxusercontent.com/s/p87nb5yr6zhrez5/bird_pigeon.mp3?dl=0',
