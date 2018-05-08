@@ -19,7 +19,6 @@ import styled from 'styled-components'
 import { autobind } from 'core-decorators'
 import PlaybackControlsContainer2 from 'src/containers/PlaybackControlsContainer2.js'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Slider from 'material-ui/Slider'

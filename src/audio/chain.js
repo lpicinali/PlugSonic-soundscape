@@ -170,6 +170,10 @@ export const deleteSources = sourcesFilenames => {
 
 export const startNodes = () => {
   // console.log("chain: START NODES - begins");
+  if (context.state !== 'running') {
+    context.resume();
+  }
+  
   for (const filename in targetNodes) {
     if (Object.prototype.hasOwnProperty.call(targetNodes, filename)) {
       if (targetNodes[filename]) {
