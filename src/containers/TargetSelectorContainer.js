@@ -182,10 +182,8 @@ class TargetSelectorContainer extends Component {
         </div>
 
         <div>
-          {/* <div style={{ width: `50%`, display: `inline-block`, float:`left` }}> */}
           <H3 style= {{ width: `45%`, marginTop: `50px`, display: `inline-block` }}>Added Sources</H3>
-          {/* </div> */}
-
+          
           <H3 style={{ marginTop: `0px`, marginRight: `30%`, textAlign: `right` }}>Volume</H3>
           <ButtonSliderGroup
             options={options}

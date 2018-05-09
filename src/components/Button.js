@@ -55,10 +55,7 @@ class Button extends Component {
     isActive: false,
     className: '',
   }
-  // Button:
-  // disables = html property for enabled buttons
-  // onClick = onSelect = setTarget(targets.selected)
-  // isActive = boolean passed from ButtonGroup
+  
   render() {
     const { isEnabled, isActive, onClick, className, children } = this.props
 

@@ -91,7 +91,6 @@ class ImportExportContainer extends Component {
 
     Promise.all(promises).then(
       promises.map(promise => promise)
-      // .then(objects => { console.log(objects) })
     )
   }
 

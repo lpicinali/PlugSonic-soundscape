@@ -29,31 +29,6 @@ export const audioFiles = [
   //   filename: 'wind_breeze.mp3',
   //   url: getFileUrl('wind_breeze.mp3'),
   // },
-  // {
-  //   title: 'Bird Calling',
-  //   filename: 'bird_calling.mp3',
-  //   url: getFileUrl('bird_calling.mp3')
-  // },
-  // {
-  //   title: 'River',
-  //   filename: 'river_gentle_flow.mp3',
-  //   url: getFileUrl('river_gentle_flow.mp3')
-  // },
-  // {
-  //   title: 'Pigeon',
-  //   filename: 'bird_pigeon.mp3',
-  //   url: getFileUrl('bird_pigeon.mp3')
-  // },
-  // {
-  //   title: 'Bird Flying',
-  //   filename: 'flying_bird.mp3',
-  //   url: getFileUrl('flying_bird.mp3')
-  // },
-  // {
-  //   title: 'Frogs',
-  //   filename: 'frogs.mp3',
-  //   url: getFileUrl('frogs.mp3')
-  // },
 ]
 
 export const getFileIndex = filename =>

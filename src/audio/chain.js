@@ -11,8 +11,6 @@ import { audioFiles } from 'src/audio/audio-files.js';
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 
-// import { map } from 'lodash'
-
 window.toolkit = toolkit || { nope: false }
 
 let targetNodes = audioFiles.reduce(
@@ -53,17 +51,12 @@ getBinauralSpatializer().then(spatializer => {
 })
 
 export const deleteAllSources = () => {
-  // console.log('CHAIN deleteAllSources')
   targetNodes = {}
   targetInputs = {}
   targetVolumes = {}
 
   getBinauralSpatializer().then(spatializer => {
     spatializer.deleteAllSources()
-    // console.log('')
-    // console.log('SPATIALIZER')
-    // console.log(spatializer)
-    // console.log('')
   })
 }
 
@@ -71,32 +64,22 @@ export const createNode = audioBuffer => {
   const node = context.createBufferSource()
   node.buffer = audioBuffer
   node.loop = true
-  // console.log("chain: createNode");
-  // console.log(`audioBuffer: ${audioBuffer}`)
   return node
 }
 
 export const setTargetNode = (node, channel) => {
-  // console.log("chain: SET TargetNode - begins");
   if (targetNodes[channel]) {
     targetNodes[channel].disconnect()
   }
   targetNodes[channel] = node
   targetNodes[channel].connect(targetInputs[channel])
-  // console.log("chain: SET TargetNode - ends");
-  // console.log(`node: ${node} , channel: ${channel}`)
-  // console.log(`targetNodes[channel]: ${targetNodes[channel]}`);
 }
 
 export const unsetTargetNode = channel => {
-  // console.log("chain: UNSET TargetNode - begins");
   if (targetNodes[channel]) {
     targetNodes[channel].disconnect()
     targetNodes[channel] = null
   }
-  // console.log("chain: UNSET TargetNode - ends");
-  // console.log(`channel: ${channel}`)
-  // console.log(`targetNodes[channel]: ${targetNodes[channel]}`);
 }
 
 export const setMasterVolume = newVolume => {
@@ -131,9 +114,6 @@ export const addSource = sourceObject => {
 
   getBinauralSpatializer().then(spatializer => {
     spatializer.addSource(sourceObject)
-    // console.log('')
-    // console.log(spatializer)
-    // console.log('')
     targetInputs[sourceObject.filename].connect(
       targetVolumes[sourceObject.filename]
     )
@@ -142,51 +122,36 @@ export const addSource = sourceObject => {
     )
     spatializer.targets[sourceObject.filename].processor.connect(volume)
 
-    // targetVolumes[sourceObject.filename].gain.value = sourceObject.volume
     setTargetVolume(sourceObject.filename, sourceObject.volume)
-    // console.log('chain - ADD source')
-    // console.log(sourceObject)
   })
 }
 
 export const deleteSources = sourcesFilenames => {
-  // console.log(`chain: DELETE sources - begins`)
-  // console.log(`sources: ${sourcesFilenames}`)
   sourcesFilenames.forEach(source => {
     delete targetNodes[source]
     delete targetInputs[source]
     delete targetVolumes[source]
   })
-  // console.log(`targetNodes updated: ${JSON.stringify(targetNodes)}`)
-  // console.log(`targetInputs updated: ${JSON.stringify(targetInputs)}`)
-  // console.log(`targetVolumes updated: ${JSON.stringify(targetVolumes)}`)
   getBinauralSpatializer().then(spatializer => {
     spatializer.deleteSources(sourcesFilenames)
-    // console.log('')
-    // console.log(spatializer)
-    // console.log('')
   })
 }
 
 export const startNodes = () => {
-  // console.log("chain: START NODES - begins");
   if (context.state !== 'running') {
     context.resume();
   }
-  
+
   for (const filename in targetNodes) {
     if (Object.prototype.hasOwnProperty.call(targetNodes, filename)) {
       if (targetNodes[filename]) {
-        // console.log(`chain: START NODES - starting node ${JSON.stringify(targetNodes[filename])}`);
         targetNodes[filename].start(0)
       }
     }
   }
-  // console.log("chain: START NODES - ends");
 }
 
 export const stopNodes = () => {
-  // console.log("chain: STOP NODES - begins");
   for (const filename in targetNodes) {
     if (Object.prototype.hasOwnProperty.call(targetNodes, filename)) {
       if (targetNodes[filename]) {
@@ -196,5 +161,4 @@ export const stopNodes = () => {
       }
     }
   }
-  // console.log("chain: STOP NODES - ends");
 }

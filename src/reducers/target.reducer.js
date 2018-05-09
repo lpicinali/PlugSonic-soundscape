@@ -13,7 +13,7 @@ const initialState = {
         title: file.title,
         filename: file.filename,
         url: file.url,
-        position: { azimuth: index * Math.PI / 6, distance: 3, /* elevation: 0 */ },
+        position: { azimuth: index * Math.PI / 6, distance: 3 },
         volume: 0.5,
         reach: {
           radius: 3,

@@ -16,8 +16,6 @@ class MasterVolumeSlider extends PureComponent {
 
   @autobind
   handleSliderChange(value) {
-    // console.log('MASTER VOLUME SLIDER');
-    // console.log(toGain(value))
     this.props.onChange(toGain(value))
   }
 

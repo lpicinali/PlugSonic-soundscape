@@ -10,13 +10,6 @@ import { PlaybackState } from 'src/constants.js'
 import { setPlaybackState } from 'src/actions/controls.actions.js'
 import { BLUE, TURQOISE, WHITE } from 'src/styles/colors.js'
 
-// const FloatingPlaybackController = styled.div`
-//   position: fixed;
-//   bottom: 32px;
-//   left: 80%;
-//   transform: translateX(-50%);
-// `
-
 const buttonStyles = `
   appearance: none;
   width: 64px !important;

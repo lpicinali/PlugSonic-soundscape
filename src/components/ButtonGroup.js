@@ -38,11 +38,7 @@ class ButtonGroup extends Component {
 
   render() {
     const { options, enabledOptions, value, isVertical, onSelect } = this.props
-    // Each button:
-    // key = file.filename
-    // isEnabled = true
-    // isActive = (file.filename === target.selected)
-    // onClick = setTarget(file.filename)
+
     return (
       <StyledButtonGroup isVertical={isVertical}>
         {map(options, (optionLabel, optionValue) => (

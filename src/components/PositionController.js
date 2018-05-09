@@ -36,10 +36,6 @@ const StyledPositionController = styled.div`
   border-radius: ${props => (props.isRound ? '9999px' : '5px')};
   transition: all 1s;
 `
-// width: ${props => props.size};
-// height: ${props => props.size};
-// transform: rotate(${props => props.listenerPosition.azimuth} rad)
-// transform: translate3d(-8px, -10px, 0);
 
 const ListenerHandle = styled.div`
   position: relative;
@@ -202,35 +198,23 @@ class PositionController extends Component {
         }
       }
       if (keys && keys[37]) {
-        // console.log('LEFT');
-        // newX -= metresPerStep;
         rotYAxis = (rotYAxis - radiansPerStep) % (2 * Math.PI)
         if (rotYAxis < 0) {
           rotYAxis = 2 * Math.PI + rotYAxis
         }
       }
       if (keys && keys[38]) {
-        // console.log('UP');
-        // newZ += metresPerStep;
         newX += deltaX
         newZ += deltaZ
       }
       if (keys && keys[39]) {
-        // console.log('RIGHT');
-        // newX += metresPerStep;
         rotYAxis = (rotYAxis + radiansPerStep) % (2 * Math.PI)
       }
       if (keys && keys[40]) {
-        // console.log('DOWN');
-        // newZ -= metresPerStep;
         newX -= deltaX
         newZ -= deltaZ
       }
-      // console.log(`deltaX = ${deltaX}`);
-      // console.log(`deltaZ = ${deltaZ}`);
-      // console.log(`newX = ${newX}`);
-      // console.log(`newZ = ${newZ}`);
-      // console.log(`newRotation = ${rotYAxis}`);
+
       let azimuth
       if (newX === 0 && newZ === 0) {
         azimuth = listenerPosition.azimuth
@@ -238,13 +222,11 @@ class PositionController extends Component {
         azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
       }
       let distance = Math.sqrt(newX ** 2 + newZ ** 2)
-      // distance = Math.max(0.3, distance)
+
       if (isRound) {
         distance = Math.min(distance, sizeX)
       }
-      // console.log(`NEW AZIMUTH -> ${azimuth}`);
-      // console.log(`NEW DISTANCE -> ${distance}`);
-      // console.log(`NEW ROTATION -> ${rotYAxis*180/Math.PI}`);
+
       const newPos = { azimuth, distance, rotYAxis }
 
       this.setState({
@@ -325,7 +307,7 @@ class PositionController extends Component {
 
     if (isDragging) {
       const rect = bounds
-      // clamp(number,[lowerBound],upperBound)
+
       const constrainedMouseX = clamp(
         evt.pageX,
         window.scrollX + rect.left,
@@ -344,13 +326,6 @@ class PositionController extends Component {
         (constrainedMouseY - (window.scrollY + rect.top + rect.height / 2)) /
         (rect.height / 2)
 
-      // if (!isRound) {
-      //   if (sizeX > sizeZ) {
-      //     newZ *= sizeZ/sizeX;
-      //   } else if ( sizeZ > sizeX) {
-      //     newX *= sizeX/sizeZ;
-      //   }
-      // }
       if (isRound) {
         newX *= sizeX
         newZ *= sizeX
@@ -358,8 +333,7 @@ class PositionController extends Component {
         newX *= sizeX
         newZ *= sizeZ
       }
-      // console.log(`newX = ${newX}`);
-      // console.log(`newZ = ${newZ}`);
+
       let azimuth
       if (newX === 0 && newZ === 0) {
         azimuth = position.azimuth
@@ -371,8 +345,6 @@ class PositionController extends Component {
         distance = Math.min(distance, sizeX)
       }
       const rotYAxis = position.rotYAxis
-      // console.log(`NEW AZIMUTH -> ${azimuth}`);
-      // console.log(`NEW DISTANCE -> ${Math.floor(distance)}`);
 
       this.setState({
         ...this.state,
@@ -401,15 +373,6 @@ class PositionController extends Component {
 
   render() {
     const { bounds, isRound, sizeX, sizeZ, objects, editingTarget, listenerPosition, headRadius } = this.props
-
-    // console.log('PositionController.render()', bounds.top)
-    // console.log(this.props.listenerPosition.azimuth);
-    // transform: translate3d(`-50%, -50%, 0`),
-
-    // console.log(`isRound = ${isRound}`);
-
-    // console.log(`bounds.width = ${bounds.width}`)
-    // console.log(`bounds.height = ${bounds.height}`)
 
     const pixelsPerMeter = {
       x: bounds.width / sizeX,

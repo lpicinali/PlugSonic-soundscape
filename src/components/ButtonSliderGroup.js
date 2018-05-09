@@ -29,7 +29,7 @@ const StyledVolumeSlider = styled.div`
 `
 
 /**
- * Button Group
+ * Button Slider Group
  */
 class ButtonSliderGroup extends Component {
   static propTypes = {
@@ -55,12 +55,7 @@ class ButtonSliderGroup extends Component {
       onSelect,
       onVolumeChange,
     } = this.props
-
-    // Each button:
-    // key = file.filename
-    // isEnabled = true
-    // isActive = (file.filename === target.selected)
-    // onClick = setTarget(file.filename)
+    
     return (
       <StyledButtonGroup isVertical={isVertical}>
         {map(options, option => (

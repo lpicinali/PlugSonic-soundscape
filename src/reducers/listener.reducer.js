@@ -17,54 +17,17 @@ const initialState = {
 
 export default function(state = initialState, { type, payload }) {
 
-//   switch (type) {
-//
-//     case 'SET_LISTENER_POSITION': {
-//       const newPosition = Object.assign({}, payload.position)
-//       return { ...state, position: newPosition }
-//     }
-//
-//     case 'SET_HEAD_RADIUS': {
-//       return { ...state, headRadius: payload.radius }
-//     }
-//
-//     case 'SET_PERFORMANCE_MODE_ENABLED': {
-//       return { ...state, isPerformanceModeEnabled: payload.isEnabled }
-//     }
-//
-//     default:
-//       return state
-//   }
-//
-// }
   if (type === ActionType.SET_LISTENER_POSITION) {
     const newPosition = Object.assign({}, state.position)
     Object.assign(newPosition, payload.position)
-    // console.log();
-    // console.log();
-    // console.log("Action: SET LISTENER POSITION");
-    // console.log(`Payload.position: ${payload.position.azimuth} , ${payload.position.distance}`);
-    // console.log();
-    // console.log();
-    // console.log("NEW STATE");
-    // console.log({ ...state, position: newPosition });
     return { ...state, position: newPosition }
   }
   if (type === ActionType.SET_HEAD_RADIUS) {
     return { ...state, headRadius: payload.radius }
   }
   if (type === ActionType.SET_PERFORMANCE_MODE_ENABLED) {
-    // console.log("Reducer: SET PERFORMANCE MODE");
-    // console.log(`Payload: ${payload}`);
     return { ...state, isPerformanceModeEnabled: payload.isEnabled }
   }
 
   return state
-
-  // if (type === ActionType.SET_DIRECTIONALITY_ENABLED) {
-  //   return { ...state, isDirectionalityEnabled: payload.isEnabled }
-  // }
-  // if (type === ActionType.SET_DIRECTIONALITY_VALUE) {
-  //   return { ...state, directionalityValue: payload.value }
-  // }
 }

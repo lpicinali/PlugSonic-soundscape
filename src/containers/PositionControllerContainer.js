@@ -7,12 +7,11 @@
 /* ------------------- NOTES -------------------- */ /*
 
   TO DO:
-  - tune roome resizing function
+  - tune room resizing function
 
 */ /* ---------------------------------------------- */
 
 import React, { Component, Fragment } from 'react'
-// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
@@ -26,7 +25,6 @@ import TextField from 'material-ui/TextField';
 import { RoomShape } from 'src/constants.js'
 import { values, toNumber, isNaN, forEach } from 'lodash'
 
-// import * as CustomPropTypes from 'src/prop-types.js'
 import { setEditingTarget, setTargetPosition, setTargetReach } from 'src/actions/target.actions.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { setRoomShape, setRoomSize } from 'src/actions/room.actions.js'
@@ -35,8 +33,6 @@ import PositionController from 'src/components/PositionController.js'
 import Button from 'src/components/Button.js'
 import { GRAY } from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements.js'
-
-// const BoundsRelay = rect => {}
 
 const minWidth = 3
 const maxWidth = 100
@@ -114,14 +110,10 @@ class PositionControllerContainer extends Component {
       this.setState({ ...this.state, size: newSize, shape: RoomShape.ROUND })
       this.props.onShapeChange(RoomShape.ROUND)
       this.props.onSizeChange(newSize)
-      // console.log('gState')
-      // console.log(gState)
     } else if (value === 'RECTANGULAR') {
       gState = { ...gState, shape: RoomShape.RECTANGULAR }
       this.setState({ ...this.state, shape: RoomShape.RECTANGULAR })
       this.props.onShapeChange(RoomShape.RECTANGULAR)
-      // console.log('gState')
-      // console.log(gState)
     }
   }
 
@@ -160,8 +152,6 @@ class PositionControllerContainer extends Component {
             errorTextH: '',
           })
           this.props.onSizeChange(newSize)
-          // console.log('gState')
-          // console.log(gState)
         } else {
           const newSize = { width: toNumber(val), height: toNumber(val) }
           gState = {
@@ -176,8 +166,6 @@ class PositionControllerContainer extends Component {
             errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
             errorTextH: '',
           })
-          // console.log('gState')
-          // console.log(gState)
         }
       } else {
         const newSize = { ...this.state.size, width: val }
@@ -193,8 +181,6 @@ class PositionControllerContainer extends Component {
           errorTextW: 'Invalid: NaN',
           errorTextH: '',
         })
-        // console.log('gState')
-        // console.log(gState)
       }
     } else {
       if (event.target.id === 'width') {
@@ -212,8 +198,6 @@ class PositionControllerContainer extends Component {
               errorTextW: '',
             })
             this.props.onSizeChange(newSize)
-            // console.log('gState')
-            // console.log(gState)
           } else {
             const newSize = { ...this.state.size, width: toNumber(val) }
             gState = {
@@ -226,8 +210,6 @@ class PositionControllerContainer extends Component {
               size: newSize,
               errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
             })
-            // console.log('gState')
-            // console.log(gState)
           }
         } else {
           const newSize = { ...this.state.size, width: val }
@@ -241,8 +223,6 @@ class PositionControllerContainer extends Component {
             size: newSize,
             errorTextW: 'Invalid: NaN',
           })
-          // console.log('gState')
-          // console.log(gState)
         }
       } else {
         if (!isNaN(toNumber(val))) {
@@ -259,8 +239,6 @@ class PositionControllerContainer extends Component {
               errorTextH: '',
             })
             this.props.onSizeChange(newSize)
-            // console.log('gState')
-            // console.log(gState)
           } else {
             const newSize = { ...this.state.size, height: toNumber(val) }
             gState = {
@@ -273,8 +251,6 @@ class PositionControllerContainer extends Component {
               size: newSize,
               errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`,
             })
-            // console.log('gState')
-            // console.log(gState)
           }
         } else {
           const newSize = { ...this.state.size, height: val }
@@ -288,8 +264,6 @@ class PositionControllerContainer extends Component {
             size: newSize,
             errorTextH: 'Invalid: NaN',
           })
-          // console.log('gState')
-          // console.log(gState)
         }
       }
     }
@@ -469,8 +443,6 @@ export function handleImportRoom(roomObject) {
     errorTextW: '',
     errorTextH: '',
   }
-  // console.log('gState')
-  // console.log(gState)
 }
 
 export default connect(

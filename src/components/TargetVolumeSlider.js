@@ -17,16 +17,11 @@ class TargetVolumeSlider extends PureComponent {
 
   @autobind
   handleSliderChange(value) {
-    // console.log('TARGET VOLUME SLIDER');
-    // console.log(this.props.id, toGain(value))
     this.props.onVolumeChange(this.props.id, toGain(value))
   }
 
   render() {
     const { volume } = this.props
-
-    // console.log('ID');
-    // console.log(id);
 
     return (
       <Slider
