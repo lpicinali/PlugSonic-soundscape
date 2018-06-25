@@ -324,6 +324,7 @@ class PositionController extends Component {
   @autobind
   handleTouchStart(objectId) {
     console.log('touch start')
+    objectId.preventDefault()
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
@@ -421,8 +422,9 @@ class PositionController extends Component {
   }
 
   @autobind
-  handleTouchEnd() {
+  handleTouchEnd(evt) {
     console.log('touch end')
+    evt.preventDefault()
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeEventListener('touchend', this.handleTouchEnd)
 
