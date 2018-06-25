@@ -11,26 +11,10 @@ import { connect } from 'react-redux'
 import Toggle from 'material-ui/Toggle'
 
 import { circumferenceToRadius, radiusToCircumference } from 'src/utils.js'
-import {
-  setHeadRadius,
-  setPerformanceMode,
-} from 'src/actions/listener.actions.js'
-import Slider2 from 'src/components/Slider2.js'
+import { setHeadRadius, setPerformanceMode, } from 'src/actions/listener.actions.js'
+import Slider from 'src/components/Slider.js'
 import { H2, H3 } from 'src/styles/elements.js'
-
-const styles = {
-  toggle: {
-  },
-  label: {
-    width: `70%`,
-    marginRight: `10%`,
-    color: `gray`,
-    fontSize: `12px`,
-    fontWeight: `bold`,
-    textTransform: `uppercase`,
-    letterSpacing: `1px`,
-  },
-}
+import styles from 'src/containers/ListenerOptionsContainer.style'
 
 /**
  * Listener Options Container
@@ -68,7 +52,7 @@ class ListenerOptionsContainer extends Component {
           </H3>
 
           <div style = {{ width: `60%` }}>
-            <Slider2
+            <Slider
               value={radiusToCircumference(headRadius)}
               min={0.4}
               max={0.7}

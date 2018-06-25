@@ -43,6 +43,7 @@ class Slider extends Component {
           max={max}
           value={value}
           step={step !== null ? step : (max - min) / 100}
+          style={{ width: `100%` }}
           onInput={this.handleChange}
           onChange={noop}
         />

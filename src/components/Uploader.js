@@ -4,60 +4,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { autobind } from 'core-decorators'
-import styled from 'styled-components'
-import ReactDropzone from 'react-dropzone'
-import base64Arraybuffer from 'base64-arraybuffer'
-import context from 'src/audio/context.js'
-import decode from 'src/audio/decode.js'
 import { fetchAudioBufferRaw } from 'src/utils'
-
-
-import { GRAY, BLACK } from 'src/styles/colors'
-import Icon from "material-ui/svg-icons/av/library-music"
-import TextField from 'material-ui/TextField'
-import Button from 'src/components/Button'
-
-const StyledTextField = styled(TextField)`
-  width: 50% !important;
-  margin-right: 5%;
-  margin-top: -20px;
-`
-
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
-  padding-bottom: 10px;
-
-  display: flex;
-  align-items: left;
-  justify-content: left;
-
-`
-
-const Dropzone = styled(ReactDropzone)`
-  width: 90%;
-  height: 90%;
-  padding: 0px 20px 10px 20px;
-
-  display: flex;
-  align-items: left;
-  justify-content: center;
-  text-align: center;
-
-  border: dashed thin #666;
-  border-radius: 5px;
-
-  color: ${GRAY};
-  font-size: 12px;
-`
-
-const ActionIcon = styled(Icon)`
-  width: 20px !important;
-  height: 20px !important;
-  color: gray !important;
-  margin: 10px;
-`
-
+import Button from 'src/components/Button.js'
+import { StyledTextField, Container, Dropzone, ActionIcon } from 'src/components/Uploader.style'
 /**
  * Uploader
  */

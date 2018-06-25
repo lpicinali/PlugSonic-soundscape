@@ -10,16 +10,21 @@ import { PlaybackState } from 'src/constants.js'
 import { setPlaybackState } from 'src/actions/controls.actions.js'
 import { BLUE, TURQOISE, WHITE } from 'src/styles/colors.js'
 
+const FloatingPlaybackController = styled.div`
+  position: fixed;
+  bottom: 32px;
+  left: 80%;
+  transform: translateX(-50%);
+`
+
 const buttonStyles = `
   appearance: none;
-  width: 64px !important;
-  height: 48px !important;
-  display: inline-block;
-  margin-top: 10px;
+  width: 72px !important;
+  height: 56px !important;
   padding: 0 8px;
   background: ${BLUE};
   border: none;
-  border-radius: 5px;
+  border-radius: 3px;
   outline: none;
   cursor: pointer;
 
@@ -48,7 +53,7 @@ const StyledPauseButton = styled(PauseButton)`
 /**
  * Playback Controls Container
  */
-class PlaybackControlsContainer2 extends Component {
+class PlaybackControlsContainer extends Component {
   static propTypes = {
     playbackState: PropTypes.oneOf(values(PlaybackState)).isRequired,
     onStateChange: PropTypes.func.isRequired,
@@ -58,19 +63,21 @@ class PlaybackControlsContainer2 extends Component {
     const { playbackState, onStateChange } = this.props
 
     return (
-      <div>
+      <FloatingPlaybackController>
         {playbackState === PlaybackState.PAUSED ? (
           <StyledPlayButton
             isEnabled
             onClick={() => onStateChange(PlaybackState.PLAYING)}
+            style={{ width: 40, height: 40 }}
           />
         ) : (
           <StyledPauseButton
             isEnabled
             onClick={() => onStateChange(PlaybackState.PAUSED)}
+            style={{ width: 40, height: 40 }}
           />
         )}
-      </div>
+      </FloatingPlaybackController>
     )
   }
 }
@@ -82,4 +89,4 @@ export default connect(
   dispatch => ({
     onStateChange: state => dispatch(setPlaybackState(state)),
   })
-)(PlaybackControlsContainer2)
+)(PlaybackControlsContainer)

@@ -14,9 +14,8 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 import { autobind } from 'core-decorators'
-import PlaybackControlsContainer2 from 'src/containers/PlaybackControlsContainer2.js'
+import PlaybackControlsContainer from 'src/containers/PlaybackControlsContainer.js'
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -31,8 +30,14 @@ import { setRoomShape, setRoomSize } from 'src/actions/room.actions.js'
 import ContainerDimensionsWithScrollUpdates from 'src/components/ContainerDimensionsWithScrollUpdates.js'
 import PositionController from 'src/components/PositionController.js'
 import Button from 'src/components/Button.js'
-import { GRAY } from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements.js'
+import {
+  NoSelectedSourcePlaceholder,
+  SourceEditingWrapper,
+  SourceReachRadiusField,
+  SourceReachFadeDurationField,
+  SourceEditingDoneButton
+} from 'src/containers/PositionControllerContainer.style'
 
 const minWidth = 3
 const maxWidth = 100
@@ -45,28 +50,6 @@ let gState = {
   errorTextW: '',
   errorTextH: '',
 }
-
-const NoSelectedSourcePlaceholder = styled.p`
-  color: ${GRAY};
-  font-size: 12px;
-`
-
-const SourceEditingWrapper = styled.div`
-  display: flex;
-`
-
-const SourceReachRadiusField = styled.div`
-  flex-grow: 1;
-`
-
-const SourceReachFadeDurationField = styled.div`
-  width: 30%;
-  padding: 0 16px;
-`
-
-const SourceEditingDoneButton = styled(Button)`
-  margin-top: 8px;
-`
 
 /**
  * Position Controller Container
@@ -387,11 +370,9 @@ class PositionControllerContainer extends Component {
           </ContainerDimensionsWithScrollUpdates>
         </div>
 
-
-
         <div>
           <div style={{float: `left`, marginRight: `8px`}}>
-            <PlaybackControlsContainer2/>
+            <PlaybackControlsContainer/>
           </div>
 
           <H3 style= {{ width: `50%`, marginTop: `8px`, display: `inline-block` }}>Reset Position</H3>

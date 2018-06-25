@@ -10,7 +10,6 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { autobind } from 'core-decorators'
 import FileSaver from 'file-saver'
@@ -32,27 +31,9 @@ import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { importRoom } from 'src/actions/room.actions.js'
 
 import Button from 'src/components/Button'
+import StyledFileInput from 'src/containers/ImportExportContainer.style'
 
 import { H2, H3 } from 'src/styles/elements.js'
-import { BLACK, TURQOISE, WHITE } from 'src/styles/colors.js'
-
-const StyledFileInput = styled.button`
-  appearance: none;
-  padding: 4px 8px;
-  margin-right: 8px;
-  background: ${WHITE};
-  border: 1px solid ${TURQOISE};
-  border-radius: 3px;
-  outline: none;
-  cursor: pointer;
-  color: ${BLACK};
-  font-size: 16px;
-  transition: all 0.15s;
-
-  &:hover {
-    box-shadow: 0 0 0 3px ${TURQOISE};
-  }
-`
 
 /**
  * Import/Export Container

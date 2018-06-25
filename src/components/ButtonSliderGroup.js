@@ -8,25 +8,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
-import styled from 'styled-components'
-
 import Button from 'src/components/Button.js'
 import TargetVolumeSlider from 'src/components/TargetVolumeSlider.js'
-
-// import { H3 } from 'src/styles/elements.js'
-
-const StyledButtonGroup = styled.div`
-  button {
-    display: ${props => (props.isVertical ? 'block' : 'inline-block')};
-    margin: 0 8px 8px 0;
-  }
-`
-
-const StyledVolumeSlider = styled.div`
-  width: 50%;
-  float: right;
-  margin-top: 6px;
-`
+import { StyledButtonGroup, StyledVolumeSlider } from 'src/components/ButtonSliderGroup.style.js'
 
 /**
  * Button Slider Group
@@ -55,7 +39,7 @@ class ButtonSliderGroup extends Component {
       onSelect,
       onVolumeChange,
     } = this.props
-    
+
     return (
       <StyledButtonGroup isVertical={isVertical}>
         {map(options, option => (
