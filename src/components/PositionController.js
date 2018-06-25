@@ -321,6 +321,116 @@ class PositionController extends Component {
     }))
   }
 
+  @autobind
+  handleTouchStart(objectId) {
+    console.log('touch start')
+    let object
+    if (objectId === 'listener') {
+      object = this.props.listenerPosition
+      this.setState(() => ({
+        isDragging: true,
+        currentObjectId: objectId,
+        position: {
+          azimuth: object.azimuth,
+          distance: object.distance,
+          rotYAxis: object.rotYAxis,
+        },
+      }))
+    } else {
+      object = this.props.objects.find(x => x.id === objectId)
+      this.setState(() => ({
+        isDragging: true,
+        currentObjectId: objectId,
+        position: { azimuth: object.azimuth, distance: object.distance },
+      }))
+
+      this.props.onSelectTarget(objectId)
+    }
+
+    window.addEventListener('touchmove', this.handleTouchMove)
+    window.addEventListener('touchend', this.handleTouchEnd)
+  }
+
+  @autobind
+  handleTouchMove(evt) {
+    console.log('touch move')
+    const {
+      bounds,
+      isRound,
+      sizeX,
+      sizeZ,
+      onPositionChange,
+      onListenerChange,
+    } = this.props
+    const { isDragging, currentObjectId, position } = this.state
+
+    if (isDragging && evt.targetTouches.length === 1) {
+      const rect = bounds
+
+      const constrainedMouseX = clamp(
+        evt.targetTouches[0].pageX,
+        window.scrollX + rect.left,
+        window.scrollX + rect.left + rect.width
+      )
+      const constrainedMouseY = clamp(
+        evt.targetTouches[0].pageY,
+        window.scrollY + rect.top,
+        window.scrollY + rect.top + rect.height
+      )
+
+      let newX =
+        (constrainedMouseX - (window.scrollX + rect.left + rect.width / 2)) /
+        (rect.width / 2)
+      let newZ =
+        (constrainedMouseY - (window.scrollY + rect.top + rect.height / 2)) /
+        (rect.height / 2)
+
+      if (isRound) {
+        newX *= sizeX
+        newZ *= sizeX
+      } else {
+        newX *= sizeX
+        newZ *= sizeZ
+      }
+
+      let azimuth
+      if (newX === 0 && newZ === 0) {
+        azimuth = position.azimuth
+      } else {
+        azimuth = Math.atan(-newZ / newX) + (newX < 0 ? Math.PI : 0)
+      }
+      let distance = Math.sqrt(newX ** 2 + newZ ** 2)
+      if (isRound) {
+        distance = Math.min(distance, sizeX)
+      }
+      const rotYAxis = position.rotYAxis
+
+      this.setState({
+        ...this.state,
+        position: { azimuth, distance, rotYAxis },
+      })
+
+      if (currentObjectId === 'listener') {
+        onListenerChange({ azimuth, distance, rotYAxis })
+      } else {
+        onPositionChange(currentObjectId, { azimuth, distance })
+      }
+    }
+  }
+
+  @autobind
+  handleTouchEnd() {
+    console.log('touch end')
+    window.removeEventListener('touchmove', this.handleTouchMove)
+    window.removeEventListener('touchend', this.handleTouchEnd)
+
+    this.setState(() => ({
+      ...this.state,
+      isDragging: false,
+      currentObjectId: null,
+    }))
+  }
+
   render() {
     const { bounds, isRound, sizeX, sizeZ, objects, editingTarget, listenerPosition, headRadius } = this.props
 
@@ -349,6 +459,7 @@ class PositionController extends Component {
           }}
           size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
           onMouseDown={() => this.handlePress('listener')}
+          onTouchStart={() => this.handleTouchStart('listener')}
         >
           <span>listener</span>
         </ListenerHandle>
@@ -370,6 +481,7 @@ class PositionController extends Component {
               />
               <SourceHandle
                 onMouseDown={() => this.handlePress(object.id)}
+                onTouchStart={() => this.handleTouchStart(object.id)}
                 style={objectStyles}
               />
             </Fragment>
