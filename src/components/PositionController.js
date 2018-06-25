@@ -354,6 +354,7 @@ class PositionController extends Component {
   @autobind
   handleTouchMove(evt) {
     console.log('touch move')
+    evt.preventDefault()
     const {
       bounds,
       isRound,
@@ -362,6 +363,7 @@ class PositionController extends Component {
       onPositionChange,
       onListenerChange,
     } = this.props
+
     const { isDragging, currentObjectId, position } = this.state
 
     if (isDragging && evt.targetTouches.length === 1) {
