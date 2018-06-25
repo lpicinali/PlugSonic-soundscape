@@ -135,8 +135,26 @@ class PositionControllerContainer extends Component {
   @autobind
   handleTextFieldChange(event) {
     const val = event.target.value
+    // ROUND
     if (this.props.roomShape === RoomShape.ROUND) {
-      if (!isNaN(toNumber(val))) {
+      // Empty string
+      if (val.length === 0) {
+        const newSize = { width: '', height: '' }
+        gState = {
+          ...gState,
+          size: newSize,
+          errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+          errorTextH: '',
+        }
+        this.setState({
+          ...this.state,
+          size: newSize,
+          errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+          errorTextH: '',
+        })
+      }
+      // Number
+      else if (!isNaN(toNumber(val))) {
         if (val >= minWidth && val <= maxWidth) {
           const newSize = { width: toNumber(val), height: toNumber(val) }
           gState = {
@@ -167,7 +185,9 @@ class PositionControllerContainer extends Component {
             errorTextH: '',
           })
         }
-      } else {
+      }
+      // Not a Number
+      else {
         const newSize = { ...this.state.size, width: val }
         gState = {
           ...gState,
@@ -182,9 +202,27 @@ class PositionControllerContainer extends Component {
           errorTextH: '',
         })
       }
-    } else {
+    }
+    // RECTANGULAR
+    else {
+      // WIDTH
       if (event.target.id === 'width') {
-        if (!isNaN(toNumber(val))) {
+        // Empty string
+        if (val.length === 0) {
+          const newSize = { ...this.state.size, width: '' }
+          gState = {
+            ...gState,
+            size: newSize,
+            errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+          }
+          this.setState({
+            ...this.state,
+            size: newSize,
+            errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+          })
+        }
+        // Number
+        else if (!isNaN(toNumber(val))) {
           if (val >= minWidth && val <= maxWidth) {
             const newSize = { ...this.state.size, width: toNumber(val) }
             gState = {
@@ -211,7 +249,9 @@ class PositionControllerContainer extends Component {
               errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
             })
           }
-        } else {
+        }
+        // Not a Number
+        else {
           const newSize = { ...this.state.size, width: val }
           gState = {
             ...gState,
@@ -224,8 +264,25 @@ class PositionControllerContainer extends Component {
             errorTextW: 'Invalid: NaN',
           })
         }
-      } else {
-        if (!isNaN(toNumber(val))) {
+      }
+      // HEIGHT
+      else {
+        // Empty string
+        if (val.length === 0) {
+          const newSize = { ...this.state.size, height: '' }
+          gState = {
+            ...gState,
+            size: newSize,
+            errorTextH: `Invalid: ${minWidth} < W < ${maxWidth}`,
+          }
+          this.setState({
+            ...this.state,
+            size: newSize,
+            errorTextH: `Invalid: ${minWidth} < W < ${maxWidth}`,
+          })
+        }
+        // Number
+        else if (!isNaN(toNumber(val))) {
           if (val >= minHeight && val <= maxHeight) {
             const newSize = { ...this.state.size, height: toNumber(val) }
             gState = {
@@ -252,7 +309,9 @@ class PositionControllerContainer extends Component {
               errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`,
             })
           }
-        } else {
+        }
+        // Not a Number
+        else {
           const newSize = { ...this.state.size, height: val }
           gState = {
             ...gState,
@@ -268,6 +327,177 @@ class PositionControllerContainer extends Component {
       }
     }
   }
+
+  // @autobind
+  // handleSourcesReset() {
+  //   let index = 0
+  //   forEach(this.props.targets, target => {
+  //     const id = target.filename
+  //     const position = {
+  //       azimuth: index * Math.PI / 6,
+  //       distance:
+  //         Math.min(this.props.roomSize.width, this.props.roomSize.height) / 4,
+  //     }
+  //     this.props.onTargetMove(id, position)
+  //     index += 1
+  //   })
+  // }
+  //
+  // @autobind
+  // handleTextFieldChange(event) {
+  //   const val = event.target.value
+  //   // ROUND
+  //   if (this.props.roomShape === RoomShape.ROUND) {
+  //     // Empty string
+  //     if (val.length === 0) {
+  //       const newSize = { width: '', height: '' }
+  //       gState = {
+  //         ...gState,
+  //         size: newSize,
+  //         errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+  //         errorTextH: '',
+  //       }
+  //       this.setState({
+  //         ...this.state,
+  //         size: newSize,
+  //         errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+  //         errorTextH: '',
+  //       })
+  //     } // Number
+  //       else if (!isNaN(toNumber(val))) {
+  //         if (val >= minWidth && val <= maxWidth) {
+  //           const newSize = { width: toNumber(val), height: toNumber(val) }
+  //           gState = {
+  //             ...gState,
+  //             size: newSize,
+  //             errorTextW: '',
+  //             errorTextH: '',
+  //           }
+  //           this.setState({
+  //             ...this.state,
+  //             size: newSize,
+  //             errorTextW: '',
+  //             errorTextH: '',
+  //           })
+  //           this.props.onSizeChange(newSize)
+  //         } else {
+  //           const newSize = { width: toNumber(val), height: toNumber(val) }
+  //           gState = {
+  //             ...gState,
+  //             size: newSize,
+  //             errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+  //             errorTextH: '',
+  //           }
+  //           this.setState({
+  //             ...this.state,
+  //             size: newSize,
+  //             errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+  //             errorTextH: '',
+  //           })
+  //         }
+  //     } // Not a Number
+  //       else {
+  //         const newSize = { ...this.state.size, width: val }
+  //         gState = {
+  //           ...gState,
+  //           size: newSize,
+  //           errorTextW: 'Invalid: NaN',
+  //           errorTextH: '',
+  //         }
+  //         this.setState({
+  //           ...this.state,
+  //           size: newSize,
+  //           errorTextW: 'Invalid: NaN',
+  //           errorTextH: '',
+  //         })
+  //     }
+  //   } // RECTANGULAR
+  //     else {
+  //       if (event.target.id === 'width') {
+  //         if (!isNaN(toNumber(val))) {
+  //           if (val >= minWidth && val <= maxWidth) {
+  //             const newSize = { ...this.state.size, width: toNumber(val) }
+  //             gState = {
+  //               ...gState,
+  //               size: newSize,
+  //               errorTextW: '',
+  //             }
+  //             this.setState({
+  //               ...this.state,
+  //               size: newSize,
+  //               errorTextW: '',
+  //             })
+  //             this.props.onSizeChange(newSize)
+  //           } else {
+  //             const newSize = { ...this.state.size, width: toNumber(val) }
+  //             gState = {
+  //               ...gState,
+  //               size: newSize,
+  //               errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+  //             }
+  //             this.setState({
+  //               ...this.state,
+  //               size: newSize,
+  //               errorTextW: `Invalid: ${minWidth} < W < ${maxWidth}`,
+  //             })
+  //           }
+  //         } else {
+  //           const newSize = { ...this.state.size, width: val }
+  //           gState = {
+  //             ...gState,
+  //             size: newSize,
+  //             errorTextW: 'Invalid: NaN',
+  //           }
+  //           this.setState({
+  //             ...this.state,
+  //             size: newSize,
+  //             errorTextW: 'Invalid: NaN',
+  //           })
+  //         }
+  //       } else {
+  //         if (!isNaN(toNumber(val))) {
+  //           if (val >= minHeight && val <= maxHeight) {
+  //             const newSize = { ...this.state.size, height: toNumber(val) }
+  //             gState = {
+  //               ...gState,
+  //               size: newSize,
+  //               errorTextH: '',
+  //             }
+  //             this.setState({
+  //               ...this.state,
+  //               size: newSize,
+  //               errorTextH: '',
+  //             })
+  //             this.props.onSizeChange(newSize)
+  //           } else {
+  //             const newSize = { ...this.state.size, height: toNumber(val) }
+  //             gState = {
+  //               ...gState,
+  //               size: newSize,
+  //               errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`,
+  //             }
+  //             this.setState({
+  //               ...this.state,
+  //               size: newSize,
+  //               errorTextH: `Invalid: ${minHeight} < H < ${maxHeight}`,
+  //             })
+  //           }
+  //         } else {
+  //           const newSize = { ...this.state.size, height: val }
+  //           gState = {
+  //             ...gState,
+  //             size: newSize,
+  //             errorTextH: 'Invalid: NaN',
+  //           }
+  //           this.setState({
+  //             ...this.state,
+  //             size: newSize,
+  //             errorTextH: 'Invalid: NaN',
+  //           })
+  //         }
+  //       }
+  //   }
+  // }
 
   render() {
     const {
