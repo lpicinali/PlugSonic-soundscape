@@ -332,8 +332,8 @@ class PositionController extends Component {
     // touchScrollX = window.scrollX
     // touchScrollY = window.scrollY
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
-    window.addEventListener('touchmove', this.handleTouchMove, true)
-    window.addEventListener('touchend', this.handleTouchEnd, true)
+    window.addEventListener('touchmove', this.handleTouchMove, false)
+    window.addEventListener('touchend', this.handleTouchEnd, false)
     // window.addEventListener('scroll', this.handleScroll, true)
     // window.addEventListener("mousewheel", this.handleMouseWheel, true)
     // window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
