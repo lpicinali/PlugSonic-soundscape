@@ -351,6 +351,7 @@ class PositionController extends Component {
   handleScroll(e) {
     // console.log('scroll')
     e.preventDefault()
+    e.stopPropagation();
     // window.scrollTo(touchScrollX,touchScrollY)
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
   }
