@@ -329,34 +329,14 @@ class PositionController extends Component {
       this.props.onSelectTarget(objectId)
     }
 
-    // touchScrollX = window.scrollX
-    // touchScrollY = window.scrollY
-    // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false) // IPAD OK
     window.addEventListener('touchend', this.handleTouchEnd, {passive: false}, false)   // IPAD OK
     window.addEventListener('scroll', this.handleScroll, {passive: false}, true)
-    // window.addEventListener("mousewheel", this.handleMouseWheel, true)
-    // window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
-  }
-
-  @autobind
-  handleMouseWheel(e) {
-    console.log('wheel')
-    e.preventDefault()
-    window.scrollTo(touchScrollX,touchScrollY)
-    console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
   }
 
   @autobind
   handleScroll(e) {
     console.log('scroll')
-    e.preventDefault()
-    e.stopPropagation()
-  }
-
-  @autobind
-  handleDrag(e) {
-    console.log('drag')
     e.preventDefault()
     e.stopPropagation()
   }
@@ -432,15 +412,11 @@ class PositionController extends Component {
   }
 
   @autobind
-  handleTouchEnd(e) {
+  handleTouchEnd() {
     console.log('touch end')
-    // e.preventDefault()
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeEventListener('touchend', this.handleTouchEnd)
     window.removeEventListener('scroll', this.handleScroll)
-    // window.removeEventListener("mousewheel", this.handleMouseWheel)
-    // window.removeEventListener("DOMMouseScroll", this.handleMouseWheel);
-    // window.removeEventListener('drag', this.handleDrag)
 
     this.setState(() => ({
       ...this.state,
