@@ -359,6 +359,7 @@ class PositionController extends Component {
   handleTouchMove(e) {
     // console.log('touch move')
     e.preventDefault()  // IPAD OK
+    e.stopPropagation()
     // window.scrollTo(touchScrollX,touchScrollY)
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     const {
