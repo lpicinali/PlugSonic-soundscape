@@ -305,7 +305,6 @@ class PositionController extends Component {
 
   @autobind
   handleTouchStart(objectId) {
-    console.log('touch start')
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
@@ -331,21 +330,12 @@ class PositionController extends Component {
 
     window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false) // IPAD OK
     window.addEventListener('touchend', this.handleTouchEnd, {passive: false}, false)   // IPAD OK
-    // window.addEventListener('scroll', this.handleScroll, {passive: false}, true)
-  }
-
-  @autobind
-  handleScroll(e) {
-    console.log('scroll')
-    e.preventDefault()
-    e.stopPropagation()
   }
 
   @autobind
   handleTouchMove(e) {
     console.log('touch move')
-    e.preventDefault()  // IPAD OK
-    e.stopPropagation()
+    // e.preventDefault()  // IPAD OK
     const {
       bounds,
       isRound,
@@ -413,10 +403,8 @@ class PositionController extends Component {
 
   @autobind
   handleTouchEnd() {
-    console.log('touch end')
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeEventListener('touchend', this.handleTouchEnd)
-    // window.removeEventListener('scroll', this.handleScroll)
 
     this.setState(() => ({
       ...this.state,
@@ -454,7 +442,6 @@ class PositionController extends Component {
           size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
           onMouseDown={() => this.handlePress('listener')}
           onTouchStart={() => this.handleTouchStart('listener')}
-          onDragStart={() => this.handleTouchStart('listener')}
         >
           <span>listener</span>
         </ListenerHandle>
@@ -477,7 +464,6 @@ class PositionController extends Component {
               <SourceHandle
                 onMouseDown={() => this.handlePress(object.id)}
                 onTouchStart={() => this.handleTouchStart(object.id)}
-                onDragStart={() => this.handleTouchStart(object.id)}
                 style={objectStyles}
               />
             </Fragment>
