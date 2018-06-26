@@ -331,7 +331,7 @@ class PositionController extends Component {
 
     window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false) // IPAD OK
     window.addEventListener('touchend', this.handleTouchEnd, {passive: false}, false)   // IPAD OK
-    window.addEventListener('scroll', this.handleScroll, {passive: false}, true)
+    // window.addEventListener('scroll', this.handleScroll, {passive: false}, true)
   }
 
   @autobind
@@ -416,7 +416,7 @@ class PositionController extends Component {
     console.log('touch end')
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeEventListener('touchend', this.handleTouchEnd)
-    window.removeEventListener('scroll', this.handleScroll)
+    // window.removeEventListener('scroll', this.handleScroll)
 
     this.setState(() => ({
       ...this.state,
