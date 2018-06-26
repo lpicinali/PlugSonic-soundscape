@@ -19,7 +19,7 @@ TO DO:
 
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { clamp } from 'lodash'
+import { clamp, throttle } from 'lodash'
 import { autobind } from 'core-decorators'
 import * as CustomPropTypes from 'src/prop-types.js'
 import { StyledPositionController, ListenerHandle, SourceReach, SourceHandle } from 'src/components/PositionController.style'
@@ -30,6 +30,9 @@ function calculateObjectCssPosition(object, container) {
 
   return { top, left }
 }
+
+let touchScrollX
+let touchScrollY
 
 /**
  * Position Controller
@@ -79,125 +82,111 @@ class PositionController extends Component {
   }
 
   @autobind
-  handleKeyDown(evt) {
-    if (
-      evt.keyCode === 37 ||
-      evt.keyCode === 38 ||
-      evt.keyCode === 39 ||
-      evt.keyCode === 40
-    ) {
-      evt.preventDefault()
+  handleKeyDown(e) {
+    if ( e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40 ) {
+      e.preventDefault()
 
-      const {
-        isRound,
-        sizeX,
-        sizeZ,
-        onListenerChange,
-        listenerPosition,
-      } = this.props
-      const { keys } = this.state
-      keys[evt.keyCode] = true
+      if (!this.state.isDragging) {
+        const { isRound, sizeX, sizeZ, onListenerChange, listenerPosition } = this.props
+        const { keys } = this.state
+        keys[e.keyCode] = true
 
-      this.setState(() => ({
-        ...this.state,
-        isMoving: true,
-        currentObjectId: 'listener',
-        keys,
-        position: {
-          azimuth: listenerPosition.azimuth,
-          distance: listenerPosition.distance,
-          rotYAxis: listenerPosition.rotYAxis,
-        },
-      }))
+        this.setState(() => ({
+          ...this.state,
+          isMoving: true,
+          currentObjectId: 'listener',
+          keys,
+          position: {
+            azimuth: listenerPosition.azimuth,
+            distance: listenerPosition.distance,
+            rotYAxis: listenerPosition.rotYAxis,
+          },
+        }))
 
-      const metresPerStep = (1 - 1.05 ** -Math.max(sizeX, sizeZ)) * 0.75
-      const radiansPerStep = Math.min(
-        Math.PI / (1.05 ** -Math.max(sizeX, sizeZ) * 48),
-        Math.PI / 24
-      )
+        const metresPerStep = (1 - 1.05 ** -Math.max(sizeX, sizeZ)) * 0.75
+        const radiansPerStep = Math.min(
+          Math.PI / (1.05 ** -Math.max(sizeX, sizeZ) * 48),
+          Math.PI / 24
+        )
 
-      let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance
-      let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance
-      let rotYAxis = listenerPosition.rotYAxis
-      let deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep
-      let deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep
-      if (!isRound) {
-        if (Math.abs(newX + deltaX) > sizeX) {
-          if (newX >= 0) {
-            deltaX = sizeX - newX
-          } else {
-            deltaX = -sizeX - newX
+        let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance
+        let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance
+        let rotYAxis = listenerPosition.rotYAxis
+        let deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep
+        let deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep
+        if (!isRound) {
+          if (Math.abs(newX + deltaX) > sizeX) {
+            if (newX >= 0) {
+              deltaX = sizeX - newX
+            } else {
+              deltaX = -sizeX - newX
+            }
+            if (Math.abs(deltaZ) >= 0.01) {
+              deltaZ = deltaX * Math.tan(rotYAxis)
+            } else {
+              deltaZ = 0
+            }
           }
-          if (Math.abs(deltaZ) >= 0.01) {
-            deltaZ = deltaX * Math.tan(rotYAxis)
-          } else {
-            deltaZ = 0
-          }
-        }
-        if (Math.abs(newZ + deltaZ) > sizeZ) {
-          if (newZ >= 0) {
-            deltaZ = sizeZ - newZ
-          } else {
-            deltaZ = -sizeZ - newZ
-          }
-          if (Math.abs(deltaX) >= 0.01) {
-            deltaX = deltaZ * (1 / Math.tan(rotYAxis))
-          } else {
-            deltaX = 0
+          if (Math.abs(newZ + deltaZ) > sizeZ) {
+            if (newZ >= 0) {
+              deltaZ = sizeZ - newZ
+            } else {
+              deltaZ = -sizeZ - newZ
+            }
+            if (Math.abs(deltaX) >= 0.01) {
+              deltaX = deltaZ * (1 / Math.tan(rotYAxis))
+            } else {
+              deltaX = 0
+            }
           }
         }
-      }
-      if (keys && keys[37]) {
-        rotYAxis = (rotYAxis - radiansPerStep) % (2 * Math.PI)
-        if (rotYAxis < 0) {
-          rotYAxis = 2 * Math.PI + rotYAxis
+        if (keys && keys[37]) {
+          rotYAxis = (rotYAxis - radiansPerStep) % (2 * Math.PI)
+          if (rotYAxis < 0) {
+            rotYAxis = 2 * Math.PI + rotYAxis
+          }
         }
-      }
-      if (keys && keys[38]) {
-        newX += deltaX
-        newZ += deltaZ
-      }
-      if (keys && keys[39]) {
-        rotYAxis = (rotYAxis + radiansPerStep) % (2 * Math.PI)
-      }
-      if (keys && keys[40]) {
-        newX -= deltaX
-        newZ -= deltaZ
-      }
+        if (keys && keys[38]) {
+          newX += deltaX
+          newZ += deltaZ
+        }
+        if (keys && keys[39]) {
+          rotYAxis = (rotYAxis + radiansPerStep) % (2 * Math.PI)
+        }
+        if (keys && keys[40]) {
+          newX -= deltaX
+          newZ -= deltaZ
+        }
 
-      let azimuth
-      if (newX === 0 && newZ === 0) {
-        azimuth = listenerPosition.azimuth
-      } else {
-        azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
+        let azimuth
+        if (newX === 0 && newZ === 0) {
+          azimuth = listenerPosition.azimuth
+        } else {
+          azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
+        }
+        let distance = Math.sqrt(newX ** 2 + newZ ** 2)
+
+        if (isRound) {
+          distance = Math.min(distance, sizeX)
+        }
+
+        const newPos = { azimuth, distance, rotYAxis }
+
+        this.setState({
+          ...this.state,
+          position: newPos,
+        })
+
+        onListenerChange(newPos)
       }
-      let distance = Math.sqrt(newX ** 2 + newZ ** 2)
-
-      if (isRound) {
-        distance = Math.min(distance, sizeX)
-      }
-
-      const newPos = { azimuth, distance, rotYAxis }
-
-      this.setState({
-        ...this.state,
-        position: newPos,
-      })
-
-      onListenerChange(newPos)
     }
   }
 
   @autobind
-  handleKeyUp(evt) {
-    if (
-      evt.keyCode === 37 ||
-      evt.keyCode === 38 ||
-      evt.keyCode === 39 ||
-      evt.keyCode === 40
-    ) {
+  handleKeyUp(e) {
+    if ( e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40 ) {
       const { keys } = this.state
-      keys[evt.keyCode] = false
+      keys[e.keyCode] = false
       if (!keys[37] && !keys[38] && !keys[39] && !keys[40]) {
         this.setState(() => ({
           ...this.state,
@@ -244,27 +233,20 @@ class PositionController extends Component {
   }
 
   @autobind
-  handleDrag(evt) {
-    const {
-      bounds,
-      isRound,
-      sizeX,
-      sizeZ,
-      onPositionChange,
-      onListenerChange,
-    } = this.props
+  handleDrag(e) {
+    const { bounds, isRound, sizeX, sizeZ, onPositionChange, onListenerChange } = this.props
     const { isDragging, currentObjectId, position } = this.state
 
     if (isDragging) {
       const rect = bounds
 
       const constrainedMouseX = clamp(
-        evt.pageX,
+        e.pageX,
         window.scrollX + rect.left,
         window.scrollX + rect.left + rect.width
       )
       const constrainedMouseY = clamp(
-        evt.pageY,
+        e.pageY,
         window.scrollY + rect.top,
         window.scrollY + rect.top + rect.height
       )
@@ -324,7 +306,6 @@ class PositionController extends Component {
   @autobind
   handleTouchStart(objectId) {
     console.log('touch start')
-    objectId.preventDefault()
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
@@ -348,14 +329,38 @@ class PositionController extends Component {
       this.props.onSelectTarget(objectId)
     }
 
-    window.addEventListener('touchmove', this.handleTouchMove)
-    window.addEventListener('touchend', this.handleTouchEnd)
+    touchScrollX = window.scrollX
+    touchScrollY = window.scrollY
+    console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+    window.addEventListener('touchmove', this.handleTouchMove, true)
+    window.addEventListener('touchend', this.handleTouchEnd, true)
+    window.addEventListener('scroll', this.handleScroll, true)
+    window.addEventListener("mousewheel", this.handleMouseWheel, true)
+    window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
   }
 
   @autobind
-  handleTouchMove(evt) {
+  handleMouseWheel(e) {
+    console.log('wheel')
+    e.preventDefault()
+    window.scrollTo(touchScrollX,touchScrollY)
+    console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+  }
+
+  @autobind
+  handleScroll(e) {
+    console.log('scroll')
+    e.preventDefault()
+    window.scrollTo(touchScrollX,touchScrollY)
+    console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+  }
+
+  @autobind
+  handleTouchMove(e) {
     console.log('touch move')
-    evt.preventDefault()
+    e.preventDefault()
+    window.scrollTo(touchScrollX,touchScrollY)
+    console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     const {
       bounds,
       isRound,
@@ -367,16 +372,16 @@ class PositionController extends Component {
 
     const { isDragging, currentObjectId, position } = this.state
 
-    if (isDragging && evt.targetTouches.length === 1) {
+    if (isDragging && e.targetTouches.length === 1) {
       const rect = bounds
 
       const constrainedMouseX = clamp(
-        evt.targetTouches[0].pageX,
+        e.targetTouches[0].pageX,
         window.scrollX + rect.left,
         window.scrollX + rect.left + rect.width
       )
       const constrainedMouseY = clamp(
-        evt.targetTouches[0].pageY,
+        e.targetTouches[0].pageY,
         window.scrollY + rect.top,
         window.scrollY + rect.top + rect.height
       )
@@ -422,11 +427,14 @@ class PositionController extends Component {
   }
 
   @autobind
-  handleTouchEnd(evt) {
+  handleTouchEnd(e) {
     console.log('touch end')
-    evt.preventDefault()
+    e.preventDefault()
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeEventListener('touchend', this.handleTouchEnd)
+    window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener("mousewheel", this.handleMouseWheel, false)
+    window.removeEventListener("DOMMouseScroll", this.handleMouseWheel, false);
 
     this.setState(() => ({
       ...this.state,
