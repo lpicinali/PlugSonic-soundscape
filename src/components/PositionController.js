@@ -306,6 +306,9 @@ class PositionController extends Component {
   @autobind
   handleTouchStart(objectId) {
     // console.log('touch start')
+    objectId.preventDefault()
+    objectId.stopPropagation();
+    
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
