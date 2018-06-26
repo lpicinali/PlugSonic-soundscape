@@ -31,8 +31,8 @@ function calculateObjectCssPosition(object, container) {
   return { top, left }
 }
 
-let touchScrollX
-let touchScrollY
+// let touchScrollX
+// let touchScrollY
 
 /**
  * Position Controller
@@ -305,7 +305,7 @@ class PositionController extends Component {
 
   @autobind
   handleTouchStart(objectId) {
-    console.log('touch start')
+    // console.log('touch start')
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
@@ -329,14 +329,14 @@ class PositionController extends Component {
       this.props.onSelectTarget(objectId)
     }
 
-    touchScrollX = window.scrollX
-    touchScrollY = window.scrollY
-    console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+    // touchScrollX = window.scrollX
+    // touchScrollY = window.scrollY
+    // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     window.addEventListener('touchmove', this.handleTouchMove, true)
     window.addEventListener('touchend', this.handleTouchEnd, true)
-    window.addEventListener('scroll', this.handleScroll, true)
-    window.addEventListener("mousewheel", this.handleMouseWheel, true)
-    window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
+    // window.addEventListener('scroll', this.handleScroll, true)
+    // window.addEventListener("mousewheel", this.handleMouseWheel, true)
+    // window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
   }
 
   @autobind
@@ -357,10 +357,10 @@ class PositionController extends Component {
 
   @autobind
   handleTouchMove(e) {
-    console.log('touch move')
-    e.preventDefault()
-    window.scrollTo(touchScrollX,touchScrollY)
-    console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+    // console.log('touch move')
+    // e.preventDefault()
+    // window.scrollTo(touchScrollX,touchScrollY)
+    // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     const {
       bounds,
       isRound,
@@ -428,13 +428,13 @@ class PositionController extends Component {
 
   @autobind
   handleTouchEnd(e) {
-    console.log('touch end')
-    e.preventDefault()
+    // console.log('touch end')
+    // e.preventDefault()
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeEventListener('touchend', this.handleTouchEnd)
-    window.removeEventListener('scroll', this.handleScroll)
-    window.removeEventListener("mousewheel", this.handleMouseWheel, false)
-    window.removeEventListener("DOMMouseScroll", this.handleMouseWheel, false);
+    // window.removeEventListener('scroll', this.handleScroll)
+    // window.removeEventListener("mousewheel", this.handleMouseWheel)
+    // window.removeEventListener("DOMMouseScroll", this.handleMouseWheel);
 
     this.setState(() => ({
       ...this.state,
