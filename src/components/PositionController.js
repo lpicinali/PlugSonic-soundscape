@@ -334,8 +334,8 @@ class PositionController extends Component {
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false) // IPAD OK
     window.addEventListener('touchend', this.handleTouchEnd, {passive: false}, false)   // IPAD OK
-    window.addEventListener('scroll', this.handleScroll, {passive: false})
-    window.addEventListener('drag', this.handleDrag)
+    window.addEventListener('scroll', this.handleScroll, {passive: false}, false)
+    window.addEventListener('drag', this.handleDrag, {passive: false}, false)
     // window.addEventListener("mousewheel", this.handleMouseWheel, true)
     // window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
   }
@@ -444,9 +444,10 @@ class PositionController extends Component {
     // e.preventDefault()
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeEventListener('touchend', this.handleTouchEnd)
-    // window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener('scroll', this.handleScroll)
     // window.removeEventListener("mousewheel", this.handleMouseWheel)
     // window.removeEventListener("DOMMouseScroll", this.handleMouseWheel);
+    window.removeEventListener('drag', this.handleDrag)
 
     this.setState(() => ({
       ...this.state,
