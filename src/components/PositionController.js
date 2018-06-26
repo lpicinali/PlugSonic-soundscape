@@ -332,9 +332,9 @@ class PositionController extends Component {
     // touchScrollX = window.scrollX
     // touchScrollY = window.scrollY
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
-    window.addEventListener('touchmove', this.handleTouchMove, false)
-    window.addEventListener('touchend', this.handleTouchEnd, false)
-    // window.addEventListener('scroll', this.handleScroll, true)
+    window.addEventListener('touchmove', this.handleTouchMove, false) // IPAD OK
+    window.addEventListener('touchend', this.handleTouchEnd, false)   // IPAD OK
+    window.addEventListener('scroll', this.handleScroll, false)
     // window.addEventListener("mousewheel", this.handleMouseWheel, true)
     // window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
   }
@@ -349,16 +349,16 @@ class PositionController extends Component {
 
   @autobind
   handleScroll(e) {
-    console.log('scroll')
+    // console.log('scroll')
     e.preventDefault()
-    window.scrollTo(touchScrollX,touchScrollY)
-    console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+    // window.scrollTo(touchScrollX,touchScrollY)
+    // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
   }
 
   @autobind
   handleTouchMove(e) {
     // console.log('touch move')
-    e.preventDefault()
+    e.preventDefault()  // IPAD OK
     // window.scrollTo(touchScrollX,touchScrollY)
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     const {

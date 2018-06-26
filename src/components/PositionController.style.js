@@ -18,7 +18,7 @@ export const ListenerHandle = styled.div`
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 0 8px 18px 8px;
+  border-width: 0 10px 20px 10px;
   border-color: transparent transparent ${BLACK} transparent;
   position: absolute;
   text-indent: -9999px;
@@ -40,8 +40,8 @@ export const SourceReach = styled.div`
 export const SourceHandle = styled.div`
   position: absolute;
   z-index: 2;
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   background: ${TURQOISE};
   border-radius: 100%;
   cursor: pointer;
