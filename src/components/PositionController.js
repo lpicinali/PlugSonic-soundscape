@@ -228,12 +228,12 @@ class PositionController extends Component {
       this.props.onSelectTarget(objectId)
     }
 
-    window.addEventListener('mousemove', this.handleDrag)
+    window.addEventListener('mousemove', this.handleMouseDrag)
     window.addEventListener('mouseup', this.handleRelease)
   }
 
   @autobind
-  handleDrag(e) {
+  handleMouseDrag(e) {
     const { bounds, isRound, sizeX, sizeZ, onPositionChange, onListenerChange } = this.props
     const { isDragging, currentObjectId, position } = this.state
 
@@ -305,7 +305,7 @@ class PositionController extends Component {
 
   @autobind
   handleTouchStart(objectId) {
-    // console.log('touch start')
+    console.log('touch start')
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
@@ -335,6 +335,7 @@ class PositionController extends Component {
     window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false) // IPAD OK
     window.addEventListener('touchend', this.handleTouchEnd, {passive: false}, false)   // IPAD OK
     window.addEventListener('scroll', this.handleScroll, {passive: false})
+    window.addEventListener('drag', this.handleDrag)
     // window.addEventListener("mousewheel", this.handleMouseWheel, true)
     // window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
   }
@@ -349,7 +350,16 @@ class PositionController extends Component {
 
   @autobind
   handleScroll(e) {
-    // console.log('scroll')
+    console.log('scroll')
+    e.preventDefault()
+    e.stopPropagation();
+    // window.scrollTo(touchScrollX,touchScrollY)
+    // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+  }
+
+  @autobind
+  handleDrag(e) {
+    console.log('drag')
     e.preventDefault()
     e.stopPropagation();
     // window.scrollTo(touchScrollX,touchScrollY)
@@ -358,7 +368,7 @@ class PositionController extends Component {
 
   @autobind
   handleTouchMove(e) {
-    // console.log('touch move')
+    console.log('touch move')
     e.preventDefault()  // IPAD OK
     e.stopPropagation()
     // window.scrollTo(touchScrollX,touchScrollY)
@@ -430,7 +440,7 @@ class PositionController extends Component {
 
   @autobind
   handleTouchEnd(e) {
-    // console.log('touch end')
+    console.log('touch end')
     // e.preventDefault()
     window.removeEventListener('touchmove', this.handleTouchMove)
     window.removeEventListener('touchend', this.handleTouchEnd)
