@@ -358,7 +358,7 @@ class PositionController extends Component {
   @autobind
   handleTouchMove(e) {
     // console.log('touch move')
-    // e.preventDefault()
+    e.preventDefault()
     // window.scrollTo(touchScrollX,touchScrollY)
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     const {
