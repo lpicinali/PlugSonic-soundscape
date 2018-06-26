@@ -351,18 +351,14 @@ class PositionController extends Component {
   handleScroll(e) {
     console.log('scroll')
     e.preventDefault()
-    e.stopPropagation();
-    window.scrollTo({top:0,left:0,behavior:'smooth'})
-    // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+    e.stopPropagation()
   }
 
   @autobind
   handleDrag(e) {
     console.log('drag')
     e.preventDefault()
-    e.stopPropagation();
-    // window.scrollTo(touchScrollX,touchScrollY)
-    // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
+    e.stopPropagation()
   }
 
   @autobind
@@ -370,8 +366,6 @@ class PositionController extends Component {
     console.log('touch move')
     e.preventDefault()  // IPAD OK
     e.stopPropagation()
-    window.scrollTo({top:0,left:0,behavior:'smooth'})
-    // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     const {
       bounds,
       isRound,
