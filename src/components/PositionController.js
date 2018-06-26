@@ -306,9 +306,6 @@ class PositionController extends Component {
   @autobind
   handleTouchStart(objectId) {
     // console.log('touch start')
-    objectId.preventDefault()
-    objectId.stopPropagation();
-    
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
@@ -335,9 +332,9 @@ class PositionController extends Component {
     // touchScrollX = window.scrollX
     // touchScrollY = window.scrollY
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
-    window.addEventListener('touchmove', this.handleTouchMove, false) // IPAD OK
-    window.addEventListener('touchend', this.handleTouchEnd, false)   // IPAD OK
-    window.addEventListener('scroll', this.handleScroll, false)
+    window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false) // IPAD OK
+    window.addEventListener('touchend', this.handleTouchEnd, {passive: false}, false)   // IPAD OK
+    window.addEventListener('scroll', this.handleScroll, {passive: false}, false)
     // window.addEventListener("mousewheel", this.handleMouseWheel, true)
     // window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
   }
