@@ -334,8 +334,7 @@ class PositionController extends Component {
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false) // IPAD OK
     window.addEventListener('touchend', this.handleTouchEnd, {passive: false}, false)   // IPAD OK
-    window.addEventListener('scroll', this.handleScroll, {passive: false}, false)
-    window.addEventListener('drag', this.handleDrag, {passive: false}, false)
+    window.addEventListener('scroll', this.handleScroll, {passive: false}, true)
     // window.addEventListener("mousewheel", this.handleMouseWheel, true)
     // window.addEventListener("DOMMouseScroll", this.handleMouseWheel, true)
   }
@@ -353,7 +352,7 @@ class PositionController extends Component {
     console.log('scroll')
     e.preventDefault()
     e.stopPropagation();
-    // window.scrollTo(touchScrollX,touchScrollY)
+    window.scrollTo(0,0)
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
   }
 
@@ -371,7 +370,7 @@ class PositionController extends Component {
     console.log('touch move')
     e.preventDefault()  // IPAD OK
     e.stopPropagation()
-    // window.scrollTo(touchScrollX,touchScrollY)
+    window.scrollTo(0,0)
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     const {
       bounds,
@@ -447,7 +446,7 @@ class PositionController extends Component {
     window.removeEventListener('scroll', this.handleScroll)
     // window.removeEventListener("mousewheel", this.handleMouseWheel)
     // window.removeEventListener("DOMMouseScroll", this.handleMouseWheel);
-    window.removeEventListener('drag', this.handleDrag)
+    // window.removeEventListener('drag', this.handleDrag)
 
     this.setState(() => ({
       ...this.state,
@@ -485,6 +484,7 @@ class PositionController extends Component {
           size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
           onMouseDown={() => this.handlePress('listener')}
           onTouchStart={() => this.handleTouchStart('listener')}
+          onDragStart={() => this.handleTouchStart('listener')}
         >
           <span>listener</span>
         </ListenerHandle>
@@ -507,6 +507,7 @@ class PositionController extends Component {
               <SourceHandle
                 onMouseDown={() => this.handlePress(object.id)}
                 onTouchStart={() => this.handleTouchStart(object.id)}
+                onDragStart={() => this.handleTouchStart(object.id)}
                 style={objectStyles}
               />
             </Fragment>
