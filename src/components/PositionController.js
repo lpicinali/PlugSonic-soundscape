@@ -204,7 +204,7 @@ class PositionController extends Component {
   }
 
   @autobind
-  handlePress(objectId) {
+  handleMousePress(objectId) {
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
@@ -229,7 +229,7 @@ class PositionController extends Component {
     }
 
     window.addEventListener('mousemove', this.handleMouseDrag)
-    window.addEventListener('mouseup', this.handleRelease)
+    window.addEventListener('mouseup', this.handleMouseRelease)
   }
 
   @autobind
@@ -292,9 +292,9 @@ class PositionController extends Component {
   }
 
   @autobind
-  handleRelease() {
-    window.removeEventListener('mousemove', this.handleDrag)
-    window.removeEventListener('mouseup', this.handleRelease)
+  handleMouseRelease() {
+    window.removeEventListener('mousemove', this.handleMouseDrag)
+    window.removeEventListener('mouseup', this.handleMouseRelease)
 
     this.setState(() => ({
       ...this.state,
@@ -440,7 +440,7 @@ class PositionController extends Component {
             transform: `translate3d(-50%, -50%, 0) rotate(${listenerPosition.rotYAxis}rad)`,
           }}
           size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
-          onMouseDown={() => this.handlePress('listener')}
+          onMouseDown={() => this.handleMousePress('listener')}
           onTouchStart={() => this.handleTouchStart('listener')}
         >
           <span>listener</span>
@@ -462,7 +462,7 @@ class PositionController extends Component {
                 style={objectStyles}
               />
               <SourceHandle
-                onMouseDown={() => this.handlePress(object.id)}
+                onMouseDown={() => this.handleMousePress(object.id)}
                 onTouchStart={() => this.handleTouchStart(object.id)}
                 style={objectStyles}
               />
