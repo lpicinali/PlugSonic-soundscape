@@ -24,6 +24,7 @@ export const ListenerHandle = styled.div`
   text-indent: -9999px;
   overflow: hidden;
   cursor: pointer;
+  touch-action: none;
 `
 
 export const SourceReach = styled.div`
@@ -46,4 +47,5 @@ export const SourceHandle = styled.div`
   border-radius: 100%;
   cursor: pointer;
   transform: translate3d(-50%, -50%, 0);
+  touch-action: none;
 `
