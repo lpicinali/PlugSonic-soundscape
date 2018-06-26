@@ -352,7 +352,7 @@ class PositionController extends Component {
     console.log('scroll')
     e.preventDefault()
     e.stopPropagation();
-    window.scrollTo(0,0)
+    window.scrollTo({top:0,left:0,behavior:'smooth'})
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
   }
 
@@ -370,7 +370,7 @@ class PositionController extends Component {
     console.log('touch move')
     e.preventDefault()  // IPAD OK
     e.stopPropagation()
-    window.scrollTo(0,0)
+    window.scrollTo({top:0,left:0,behavior:'smooth'})
     // console.log(`window.scroll = ${touchScrollX},${touchScrollY}`)
     const {
       bounds,
