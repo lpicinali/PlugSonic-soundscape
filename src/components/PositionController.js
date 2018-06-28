@@ -19,7 +19,7 @@ TO DO:
 
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { clamp, throttle } from 'lodash'
+import { clamp } from 'lodash'
 import { autobind } from 'core-decorators'
 import * as CustomPropTypes from 'src/prop-types.js'
 import { StyledPositionController, ListenerHandle, SourceReach, SourceHandle } from 'src/components/PositionController.style'
@@ -204,7 +204,7 @@ class PositionController extends Component {
   }
 
   @autobind
-  handleMousePress(objectId) {
+  handleMouseDown(objectId) {
     let object
     if (objectId === 'listener') {
       object = this.props.listenerPosition
@@ -229,7 +229,7 @@ class PositionController extends Component {
     }
 
     window.addEventListener('mousemove', this.handleMouseDrag)
-    window.addEventListener('mouseup', this.handleMouseRelease)
+    window.addEventListener('mouseup', this.handleMouseUp)
   }
 
   @autobind
@@ -292,9 +292,9 @@ class PositionController extends Component {
   }
 
   @autobind
-  handleMouseRelease() {
+  handleMouseUp() {
     window.removeEventListener('mousemove', this.handleMouseDrag)
-    window.removeEventListener('mouseup', this.handleMouseRelease)
+    window.removeEventListener('mouseup', this.handleMouseUp)
 
     this.setState(() => ({
       ...this.state,
@@ -440,7 +440,7 @@ class PositionController extends Component {
             transform: `translate3d(-50%, -50%, 0) rotate(${listenerPosition.rotYAxis}rad)`,
           }}
           size={`calc(${100 * (headRadius / 0.5) * (sizeX / 12) / sizeX}% + 8px)`}
-          onMouseDown={() => this.handleMousePress('listener')}
+          onMouseDown={() => this.handleMouseDown('listener')}
           onTouchStart={() => this.handleTouchStart('listener')}
         >
           <span>listener</span>
@@ -462,7 +462,7 @@ class PositionController extends Component {
                 style={objectStyles}
               />
               <SourceHandle
-                onMouseDown={() => this.handleMousePress(object.id)}
+                onMouseDown={() => this.handleMouseDown(object.id)}
                 onTouchStart={() => this.handleTouchStart(object.id)}
                 style={objectStyles}
               />

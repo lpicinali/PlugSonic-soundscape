@@ -6,10 +6,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
 
-import PositionControllerContainer from 'src/containers/PositionControllerContainer.js'
-import TargetSelectorContainer from 'src/containers/TargetSelectorContainer.js'
-import ListenerOptionsContainer from 'src/containers/ListenerOptionsContainer.js'
-import ImportExportContainer from 'src/containers/ImportExportContainer.js'
+import PositionControllerContainer from 'src/containers/PositionControllerContainer'
+import TargetSelectorContainer from 'src/containers/TargetSelectorContainer'
+import ListenerOptionsContainer from 'src/containers/ListenerOptionsContainer'
+import ImportExportContainer from 'src/containers/ImportExportContainer'
+import ArrowControlsContainer from 'src/containers/ArrowControlsContainer'
 // import Disclaimer from 'src/containers/Disclaimer.js'
 import { Header, HeaderContent, Heading, Logo, Instructions, AppContent } from 'src/containers/App.style'
 import { H2, H3 } from 'src/styles/elements.js'
@@ -51,6 +52,7 @@ class App extends PureComponent {
             <div style={{ flex: '0 1 33.333%' }}>
               <ListenerOptionsContainer />
               <ImportExportContainer />
+              <ArrowControlsContainer />
             </div>
           </AppContent>
         </div>
