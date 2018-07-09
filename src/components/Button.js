@@ -1,7 +1,7 @@
 /* eslint react/prefer-stateless-function: 0 */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import StyledButton from 'src/components/Button.style.js'
+import StyledButton from 'src/components/Button.style'
 /**
  * Button
  */

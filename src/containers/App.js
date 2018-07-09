@@ -1,6 +1,8 @@
 /* eslint no-unused-expressions: 0 */
+/* eslint no-unused-vars: 0 */
 /* global location */
 /* eslint no-restricted-globals: 0 */
+/* eslint react/prefer-stateless-functions: 0 */
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'

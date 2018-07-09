@@ -5,185 +5,211 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { autobind } from 'core-decorators'
-// import { values } from 'lodash'
-// import { PlaybackState } from 'src/constants.js'
-// import { setPlaybackState } from 'src/actions/controls.actions.js'
-import { StyledArrowButton } from 'src/containers/ArrowControlsContainer.style'
+import ArrowButton from 'src/components/ArrowButton'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { RoomShape } from 'src/constants.js'
+// import { H3 } from 'src/styles/elements.js'
 
-import { H3 } from 'src/styles/elements.js'
+const repeatTime = 50
 
-/**
- * Playback Controls Container
- */
+function calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, key) {
+  const metresPerStep = (1 - 1.05 ** -Math.max(sizeX, sizeZ)) * 0.75
+  const radiansPerStep = Math.min(
+    Math.PI / (1.05 ** -Math.max(sizeX, sizeZ) * 48),
+    Math.PI / 24
+  )
+
+  let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance
+  let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance
+  let rotYAxis = listenerPosition.rotYAxis
+  let deltaX
+  let deltaZ
+  if (key === 'down') {
+    deltaX = -Math.sin(listenerPosition.rotYAxis) * metresPerStep
+    deltaZ = -Math.cos(listenerPosition.rotYAxis) * metresPerStep
+  } else {
+    deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep
+    deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep
+  }
+  if (!isRound) {
+    if (Math.abs(newX + deltaX) > sizeX) {
+      if (newX >= 0) {
+        deltaX = sizeX - newX
+      } else {
+        deltaX = -sizeX - newX
+      }
+      if (Math.abs(deltaZ) >= 0.01) {
+        deltaZ = deltaX * Math.tan(rotYAxis)
+      } else {
+        deltaZ = 0
+      }
+    }
+    if (Math.abs(newZ + deltaZ) > sizeZ) {
+      if (newZ >= 0) {
+        deltaZ = sizeZ - newZ
+      } else {
+        deltaZ = -sizeZ - newZ
+      }
+      if (Math.abs(deltaX) >= 0.01) {
+        deltaX = deltaZ * (1 / Math.tan(rotYAxis))
+      } else {
+        deltaX = 0
+      }
+    }
+  }
+  if (key === 'left') {
+    rotYAxis = (rotYAxis - radiansPerStep) % (2 * Math.PI)
+    if (rotYAxis < 0) {
+      rotYAxis = 2 * Math.PI + rotYAxis
+    }
+  }
+  if (key === 'up') {
+    newX += deltaX
+    newZ += deltaZ
+  }
+  if (key === 'right') {
+    rotYAxis = (rotYAxis + radiansPerStep) % (2 * Math.PI)
+  }
+  if (key === 'down') {
+    newX += deltaX
+    newZ += deltaZ
+  }
+  let azimuth
+  if (newX === 0 && newZ === 0) {
+    azimuth = listenerPosition.azimuth
+  } else {
+    azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
+  }
+  let distance = Math.sqrt(newX ** 2 + newZ ** 2)
+
+  if (isRound) {
+    distance = Math.min(distance, sizeX)
+  }
+
+  return { azimuth, distance, rotYAxis }
+}
+
+
+
 class ArrowControlsContainer extends Component {
   static propTypes = {
     listenerPosition: PropTypes.object.isRequired,
-    roomSize: PropTypes.object.isRequired,
     isRound: PropTypes.bool.isRequired,
+    sizeX: PropTypes.number.isRequired,
+    sizeZ: PropTypes.number.isRequired,
     onListenerMove: PropTypes.func.isRequired,
   }
 
   state = {
+    key: '',
     isMoving: false,
-    // keys: {},
-    // currentObjectId: null,
     position: { azimuth: 0, distance: 0, rotYAxis: 0 },
   }
 
   @autobind
-  handleMouseDown(arrow) {
-    const {  onListenerMove, listenerPosition, roomSize, isRound } = this.props
-    const sizeX = roomSize.width/2
-    const sizeZ = roomSize.height/2
+  onMouseDown(evt) {
 
-    console.log(`handleMouseDown: ${arrow}` )
+    const { isRound, sizeX, sizeZ, listenerPosition, onListenerMove } = this.props
 
-    // arrow.preventDefault()
-    // const { keys } = this.state
-    // keys[e.keyCode] = true
+    this.state.key = evt
+    this.state.isMoving = true
+    this.state.position = listenerPosition
 
-    this.setState(() => ({
-      ...this.state,
-      isMoving: true,
-      // currentObjectId: 'listener',
-      // keys,
-      position: {
-        azimuth: listenerPosition.azimuth,
-        distance: listenerPosition.distance,
-        rotYAxis: listenerPosition.rotYAxis,
-      },
-    }))
+    const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
 
-    const metresPerStep = (1 - 1.05 ** -Math.max(sizeX, sizeZ)) * 0.75
-    const radiansPerStep = Math.min(
-        Math.PI / (1.05 ** -Math.max(sizeX, sizeZ) * 48),
-        Math.PI / 24
-      )
+    this.state.position = newPos
+    onListenerMove(newPos)
+    window.addEventListener('mouseup', this.onMouseUp)
+    this.repeat()
+  }
 
-    let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance
-    let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance
-    let rotYAxis = listenerPosition.rotYAxis
-    let deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep
-    let deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep
+  @autobind
+  onMouseEnter(evt) {
+    if (this.state.isMoving) {
+      const { isRound, sizeX, sizeZ, onListenerMove, listenerPosition } = this.props
 
-    if (!isRound) {
-      if (Math.abs(newX + deltaX) > sizeX) {
-        if (newX >= 0) {
-          deltaX = sizeX - newX
-        } else {
-          deltaX = -sizeX - newX
-        }
-        if (Math.abs(deltaZ) >= 0.01) {
-          deltaZ = deltaX * Math.tan(rotYAxis)
-        } else {
-          deltaZ = 0
-        }
-      }
-      if (Math.abs(newZ + deltaZ) > sizeZ) {
-        if (newZ >= 0) {
-          deltaZ = sizeZ - newZ
-        } else {
-          deltaZ = -sizeZ - newZ
-        }
-        if (Math.abs(deltaX) >= 0.01) {
-          deltaX = deltaZ * (1 / Math.tan(rotYAxis))
-        } else {
-          deltaX = 0
-        }
-      }
+      this.state.key = evt
+      this.state.position = listenerPosition
+
+      const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
+      this.state.position = newPos
+
+      onListenerMove(newPos)
+
+      this.repeat()
     }
+  }
 
-    if (arrow === 'left') {
-      rotYAxis = (rotYAxis - radiansPerStep) % (2 * Math.PI)
-      if (rotYAxis < 0) {
-        rotYAxis = 2 * Math.PI + rotYAxis
-      }
-    }
-    if (arrow === 'up') {
-      newX += deltaX
-      newZ += deltaZ
-    }
-    if (arrow === 'right') {
-      rotYAxis = (rotYAxis + radiansPerStep) % (2 * Math.PI)
-    }
-    if (arrow === 'down') {
-      newX -= deltaX
-      newZ -= deltaZ
-    }
+  @autobind
+  onMouseUp() {
+    window.removeEventListener('mouseup', this.onMouseUp)
+    clearTimeout(this.t)
+    this.state.key = ''
+    this.state.isMoving = false
+  }
 
-    let azimuth
-    if (newX === 0 && newZ === 0) {
-      azimuth = listenerPosition.azimuth
-    } else {
-      azimuth = Math.atan(newZ / newX) + (newX < 0 ? Math.PI : 0)
-    }
-    let distance = Math.sqrt(newX ** 2 + newZ ** 2)
+  @autobind
+  onMouseLeave() {
+    clearTimeout(this.t)
+    this.state.key = ''
+  }
 
-    if (isRound) {
-      distance = Math.min(distance, sizeX)
-    }
+  @autobind
+  updatePosition(){
+    const { isRound, sizeX, sizeZ, onListenerMove, listenerPosition } = this.props
+    const key = this.state.key
 
-    const newPos = { azimuth, distance, rotYAxis }
-
-    this.setState({
-      ...this.state,
-      position: newPos,
-    })
+    const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, key)
+    this.state.position = newPos
 
     onListenerMove(newPos)
   }
 
   @autobind
-  handleMouseUp() {
-    // const { keys } = this.state
-    // keys[arrow.keyCode] = false
-    // if (!keys[37] && !keys[38] && !keys[39] && !keys[40]) {
-    this.setState(() => ({
-      ...this.state,
-      isMoving: false,
-      // currentObjectId: null,
-      // keys: {},
-    }))
-      // } else {
-      //   this.setState(() => ({
-      //     ...this.state,
-      //     keys,
-      //   }))
-      // }
+  repeat() {
+      this.updatePosition()
+      this.t = setTimeout(this.repeat, repeatTime)
   }
 
   render() {
-    // const { playbackState, onStateChange } = this.props
 
     return (
       <div>
-        <H3 style={{ marginTop: `50px`}}>Arrow Controls</H3>
+        {/* <H3 style={{ marginTop: `50px`}}>azimuth</H3>
+        <div>{`${this.props.listenerPosition.azimuth}`}</div>
+        <H3 style={{ marginTop: `50px`}}>distance</H3>
+        <div>{`${this.props.listenerPosition.distance}`}</div>
+        <H3 style={{ marginTop: `50px`}}>rotYAxis</H3>
+        <div>{`${this.props.listenerPosition.rotYAxis}`}</div> */}
 
         <div style={{ justifyContent: 'center', textAlign: 'center' }}>
-          <StyledArrowButton
-            isEnabled
-            onMouseDown={() => this.handleMouseDown('up')}
-            onClick={() => this.handleMouseDown('up')}
-            rotation={-90}
+          <ArrowButton
+            rotateIcon={-90}
+            onMouseDown={() => this.onMouseDown('up')}
+            onMouseEnter={() => this.onMouseEnter('up')}
+            onMouseLeave={this.onMouseLeave}
           />
         </div>
         <div style={{ justifyContent: 'center', textAlign: 'center' }}>
-          <StyledArrowButton
-              isEnabled
-              rotation={180}
-              onClick={() => this.handleMouseDown('left')}
+          <ArrowButton
+            rotateIcon={180}
+            onMouseDown={() => this.onMouseDown('left')}
+            onMouseEnter={() => this.onMouseEnter('left')}
+            onMouseLeave={this.onMouseLeave}
           />
-          <StyledArrowButton
-              isEnabled
-              rotation={90}
-              onClick={() => this.handleMouseDown('down')}
+          <ArrowButton
+            rotateIcon={90}
+            onMouseDown={() => this.onMouseDown('down')}
+            onMouseEnter={() => this.onMouseEnter('down')}
+            onMouseLeave={this.onMouseLeave}
+
           />
-          <StyledArrowButton
-              isEnabled
-              rotation={0}
-              onClick={() => this.handleMouseDown('right')}
+          <ArrowButton
+            rotation={0}
+            onMouseDown={() => this.onMouseDown('right')}
+            onMouseEnter={() => this.onMouseEnter('right')}
+            onMouseLeave={this.onMouseLeave}
+
           />
         </div>
       </div>
@@ -194,8 +220,9 @@ class ArrowControlsContainer extends Component {
 export default connect(
   state => ({
     listenerPosition: state.listener.position,
-    roomSize: state.room.size,
-    isRound: state.room.roomShape === RoomShape.ROUND
+    isRound: state.room.shape === RoomShape.ROUND,
+    sizeX: state.room.size.width/2,
+    sizeZ: state.room.size.height/2,
   }),
   dispatch => ({
     onListenerMove: position => dispatch(setListenerPosition(position)),

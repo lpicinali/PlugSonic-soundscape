@@ -112,8 +112,15 @@ class PositionController extends Component {
         let newX = Math.cos(listenerPosition.azimuth) * listenerPosition.distance
         let newZ = Math.sin(listenerPosition.azimuth) * listenerPosition.distance
         let rotYAxis = listenerPosition.rotYAxis
-        let deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep
-        let deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep
+        let deltaX
+        let deltaZ
+        if (e.keyCode === 40) {
+          deltaX = -Math.sin(listenerPosition.rotYAxis) * metresPerStep
+          deltaZ = -Math.cos(listenerPosition.rotYAxis) * metresPerStep
+        } else {
+          deltaX = Math.sin(listenerPosition.rotYAxis) * metresPerStep
+          deltaZ = Math.cos(listenerPosition.rotYAxis) * metresPerStep
+        }
         if (!isRound) {
           if (Math.abs(newX + deltaX) > sizeX) {
             if (newX >= 0) {
@@ -154,10 +161,9 @@ class PositionController extends Component {
           rotYAxis = (rotYAxis + radiansPerStep) % (2 * Math.PI)
         }
         if (keys && keys[40]) {
-          newX -= deltaX
-          newZ -= deltaZ
+          newX += deltaX
+          newZ += deltaZ
         }
-
         let azimuth
         if (newX === 0 && newZ === 0) {
           azimuth = listenerPosition.azimuth
@@ -335,7 +341,7 @@ class PositionController extends Component {
   @autobind
   handleTouchMove(e) {
     console.log('touch move')
-    // e.preventDefault()  // IPAD OK
+    e.preventDefault()  // IPAD OK
     const {
       bounds,
       isRound,
