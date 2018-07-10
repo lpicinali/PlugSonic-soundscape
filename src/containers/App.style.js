@@ -18,14 +18,17 @@ injectGlobal`
   }
 `
 
-export const Header = styled.header`
+export const Header = styled.div`
+  width: 100%;
+  max-width: ${MAX_WIDTH}px;
+  margin: 0 auto;
+  padding: 0px 16px;
   background: ${BLUE};
-  color: #fefefe;
 `
 
 export const HeaderContent = styled.div`
   padding: 32px 16px 32px;
-  width: 100%;
+  width: 100% !important;
   max-width: ${MAX_WIDTH}px;
   margin: 0 auto;
 `
@@ -35,6 +38,7 @@ export const Heading = styled.h1`
   font-size: 24px;
   line-height: 32px;
   display: inline-block;
+  color: #fefefe;
 `
 export const Logo = styled.img`
   max-height: 80px;
@@ -42,7 +46,6 @@ export const Logo = styled.img`
   margin-top: -24px;
   padding-right: 16px;
   float: right;
-  ${'' /* padding: 16px 32px; */}
 `
 
 export const Instructions = styled.p`

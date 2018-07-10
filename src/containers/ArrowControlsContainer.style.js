@@ -35,7 +35,7 @@ export const StyledArrowButton = styled(PlayButton)`
 
 export const toggleStyles = {
   toggle: {
-    width: `100%`,
+    width: `80%`,
     marginTop: `50px`
   },
   label: {

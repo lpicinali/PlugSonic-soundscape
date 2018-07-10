@@ -1,9 +1,9 @@
 const styles = {
   toggle: {
-    width: `100%`,
+    width: `80%`,
   },
   label: {
-    width: `70%`,
+    width: `100%`,
     marginRight: `10%`,
     color: `gray`,
     fontSize: `12px`,

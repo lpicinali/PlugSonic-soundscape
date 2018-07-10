@@ -39,27 +39,26 @@ class ListenerOptionsContainer extends Component {
       <div>
         <H2>Listener</H2>
 
-        <div style={{ width: `80%` }}>
-          <Toggle
+        <Toggle
             label="Performance Mode"
             style={styles.toggle}
             labelStyle={styles.label}
-            onToggle={() => onChangePerformanceMode(!isPerformanceModeEnabled)} />
+            onToggle={() => onChangePerformanceMode(!isPerformanceModeEnabled)}
+        />
+
+        <H3 style= {{ marginTop: `50px` }}>
+          {`Head circumference: ${Math.round(100 * radiusToCircumference(headRadius))} cm`}
+        </H3>
+
+        <div style = {{ width: `80%` }}>
+          <Slider
+            value={radiusToCircumference(headRadius)}
+            min={0.4}
+            max={0.7}
+            step={0.005}
+            onChange={circumference => onChangeHeadRadius(circumferenceToRadius(circumference))}
+          />
         </div>
-
-          <H3 style= {{ marginTop: `50px` }}>
-            {`Head circumference: ${Math.round(100 * radiusToCircumference(headRadius))} cm`}
-          </H3>
-
-          <div style = {{ width: `60%` }}>
-            <Slider
-              value={radiusToCircumference(headRadius)}
-              min={0.4}
-              max={0.7}
-              step={0.005}
-              onChange={circumference => onChangeHeadRadius(circumferenceToRadius(circumference))}
-            />
-          </div>
 
       </div>
     )
