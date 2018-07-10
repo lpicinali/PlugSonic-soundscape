@@ -91,7 +91,9 @@ function calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, k
   return { azimuth, distance, rotYAxis }
 }
 
-
+/**
+ * ArrowControlsContainer
+ */
 class ArrowControlsContainer extends Component {
   static propTypes = {
     listenerPosition: PropTypes.object.isRequired,
