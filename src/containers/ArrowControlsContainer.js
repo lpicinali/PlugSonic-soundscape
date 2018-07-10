@@ -9,6 +9,8 @@ import ArrowButton from 'src/components/ArrowButton'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { RoomShape } from 'src/constants.js'
 // import { H3 } from 'src/styles/elements.js'
+import Toggle from 'material-ui/Toggle'
+import { toggleStyles } from 'src/containers/ArrowControlsContainer.style'
 
 const repeatTime = 50
 
@@ -90,7 +92,6 @@ function calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, k
 }
 
 
-
 class ArrowControlsContainer extends Component {
   static propTypes = {
     listenerPosition: PropTypes.object.isRequired,
@@ -103,22 +104,23 @@ class ArrowControlsContainer extends Component {
   state = {
     key: '',
     isMoving: false,
+    isHidden: true,
     position: { azimuth: 0, distance: 0, rotYAxis: 0 },
   }
 
   @autobind
   onMouseDown(evt) {
 
-    const { isRound, sizeX, sizeZ, listenerPosition, onListenerMove } = this.props
+    const { listenerPosition, /* isRound, sizeX, sizeZ, , onListenerMove */ } = this.props
 
     this.state.key = evt
     this.state.isMoving = true
     this.state.position = listenerPosition
 
-    const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
-
-    this.state.position = newPos
-    onListenerMove(newPos)
+    // const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
+    //
+    // this.state.position = newPos
+    // onListenerMove(newPos)
     window.addEventListener('mouseup', this.onMouseUp)
     this.repeat()
   }
@@ -126,15 +128,15 @@ class ArrowControlsContainer extends Component {
   @autobind
   onMouseEnter(evt) {
     if (this.state.isMoving) {
-      const { isRound, sizeX, sizeZ, onListenerMove, listenerPosition } = this.props
+      const { listenerPosition, /* isRound, sizeX, sizeZ, onListenerMove, */ } = this.props
 
       this.state.key = evt
       this.state.position = listenerPosition
 
-      const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
-      this.state.position = newPos
-
-      onListenerMove(newPos)
+      // const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
+      // this.state.position = newPos
+      //
+      // onListenerMove(newPos)
 
       this.repeat()
     }
@@ -155,6 +157,59 @@ class ArrowControlsContainer extends Component {
   }
 
   @autobind
+  onTouchStart(evt) {
+    console.log('touch start')
+    // evt.preventDefault()
+    // evt.stopPropagation()
+
+    const { listenerPosition, /* isRound, sizeX, sizeZ, , onListenerMove */ } = this.props
+
+    this.state.key = evt
+    this.state.isMoving = true
+    this.state.position = listenerPosition
+
+    // const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
+    //
+    // this.state.position = newPos
+    // onListenerMove(newPos)
+    window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false)
+    window.addEventListener('touchend', this.onTouchEnd, {passive: false}, false)
+    this.repeat()
+  }
+
+  @autobind
+  onTouchMove(evt) {
+    evt.preventDefault()
+    evt.stopPropagation()
+
+    const { listenerPosition, /* isRound, sizeX, sizeZ, , onListenerMove */ } = this.props
+
+    this.state.key = evt
+    this.state.isMoving = true
+    this.state.position = listenerPosition
+
+    // const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
+    //
+    // this.state.position = newPos
+    // onListenerMove(newPos)
+    this.repeat()
+  }
+
+  @autobind
+  onTouchEnd() {
+    console.log('touch end')
+    window.removeEventListener('touchend', this.onTouchEnd)
+    clearTimeout(this.t)
+    this.state.key = ''
+    this.state.isMoving = false
+  }
+
+  @autobind
+  onToggle() {
+    this.setState({...this.state, isHidden: !this.state.isHidden })
+  }
+
+  @autobind
   updatePosition(){
     const { isRound, sizeX, sizeZ, onListenerMove, listenerPosition } = this.props
     const key = this.state.key
@@ -167,27 +222,23 @@ class ArrowControlsContainer extends Component {
 
   @autobind
   repeat() {
-      this.updatePosition()
-      this.t = setTimeout(this.repeat, repeatTime)
+    console.log('repeat')
+    this.updatePosition()
+    this.t = setTimeout(this.repeat, repeatTime)
   }
 
   render() {
 
-    return (
+    const arrowControls =
       <div>
-        {/* <H3 style={{ marginTop: `50px`}}>azimuth</H3>
-        <div>{`${this.props.listenerPosition.azimuth}`}</div>
-        <H3 style={{ marginTop: `50px`}}>distance</H3>
-        <div>{`${this.props.listenerPosition.distance}`}</div>
-        <H3 style={{ marginTop: `50px`}}>rotYAxis</H3>
-        <div>{`${this.props.listenerPosition.rotYAxis}`}</div> */}
-
         <div style={{ justifyContent: 'center', textAlign: 'center' }}>
           <ArrowButton
             rotateIcon={-90}
             onMouseDown={() => this.onMouseDown('up')}
             onMouseEnter={() => this.onMouseEnter('up')}
             onMouseLeave={this.onMouseLeave}
+            onTouchStart={() => this.onTouchStart('up')}
+            onTouchEnd={this.onTouchEnd}
           />
         </div>
         <div style={{ justifyContent: 'center', textAlign: 'center' }}>
@@ -196,12 +247,16 @@ class ArrowControlsContainer extends Component {
             onMouseDown={() => this.onMouseDown('left')}
             onMouseEnter={() => this.onMouseEnter('left')}
             onMouseLeave={this.onMouseLeave}
+            onTouchStart={() => this.onTouchStart('left')}
+            onTouchEnd={this.onTouchEnd}
           />
           <ArrowButton
             rotateIcon={90}
             onMouseDown={() => this.onMouseDown('down')}
             onMouseEnter={() => this.onMouseEnter('down')}
             onMouseLeave={this.onMouseLeave}
+            onTouchStart={() => this.onTouchStart('down')}
+            onTouchEnd={this.onTouchEnd}
 
           />
           <ArrowButton
@@ -209,9 +264,33 @@ class ArrowControlsContainer extends Component {
             onMouseDown={() => this.onMouseDown('right')}
             onMouseEnter={() => this.onMouseEnter('right')}
             onMouseLeave={this.onMouseLeave}
-
+            onTouchStart={() => this.onTouchStart('right')}
+            onTouchEnd={this.onTouchEnd}
           />
         </div>
+      </div>
+
+    return (
+      // <div style={{ touchAction: 'none' }}>
+      <div>
+        {/* <div>
+          <H3 style={{ marginTop: `50px`}}>azimuth</H3>
+          <div>{`${this.props.listenerPosition.azimuth}`}</div>
+          <H3 style={{ marginTop: `50px`}}>distance</H3>
+          <div>{`${this.props.listenerPosition.distance}`}</div>
+          <H3 style={{ marginTop: `50px`}}>rotYAxis</H3>
+          <div>{`${this.props.listenerPosition.rotYAxis}`}</div>
+        </div> */}
+
+        <Toggle
+            label="Touch Arrows"
+            style={toggleStyles.toggle}
+            labelStyle={toggleStyles.label}
+            onToggle={this.onToggle}
+        />
+
+        {this.state.isHidden ? <div/> : arrowControls}
+
       </div>
     )
   }

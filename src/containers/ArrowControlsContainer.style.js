@@ -32,3 +32,19 @@ export const StyledArrowButton = styled(PlayButton)`
     fill: ${WHITE};
   }
 `
+
+export const toggleStyles = {
+  toggle: {
+    width: `100%`,
+    marginTop: `50px`
+  },
+  label: {
+    width: `100%`,
+    marginRight: `0%`,
+    color: `gray`,
+    fontSize: `12px`,
+    fontWeight: `bold`,
+    textTransform: `uppercase`,
+    letterSpacing: `1px`,
+  },
+}
