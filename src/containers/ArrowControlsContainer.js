@@ -271,8 +271,7 @@ class ArrowControlsContainer extends Component {
       </div>
 
     return (
-      // <div style={{ touchAction: 'none' }}>
-      <div>
+      <div style={{ touchAction: 'none' }}>
         {/* <div>
           <H3 style={{ marginTop: `50px`}}>azimuth</H3>
           <div>{`${this.props.listenerPosition.azimuth}`}</div>

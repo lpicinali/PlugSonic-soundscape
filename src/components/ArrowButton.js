@@ -20,6 +20,8 @@ class ArrowButton extends Component {
     onMouseOut    : PropTypes.func,
     onFocus       : PropTypes.func,
     onBlur        : PropTypes.func,
+    onTouchStart  : PropTypes.func,
+    onTouchEnd    : PropTypes.func,
     className     : PropTypes.string,
     children      : PropTypes.node,
   }
@@ -38,6 +40,8 @@ class ArrowButton extends Component {
     onMouseOut    : () => {},
     onFocus       : () => {},
     onBlur        : () => {},
+    onTouchStart  : () => {},
+    onTouchEnd    : () => {},
     children      : <PlayIcon />,
     }
 
@@ -56,6 +60,8 @@ class ArrowButton extends Component {
       onMouseOut,
       onFocus,
       onBlur,
+      onTouchStart,
+      onTouchEnd,
       children
     } = this.props
 
@@ -74,6 +80,8 @@ class ArrowButton extends Component {
         onMouseOut={onMouseOut}
         onFocus={onFocus}
         onBlur={onBlur}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
         {children}
       </StyledArrowButton>
