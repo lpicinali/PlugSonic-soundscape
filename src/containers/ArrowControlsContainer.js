@@ -172,7 +172,7 @@ class ArrowControlsContainer extends Component {
     //
     // this.state.position = newPos
     // onListenerMove(newPos)
-    window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false)
+    // window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false)
     window.addEventListener('touchend', this.onTouchEnd, {passive: false}, false)
     this.repeat()
   }
@@ -198,6 +198,7 @@ class ArrowControlsContainer extends Component {
   @autobind
   onTouchEnd() {
     console.log('touch end')
+    // window.removeEventListener('touchmove', this.onTouchEndMove)
     window.removeEventListener('touchend', this.onTouchEnd)
     clearTimeout(this.t)
     this.state.key = ''
