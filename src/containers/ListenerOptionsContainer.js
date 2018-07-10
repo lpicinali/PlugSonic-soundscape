@@ -46,11 +46,11 @@ class ListenerOptionsContainer extends Component {
             onToggle={() => onChangePerformanceMode(!isPerformanceModeEnabled)}
         />
 
-        <H3 style= {{ marginTop: `50px` }}>
+        <H3 style= {{ marginTop: `30px` }}>
           {`Head circumference: ${Math.round(100 * radiusToCircumference(headRadius))} cm`}
         </H3>
 
-        <div style = {{ width: `80%` }}>
+        <div style = {{ width: `60%` }}>
           <Slider
             value={radiusToCircumference(headRadius)}
             min={0.4}

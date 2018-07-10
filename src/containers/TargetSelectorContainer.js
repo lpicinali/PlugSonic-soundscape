@@ -151,7 +151,7 @@ class TargetSelectorContainer extends Component {
           <H3>Add Source</H3>
           <Uploader titles={titles} onAddSource={this.props.onAddSource} />
 
-          <H3 style={{ marginTop: `50px`}}>Load from dropbox</H3>
+          <H3 style={{ marginTop: `30px`}}>Load from dropbox</H3>
           <div>
             <div style={{ width: `100%` }}>
               <StyledTextField
@@ -182,8 +182,8 @@ class TargetSelectorContainer extends Component {
         </div>
 
         <div>
-          <H3 style= {{ width: `45%`, marginTop: `50px`, display: `inline-block` }}>Added Sources</H3>
-          
+          <H3 style= {{ width: `45%`, marginTop: `30px`, display: `inline-block` }}>Added Sources</H3>
+
           <H3 style={{ marginTop: `0px`, marginRight: `30%`, textAlign: `right` }}>Volume</H3>
           <ButtonSliderGroup
             options={options}
@@ -204,8 +204,8 @@ class TargetSelectorContainer extends Component {
           </Button>
         </div>
 
-        <H3 style= {{ width: `50%`, marginTop: `50px`, display: `inline-block` }}>Master Volume</H3>
-        <div style={{ width: `50%`, float: `right`, marginTop: `47px` }}>
+        <H3 style= {{ width: `50%`, marginTop: `30px`, display: `inline-block` }}>Master Volume</H3>
+        <div style={{ width: `50%`, float: `right`, marginTop: `27px` }}>
           <MasterVolumeSlider volume={masterVolume} onChange={onChangeMasterVolume}/>
         </div>
 

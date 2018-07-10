@@ -390,7 +390,7 @@ class PositionControllerContainer extends Component {
           </div>
         </div>
 
-        <H3 style={{ marginTop: `50px` }}>Room shape and size</H3>
+        <H3 style={{ marginTop: `30px` }}>Room shape and size</H3>
         <div>
           <div style={{ marginTop: `-10px`, marginLeft: `-24px` }}>
             <DropDownMenu
@@ -429,7 +429,7 @@ class PositionControllerContainer extends Component {
           />
         </div>
 
-        <H3 style={{ marginTop: `50px` }}>Source reach</H3>
+        <H3 style={{ marginTop: `30px` }}>Source reach</H3>
         {editingTarget === null ? (
           <NoSelectedSourcePlaceholder>
             Select a source on the map to edit its reach

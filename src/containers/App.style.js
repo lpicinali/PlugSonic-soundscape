@@ -42,10 +42,10 @@ export const Heading = styled.h1`
   color: #fefefe;
 `
 export const Logo = styled.img`
-  max-height: 80px;
+  max-height: 60px;
   max-width: ${MAX_WIDTH}px;
-  margin-top: -24px;
-  padding-right: 0px;
+  margin-top: -12px;
+  padding: 0px;
   float: right;
 `
 
@@ -60,5 +60,5 @@ export const AppContent = styled.div`
   width: 100%;
   max-width: ${MAX_WIDTH}px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 16px 16px;
 `

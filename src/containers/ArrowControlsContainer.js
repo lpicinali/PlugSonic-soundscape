@@ -110,17 +110,12 @@ class ArrowControlsContainer extends Component {
 
   @autobind
   onMouseDown(evt) {
-    console.log('mouse down')
-    const { listenerPosition, /* isRound, sizeX, sizeZ, , onListenerMove */ } = this.props
+    const { listenerPosition } = this.props
 
     this.state.key = evt
     this.state.isMoving = true
     this.state.position = listenerPosition
 
-    // const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
-    //
-    // this.state.position = newPos
-    // onListenerMove(newPos)
     window.addEventListener('mouseup', this.onMouseUp)
     this.repeat()
   }
@@ -128,15 +123,10 @@ class ArrowControlsContainer extends Component {
   @autobind
   onMouseEnter(evt) {
     if (this.state.isMoving) {
-      const { listenerPosition, /* isRound, sizeX, sizeZ, onListenerMove, */ } = this.props
+      const { listenerPosition } = this.props
 
       this.state.key = evt
       this.state.position = listenerPosition
-
-      // const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
-      // this.state.position = newPos
-      //
-      // onListenerMove(newPos)
 
       this.repeat()
     }
@@ -158,20 +148,11 @@ class ArrowControlsContainer extends Component {
 
   @autobind
   onTouchStart(evt) {
-    console.log('touch start')
-    // evt.preventDefault()
-    // evt.stopPropagation()
-
-    const { listenerPosition, /* isRound, sizeX, sizeZ, , onListenerMove */ } = this.props
+    const { listenerPosition } = this.props
 
     this.state.key = evt
     this.state.isMoving = true
     this.state.position = listenerPosition
-
-    // const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
-    //
-    // this.state.position = newPos
-    // onListenerMove(newPos)
     // window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false)
     window.addEventListener('touchend', this.onTouchEnd, {passive: false}, false)
     this.repeat()
@@ -182,16 +163,11 @@ class ArrowControlsContainer extends Component {
     evt.preventDefault()
     evt.stopPropagation()
 
-    const { listenerPosition, /* isRound, sizeX, sizeZ, , onListenerMove */ } = this.props
+    const { listenerPosition } = this.props
 
     this.state.key = evt
     this.state.isMoving = true
     this.state.position = listenerPosition
-
-    // const newPos = calculateNewListenerPosition(isRound, sizeX, sizeZ, listenerPosition, evt)
-    //
-    // this.state.position = newPos
-    // onListenerMove(newPos)
     this.repeat()
   }
 
@@ -276,26 +252,14 @@ class ArrowControlsContainer extends Component {
       </div>
 
     return (
-      // <div style={{ touchAction: 'none' }}>
       <div>
-        {/* <div>
-          <H3 style={{ marginTop: `50px`}}>azimuth</H3>
-          <div>{`${this.props.listenerPosition.azimuth}`}</div>
-          <H3 style={{ marginTop: `50px`}}>distance</H3>
-          <div>{`${this.props.listenerPosition.distance}`}</div>
-          <H3 style={{ marginTop: `50px`}}>rotYAxis</H3>
-          <div>{`${this.props.listenerPosition.rotYAxis}`}</div>
-        </div> */}
-
         <Toggle
             label="Touch Arrows"
             style={toggleStyles.toggle}
             labelStyle={toggleStyles.label}
             onToggle={this.onToggle}
         />
-
         {this.state.isHidden ? <div/> : arrowControls}
-
       </div>
     )
   }
