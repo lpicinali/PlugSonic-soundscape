@@ -238,6 +238,7 @@ class ArrowControlsContainer extends Component {
             onMouseEnter={() => this.onMouseEnter('up')}
             onMouseLeave={this.onMouseLeave}
             onTouchStart={() => this.onTouchStart('up')}
+            onTouchMove={() => {}}
             onTouchEnd={this.onTouchEnd}
           />
         </div>
@@ -271,7 +272,8 @@ class ArrowControlsContainer extends Component {
       </div>
 
     return (
-      <div style={{ touchAction: 'none' }}>
+      // <div style={{ touchAction: 'none' }}>
+      <div>
         {/* <div>
           <H3 style={{ marginTop: `50px`}}>azimuth</H3>
           <div>{`${this.props.listenerPosition.azimuth}`}</div>

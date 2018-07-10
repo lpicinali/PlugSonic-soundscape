@@ -21,6 +21,7 @@ class ArrowButton extends Component {
     onFocus       : PropTypes.func,
     onBlur        : PropTypes.func,
     onTouchStart  : PropTypes.func,
+    onTouchMove   : PropTypes.func,
     onTouchEnd    : PropTypes.func,
     className     : PropTypes.string,
     children      : PropTypes.node,
@@ -41,6 +42,7 @@ class ArrowButton extends Component {
     onFocus       : () => {},
     onBlur        : () => {},
     onTouchStart  : () => {},
+    onTouchMove   : () => {},
     onTouchEnd    : () => {},
     children      : <PlayIcon />,
     }
@@ -61,6 +63,7 @@ class ArrowButton extends Component {
       onFocus,
       onBlur,
       onTouchStart,
+      onTouchMove,
       onTouchEnd,
       children
     } = this.props
@@ -81,6 +84,7 @@ class ArrowButton extends Component {
         onFocus={onFocus}
         onBlur={onBlur}
         onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
         {children}
