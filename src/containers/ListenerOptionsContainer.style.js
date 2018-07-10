@@ -1,5 +1,6 @@
 const styles = {
   toggle: {
+    width: `100%`,
   },
   label: {
     width: `70%`,

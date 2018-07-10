@@ -110,7 +110,7 @@ class ArrowControlsContainer extends Component {
 
   @autobind
   onMouseDown(evt) {
-
+    console.log('mouse down')
     const { listenerPosition, /* isRound, sizeX, sizeZ, , onListenerMove */ } = this.props
 
     this.state.key = evt
@@ -235,9 +235,9 @@ class ArrowControlsContainer extends Component {
         <div style={{ justifyContent: 'center', textAlign: 'center' }}>
           <ArrowButton
             rotateIcon={-90}
-            onMouseDown={() => this.onMouseDown('up')}
-            onMouseEnter={() => this.onMouseEnter('up')}
-            onMouseLeave={this.onMouseLeave}
+            // onMouseDown={() => this.onMouseDown('up')}
+            // onMouseEnter={() => this.onMouseEnter('up')}
+            // onMouseLeave={this.onMouseLeave}
             onTouchStart={() => this.onTouchStart('up')}
             onTouchMove={() => {}}
             onTouchEnd={this.onTouchEnd}
@@ -246,27 +246,30 @@ class ArrowControlsContainer extends Component {
         <div style={{ justifyContent: 'center', textAlign: 'center' }}>
           <ArrowButton
             rotateIcon={180}
-            onMouseDown={() => this.onMouseDown('left')}
-            onMouseEnter={() => this.onMouseEnter('left')}
-            onMouseLeave={this.onMouseLeave}
+            // onMouseDown={() => this.onMouseDown('left')}
+            // onMouseEnter={() => this.onMouseEnter('left')}
+            // onMouseLeave={this.onMouseLeave}
             onTouchStart={() => this.onTouchStart('left')}
+            onTouchMove={() => {}}
             onTouchEnd={this.onTouchEnd}
           />
           <ArrowButton
             rotateIcon={90}
-            onMouseDown={() => this.onMouseDown('down')}
-            onMouseEnter={() => this.onMouseEnter('down')}
-            onMouseLeave={this.onMouseLeave}
+            // onMouseDown={() => this.onMouseDown('down')}
+            // onMouseEnter={() => this.onMouseEnter('down')}
+            // onMouseLeave={this.onMouseLeave}
             onTouchStart={() => this.onTouchStart('down')}
+            onTouchMove={() => {}}
             onTouchEnd={this.onTouchEnd}
 
           />
           <ArrowButton
             rotation={0}
             onMouseDown={() => this.onMouseDown('right')}
-            onMouseEnter={() => this.onMouseEnter('right')}
-            onMouseLeave={this.onMouseLeave}
+            // onMouseEnter={() => this.onMouseEnter('right')}
+            // onMouseLeave={this.onMouseLeave}
             onTouchStart={() => this.onTouchStart('right')}
+            onTouchMove={() => {}}
             onTouchEnd={this.onTouchEnd}
           />
         </div>

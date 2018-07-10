@@ -39,7 +39,7 @@ class ListenerOptionsContainer extends Component {
       <div>
         <H2>Listener</H2>
 
-        <div style={{ width: `60%` }}>
+        <div style={{ width: `80%` }}>
           <Toggle
             label="Performance Mode"
             style={styles.toggle}
