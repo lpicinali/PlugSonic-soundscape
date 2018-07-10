@@ -265,7 +265,7 @@ class ArrowControlsContainer extends Component {
           />
           <ArrowButton
             rotation={0}
-            onMouseDown={() => this.onMouseDown('right')}
+            // onMouseDown={() => this.onMouseDown('right')}
             // onMouseEnter={() => this.onMouseEnter('right')}
             // onMouseLeave={this.onMouseLeave}
             onTouchStart={() => this.onTouchStart('right')}
