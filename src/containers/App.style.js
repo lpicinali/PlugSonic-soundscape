@@ -22,7 +22,8 @@ export const Header = styled.div`
   width: 100%;
   max-width: ${MAX_WIDTH}px;
   margin: 0 auto;
-  padding: 0px 16px;
+  padding-left: 0px;
+  padding-right: 32px;
   background: ${BLUE};
 `
 
@@ -44,7 +45,7 @@ export const Logo = styled.img`
   max-height: 80px;
   max-width: ${MAX_WIDTH}px;
   margin-top: -24px;
-  padding-right: 16px;
+  padding-right: 0px;
   float: right;
 `
 
