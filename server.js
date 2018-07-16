@@ -23,6 +23,7 @@ app.listen(port, error => {
   if (error) {
     console.error(error)
   } else {
+    console.log(`CORS-enabled JSON service is live on port: ${port}`)
     console.info(
       '==> 🌎  Listening on port %s. Open up http://localhost:%s/ in your browser.',
       port,
