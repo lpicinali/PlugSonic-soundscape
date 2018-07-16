@@ -15,15 +15,10 @@ app.use((req, res) => {
   res.sendFile(path.resolve(__dirname, 'public/index.html'))
 })
 
-app.get('/products/:id', (req, res) => {
-  res.json({msg: 'This is CORS-enabled for all origins!'})
-})
-
 app.listen(port, error => {
   if (error) {
     console.error(error)
   } else {
-    console.log(`CORS-enabled JSON service is live on port: ${port}`)
     console.info(
       '==> 🌎  Listening on port %s. Open up http://localhost:%s/ in your browser.',
       port,
