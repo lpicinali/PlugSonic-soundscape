@@ -6,9 +6,9 @@ const logger = require('morgan')
 const app = express()
 const port = process.env.PORT || 8261
 
+app.use(cors())
 app.use(logger('common'))
 app.use(express.static('public'))
-app.use(cors())
 // app.set('trust proxy', true)
 
 app.use((req, res) => {
