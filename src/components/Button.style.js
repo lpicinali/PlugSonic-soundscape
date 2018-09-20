@@ -4,7 +4,6 @@ import { BLACK, TURQOISE, WHITE } from 'src/styles/colors.js'
 const StyledButton = styled.button`
   appearance: none;
   padding: 4px 8px;
-  margin-right: 8px;
   background: ${WHITE};
   border: 1px solid ${TURQOISE};
   border-radius: 3px;

@@ -1,12 +1,20 @@
 /* eslint no-unused-expressions: 0 */
+/* eslint react/no-unused-prop-types: 0 */
 /* eslint no-unused-vars: 0 */
+/* eslint react/forbid-prop-types: 0 */
 /* global location */
 /* eslint no-restricted-globals: 0 */
 /* eslint react/prefer-stateless-functions: 0 */
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { autobind } from 'core-decorators'
+
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
+import MenuItem from 'material-ui/MenuItem'
+import TextField from 'material-ui/TextField';
+
+import { BLACK, BLUE, DARKGRAY, GRAY, LIGHTGRAY, TURQOISE, WHITE } from 'src/styles/colors.js'
 
 import PositionControllerContainer from 'src/containers/PositionControllerContainer'
 import TargetSelectorContainer from 'src/containers/TargetSelectorContainer'
@@ -14,7 +22,17 @@ import ListenerOptionsContainer from 'src/containers/ListenerOptionsContainer'
 import ImportExportContainer from 'src/containers/ImportExportContainer'
 import ArrowControlsContainer from 'src/containers/ArrowControlsContainer'
 // import Disclaimer from 'src/containers/Disclaimer.js'
-import { Header, HeaderContent, Heading, Logo, Instructions, AppContent } from 'src/containers/App.style'
+import {
+  Header,
+  Heading,
+  Logo,
+  Instructions,
+  AppContent,
+  EmptyColumn,
+  FirstColumn,
+  SecondColumn,
+  ThirdColumn,
+} from 'src/containers/App.style'
 import { H2, H3 } from 'src/styles/elements.js'
 
 class App extends PureComponent {
@@ -28,35 +46,38 @@ class App extends PureComponent {
     return (
       <MuiThemeProvider>
         <div>
+
           <Header>
-            <HeaderContent>
-              {/* <div style={{ width: `50%` }}>PlugSonic Demo</div> */}
-              <Heading>PlugSonic - Create</Heading>
-              <Logo src={`${location.origin}/assets/img/pluggy_final_logo_RGB_small.png`} alt=""/>
-            </HeaderContent>
+            <Heading>PlugSonic - Create</Heading>
+            <Logo src={`${location.origin}/assets/img/pluggy_final_logo_RGB_small.png`} alt="" />
           </Header>
 
-          {/* <Disclaimer isRead={hasReadDisclaimer} /> */}
-
           <AppContent>
-            <div style={{ display: 'flex', flexWrap: 'wrap', flex: '0 1 33.333%' }}>
+
+            <FirstColumn>
+              <H2>Sources</H2>
+              <H3 style={{marginTop: `16px`}}>Add Source</H3>
               <TargetSelectorContainer />
-            </div>
+            </FirstColumn>
 
-            <div style={{ flex: '0 1 33.333%' }}>
-              <H2>Soundscape</H2>
-              <H3>Position</H3>
-              <Instructions>- mouse to move sources</Instructions>
-              <Instructions style={{ marginBottom: `8px` }}>- mouse/arrow-keys to move listener</Instructions>
+            <EmptyColumn />
+
+            <SecondColumn>
+              <H2 style={{ paddingBottom: `16px` }}>Soundscape</H2>
+              <Instructions>mouse to move sources / mouse or arrow-keys to move listener</Instructions>
               <PositionControllerContainer />
-            </div>
+            </SecondColumn>
 
-            <div style={{ flex: '0 1 33.333%' }}>
+            <EmptyColumn />
+
+            <ThirdColumn>
               <ListenerOptionsContainer />
               <ImportExportContainer />
               <ArrowControlsContainer />
-            </div>
+          </ThirdColumn>
+
           </AppContent>
+
         </div>
       </MuiThemeProvider>
     )

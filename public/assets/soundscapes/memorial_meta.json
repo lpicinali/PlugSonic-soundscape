@@ -1,0 +1,226 @@
+{
+  "targets": {
+    "_African_Animals-Camel+Meerkat+Rhino.mp3": {
+      "title": "African Animals",
+      "filename": "_African_Animals-Camel+Meerkat+Rhino.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_African_Animals-Camel+Meerkat+Rhino.mp3",
+      "position": {
+        "azimuth": 0.8793827649140021,
+        "distance": 25.35462609745575
+      },
+      "volume": 0.07943074719517564,
+      "reach": {
+        "radius": 11,
+        "fadeDuration": 1000
+      },
+      "raw": []
+    },
+    "_American_Animals-Buffalo+Hawk+Wolves.mp3": {
+      "title": "American Animals",
+      "filename": "_American_Animals-Buffalo+Hawk+Wolves.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_American_Animals-Buffalo+Hawk+Wolves.mp3",
+      "position": {
+        "azimuth": 2.3646292042560066,
+        "distance": 27.5972859246188
+      },
+      "volume": 0.251185061803225,
+      "reach": {
+        "radius": 11,
+        "fadeDuration": 1000
+      },
+      "raw": []
+    },
+    "_Asian_Animals-Elephant+Macaque+Tiger.mp3": {
+      "title": "Asian Animals",
+      "filename": "_Asian_Animals-Elephant+Macaque+Tiger.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Asian_Animals-Elephant+Macaque+Tiger.mp3",
+      "position": {
+        "azimuth": -0.7898034800970507,
+        "distance": 23.48424273621477
+      },
+      "volume": 0.05011717513450066,
+      "reach": {
+        "radius": 13,
+        "fadeDuration": 3000
+      },
+      "raw": []
+    },
+    "_Bicycle+Traffic.mp3": {
+      "title": "Bicycles and Traffic",
+      "filename": "_Bicycle+Traffic.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Bicycle+Traffic.mp3",
+      "position": {
+        "azimuth": 4.205499089178329,
+        "distance": 51.08310184835867
+      },
+      "volume": 0.177824771759503,
+      "reach": {
+        "radius": 22,
+        "fadeDuration": 1000
+      },
+      "raw": []
+    },
+    "_Birds_01.mp3": {
+      "title": "Birds 01",
+      "filename": "_Birds_01.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Birds_01.mp3",
+      "position": {
+        "azimuth": 3.0791245855432168,
+        "distance": 46.28633316960394
+      },
+      "volume": 0.5,
+      "reach": {
+        "radius": 24,
+        "fadeDuration": 3000
+      },
+      "raw": []
+    },
+    "_Birds_02.mp3": {
+      "title": "Birds 02",
+      "filename": "_Birds_02.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Birds_02.mp3",
+      "position": {
+        "azimuth": 0.7853981633974483,
+        "distance": 70.71067811865476
+      },
+      "volume": 0.5,
+      "reach": {
+        "radius": 34,
+        "fadeDuration": 3000
+      },
+      "raw": []
+    },
+    "_Birds_03.mp3": {
+      "title": "Birds 03",
+      "filename": "_Birds_03.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Birds_03.mp3",
+      "position": {
+        "azimuth": -0.7388081297295372,
+        "distance": 64.41817153645981
+      },
+      "volume": 0.5,
+      "reach": {
+        "radius": 28,
+        "fadeDuration": 3000
+      },
+      "raw": []
+    },
+    "_Classical_Music_from_RAH - MENDELSSOHN ATHALIE - OP. 74.mp3": {
+      "title": "Music RAH",
+      "filename": "_Classical_Music_from_RAH - MENDELSSOHN ATHALIE - OP. 74.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Classical_Music_from_RAH - MENDELSSOHN ATHALIE - OP. 74.mp3",
+      "position": {
+        "azimuth": 4.691909012310575,
+        "distance": 50.010487560128496
+      },
+      "volume": 0.28183460964753004,
+      "reach": {
+        "radius": 26,
+        "fadeDuration": 4000
+      },
+      "raw": []
+    },
+    "_European_Animals-Bull+BeeEater+Horse.mp3": {
+      "title": "European Animals",
+      "filename": "_European_Animals-Bull+BeeEater+Horse.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_European_Animals-Bull+BeeEater+Horse.mp3",
+      "position": {
+        "azimuth": 3.8267363469635023,
+        "distance": 26.35789274672157
+      },
+      "volume": 0.11219931253605163,
+      "reach": {
+        "radius": 13,
+        "fadeDuration": 3000
+      },
+      "raw": []
+    },
+    "_Frieze_Architecture-ArchitectureBauhaus_mix.mp3": {
+      "title": "Frieze Architecture",
+      "filename": "_Frieze_Architecture-ArchitectureBauhaus_mix.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Frieze_Architecture-ArchitectureBauhaus_mix.mp3",
+      "position": {
+        "azimuth": 1.657141541289591,
+        "distance": 16.117101952022217
+      },
+      "volume": 0.79432634717708,
+      "reach": {
+        "radius": 11,
+        "fadeDuration": 1000
+      },
+      "raw": []
+    },
+    "_Frieze-Painters.mp3": {
+      "title": "Frieze Painting",
+      "filename": "_Frieze-Painters.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Frieze-Painters.mp3",
+      "position": {
+        "azimuth": 0.10881215068917935,
+        "distance": 13.135475831530943
+      },
+      "volume": 0.5623379844935925,
+      "reach": {
+        "radius": 11,
+        "fadeDuration": 500
+      },
+      "raw": []
+    },
+    "_Frieze-Rossini+Shakespeare.mp3": {
+      "title": "Frieze Music & Poetry",
+      "filename": "_Frieze-Rossini+Shakespeare.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_Frieze-Rossini+Shakespeare.mp3",
+      "position": {
+        "azimuth": 4.59977216337608,
+        "distance": 12.368031376361387
+      },
+      "volume": 0.7079432609683157,
+      "reach": {
+        "radius": 11,
+        "fadeDuration": 500
+      },
+      "raw": []
+    },
+    "_General_Description - Joely Richardson, The Albert Memorial.mp3": {
+      "title": "Description",
+      "filename": "_General_Description - Joely Richardson, The Albert Memorial.mp3",
+      "url": "http://plugsonic-memorial.herokuapp.com/assets/audio/sources/_General_Description - Joely Richardson, The Albert Memorial.mp3",
+      "position": {
+        "azimuth": 4.682959450199165,
+        "distance": 41.01995729792035
+      },
+      "volume": 0.39810338650874405,
+      "reach": {
+        "radius": 17,
+        "fadeDuration": 1500
+      },
+      "raw": []
+    }
+  },
+  "selected": [
+    "_Frieze-Rossini+Shakespeare.mp3",
+    "_Frieze-Painters.mp3",
+    "_Frieze_Architecture-ArchitectureBauhaus_mix.mp3",
+    "_General_Description - Joely Richardson, The Albert Memorial.mp3",
+    "_Classical_Music_from_RAH - MENDELSSOHN ATHALIE - OP. 74.mp3",
+    "_European_Animals-Bull+BeeEater+Horse.mp3",
+    "_Bicycle+Traffic.mp3",
+    "_African_Animals-Camel+Meerkat+Rhino.mp3",
+    "_Asian_Animals-Elephant+Macaque+Tiger.mp3",
+    "_American_Animals-Buffalo+Hawk+Wolves.mp3",
+    "_Birds_01.mp3",
+    "_Birds_02.mp3",
+    "_Birds_03.mp3"
+  ],
+  "listenerPosition": {
+    "azimuth": 4.6856962683964465,
+    "distance": 45.224597907777174,
+    "rotYAxis": 6.283185307179564
+  },
+  "room": {
+    "shape": "RECTANGULAR",
+    "size": {
+      "width": 100,
+      "height": 100
+    }
+  }
+}

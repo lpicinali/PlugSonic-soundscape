@@ -3,14 +3,11 @@
 /* eslint no-unused-vars: 0 */
 /* eslint no-alert: 0 */
 /* eslint prefer-destructuring: 0 */
+import styled, { injectGlobal } from 'styled-components'
+import { BLACK, BLUE, DARKGRAY, GRAY, LIGHTGRAY, TURQOISE, WHITE, WHITESMOKE } from 'src/styles/colors.js'
+import { MAX_WIDTH } from 'src/styles/layout.js'
 
-/* ------------------- NOTES -------------------- */ /*
-
-*/ /* ---------------------------------------------- */
-import styled from 'styled-components'
-import { BLACK, TURQOISE, WHITE } from 'src/styles/colors.js'
-
-const StyledFileInput = styled.button`
+export const StyledFileInput = styled.button`
   appearance: none;
   padding: 4px 8px;
   margin-right: 8px;
@@ -28,4 +25,24 @@ const StyledFileInput = styled.button`
   }
 `
 
-export default StyledFileInput
+export const ImportExportButtonDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+`
+
+// -------------------------------------------------------------------------- //
+
+export const ContainerDiv = styled.div`
+  align-items: center;
+  background-color: ${WHITE};
+  border: 1px solid ${BLUE};
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 6px;
+  padding: 16px;
+  width: 100%;
+`

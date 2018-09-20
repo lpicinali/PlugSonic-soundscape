@@ -1,6 +1,7 @@
 /* eslint react/prefer-stateless-function: 0 */
 /* eslint react/forbid-prop-types: 0 */
 /* eslint prefer-destructuring: 0 */
+/* eslint no-unused-vars: 0 */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -8,9 +9,13 @@ import { autobind } from 'core-decorators'
 import ArrowButton from 'src/components/ArrowButton'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { RoomShape } from 'src/constants.js'
-// import { H3 } from 'src/styles/elements.js'
+import { H2, H3 } from 'src/styles/elements.js'
 import Toggle from 'material-ui/Toggle'
-import { toggleStyles } from 'src/containers/ArrowControlsContainer.style'
+import {
+  toggleStyle,
+  toggleLabelStyle,
+  ContainerDiv,
+} from 'src/containers/ArrowControlsContainer.style'
 
 const repeatTime = 50
 
@@ -254,15 +259,19 @@ class ArrowControlsContainer extends Component {
       </div>
 
     return (
-      <div>
+      <ContainerDiv>
+
+        <H2>Touch Arrow Controls</H2>
+
         <Toggle
-            label="Touch Arrows"
-            style={toggleStyles.toggle}
-            labelStyle={toggleStyles.label}
+            label="On/Off"
+            style={toggleStyle}
+            labelStyle={toggleLabelStyle}
             onToggle={this.onToggle}
         />
         {this.state.isHidden ? <div/> : arrowControls}
-      </div>
+
+      </ContainerDiv>
     )
   }
 }

@@ -1,7 +1,7 @@
 /* eslint react/prefer-stateless-function: 0 */
 /* eslint react/forbid-prop-types: 0 */
 /* eslint prefer-destructuring: 0 */
-
+/* eslint no-unused-vars: 0 */
 /* ------------------- NOTES -------------------- */ /*
 
 */ /* ---------------------------------------------- */
@@ -20,17 +20,23 @@ import ButtonSliderGroup from 'src/components/ButtonSliderGroup.js'
 import MasterVolumeSlider from 'src/components/MasterVolumeSlider.js'
 import Uploader from 'src/components/Uploader.js'
 import { H2, H3 } from 'src/styles/elements.js'
+import { BLACK, BLUE, GRAY, LIGHTGRAY, TURQOISE, WHITE} from 'src/styles/colors.js'
 
 import TextField from 'material-ui/TextField'
-import styled from 'styled-components'
+
 import { autobind } from 'core-decorators'
 import Button from 'src/components/Button.js'
 
-const StyledTextField = styled(TextField)`
-  width: 50% !important;
-  margin-right: 5%;
-  margin-top: -25px;
-`
+import {
+  tfFloatingLabelFocusStyle,
+  tfFloatingLabelStyle,
+  tfInputStyle,
+  tfStyle,
+  tfUnderlineFocusStyle,
+  tfUnderlineStyle,
+} from 'src/components/Uploader.style'
+
+
 
 /**
  * Target Selector Container
@@ -145,46 +151,55 @@ class TargetSelectorContainer extends Component {
 
     return (
       <div>
-        <H2>Sources</H2>
+
+        <Uploader titles={titles} onAddSource={this.props.onAddSource} />
 
         <div>
-          <H3>Add Source</H3>
-          <Uploader titles={titles} onAddSource={this.props.onAddSource} />
-
           <H3 style={{ marginTop: `30px`}}>Load from dropbox</H3>
           <div>
             <div style={{ width: `100%` }}>
-              <StyledTextField
+              <TextField
                 id="url"
                 type="url"
                 value={this.state.url}
                 errorText={this.state.errorTextU}
+                floatingLabelFixed
+                floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
+                floatingLabelStyle={tfFloatingLabelStyle}
                 floatingLabelText="Dropbox URL"
                 onChange={this.handleTextFieldChange}
+                inputStyle={tfInputStyle}
+                style={tfStyle}
+                underlineFocusStyle={tfUnderlineFocusStyle}
+                underlineStyle={tfUnderlineStyle}
               />
             </div>
 
             <div style={{ marginTop: `4px` }}>
-              <StyledTextField
+              <TextField
                 id="title"
                 type="text"
                 value={this.state.title}
                 errorText={this.state.errorTextT}
+                floatingLabelFixed
+                floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
+                floatingLabelStyle={tfFloatingLabelStyle}
                 floatingLabelText="Title"
                 onChange={this.handleTextFieldChange}
+                inputStyle={tfInputStyle}
+                style={tfStyle}
+                underlineFocusStyle={tfUnderlineFocusStyle}
+                underlineStyle={tfUnderlineStyle}
               />
               <Button key="add" onClick={this.handleAddSource}>
                 Add Source
               </Button>
             </div>
           </div>
-
         </div>
 
-        <div>
-          <H3 style= {{ width: `45%`, marginTop: `30px`, display: `inline-block` }}>Added Sources</H3>
-
-          <H3 style={{ marginTop: `0px`, marginRight: `30%`, textAlign: `right` }}>Volume</H3>
+        <div style={{ marginTop: `16px`, width: `100%`}}>
+          <H3 style={{ marginTop: `0px`, marginRight: `3%`, textAlign: `right` }}>Volume</H3>
           <ButtonSliderGroup
             options={options}
             enabledOptions={Object.keys(options)}
@@ -194,21 +209,21 @@ class TargetSelectorContainer extends Component {
           />
         </div>
 
-        <div style={{ marginTop: `0px`, paddingLeft: `48%` }}>
+        <div style={{ marginTop: `0px`, textAlign:`right` }}>
           <Button
             key="delete"
             onClick={() => this.props.onDeleteSource(this.props.selected)}
-
           >
             Delete Selected
           </Button>
         </div>
 
-        <H3 style= {{ width: `50%`, marginTop: `30px`, display: `inline-block` }}>Master Volume</H3>
-        <div style={{ width: `50%`, float: `right`, marginTop: `27px` }}>
-          <MasterVolumeSlider volume={masterVolume} onChange={onChangeMasterVolume}/>
+        <div style={{display: `flex`, flexDirection: `row`, justifyContent: `space-between`, width: `100%`}}>
+          <H3 style= {{ marginTop: `30px`, display: `inline-block` }}>Master Volume</H3>
+          <div style={{ width: `40%`, float: `right`, marginTop: `27px` }}>
+            <MasterVolumeSlider volume={masterVolume} onChange={onChangeMasterVolume}/>
+          </div>
         </div>
-
       </div>
     )
   }

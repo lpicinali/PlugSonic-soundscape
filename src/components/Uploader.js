@@ -1,12 +1,28 @@
 /* eslint react/prefer-stateless-function: 0 */
 /* eslint react/forbid-prop-types: 0 */
 /* eslint no-unused-vars: 0 */
+/* eslint react/no-unused-prop-types: 0 */
+/* eslint react/no-unused-state: 0 */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { autobind } from 'core-decorators'
 import { fetchAudioBufferRaw } from 'src/utils'
+
 import Button from 'src/components/Button.js'
-import { StyledTextField, Container, Dropzone, ActionIcon } from 'src/components/Uploader.style'
+import TextField from 'material-ui/TextField'
+
+import {
+  ContainerDiv,
+  Dropzone,
+  ActionIcon,
+  tfFloatingLabelFocusStyle,
+  tfFloatingLabelStyle,
+  tfInputStyle,
+  tfStyle,
+  tfUnderlineFocusStyle,
+  tfUnderlineStyle,
+} from 'src/components/Uploader.style'
+
 /**
  * Uploader
  */
@@ -112,44 +128,52 @@ class Uploader extends Component {
   render() {
     return (
       <div>
-        <Container>
-          <Dropzone className="dropzone" accept="audio/wav, audio/mpeg, audio/mp3"
-            onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}>
-            <div className="dropzone-call">
-              <div><ActionIcon/></div>
-              <div>
-                {this.state.filename === '' ? (
-                  'Drop a mono audio file here (or click) to load it.'
-                ) : (
-                  `${this.state.filename} - ${this.state.filesize} bytes`
-                )
-              }
-              </div>
-              <div style={{ height: `12px` }}>
-                {this.state.errorFile === '' ? '' : `${this.state.errorFile}`}
-              </div>
+          <Dropzone
+            accept="audio/wav, audio/mpeg, audio/mp3"
+            onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
+          >
+            <ActionIcon/>
+            <div>
+              {this.state.filename === '' ? (
+                'Drop a mono audio file here (or click) to load it.'
+              ) : (
+                `${this.state.filename} - ${this.state.filesize} bytes`
+              )
+            }
+            </div>
+            <div style={{ height: `12px`, marginBottom: `10px` }}>
+              {this.state.errorFile === '' ? '' : `${this.state.errorFile}`}
             </div>
           </Dropzone>
-        </Container>
 
-        <div>
-          <StyledTextField
-            id="title"
-            type="text"
-            value={this.state.title}
-            errorText={this.state.errorTextT}
-            floatingLabelText="Title"
-            onChange={this.handleTextFieldChange}
-          />
-          <Button
-            key="add"
-            isEnabled={this.state.filename !== '' && this.state.errorFile === ''}
-            onClick={this.handleAddSource}
-            style={{ float: `left` }}
-          >
-            Add Source
-          </Button>
-        </div>
+          <ContainerDiv>
+
+            <TextField
+              id="title"
+              type="text"
+              value={this.state.title}
+              errorText={this.state.errorTextT}
+              floatingLabelFixed
+              floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
+              floatingLabelStyle={tfFloatingLabelStyle}
+              floatingLabelText="Title"
+              onChange={this.handleTextFieldChange}
+              inputStyle={tfInputStyle}
+              style={tfStyle}
+              underlineFocusStyle={tfUnderlineFocusStyle}
+              underlineStyle={tfUnderlineStyle}
+            />
+
+            <Button
+              key="add"
+              isEnabled={this.state.filename !== '' && this.state.errorFile === ''}
+              onClick={this.handleAddSource}
+              style={{marginTop:`16px`}}
+            >
+              Add Source
+            </Button>
+
+          </ContainerDiv>
       </div>
     )
   }

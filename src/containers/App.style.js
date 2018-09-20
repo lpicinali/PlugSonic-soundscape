@@ -1,8 +1,9 @@
 /* eslint no-unused-expressions: 0 */
+/* eslint no-unused-vars: 0 */
 /* global location */
 /* eslint no-restricted-globals: 0 */
 import styled, { injectGlobal } from 'styled-components'
-import { BLUE, GRAY } from 'src/styles/colors.js'
+import { BLACK, BLUE, GRAY, LIGHTGRAY, TURQOISE, WHITE, WHITESMOKE } from 'src/styles/colors.js'
 import { MAX_WIDTH } from 'src/styles/layout.js'
 
 injectGlobal`
@@ -18,36 +19,76 @@ injectGlobal`
   }
 `
 
-export const Header = styled.div`
+// -------------------------------------------------------------------------- //
+
+export const AppContent = styled.div`
+  display: flex;
   width: 100%;
   max-width: ${MAX_WIDTH}px;
   margin: 0 auto;
-  padding-left: 0px;
-  padding-right: 32px;
-  background: ${BLUE};
+  padding: 6px 0px 6px 0px;
 `
 
-export const HeaderContent = styled.div`
-  padding: 32px 16px 32px;
-  width: 100% !important;
+// -------------------------------------------------------------------------- //
+
+export const EmptyColumn = styled.div`
+  width: 0.5%;
+`
+
+export const FirstColumn = styled.div`
+  align-items: center;
+  border: 1px solid ${BLUE};
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  width: 24.5%;
+`
+
+export const SecondColumn = styled.div`
+  align-items: center;
+  border: 1px solid ${BLUE};
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  width: 50%;
+`
+
+export const ThirdColumn = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  ${'' /* Same as ListenerOptionsContainer padding+border */}
+  padding: 0px 17px 0px 17px;
+  width: 24.5%;
+`
+
+// -------------------------------------------------------------------------- //
+
+export const Header = styled.div`
+  align-items: center;
+  background: ${BLUE};
+  display: flex;
+  height: 96px;
+  justify-content: space-between;
+  margin: auto;
   max-width: ${MAX_WIDTH}px;
-  margin: 0 auto;
+  width: 100%;
 `
 
 export const Heading = styled.h1`
-  margin: 0;
+  color: #fefefe;
   font-size: 24px;
   line-height: 32px;
-  display: inline-block;
-  color: #fefefe;
+  padding-left: 16px;
 `
 export const Logo = styled.img`
-  max-height: 60px;
-  max-width: ${MAX_WIDTH}px;
-  margin-top: -12px;
-  padding: 0px;
-  float: right;
+  height: 60px;
+  padding-right: 12px;
 `
+
+// -------------------------------------------------------------------------- //
 
 export const Instructions = styled.p`
   color: ${GRAY};
@@ -55,10 +96,4 @@ export const Instructions = styled.p`
   margin: 0px 0px;
 `
 
-export const AppContent = styled.div`
-  display: flex;
-  width: 100%;
-  max-width: ${MAX_WIDTH}px;
-  margin: 0 auto;
-  padding: 16px 16px;
-`
+// -------------------------------------------------------------------------- //

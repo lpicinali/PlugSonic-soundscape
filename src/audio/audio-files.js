@@ -10,24 +10,40 @@ import // Ear,
 'src/constants.js'
 
 export const getFileUrl = filename =>
-  `${location.origin}/assets/audio/${filename}`
+  `${location.origin}/assets/audio/sources/${filename}`
 
 export const audioFiles = [
-  {
-    title: 'River',
-    filename: 'river_gentle_flow.mp3',
-    url: 'https://dl.dropboxusercontent.com/s/fjryls9cuymcquy/river_gentle_flow.mp3?dl=0',
-  },
-  {
-    title: 'Pigeon',
-    filename: 'bird_pigeon.mp3',
-    url:
-      'https://dl.dropboxusercontent.com/s/p87nb5yr6zhrez5/bird_pigeon.mp3?dl=0',
-  },
   // {
-  //   title: 'Wind',
-  //   filename: 'wind_breeze.mp3',
-  //   url: getFileUrl('wind_breeze.mp3'),
+  //   title: 'Bicycles and Traffic',
+  //   filename: '_Bicycle+Traffic.mp3',
+  //   url: getFileUrl('_Bicycle+Traffic.mp3'),
+  //   position: { azimuth: 4.205499089178329, distance: 51.08310184835867 },
+  //   volume: 0.277824771759503,
+  //   reach: { radius: 22, fadeDuration: 1000 },
+  // },
+  // {
+  //   title: 'Birds 01',
+  //   filename: '_Birds_01.mp3',
+  //   url: getFileUrl('_Birds_01.mp3'),
+  //   position: { azimuth: 3.0791245855432168, distance: 46.28633316960394 },
+  //   volume: 0.6,
+  //   reach: { radius: 24, fadeDuration: 3000 },
+  // },
+  // {
+  //   title: 'Music RAH',
+  //   filename: '_Classical_Music_from_RAH - MENDELSSOHN ATHALIE - OP. 74.mp3',
+  //   url: getFileUrl('_Classical_Music_from_RAH - MENDELSSOHN ATHALIE - OP. 74.mp3'),
+  //   position: { azimuth: 4.691909012310575, distance: 50.010487560128496 },
+  //   volume: 0.38183460964753004,
+  //   reach: { radius: 26, fadeDuration: 4000 },
+  // },
+  // {
+  //   title: 'Frieze Painting',
+  //   filename: '_Frieze-Painters.mp3',
+  //   "url": getFileUrl('_Frieze-Painters.mp3'),
+  //   position: { azimuth: 0.10881215068917935, distance: 13.135475831530943 },
+  //   volume: 0.6623379844935925,
+  //   reach: { radius: 11, fadeDuration: 500 },
   // },
 ]
 

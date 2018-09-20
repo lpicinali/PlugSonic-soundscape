@@ -3,6 +3,7 @@
 /* eslint react/forbid-prop-types: 0 */
 /* eslint react/no-unused-prop-types: 0 */
 /* eslint no-lonely-if: 0 */
+/* eslint no-unused-vars: 0 */
 
 /* ------------------- NOTES -------------------- */ /*
 
@@ -17,7 +18,6 @@ import { connect } from 'react-redux'
 import { autobind } from 'core-decorators'
 import PlaybackControlsContainer from 'src/containers/PlaybackControlsContainer.js'
 
-import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Slider from 'material-ui/Slider'
 import TextField from 'material-ui/TextField';
@@ -31,12 +31,30 @@ import ContainerDimensionsWithScrollUpdates from 'src/components/ContainerDimens
 import PositionController from 'src/components/PositionController.js'
 import Button from 'src/components/Button.js'
 import { H3 } from 'src/styles/elements.js'
+
 import {
+  ListenerResetButton,
   NoSelectedSourcePlaceholder,
   SourceEditingWrapper,
   SourceReachRadiusField,
   SourceReachFadeDurationField,
-  SourceEditingDoneButton
+  SourceEditingDoneButton,
+  Instructions,
+  ContainerDiv,
+  StyledDropDownMenu,
+  ddmIconStyle,
+  ddmLabelStyle,
+  ddmListStyle,
+  ddmMenuItemStyle,
+  ddmMenuStyle,
+  ddmSelectedMenuItemStyle,
+  ddmUnderlineStyle,
+  tfFloatingLabelFocusStyle,
+  tfFloatingLabelStyle,
+  tfInputStyle,
+  tfStyle,
+  tfUnderlineFocusStyle,
+  tfUnderlineStyle,
 } from 'src/containers/PositionControllerContainer.style'
 
 const minWidth = 3
@@ -46,7 +64,7 @@ const maxHeight = 100
 
 let gState = {
   shape: RoomShape.RECTANGULAR,
-  size: { width: 20, height: 10 },
+  size: { width: 30, height: 20 },
   errorTextW: '',
   errorTextH: '',
 }
@@ -342,15 +360,18 @@ class PositionControllerContainer extends Component {
       this.state = gState
     }
 
+    // width: `${(1 - 1.05 ** -roomSize.width) * 360 * 0.95}px`,
+    // height: `${(1 - 1.05 ** -roomSize.height) * 360 * 0.95}px`,
+
+    // const width = document.getElementById('container').offsetWidth;
+    // console.log('CONTAINER WIDTH')
+    // console.log(width)
+    const width = (1 - 1.05 ** -roomSize.width) * 580 * 0.95
+    const height = (1 - 1.05 ** -roomSize.height) * 580 * 0.95
+
     return (
       <div>
-        <div id="container"
-          style={{
-            position: 'relative',
-            width: `${(1 - 1.05 ** -roomSize.width) * 360 * 0.95}px`,
-            height: `${(1 - 1.05 ** -roomSize.height) * 360 * 0.95}px`,
-          }}
-        >
+        <div id="container" style={{ margin: `0px auto`, width: `${width}px`, height: `${height}px` }}>
           <ContainerDimensionsWithScrollUpdates scrollTarget={window}>
             {rect => (
               <PositionController
@@ -370,66 +391,82 @@ class PositionControllerContainer extends Component {
           </ContainerDimensionsWithScrollUpdates>
         </div>
 
-        <div>
-          <div style={{float: `left`, marginRight: `8px`}}>
-            <PlaybackControlsContainer/>
-          </div>
-
-          <H3 style= {{ width: `50%`, marginTop: `8px`, display: `inline-block` }}>Reset Position</H3>
-          <div>
-            <Button key="resetL"
-              onClick={() => onListenerMove({ azimuth: Math.PI / 2, distance: 0, rotYAxis: 0 })}
-              style={{ float: `left`, marginRight: `20px` }}
-            >
-              Listener
-            </Button>
-
-            <Button key="resetS" onClick={this.handleSourcesReset}>
-              Sources
-            </Button>
-          </div>
+        <div style={{textAlign: `center`}}>
+          <PlaybackControlsContainer/>
         </div>
 
-        <H3 style={{ marginTop: `30px` }}>Room shape and size</H3>
-        <div>
-          <div style={{ marginTop: `-10px`, marginLeft: `-24px` }}>
-            <DropDownMenu
-              value={gState.shape}
+
+        <H3 style= {{textAlign: `center`, marginTop: `16px`}}>Reset Position</H3>
+
+        <div style= {{textAlign: `center`}}>
+          <ListenerResetButton key="resetL"
+            onClick={() => onListenerMove({ azimuth: Math.PI / 2, distance: 0, rotYAxis: 0 })}
+
+          >
+            Listener
+          </ListenerResetButton>
+
+          <Button key="resetS" onClick={this.handleSourcesReset}>
+            Sources
+          </Button>
+        </div>
+
+
+        <H3 style={{textAlign: `center`, marginTop: `16px` }}>Room shape and size</H3>
+
+        <ContainerDiv>
+
+            <StyledDropDownMenu
+              value={this.state.shape}
               onChange={this.handleDropDownChange}
               autoWidth={false}
-              style={{ width: `50%` }}
+              iconStyle={ddmIconStyle}
+              labelStyle={ddmLabelStyle}
+              listStyle={ddmListStyle}
+              menuItemStyle={ddmMenuItemStyle}
+              menuStyle={ddmMenuStyle}
+              selectedMenuItemStyle={ddmSelectedMenuItemStyle}
+              underlineStyle={ddmUnderlineStyle}
             >
               <MenuItem value={RoomShape.ROUND} primaryText="Round" />
-              <MenuItem
-                value={RoomShape.RECTANGULAR}
-                primaryText="Rectangular"
-              />
-            </DropDownMenu>
-          </div>
-        </div>
-        <div style={{ marginTop: `-22px`}}>
-          <TextField
-            id="width"
-            type="text"
-            value={gState.size.width}
-            errorText={gState.errorTextW}
-            floatingLabelText="Width (m)"
-            onChange={this.handleTextFieldChange}
-            style={{ width: `35%`, marginRight: `5%`, float: `left` }}
-          />
-          <TextField
-            id="height"
-            type="text"
-            value={gState.size.height}
-            errorText={gState.errorTextH}
-            floatingLabelText="Height (m)"
-            onChange={this.handleTextFieldChange}
-            disabled={roomShape === RoomShape.ROUND}
-            style={{ width: `35%` }}
-          />
-        </div>
+              <MenuItem value={RoomShape.RECTANGULAR} primaryText="Rectangular" />
+            </StyledDropDownMenu>
 
-        <H3 style={{ marginTop: `30px` }}>Source reach</H3>
+            <TextField
+              id="width"
+              type="text"
+              value={gState.size.width}
+              errorText={gState.errorTextW}
+              floatingLabelFixed
+              floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
+              floatingLabelStyle={tfFloatingLabelStyle}
+              floatingLabelText="Width (m)"
+              onChange={this.handleTextFieldChange}
+              inputStyle={tfInputStyle}
+              style={tfStyle}
+              underlineFocusStyle={tfUnderlineFocusStyle}
+              underlineStyle={tfUnderlineStyle}
+            />
+
+            <TextField
+              id="height"
+              type="text"
+              value={gState.size.height}
+              errorText={gState.errorTextH}
+              floatingLabelFixed
+              floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
+              floatingLabelStyle={tfFloatingLabelStyle}
+              floatingLabelText="Height (m)"
+              onChange={this.handleTextFieldChange}
+              inputStyle={tfInputStyle}
+              style={tfStyle}
+              underlineFocusStyle={tfUnderlineFocusStyle}
+              underlineStyle={tfUnderlineStyle}
+            />
+
+        </ContainerDiv>
+
+        <H3 style={{textAlign: `center`, marginTop: `16px` }}>Source reach</H3>
         {editingTarget === null ? (
           <NoSelectedSourcePlaceholder>
             Select a source on the map to edit its reach
@@ -471,6 +508,7 @@ class PositionControllerContainer extends Component {
             </SourceEditingDoneButton>
           </Fragment>
         )}
+
       </div>
     )
   }

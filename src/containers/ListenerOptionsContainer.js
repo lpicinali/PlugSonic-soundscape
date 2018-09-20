@@ -1,11 +1,15 @@
-/* eslint react/prefer-stateless-function: 0 */
+/* eslint no-unused-expressions: 0 */
+/* eslint react/no-unused-prop-types: 0 */
+/* eslint no-unused-vars: 0 */
 /* eslint react/forbid-prop-types: 0 */
-
+/* global location */
+/* eslint no-restricted-globals: 0 */
+/* eslint react/prefer-stateless-functions: 0 */
 /* ------------------- NOTES -------------------- */ /*
 
 */ /* ---------------------------------------------- */
 
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Toggle from 'material-ui/Toggle'
@@ -14,12 +18,18 @@ import { circumferenceToRadius, radiusToCircumference } from 'src/utils.js'
 import { setHeadRadius, setPerformanceMode, } from 'src/actions/listener.actions.js'
 import Slider from 'src/components/Slider.js'
 import { H2, H3 } from 'src/styles/elements.js'
-import styles from 'src/containers/ListenerOptionsContainer.style'
+import {
+  styles,
+  ContainerDiv,
+  HeadCircContainerDiv,
+  toggleStyle,
+  toggleLabelStyle,
+} from 'src/containers/ListenerOptionsContainer.style'
 
 /**
  * Listener Options Container
  */
-class ListenerOptionsContainer extends Component {
+class ListenerOptionsContainer extends PureComponent {
   static propTypes = {
     isPerformanceModeEnabled: PropTypes.bool.isRequired,
     headRadius: PropTypes.number.isRequired,
@@ -36,31 +46,33 @@ class ListenerOptionsContainer extends Component {
     } = this.props
 
     return (
-      <div>
+      <ContainerDiv>
         <H2>Listener</H2>
 
         <Toggle
-            label="Performance Mode"
-            style={styles.toggle}
-            labelStyle={styles.label}
-            onToggle={() => onChangePerformanceMode(!isPerformanceModeEnabled)}
+          label="Performance Mode"
+          style={toggleStyle}
+          labelStyle={toggleLabelStyle}
+          onToggle={() => onChangePerformanceMode(!isPerformanceModeEnabled)}
         />
 
-        <H3 style= {{ marginTop: `30px` }}>
-          {`Head circumference: ${Math.round(100 * radiusToCircumference(headRadius))} cm`}
-        </H3>
+        <HeadCircContainerDiv>
+          <H3 style= {{ marginTop: `3px` }}>
+            {`Head circumference: ${Math.round(100 * radiusToCircumference(headRadius))} cm`}
+          </H3>
 
-        <div style = {{ width: `60%` }}>
-          <Slider
-            value={radiusToCircumference(headRadius)}
-            min={0.4}
-            max={0.7}
-            step={0.005}
-            onChange={circumference => onChangeHeadRadius(circumferenceToRadius(circumference))}
-          />
-        </div>
+          <div style = {{ width: `25%` }}>
+            <Slider
+              value={radiusToCircumference(headRadius)}
+              min={0.4}
+              max={0.7}
+              step={0.005}
+              onChange={circumference => onChangeHeadRadius(circumferenceToRadius(circumference))}
+            />
+          </div>
+        </HeadCircContainerDiv>
 
-      </div>
+      </ContainerDiv>
     )
   }
 }

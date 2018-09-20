@@ -3,6 +3,7 @@
 /* eslint no-unused-vars: 0 */
 /* eslint no-alert: 0 */
 /* eslint prefer-destructuring: 0 */
+/* eslint no-restricted-globals: 0 */
 
 /* ------------------- NOTES -------------------- */ /*
 
@@ -31,7 +32,11 @@ import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { importRoom } from 'src/actions/room.actions.js'
 
 import Button from 'src/components/Button'
-import StyledFileInput from 'src/containers/ImportExportContainer.style'
+import {
+  StyledFileInput,
+  ContainerDiv,
+  ImportExportButtonDiv,
+} from 'src/containers/ImportExportContainer.style'
 
 import { H2, H3 } from 'src/styles/elements.js'
 
@@ -76,16 +81,20 @@ class ImportExportContainer extends Component {
   }
 
   handleImportSoundscape = (evt, results) => {
-    results.forEach(result => {
-      const [e, file] = result
-      const soundscape = JSON.parse(e.target.result)
-      this.props.onSetPlaybackState(PlaybackState.PAUSED)
-      this.props.onImportTargets(soundscape.targets)
-      this.props.onImportSelected(soundscape.selected)
-      this.props.onImportListenerPosition(soundscape.listenerPosition)
-      handleImportRoom(soundscape.room)
-      this.props.onImportRoom(soundscape.room)
-    })
+    const res = confirm('This action may require some time.\nPlease wait for another message before performing other actions.\nPress OK to continue...')
+
+    if (res === true) {
+      results.forEach(result => {
+        const [e, file] = result
+        const soundscape = JSON.parse(e.target.result)
+        this.props.onSetPlaybackState(PlaybackState.PAUSED)
+        this.props.onImportTargets(soundscape.targets)
+        this.props.onImportSelected(soundscape.selected)
+        this.props.onImportListenerPosition(soundscape.listenerPosition)
+        handleImportRoom(soundscape.room)
+        this.props.onImportRoom(soundscape.room)
+      })
+    }
   }
 
   @autobind
@@ -96,21 +105,26 @@ class ImportExportContainer extends Component {
       alert('The File APIs are not fully supported in this browser.')
     }
 
-    const soundscape = {
-      targets: this.props.targets,
-      selected: this.props.selected,
-      listenerPosition: this.props.listenerPosition,
-      room: this.props.room,
-    }
-    const clone = JSON.parse(JSON.stringify(soundscape))
+    const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
 
-    console.log('export meta')
-    map(clone.targets, target => {
-      clone.targets[target.filename].raw = []
-    })
-    const json = JSON.stringify(clone, null, 2)
-    const blob = new File([json], { type: 'application/json' })
-    FileSaver.saveAs(blob, 'soundscape_meta.json')
+    if (res === true) {
+      const soundscape = {
+        targets: this.props.targets,
+        selected: this.props.selected,
+        listenerPosition: this.props.listenerPosition,
+        room: this.props.room,
+      }
+      const clone = JSON.parse(JSON.stringify(soundscape))
+
+      console.log('export meta')
+      map(clone.targets, target => {
+        clone.targets[target.filename].raw = []
+      })
+      const json = JSON.stringify(clone, null, 2)
+      const blob = new File([json], { type: 'application/json' })
+      alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
+      FileSaver.saveAs(blob, 'soundscape_meta.json')
+    }
   }
 
   @autobind
@@ -121,75 +135,89 @@ class ImportExportContainer extends Component {
       alert('The File APIs are not fully supported in this browser.')
     }
 
-    const soundscape = {
-      targets: this.props.targets,
-      selected: this.props.selected,
-      listenerPosition: this.props.listenerPosition,
-      room: this.props.room,
-    }
-    const clone = JSON.parse(JSON.stringify(soundscape))
+    const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
 
-    console.log('export raw')
-    const promises = map(clone.targets, target => {
-      if ( target.url !== '' ) {
-        return got(target.url, { encoding: null })
-          .then(response => {
-            clone.targets[target.filename].raw = Array.from(response.body)
-          })
+    if (res === true) {
+      const soundscape = {
+        targets: this.props.targets,
+        selected: this.props.selected,
+        listenerPosition: this.props.listenerPosition,
+        room: this.props.room,
       }
+      const clone = JSON.parse(JSON.stringify(soundscape))
+
+      console.log('export raw')
+      const promises = map(clone.targets, target => {
+        if ( target.url !== '' ) {
+          return got(target.url, { encoding: null })
+            .then(response => {
+              clone.targets[target.filename].raw = Array.from(response.body)
+            })
+        }
+
         clone.targets[target.filename].raw = target.raw
         return target.raw
-    })
+      })
 
-    Promise.all(promises).then(responses => {
-      const json = JSON.stringify(clone)
-      const file = new File([json], { type: 'application/json' })
-      FileSaver.saveAs(file, 'soundscape_whole.json')
-    })
+      Promise.all(promises).then(responses => {
+        const json = JSON.stringify(clone)
+        const file = new File([json], { type: 'application/json' })
+        FileSaver.saveAs(file, 'soundscape_whole.json')
+        if (responses) {
+          alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
+        }
+      })
+    }
   }
 
   render() {
     return (
-      <div>
-        <H2 style={{marginTop: `30px` }}>Files</H2>
+      <ContainerDiv>
+
+        <H2>Import/Export</H2>
 
         <H3>Soundscape</H3>
+        <ImportExportButtonDiv>
+          <FileReaderInput
+            type="file"
+            accept=".json"
+            as="binary"
+            id="importmeta"
+            onChange={this.handleImportSoundscape}
+          >
+            <StyledFileInput>Import</StyledFileInput>
+          </FileReaderInput>
 
-        <FileReaderInput
-          type="file"
-          accept=".json"
-          as="binary"
-          id="importmeta"
-          onChange={this.handleImportSoundscape}
-        >
-          <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
-        </FileReaderInput>
+          <Button
+            key="exportmeta"
+            onClick={this.handleExportSoundscapeMeta}
+          >
+            Export
+          </Button>
+        </ImportExportButtonDiv>
 
-        <Button
-          key="exportmeta"
-          onClick={this.handleExportSoundscapeMeta}
-        >
-          Export
-        </Button>
 
-        <H3 style={{ marginTop: `30px`}}>Soundscape + Assets</H3>
-        <FileReaderInput
-          type="file"
-          accept=".json"
-          as="binary"
-          id="importraw"
-          onChange={this.handleImportSoundscape}
-        >
-          <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
-        </FileReaderInput>
+        <H3 style={{ marginTop: `16px` }}>Soundscape + Assets</H3>
+        <ImportExportButtonDiv>
+          <FileReaderInput
+            type="file"
+            accept=".json"
+            as="binary"
+            id="importraw"
+            onChange={this.handleImportSoundscape}
+          >
+            <StyledFileInput style={{ float: `left` }}>Import</StyledFileInput>
+          </FileReaderInput>
 
-        <Button
-          key="exportraw"
-          onClick={this.handleExportSoundscapeRaw}
-        >
-          Export
-        </Button>
-      </div>
+          <Button
+            key="exportraw"
+            onClick={this.handleExportSoundscapeRaw}
+          >
+            Export
+          </Button>
+        </ImportExportButtonDiv>
+
+      </ContainerDiv>
     )
   }
 }
