@@ -75,10 +75,10 @@ class Uploader extends Component {
 
         fetchAudioBufferRaw(array)
           .then(audioBuffer => {
-            if ( audioBuffer.numberOfChannels >= 2 ) {
+            if ( audioBuffer.numberOfChannels > 2 ) {
               this.setState({
                 ...this.state,
-                filename: accepted[0].name, filesize: accepted[0].size, errorFile: 'Convert file to mono before loading it'
+                filename: accepted[0].name, filesize: accepted[0].size, errorFile: 'Error with file format (Number of Channels > 2)'
               })
             } else {
               this.setState({
@@ -135,7 +135,7 @@ class Uploader extends Component {
             <ActionIcon/>
             <div>
               {this.state.filename === '' ? (
-                'Drop a mono audio file here (or click) to load it.'
+                'Drop an audio file here (or click) to load it.'
               ) : (
                 `${this.state.filename} - ${this.state.filesize} bytes`
               )

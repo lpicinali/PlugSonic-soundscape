@@ -26,6 +26,10 @@ let targetVolumes = audioFiles.reduce(
   {}
 )
 
+const splitterNodes = {}
+const attenuationNodes = {}
+const mergerNodes = {}
+
 const volume = context.createGain()
 volume.gain.value = 0.5
 
@@ -71,8 +75,31 @@ export const setTargetNode = (node, channel) => {
   if (targetNodes[channel]) {
     targetNodes[channel].disconnect()
   }
-  targetNodes[channel] = node
-  targetNodes[channel].connect(targetInputs[channel])
+  console.log(`\nChain -> Set Target Node`)
+  if (node.buffer.numberOfChannels === 2) {
+    targetNodes[channel] = node
+    console.log('Stereo')
+    console.log(targetNodes[channel])
+
+    attenuationNodes[channel] = context.createGain()
+    attenuationNodes[channel].gain.value = 0.5
+    splitterNodes[channel] = context.createChannelSplitter(2)
+    mergerNodes[channel] = context.createChannelMerger(2)
+
+    targetNodes[channel].connect(attenuationNodes[channel])
+
+    attenuationNodes[channel].connect(splitterNodes[channel])
+
+    splitterNodes[channel].connect(mergerNodes[channel],0,0)
+    splitterNodes[channel].connect(mergerNodes[channel],1,1)
+
+    mergerNodes[channel].connect(targetInputs[channel])
+  } else {
+    targetNodes[channel] = node
+    console.log('Mono')
+    console.log(targetNodes[channel])
+    targetNodes[channel].connect(targetInputs[channel])
+  }
 }
 
 export const unsetTargetNode = channel => {
