@@ -1,5 +1,3 @@
-import { set } from 'lodash/fp'
-
 import { ActionType } from 'src/constants.js'
 
 const initialState = {
@@ -9,7 +7,7 @@ const initialState = {
 
 export default function(state = initialState, { type, payload }) {
   if (type === ActionType.SET_DISCLAIMER_READ) {
-    return set('hasReadDisclaimer', payload.isRead, state)
+    return { ...state, hasReadDisclaimer: payload.isRead }
   }
   
   return state
