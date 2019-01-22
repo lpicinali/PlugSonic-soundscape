@@ -10,6 +10,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { autobind } from 'core-decorators'
 
+import ContainerDimensions from 'react-container-dimensions'
+
 import MuiThemeProviderOld from 'material-ui/styles/MuiThemeProvider'
 // import MuiThemeProviderNew from '@material-ui/core/styles/MuiThemeProvider'
 // import MenuItem from 'material-ui/MenuItem'
@@ -34,6 +36,7 @@ import {
   Header,
   MasterVolContainer,
   PlaybackContainer,
+  PositionController,
   ScapeContainer,
   ScrollContainer,
   SettingsDrawer,
@@ -68,15 +71,17 @@ class App extends Component {
           <GlobalStyle />
           <AppContent>
 
-            <Header> Header </Header>
+            {/* <Header> Header </Header> */}
 
             <ScapeContainer showSettingsDrawer={this.state.showSettingsDrawer}>
-              Scape Container
+              <ContainerDimensions>
+                { ({width,height}) => <PositionController width={width} height={height}/> }
+              </ContainerDimensions>
             </ScapeContainer>
 
-            <MasterVolContainer showSettingsDrawer={this.state.showSettingsDrawer}> Master Vol Container </MasterVolContainer>
+            <MasterVolContainer showSettingsDrawer={this.state.showSettingsDrawer} showArrowsDrawer={this.state.showArrowsDrawer}> Master Vol Container </MasterVolContainer>
 
-            <PlaybackContainer showSettingsDrawer={this.state.showSettingsDrawer}> Playback Container </PlaybackContainer>
+            <PlaybackContainer showSettingsDrawer={this.state.showSettingsDrawer} showArrowsDrawer={this.state.showArrowsDrawer}> Playback Container </PlaybackContainer>
             <SettingsIconContainer onClick={() => {this.handleSettingsDrawer()}}>
               Settings Icon
             </SettingsIconContainer>
@@ -89,7 +94,7 @@ class App extends Component {
             </ArrowsContainer>
 
             <SettingsDrawer showSettingsDrawer={this.state.showSettingsDrawer}>
-              Settings Container
+              Settings Drawer
             </SettingsDrawer>
 
           </AppContent>

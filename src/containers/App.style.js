@@ -18,6 +18,8 @@ import { MAX_WIDTH } from 'src/styles/layout'
 // ======================= _CONSTANTS_ ====================================== //
 const headerHeight = 48;
 const transitionTime = '0.5s';
+const roomWidth = 30;
+const roomHeight = 50;
 
 // ======================= _GLOBAL_ ========================================= //
 
@@ -41,107 +43,194 @@ export const GlobalStyle = createGlobalStyle`
 // ======================= _APP CONTENT_ ==================================== //
 
 export const  AppContent  = styled.div`
-  align-content: flex-start;
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  height: 100%;
-  width: 100%;
-  /* Mobile Landscape */
-  @media screen and (min-width: 568px) {
-    flex-direction: column;
-    justify-content: flex-start;
-  }
+
+  /* Smartphone Portrait */
+  /* @media screen and (max-aspect-ratio: 499999/800000) { */
+    align-content: flex-start;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    height: 100vh;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    width: 100%;
+  /* } */
 `
 // ======================= _HEADER_ ========================================= //
 
 export const Header = styled.div`
-  background: ${DARKBLUE};
-  box-sizing: border-box;
-  height: ${headerHeight}px;
-  left: 0;
-  min-width: 320px;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 10;
-  /* Tablet Portrait */
-  @media screen and (min-width: 768px) {
-    left: auto;
-    position: static;
-    top: auto;
-  }
+  /* Smartphone Portrait */
+  /* @media screen and (max-aspect-ratio: 499999/800000) { */
+    background: ${DARKBLUE};
+    box-sizing: border-box;
+    height: ${headerHeight}px;
+    max-width: 1280px;
+    min-width: 320px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+  /* } */
 `
 // ======================= _SCAPE CONTAINER_ ================================ //
 
 export const  ScapeContainer  = styled.div`
-  background: ${GREEN};
-  box-sizing: border-box;
-  height: calc(50% - ${headerHeight}px);
-  min-width: 320px;
-  position: fixed;
-  top: ${headerHeight}px;
-  width: 100%;
-  z-index: 10;
-  transition: all ${transitionTime};
-  /* Mobile Landscape */
-  @media screen and (min-width: 568px) {
+
+  /* Smartphone Portrait */
+  /* @media screen and (max-aspect-ratio: 499999/800000) { */
+    background: ${GREEN};
+    box-sizing: border-box;
+    /* height: calc(50% - ${headerHeight}px); */
+    max-width: 1280px;
+    min-width: 320px;
+    position: fixed;
+    height: 50%;
+    /* top: ${headerHeight}px; */
+    transition: all ${transitionTime};
+    width: 100%;
+    z-index: 10;
+  /* } */
+
+  /* Tablet Portrait */
+  @media screen and (min-aspect-ratio: 5/8) and (max-aspect-ratio: 99999/100000) {
+    padding: 72px 72px 72px 72px;
+    /* position: absolute;
+    top: ${headerHeight}px; */
+    width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'};
+    height: calc(70% - ${headerHeight}px - 144px);
+    order: 0;
+    z-index: 0;
+  }
+
+  /* Tablet Landscape */
+  @media screen and (min-aspect-ratio: 1/1) and (max-aspect-ratio: 799999/500000) and (max-width: 1151px) {
+    padding: 72px 72px 72px 72px;
+    width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'};
+    height: calc(100vh - ${headerHeight}px - 144px);
+    order: 0;
+    z-index: 0;
+  }
+
+  /* Smartphone Landscape */
+  @media screen and (min-aspect-ratio: 8/5) {
     min-width: 0;
     height: calc(90% - ${headerHeight}px);
     width: 50%;
   }
-  /* Tablet Portrait */
-  @media screen and (min-width: 768px) {
-    padding: 72px 72px 0px 72px;
-    position: static;
-    top: auto;
-    width: ${props => props.showSettingsDrawer ? '70%' : '100%'};
-    height: 50vh;
+
+  /* Laptop/Desktop */
+  @media screen and (min-width: 1152px) {
+    padding: 72px 72px 72px 72px;
+    position: absolute;
+    width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'};
+    height: calc(100vh - ${headerHeight}px - 144px);
     order: 0;
     z-index: 0;
   }
 `
+
+// ======================= _POSITION CONTROLLER_ =========================== //
+export const  PositionController  = styled.div`
+
+    /* background: url(${location.origin}/assets/img/google_maps.jpg) ${LIGHTGREY}; */
+    background: ${LIGHTGREY};
+    background-size: contain;
+    background-repeat: no-repeat;
+    /* box-sizing: border-box; */
+    border: 1px solid ${BLACK};
+    border-radius: 10px;
+    /* width: calc(${props => props.height}px * ${roomWidth/roomHeight}); */
+    width:  ${props => (roomWidth/roomHeight >= props.width/props.height) ? '${props => props.width}px'  : '${props => props.height}'};
+    height: 100px;
+`
+
 // ======================= _MASTER VOL CONTAINER_ =========================== //
 
 export const  MasterVolContainer = styled.div`
-  background: ${LIGHTBLUE};
-  box-sizing: border-box;
-  height: 10%;
-  min-height: 54px;
-  min-width: 320px;
-  position: fixed;
-  top: 50%;
-  width: 100%;
-  z-index: 10;
-  transition: all ${transitionTime};
-  /* Mobile Landscape */
-  @media screen and (min-width: 568px) {
+
+  /* Smartphone Portrait */
+  /* @media screen and (max-aspect-ratio: 499999/800000) { */
+    background: ${LIGHTBLUE};
+    box-sizing: border-box;
+    height: 10%;
+    min-height: 54px;
+    min-width: 320px;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    /* z-index: 10; */
+    transition: all ${transitionTime};
+  /* } */
+
+  /* Tablet Portrait */
+  @media screen and (min-aspect-ratio: 5/8) and (max-aspect-ratio: 99999/100000) {
+    height: 72px;
+    width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'};
+    top: calc(70% - 72px);
+    z-index: 0;
+  }
+
+  /* Tablet Landscape */
+  @media screen and (min-aspect-ratio: 1/1) and (max-aspect-ratio: 799999/500000) and (max-width: 1151px) {
+    height: 72px;
+    width: ${props => (props.showSettingsDrawer || props.showArrowsDrawer) ? 'calc(100% - 216px)' : '100%'};
+    top: calc(100vh - 72px);
+    z-index: 0;
+  }
+
+  /* Smartphone Landscape */
+  @media screen and (min-aspect-ratio: 8/5)  and (max-width: 1151px) {
     min-width: 0;
+    position: fixed;
     top: 90%;
     width: 50%;
   }
-  /* Tablet Portrait */
-  @media screen and (min-width: 768px) {
-    position: static;
+
+  /* Laptop/Desktop */
+  @media screen and (min-width: 1152px) {
     height: 72px;
-    width: ${props => props.showSettingsDrawer ? '70%' : '100%'};
-    order: 2;
+    max-width: 1280px;
+    width: ${props => (props.showSettingsDrawer || props.showArrowsDrawer) ? 'calc(100% - 216px)' : '100%'};
+    top: calc(100vh - 72px);
     z-index: 0;
   }
 `
 // ======================= _PLAYBACK ICONS CONTAINER_ ======================= //
 
 export const PlaybackContainer = styled.div`
-  background: ${RED};
-  box-sizing: border-box;
-  height: 10%;
-  min-width: 240px;
-  position: absolute;
-  top: 60%;
-  transition: all ${transitionTime};
-  width: 75%;
-  /* Mobile Landscape */
-  @media screen and (min-width: 568px) {
+
+  /* Smartphone Portrait */
+  /* @media screen and (max-aspect-ratio: 499999/800000) { */
+    background: ${RED};
+    box-sizing: border-box;
+    height: 10%;
+    min-width: 240px;
+    position: absolute;
+    top: 60%;
+    transition: all ${transitionTime};
+    width: 75%;
+  /* } */
+
+  /* Laptop/Tablet Portrait */
+  @media screen and (min-aspect-ratio: 5/8) and (max-aspect-ratio: 99999/100000) {
+    height: 72px;
+    width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'};
+    top: calc(70% - 144px);
+    z-index: 0;
+  }
+
+  /* Laptop/Tablet Landscape */
+  @media screen and (min-aspect-ratio: 1/1) and (max-aspect-ratio: 799999/500000) and (max-width: 1151px) {
+    height: 72px;
+    width: ${props => (props.showSettingsDrawer || props.showArrowsDrawer) ? 'calc(100% - 216px)' : '100%'};
+    top: calc(100vh - 144px);
+    z-index: 0;
+  }
+
+  /* Smartphone Landscape */
+  @media screen and (min-aspect-ratio: 8/5) and (max-width: 1151px) {
     min-width: 0;
     left: 50%;
     position: fixed;
@@ -149,44 +238,69 @@ export const PlaybackContainer = styled.div`
     width: 37.5%;
     z-index: 10;
   }
-  /* Tablet Portrait */
-  @media screen and (min-width: 768px) {
-    position: static;
+
+  /* Laptop/Desktop */
+  @media screen and (min-width: 1152px) {
     height: 72px;
-    width: ${props => props.showSettingsDrawer ? '70%' : '100%'};
-    order: 1;
+    max-width: 1280px;
+    width: ${props => (props.showSettingsDrawer || props.showArrowsDrawer) ? 'calc(100% - 216px)' : '100%'};
+    top: calc(100vh - 144px);
     z-index: 0;
   }
 `
 // ======================= _SETTINGS ICON CONTAINER_ ======================== //
 
 export const  SettingsIconContainer  = styled.div`
-  background: ${ORANGE};
-  box-sizing: border-box;
-  cursor: pointer;
-  height: 10%;
-  right: 0;
-  min-width: 80px;
-  position: absolute;
-  top: 60%;
-  width: 25%;
-  transition: all ${transitionTime};
 
-  /* fixes position for browser less than 320px */
+  /* Smartphone Portrait */
+  /* @media screen and (max-aspect-ratio: 499999/800000) { */
+    background: ${ORANGE};
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 10%;
+    right: 0;
+    min-width: 72px;
+    position: absolute;
+    top: 60%;
+    width: 25%;
+    transition: all ${transitionTime};
+  /* } */
   @media screen and (max-width: 320px) {
     left: 240px;
   }
-  /* Mobile Landscape */
-  @media screen and (min-width: 568px) {
-    right: 0px;
+  /* Tablet Portrait */
+  @media screen and (min-aspect-ratio: 5/8) and (max-aspect-ratio: 99999/100000) {
+    right: 0;
+    position: absolute;
+    top: ${headerHeight}px;
+    width: 72px;
+    height: 72px;
+  }
+
+  /* Tablet Landscape */
+  @media screen and (min-aspect-ratio: 1/1) and (max-aspect-ratio: 799999/500000) and (max-width: 1151px) {
+    right: 0;
+    position: absolute;
+    top: ${headerHeight}px;
+    width: 72px;
+    height: 72px;
+  }
+
+  /* Smartphone Landscape */
+  @media screen and (min-aspect-ratio: 8/5) and (max-width: 1151px) {
+    right: 0;
     min-width: 0;
     position: fixed;
     top: ${headerHeight}px;
     width: 12.5%;
     z-index: 10;
   }
-  /* Tablet Portrait */
-  @media screen and (min-width: 768px) {
+
+  /* Laptop/Desktop */
+  @media screen and (min-width: 1152px) {
+    right: 0;
+    position: absolute;
+    top: ${headerHeight}px;
     width: 72px;
     height: 72px;
   }
@@ -194,58 +308,115 @@ export const  SettingsIconContainer  = styled.div`
 // ======================= _SETTINGS DRAWER ================================= //
 
 export const  SettingsDrawer  = styled.div`
-  overflow: hidden;
-  background: ${GREY};
-  box-sizing: border-box;
-  height: ${props => props.showSettingsDrawer ? '800px' : '0'};
-  min-width: 320px;
-  position: absolute;
-  top: 70%;
-  width: 100%;
-  transition: all ${transitionTime};
-  /* Mobile Landscape */
-  @media screen and (min-width: 568px) {
-    right: 0%;
+
+  /* Smartphone Portrait */
+  /* @media screen and (max-aspect-ratio: 499999/800000) { */
+    background: ${GREY};
+    box-sizing: border-box;
+    height: ${props => props.showSettingsDrawer ? '800px' : '0'};
+    min-width: 320px;
+    overflow: hidden;
+    position: absolute;
+    top: 70%;
+    transition: all ${transitionTime};
+    width: 100%;
+  /* } */
+
+  /* Tablet Portrait */
+  @media screen and (min-aspect-ratio: 5/8) and (max-aspect-ratio: 99999/100000) {
+    height: calc(100% - ${headerHeight}px - 216px);
     min-width: 0;
+    right: 0;
+    top: calc(72px + ${headerHeight}px);
+    width: ${props => props.showSettingsDrawer ? '216px' : '0'};
+  }
+
+  /* Tablet Landscape */
+  @media screen and (min-aspect-ratio: 1/1) and (max-aspect-ratio: 799999/500000) and (max-width: 1151px) {
+    height: calc(100% - ${headerHeight}px - 216px);
+    min-width: 0;
+    right: 0;
+    top: calc(72px + ${headerHeight}px);
+    width: ${props => props.showSettingsDrawer ? '216px' : '0'};
+  }
+
+  /* Smartphone Landscape */
+  @media screen and (min-aspect-ratio: 8/5) and (max-width: 1151px) {
+    min-width: 0;
+    min-width: 0;
+    right: 0;
     top: calc(10vh + ${headerHeight}px);
     width: 50%;
   }
-  /* Tablet Portrait */
-  @media screen and (min-width: 768px) {
+
+  /* Laptop/Desktop */
+  @media screen and (min-width: 1152px) {
+    height: calc(100% - ${headerHeight}px - 216px);
+    min-width: 0;
+    right: 0;
     top: calc(72px + ${headerHeight}px);
-    height: calc(85% - ${headerHeight}px - 72px);
-    width: ${props => props.showSettingsDrawer ? '30%' : '0%'};
+    width: ${props => props.showSettingsDrawer ? '216px' : '0'};
   }
 `
 // ======================= _ARROWS CONTAINER_ =============================== //
 
 export const  ArrowsContainer  = styled.div`
-  background: ${YELLOW};
-  box-sizing: border-box;
-  height: ${props => props.showArrowsDrawer ? '30%' : '10%'};
-  min-width: ${props => props.showArrowsDrawer ? '320px' : '80px'};
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: ${props => props.showArrowsDrawer ? '100%' : '25%'};
-  transition: all ${transitionTime};
+
+  /* Smartphone Portrait */
+  /* @media screen and (max-aspect-ratio: 499999/800000) { */
+    background: ${YELLOW};
+    box-sizing: border-box;
+    /* height: ${props => props.showArrowsDrawer ? '30%' : '10%'};
+    min-width: ${props => props.showArrowsDrawer ? '320px' : '80px'}; */
+    height: 30%;
+    min-width: 320px;
+    position: absolute;
+    bottom: 0;
+    /* left: 0; */
+    /* width: ${props => props.showArrowsDrawer ? '100%' : '25%'}; */
+    width: 100%;
+    transition: all ${transitionTime};
+  /* } */
   /* fixes position for browser less than 320px */
-  @media screen and (max-width: 320px) {
+  /* @media screen and (max-width: 320px) {
     left: ${props => props.showArrowsDrawer ? '0' : '240px'};
-  }
-  /* Mobile Landscape */
-  @media screen and (min-width: 568px) {
+  } */
+
+  /* Tablet Portrait */
+  @media screen and (min-aspect-ratio: 5/8) and (max-aspect-ratio: 99999/100000) {
     right: 0;
-    height: ${props => props.showArrowsDrawer ? `calc(90% - ${headerHeight}px)` : '10%'};
+    bottom: 0;
+    min-width: 0;
+    height: ${props => props.showArrowsDrawer ? '144px' : '72px'};
+    width: ${props => props.showArrowsDrawer ? '216px' : '72px'};
+  }
+
+  /* Tablet Landscape */
+  @media screen and (min-aspect-ratio: 1/1) and (max-aspect-ratio: 799999/500000) and (max-width: 1151px) {
+    right: 0;
+    bottom: 0;
+    min-width: 0;
+    height: ${props => props.showArrowsDrawer ? '144px' : '72px'};
+    width: ${props => props.showArrowsDrawer ? '216px' : '72px'};
+  }
+
+  /* Smartphone Landscape */
+  @media screen and (min-aspect-ratio: 8/5) and (max-width: 1151px) {
+    right: 0;
+    /* height: ${props => props.showArrowsDrawer ? `calc(90% - ${headerHeight}px)` : '10%'}; */
+    height: calc(90% - ${headerHeight}px);
     min-width: 0;
     /* top: calc(10vh + ${headerHeight}px); */
-    width: ${props => props.showArrowsDrawer ? '50%' : '80px'};
+    /* width: ${props => props.showArrowsDrawer ? '50%' : '80px'}; */
+    width: 50%;
   }
-  /* Tablet Portrait */
-  @media screen and (min-width: 768px) {
+
+  /* Laptop/Desktop */
+  @media screen and (min-width: 1152px) {
+    right: 0;
     bottom: 0;
-    top: auto;
-    width: ${props => props.showArrowsDrawer ? '30%' : '72px'};
-    height: ${props => props.showArrowsDrawer ? '15%' : '72px'};
+    min-width: 0;
+    height: ${props => props.showArrowsDrawer ? '144px' : '72px'};
+    width: ${props => props.showArrowsDrawer ? '216px' : '72px'};
   }
 `
