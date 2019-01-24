@@ -21,129 +21,39 @@ const transitionTime = '0.5s';
 const roomWidth = 30;
 const roomHeight = 50;
 
-// ======================= _GLOBAL_ ========================================= //
-
-export const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css?family=Roboto:400');
-
-  html, body {
-    border: 0;
-    box-sizing: border-box;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-  }
-
-  body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 10pt;
-  }
-`
 // ======================= _APP CONTENT_ ==================================== //
 
-export const  AppContent  = styled.div`
-
-  /* Smartphone Portrait */
-  /* @media screen and (max-aspect-ratio: 499999/800000) { */
-    align-content: flex-start;
-    box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
+export const  AppContainer  = styled.div`
+    background: ${LIGHTGREY};
     height: 100vh;
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    width: 100%;
-  /* } */
-`
-// ======================= _HEADER_ ========================================= //
-
-export const Header = styled.div`
-  /* Smartphone Portrait */
-  /* @media screen and (max-aspect-ratio: 499999/800000) { */
-    background: ${DARKBLUE};
-    box-sizing: border-box;
-    height: ${headerHeight}px;
-    max-width: 1280px;
-    min-width: 320px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 10;
-  /* } */
+    display: flex;
+    flex-direction: column;
 `
 // ======================= _SCAPE CONTAINER_ ================================ //
 
 export const  ScapeContainer  = styled.div`
-
   /* Smartphone Portrait */
   /* @media screen and (max-aspect-ratio: 499999/800000) { */
     background: ${GREEN};
     box-sizing: border-box;
-    /* height: calc(50% - ${headerHeight}px); */
-    max-width: 1280px;
-    min-width: 320px;
-    position: fixed;
-    height: 50%;
-    /* top: ${headerHeight}px; */
-    transition: all ${transitionTime};
-    width: 100%;
-    z-index: 10;
+    /* width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'}; */
+    height: 100px;
+    /* height: 50%; */
   /* } */
-
-  /* Tablet Portrait */
-  @media screen and (min-aspect-ratio: 5/8) and (max-aspect-ratio: 99999/100000) {
-    padding: 72px 72px 72px 72px;
-    /* position: absolute;
-    top: ${headerHeight}px; */
-    width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'};
-    height: calc(70% - ${headerHeight}px - 144px);
-    order: 0;
-    z-index: 0;
-  }
-
-  /* Tablet Landscape */
-  @media screen and (min-aspect-ratio: 1/1) and (max-aspect-ratio: 799999/500000) and (max-width: 1151px) {
-    padding: 72px 72px 72px 72px;
-    width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'};
-    height: calc(100vh - ${headerHeight}px - 144px);
-    order: 0;
-    z-index: 0;
-  }
-
-  /* Smartphone Landscape */
-  @media screen and (min-aspect-ratio: 8/5) {
-    min-width: 0;
-    height: calc(90% - ${headerHeight}px);
-    width: 50%;
-  }
-
-  /* Laptop/Desktop */
-  @media screen and (min-width: 1152px) {
-    padding: 72px 72px 72px 72px;
-    position: absolute;
-    width: ${props => props.showSettingsDrawer ? 'calc(100% - 216px)' : '100%'};
-    height: calc(100vh - ${headerHeight}px - 144px);
-    order: 0;
-    z-index: 0;
-  }
 `
 
 // ======================= _POSITION CONTROLLER_ =========================== //
 export const  PositionController  = styled.div`
 
     /* background: url(${location.origin}/assets/img/google_maps.jpg) ${LIGHTGREY}; */
+    display: block;
     background: ${LIGHTGREY};
-    background-size: contain;
-    background-repeat: no-repeat;
-    /* box-sizing: border-box; */
     border: 1px solid ${BLACK};
-    border-radius: 10px;
     /* width: calc(${props => props.height}px * ${roomWidth/roomHeight}); */
-    width:  ${props => (roomWidth/roomHeight >= props.width/props.height) ? '${props => props.width}px'  : '${props => props.height}'};
-    height: 100px;
+    width: 200px;
+    height: 200px;
+    margin-top: auto;
+    margin-bottom: auto;
 `
 
 // ======================= _MASTER VOL CONTAINER_ =========================== //
