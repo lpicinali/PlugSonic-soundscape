@@ -14,14 +14,9 @@ export const GlobalStyle = createGlobalStyle`
 
   html, body {
     border: 0;
-    box-sizing: border-box;
     height: 100%;
     margin: 0;
     padding: 0;
-    width: 100%;
-  }
-
-  body {
     font-family: 'Roboto', sans-serif;
     font-size: 10pt;
   }
