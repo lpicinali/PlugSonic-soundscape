@@ -1,41 +1,65 @@
 /* eslint no-unused-vars: 0 */
 /* eslint react/no-unused-prop-types: 0 */
 /* eslint react/prefer-stateless-function: 0 */
+/* eslint no-lonely-if: 0 */
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from 'src/styles/colors'
-
-// ======================= _SOUNDSCAPE_ ================================ //
+// ===================================================================== //
+const drawerWidth = 250
+const roomRatio = 2
+const showRight = 1
+// ===================================================================== //
 const SoundscapeContainer = styled.div`
   background: ${colors.YELLOW};
   width: ${props => props.width}px;
   height: ${props => props.height}px;
 `
 
+const Drawer = styled.div`
+  background: ${colors.GREEN};
+  width: ${props => props.width}px;
+  height: 1000px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  transition: width 1s;
+`
+
+const Container = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+`
+// ======================= _SOUNDSCAPE_ ================================ //
 class Soundscape extends Component {
   render() {
     const { width, height } = this.props
 
-    const roomRatio = 1.5
     const containerRatio = width/height
+    const newDrawerWidth = showRight ? drawerWidth : 0
 
     let newWidth = 0;
     let newHeight = 0;
     if (roomRatio >= containerRatio) {
       newWidth = width
       newHeight = width * 1/roomRatio
+
     } else {
       newWidth = height * roomRatio
       newHeight = height
     }
 
-    // Add Right Drawer and ricalculate newWidth and newHeight considering Drawer open/closed
-
     return (
-      <SoundscapeContainer width={newWidth} height={newHeight}>
-        {/* Map Component with width and height 100% with sources places with relative coordinates (in percentage wrt room size in metres) */}
-      </SoundscapeContainer>
+      <Container>
+        <SoundscapeContainer width={newWidth} height={newHeight}>
+          SOundscape Container
+          {/* Map Comopnent with width and height 100% with sources places with relative coordinates (in percentage wrt room size in metres) */}
+        </SoundscapeContainer>
+        <Drawer width={newDrawerWidth}>
+          Right Drawer
+        </Drawer>
+      </Container>
     )
   }
 }
