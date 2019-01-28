@@ -20,7 +20,6 @@ const SoundscapeContainer = styled.div`
 const Drawer = styled.div`
   background: ${colors.GREEN};
   flex-shrink: 0;
-  height: 1000px;
   overflow-x: hidden;
   overflow-y: scroll;
   transition: width 1s;
@@ -54,8 +53,7 @@ class Soundscape extends Component {
     return (
       <Container>
         <SoundscapeContainer width={newWidth} height={newHeight}>
-          SOundscape Container
-          {/* Map Comopnent with width and height 100% with sources places with relative coordinates (in percentage wrt room size in metres) */}
+          Soundscape Container
         </SoundscapeContainer>
         <Drawer width={newDrawerWidth}>
           Right Drawer
