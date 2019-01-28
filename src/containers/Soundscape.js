@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as colors from 'src/styles/colors'
 // ===================================================================== //
-const drawerWidth = 250
+const drawerWidth = 240
 const roomRatio = 2
 const showRight = 1
 // ===================================================================== //
@@ -19,11 +19,12 @@ const SoundscapeContainer = styled.div`
 
 const Drawer = styled.div`
   background: ${colors.GREEN};
-  width: ${props => props.width}px;
+  flex-shrink: 0;
   height: 1000px;
   overflow-x: hidden;
   overflow-y: scroll;
   transition: width 1s;
+  width: ${props => props.width}px;
 `
 
 const Container = styled.div`
@@ -75,63 +76,3 @@ Soundscape.propTypes = {
 }
 
 export default Soundscape
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// class Soundscape extends Component {
-//   render() {
-//     const { width, height } = this.props
-//
-//     const roomRatio = 5
-//     const containerRatio = width/height
-//
-//     let newWidth = 0;
-//     let newHeight = 0;
-//     if (roomRatio >= containerRatio) {
-//       newWidth = width
-//       newHeight = width * 1/roomRatio
-//     } else {
-//       newWidth = height * roomRatio
-//       newHeight = height
-//     }
-//
-//     return (
-//       <div id='SoundscapeContainer'
-//         style={{
-//           background: `${colors.YELLOW}`,
-//           display: 'flex',
-//           flexDirection: 'row',
-//           boxSizing: `borderBox`,
-//           width: `${newWidth}px`,
-//           height: `${newHeight}px`
-//         }}
-//       />
-//     )
-//   }
-// }
-//
-// Soundscape.defaultProps = {
-//   width: 0,
-//   height: 0,
-// }
-//
-// Soundscape.propTypes = {
-//   width: PropTypes.number,
-//   height: PropTypes.number,
-// }
-//
-// export default Soundscape
