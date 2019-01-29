@@ -15,6 +15,8 @@ const SoundscapeContainer = styled.div`
   background: ${colors.YELLOW};
   width: ${props => props.width}px;
   height: ${props => props.height}px;
+  margin-left: auto;
+  margin-right: auto;
 `
 
 const Drawer = styled.div`
@@ -30,21 +32,22 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
+  justify-content: flex-end;
 `
 // ======================= _SOUNDSCAPE_ ================================ //
 class Soundscape extends Component {
   render() {
     const { width, height } = this.props
 
-    const containerRatio = width/height
     const newDrawerWidth = showRight ? drawerWidth : 0
+    const containerWidth = width - newDrawerWidth
+    const containerRatio = containerWidth/height
 
     let newWidth = 0;
     let newHeight = 0;
     if (roomRatio >= containerRatio) {
-      newWidth = width
-      newHeight = width * 1/roomRatio
-
+      newWidth = containerWidth
+      newHeight = containerWidth * 1/roomRatio
     } else {
       newWidth = height * roomRatio
       newHeight = height
