@@ -3,11 +3,14 @@
 /* eslint react/prefer-stateless-function: 0 */
 /* eslint no-lonely-if: 0 */
 import React, {Component} from 'react'
+import { connect } from "react-redux"
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+
 import * as colors from 'src/styles/colors'
 // ===================================================================== //
-const drawerWidth = 240
+const drawerWidth = 250
+const navHeight = 48
 const roomRatio = 2
 const showRight = 1
 // ===================================================================== //
@@ -24,7 +27,7 @@ const Drawer = styled.div`
   flex-shrink: 0;
   overflow-x: hidden;
   overflow-y: scroll;
-  transition: width 1s;
+  transition: width 0.5s;
   width: ${props => props.width}px;
 `
 
@@ -34,12 +37,14 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: flex-end;
 `
-// ======================= _SOUNDSCAPE_ ================================ //
+/* ========================================================================== */
+/* SOUNDSCAPE */
+/* ========================================================================== */
 class Soundscape extends Component {
   render() {
-    const { width, height } = this.props
+    const { width, height, showSettingsDrawer } = this.props
 
-    const newDrawerWidth = showRight ? drawerWidth : 0
+    const newDrawerWidth = showSettingsDrawer ? drawerWidth : 0
     const containerWidth = width - newDrawerWidth
     const containerRatio = containerWidth/height
 
@@ -47,10 +52,10 @@ class Soundscape extends Component {
     let newHeight = 0;
     if (roomRatio >= containerRatio) {
       newWidth = containerWidth
-      newHeight = containerWidth * 1/roomRatio
+      newHeight = (containerWidth * 1/roomRatio) - navHeight
     } else {
       newWidth = height * roomRatio
-      newHeight = height
+      newHeight = height - navHeight
     }
 
     return (
@@ -66,14 +71,21 @@ class Soundscape extends Component {
   }
 }
 
+Soundscape.propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  showSettingsDrawer: PropTypes.bool.isRequired,
+}
+
 Soundscape.defaultProps = {
   width: 0,
   height: 0,
+  showSettingsDrawer: false,
 }
 
-Soundscape.propTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
-}
-
-export default Soundscape
+export default connect(
+  state => ({
+    showSettingsDrawer: state.controls.showSettingsDrawer,
+  }),
+  null
+)(Soundscape)

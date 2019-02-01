@@ -15,9 +15,13 @@
     "import/resolver": "webpack"
   },
   "rules": {
-    "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
     "import/extensions": 0,
+    "no-console": 0,
+    "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
+    "no-unused-expressions": 0,
+    "no-unused-vars": 0,
+    "react/default-props-match-prop-types": [1, { "allowRequiredDefaults": 1 }],
     "react/jsx-filename-extension": 0,
-    "no-console": 0
+    "react/prefer-stateless-function": 0
   }
 }

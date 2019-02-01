@@ -3,30 +3,15 @@
 /* global location */
 /* eslint no-restricted-globals: 0 */
 /* eslint import/prefer-default-export: 0 */
-import styled, { createGlobalStyle } from 'styled-components'
+import styled from 'styled-components'
 import * as colors from 'src/styles/colors.js'
-import { MAX_WIDTH } from 'src/styles/layout'
 
 // ======================= _APP CONTAINER_ ==================================== //
-
-export const  AppContainer  = styled.div`
-    background: ${colors.LIGHTGREY};
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+const FlatButtonStyle = styled.div`
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0px 10px;
 `
-
-export const Nav = styled.div`
-  align-items: center;
-  background-color: ${colors.BLACK};
-  display: flex;
-  flex-direction: row;
-  flex-shrink: 0;
-  height: 48px;
-  justify-content: flex-end;
-`
-
-
 
 
 
