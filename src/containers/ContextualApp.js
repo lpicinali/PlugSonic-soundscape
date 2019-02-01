@@ -10,11 +10,11 @@ import * as colors from 'src/styles/colors'
 
 const muiTheme = getMuiTheme({
   palette: {
-    primary1Color: "#AA412B",
+    primary1Color: colors.BLACK,
     accent1Color: colors.WHITE,
     accent2Color: colors.TURQOISE,
-    alternateTextColor: "#AA412B",
-    textColor: "#000",
+    alternateTextColor: colors.WHITE,
+    textColor: colors.BLACK,
   },
 })
 

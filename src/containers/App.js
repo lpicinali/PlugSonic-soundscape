@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ContainerDimensions from 'react-container-dimensions'
 
+import { AppContainer, Nav } from 'src/containers/App.style'
 import NavControls from 'src/containers/NavControls'
 import Soundscape from 'src/containers/Soundscape'
-import { AppContainer, Nav } from 'src/containers/App.style'
 
 
 class App extends Component {
@@ -19,7 +19,7 @@ class App extends Component {
               <Soundscape/>
             </ContainerDimensions>
           </AppContainer>
-        )
+    )
   }
 }
 

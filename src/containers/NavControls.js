@@ -10,12 +10,8 @@ import styled from 'styled-components'
 import * as colors from 'src/styles/colors'
 
 import FlatButton from "material-ui/FlatButton"
-import StyledFlatButton from 'src/containers/NavControls.style'
 import SettingsIcon from "material-ui/svg-icons/action/settings"
 import ArrowIcon from "material-ui/svg-icons/navigation/chevron-right"
-import AvPlayArrow from "material-ui/svg-icons/av/play-arrow"
-import AvStop from "material-ui/svg-icons/av/stop"
-import AvPause from "material-ui/svg-icons/av/pause"
 
 import { showSettingsDrawer, hideSettingsDrawer } from 'src/actions/controls.actions'
 /* ========================================================================== */
@@ -35,11 +31,11 @@ class NavControls extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
-  const DrawerIcon = this.props.showSettingsDrawer ?
-    <ArrowIcon color={colors.WHITE}/> : <SettingsIcon color={colors.WHITE}/>
+    const DrawerIcon = this.props.showSettingsDrawer ?
+      <ArrowIcon color={colors.WHITE}/> : <SettingsIcon color={colors.WHITE}/>
 
-  return (
-    <FlatButton icon={DrawerIcon} style={FlatButtonStyle} onClick={this.toggleSettings}/>
+    return (
+      <FlatButton icon={DrawerIcon} style={FlatButtonStyle} onClick={this.toggleSettings}/>
     )
   }
 }

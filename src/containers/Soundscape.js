@@ -8,11 +8,11 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import * as colors from 'src/styles/colors'
+
+import TabsContainer from 'src/containers/TabsContainer'
 // ===================================================================== //
-const drawerWidth = 250
+const drawerWidth = 288
 const navHeight = 48
-const roomRatio = 2
-const showRight = 1
 // ===================================================================== //
 const SoundscapeContainer = styled.div`
   background: ${colors.YELLOW};
@@ -42,8 +42,9 @@ const Container = styled.div`
 /* ========================================================================== */
 class Soundscape extends Component {
   render() {
-    const { width, height, showSettingsDrawer } = this.props
+    const { width, height, showSettingsDrawer, roomWidth, roomHeight } = this.props
 
+    const roomRatio = roomWidth/roomHeight
     const newDrawerWidth = showSettingsDrawer ? drawerWidth : 0
     const containerWidth = width - newDrawerWidth
     const containerRatio = containerWidth/height
@@ -64,7 +65,7 @@ class Soundscape extends Component {
           Soundscape Container
         </SoundscapeContainer>
         <Drawer width={newDrawerWidth}>
-          Right Drawer
+          <TabsContainer/>
         </Drawer>
       </Container>
     )
@@ -75,17 +76,22 @@ Soundscape.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   showSettingsDrawer: PropTypes.bool.isRequired,
+  roomWidth: PropTypes.number.isRequired,
+  roomHeight: PropTypes.number.isRequired,
 }
 
 Soundscape.defaultProps = {
   width: 0,
   height: 0,
   showSettingsDrawer: false,
+  roomWidth: 0,
+  roomHeight: 0,
 }
 
-export default connect(
-  state => ({
+const mapStateToProps = state => ({
     showSettingsDrawer: state.controls.showSettingsDrawer,
-  }),
-  null
-)(Soundscape)
+    roomWidth: state.room.size.width,
+    roomHeight: state.room.size.height,
+})
+
+export default connect(mapStateToProps,null)(Soundscape)
