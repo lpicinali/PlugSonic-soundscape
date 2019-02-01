@@ -39,7 +39,7 @@ class NavControls extends Component {
     <ArrowIcon color={colors.WHITE}/> : <SettingsIcon color={colors.WHITE}/>
 
   return (
-    <FlatButton icon={DrawerIcon} style={FlatButtonStyle} onClick={this.toggleSettings} secondary/>
+    <FlatButton icon={DrawerIcon} style={FlatButtonStyle} onClick={this.toggleSettings}/>
     )
   }
 }
