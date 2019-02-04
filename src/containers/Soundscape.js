@@ -42,9 +42,9 @@ const Container = styled.div`
 /* ========================================================================== */
 class Soundscape extends Component {
   render() {
-    const { width, height, showSettingsDrawer, roomWidth, roomHeight } = this.props
+    const { width, height, showSettingsDrawer, roomWidth, roomDepth } = this.props
 
-    const roomRatio = roomWidth/roomHeight
+    const roomRatio = roomWidth/roomDepth
     const newDrawerWidth = showSettingsDrawer ? drawerWidth : 0
     const containerWidth = width - newDrawerWidth
     const containerRatio = containerWidth/height
@@ -77,7 +77,7 @@ Soundscape.propTypes = {
   height: PropTypes.number.isRequired,
   showSettingsDrawer: PropTypes.bool.isRequired,
   roomWidth: PropTypes.number.isRequired,
-  roomHeight: PropTypes.number.isRequired,
+  roomDepth: PropTypes.number.isRequired,
 }
 
 Soundscape.defaultProps = {
@@ -85,13 +85,13 @@ Soundscape.defaultProps = {
   height: 0,
   showSettingsDrawer: false,
   roomWidth: 0,
-  roomHeight: 0,
+  roomDepth: 0,
 }
 
 const mapStateToProps = state => ({
     showSettingsDrawer: state.controls.showSettingsDrawer,
     roomWidth: state.room.size.width,
-    roomHeight: state.room.size.height,
+    roomDepth: state.room.size.depth,
 })
 
 export default connect(mapStateToProps,null)(Soundscape)

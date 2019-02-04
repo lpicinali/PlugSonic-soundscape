@@ -1,8 +1,3 @@
-/* eslint react/no-unused-prop-types: 0 */
-/* eslint no-unused-vars: 0 */
-/* eslint react/forbid-prop-types: 0 */
-/* global location */
-/* eslint no-restricted-globals: 0 */
 import React, { Component} from "react"
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
@@ -44,14 +39,14 @@ NavControls.propTypes = {
   showSettingsDrawer: PropTypes.bool.isRequired,
   onShowSettingsDrawer: PropTypes.func.isRequired,
   onHideSettingsDrawer: PropTypes.func.isRequired,
-};
+}
 
 NavControls.defaultProps = {
   showSettingsDrawer: false,
-};
+}
 
 const mapStateToProps = state => ({
-    showSettingsDrawer: state.controls.showSettingsDrawer,
+  showSettingsDrawer: state.controls.showSettingsDrawer,
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -1,11 +1,8 @@
-/* eslint no-unused-vars: 0 */
-/* eslint react/no-unused-prop-types: 0 */
-/* eslint react/prefer-stateless-function: 0 */
-/* eslint no-lonely-if: 0 */
 import React, {Component} from 'react'
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import * as colors from 'src/styles/colors'
 
 import {Tabs, Tab} from 'material-ui/Tabs'
 import Add from 'material-ui/svg-icons/content/add'
@@ -15,7 +12,7 @@ import Room from "material-ui/svg-icons/action/aspect-ratio"
 import Listener from "material-ui/svg-icons/av/hearing"
 import Soundscape from "material-ui/svg-icons/content/save"
 
-import * as colors from 'src/styles/colors'
+import RoomTab from 'src/containers/RoomTab'
 
 /* ========================================================================== */
 /* TABS */
@@ -23,32 +20,32 @@ import * as colors from 'src/styles/colors'
 class TabsContainer extends Component {
 
   state = {
-    value: 'a',
+    value: 'room',
   }
 
   handleChange = (value) => {
-    this.setState({ ...this.state, value });
-  };
+    this.setState({ ...this.state, value })
+  }
 
   render() {
     return (
       <Tabs value={this.state.value} onChange={this.handleChange}>
-        <Tab icon={<Add/>} value="a">
+        <Tab icon={<Add/>} value="add">
           <h2>Tab A</h2>
         </Tab>
-        <Tab icon={<Search/>} value="b">
+        <Tab icon={<Search/>} value="search">
           <h2>Tab B</h2>
         </Tab>
-        <Tab icon={<Sources/>} value="c">
+        <Tab icon={<Sources/>} value="sources">
           <h2>Tab A</h2>
         </Tab>
-        <Tab icon={<Room/>} value="d">
-          <h2>Tab B</h2>
+        <Tab icon={<Room/>} value="room">
+          <RoomTab/>
         </Tab>
-        <Tab icon={<Listener/>} value="e">
+        <Tab icon={<Listener/>} value="listener">
           <h2>Tab A</h2>
         </Tab>
-        <Tab icon={<Soundscape/>} value="f">
+        <Tab icon={<Soundscape/>} value="soundscape">
           <h2>Tab B</h2>
         </Tab>
       </Tabs>
@@ -56,26 +53,4 @@ class TabsContainer extends Component {
   }
 }
 
-TabsContainer.propTypes = {
-// width: PropTypes.number.isRequired,
-// height: PropTypes.number.isRequired,
-// showSettingsDrawer: PropTypes.bool.isRequired,
-// roomWidth: PropTypes.number.isRequired,
-// roomHeight: PropTypes.number.isRequired,
-}
-
-TabsContainer.defaultProps = {
-// width: 0,
-// height: 0,
-// showSettingsDrawer: false,
-// roomWidth: 0,
-// roomHeight: 0,
-}
-
-const mapStateToProps = state => ({
-// showSettingsDrawer: state.controls.showSettingsDrawer,
-// roomWidth: state.room.size.width,
-// roomHeight: state.room.size.height,
-})
-
-export default connect(null,null)(TabsContainer)
+export default TabsContainer

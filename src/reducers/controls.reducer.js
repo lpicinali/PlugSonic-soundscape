@@ -7,7 +7,7 @@ import { ActionType, PlaybackState } from 'src/constants.js'
 const initialState = {
   playbackState: PlaybackState.PAUSED,
   masterVolume: 0.5,
-  showSettingsDrawer: false,
+  showSettingsDrawer: true,
 }
 
 export default function(state = initialState, { type, payload }) {

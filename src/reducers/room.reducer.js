@@ -6,7 +6,7 @@ import { ActionType, RoomShape } from 'src/constants.js'
 
 const initialState = {
   shape: RoomShape.RECTANGULAR,
-  size: { width: 30, height: 20 },
+  size: { width: 30, depth: 20, height: 4  },
 }
 
 export default function(state = initialState, { type, payload }) {
