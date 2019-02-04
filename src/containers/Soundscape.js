@@ -14,22 +14,6 @@ import TabsContainer from 'src/containers/TabsContainer'
 const drawerWidth = 288
 const navHeight = 48
 // ===================================================================== //
-const SoundscapeContainer = styled.div`
-  background: ${colors.YELLOW};
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
-  margin-left: auto;
-  margin-right: auto;
-`
-
-const Drawer = styled.div`
-  background: ${colors.GREEN};
-  flex-shrink: 0;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  transition: width 0.5s;
-  width: ${props => props.width}px;
-`
 
 const Container = styled.div`
   height: 100%;
@@ -37,6 +21,43 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: flex-end;
 `
+
+const SoundscapeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background: ${colors.YELLOW};
+`
+
+const SoundscapeViewport = styled.div`
+  position: relative;
+  width: 400px;
+  height: 400px;
+  border: 1px solid black;
+`
+
+const SoundscapeRoom = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: ${props => props.roomWidth * 10}px;
+  height: ${props => props.roomDepth * 10}px;
+  transform: translate3d(-50%, -50%, 0);
+  background: yellow;
+`
+
+const Drawer = styled.div`
+  background: ${colors.GREEN};
+  overflow-x: hidden;
+  overflow-y: scroll;
+  transition: width 0.5s;
+  width: ${drawerWidth}px;
+`
+
 /* ========================================================================== */
 /* SOUNDSCAPE */
 /* ========================================================================== */
@@ -44,27 +65,32 @@ class Soundscape extends Component {
   render() {
     const { width, height, showSettingsDrawer, roomWidth, roomDepth } = this.props
 
-    const roomRatio = roomWidth/roomDepth
-    const newDrawerWidth = showSettingsDrawer ? drawerWidth : 0
-    const containerWidth = width - newDrawerWidth
-    const containerRatio = containerWidth/height
+    // const roomRatio = roomWidth/roomDepth
+    // const newDrawerWidth = showSettingsDrawer ? drawerWidth : 0
+    // const containerWidth = width - newDrawerWidth
+    // const containerRatio = containerWidth/height
 
-    let newWidth = 0;
-    let newHeight = 0;
-    if (roomRatio >= containerRatio) {
-      newWidth = containerWidth
-      newHeight = (containerWidth * 1/roomRatio) - navHeight
-    } else {
-      newWidth = height * roomRatio
-      newHeight = height - navHeight
-    }
+    // let newWidth = 0;
+    // let newHeight = 0;
+    // if (roomRatio >= containerRatio) {
+    //   newWidth = containerWidth
+    //   newHeight = (containerWidth * 1/roomRatio) - navHeight
+    // } else {
+    //   newWidth = height * roomRatio
+    //   newHeight = height - navHeight
+    // }
 
     return (
       <Container>
-        <SoundscapeContainer width={newWidth} height={newHeight}>
-          Soundscape Container
+        <SoundscapeContainer>
+          <SoundscapeViewport>
+            <SoundscapeRoom roomWidth={roomWidth} roomDepth={roomDepth}>
+              Soundscape
+            </SoundscapeRoom>
+          </SoundscapeViewport>
         </SoundscapeContainer>
-        <Drawer width={newDrawerWidth}>
+
+        <Drawer>
           <TabsContainer/>
         </Drawer>
       </Container>
