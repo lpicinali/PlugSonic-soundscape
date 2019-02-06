@@ -17,6 +17,8 @@ const drawerWidth = 288
 const navHeight = 48
 
 const MAP_SCALE = 10
+
+const SOUNDSCAPE_CONTAINER_PADDING = 80
 // ===================================================================== //
 
 const Container = styled.div`
@@ -121,8 +123,8 @@ class Soundscape extends Component {
     const mapWidth = roomWidth * MAP_SCALE
     const mapHeight = roomDepth * MAP_SCALE
 
-    const viewportWidth = Math.max(0, Math.min(containerBounds.width - 80, mapWidth))
-    const viewportHeight = Math.max(0, Math.min(containerBounds.height - 80, mapHeight))
+    const viewportWidth = Math.max(0, Math.min(containerBounds.width - SOUNDSCAPE_CONTAINER_PADDING, mapWidth))
+    const viewportHeight = Math.max(0, Math.min(containerBounds.height - SOUNDSCAPE_CONTAINER_PADDING, mapHeight))
 
     const diffWidth = viewportWidth - mapWidth
     const diffHeight = viewportHeight - mapHeight
