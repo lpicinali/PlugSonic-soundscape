@@ -8,7 +8,12 @@ TO DO:
 import { ActionType } from 'src/constants.js'
 
 const initialState = {
-  position: { azimuth: 0, distance: 0, rotZAxis: 0 },
+  position: {
+    x: 0,
+    y: 0,
+    z: 0,
+    rotZAxis: 0
+  },
   isPerformanceModeEnabled: false,
   headRadius: 0.0875,
   // isDirectionalityEnabled: true,

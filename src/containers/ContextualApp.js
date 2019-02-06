@@ -13,8 +13,8 @@ const muiTheme = getMuiTheme({
     primary1Color: colors.BLACK,
     accent1Color: colors.WHITE,
     accent2Color: colors.TURQOISE,
-    alternateTextColor: colors.WHITE,
     textColor: colors.BLACK,
+    alternateTextColor: colors.WHITE,
   },
 })
 

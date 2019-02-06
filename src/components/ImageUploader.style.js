@@ -19,7 +19,7 @@ export const Dropzone = styled(ReactDropzone)`
   width: 85%;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 20px;
+  ${'' /* margin-top: 20px; */}
 `
 
 export const ActionIcon = styled(Icon)`
