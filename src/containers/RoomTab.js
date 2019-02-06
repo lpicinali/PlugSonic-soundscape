@@ -6,6 +6,7 @@ import * as colors from 'src/styles/colors'
 
 import RoomShapeDropDownMenu from 'src/components/RoomShapeDropDownMenu'
 import RoomSizeTextFields from 'src/components/RoomSizeTextFields'
+import ImageUploader from 'src/components/ImageUploader'
 /* ========================================================================== */
 
 /* ========================================================================== */
@@ -19,7 +20,7 @@ class RoomTab extends Component {
       <React.Fragment>
         <RoomShapeDropDownMenu/>
         <RoomSizeTextFields/>
-        {/* <Uploader/> */}
+        <ImageUploader/>
         {/* <ResetPosition/> */}
       </React.Fragment>
 

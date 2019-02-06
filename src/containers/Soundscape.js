@@ -16,6 +16,8 @@ const navHeight = 48
 // ===================================================================== //
 const SoundscapeContainer = styled.div`
   background: ${colors.YELLOW};
+  background-image: url(${props => props.image});
+  background-size: cover;
   width: ${props => props.width}px;
   height: ${props => props.height}px;
   margin-left: auto;
@@ -61,7 +63,7 @@ class Soundscape extends Component {
 
     return (
       <Container>
-        <SoundscapeContainer width={newWidth} height={newHeight}>
+        <SoundscapeContainer width={newWidth} height={newHeight} image={this.props.roomImage}>
           Soundscape Container
         </SoundscapeContainer>
         <Drawer width={newDrawerWidth}>
@@ -78,6 +80,7 @@ Soundscape.propTypes = {
   showSettingsDrawer: PropTypes.bool.isRequired,
   roomWidth: PropTypes.number.isRequired,
   roomDepth: PropTypes.number.isRequired,
+  roomImage: PropTypes.string
 }
 
 Soundscape.defaultProps = {
@@ -86,12 +89,14 @@ Soundscape.defaultProps = {
   showSettingsDrawer: false,
   roomWidth: 0,
   roomDepth: 0,
+  roomImage: '',
 }
 
 const mapStateToProps = state => ({
     showSettingsDrawer: state.controls.showSettingsDrawer,
     roomWidth: state.room.size.width,
     roomDepth: state.room.size.depth,
+    roomImage: state.room.image.raw,
 })
 
 export default connect(mapStateToProps,null)(Soundscape)
