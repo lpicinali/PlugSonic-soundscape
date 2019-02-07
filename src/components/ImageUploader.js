@@ -6,13 +6,26 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
-import { autobind } from 'core-decorators'
+import styled from 'styled-components'
 import { fetchAudioBufferRaw } from 'src/utils'
 
+import * as colors from 'src/styles/colors'
 import {H2} from 'src/styles/elements'
 import {Dropzone, ActionIcon} from 'src/components/ImageUploader.style'
+import FlatButton from "material-ui/FlatButton"
 
 import {setRoomImage} from 'src/actions/room.actions'
+/* ========================================================================== */
+const FlatButtonStyle = {
+  width: '85%',
+  margin: `auto`,
+  textColor: `${colors.WHITE}`,
+}
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
 /* ========================================================================== */
 /* IMAGE UPLOADER */
 /* ========================================================================== */
@@ -26,7 +39,7 @@ class ImageUploader extends Component {
     error: ''
   }
 
-  handleOnDrop(accepted, rejected) {
+  handleOnDrop = (accepted, rejected) => {
     if (accepted.length === 0) {
       this.setState({
         ...this.state,
@@ -63,9 +76,14 @@ class ImageUploader extends Component {
     }
   }
 
+  resetImage = () => {
+    this.setState({...this.state, name: '', size: '', type: '', preview: '', raw: '', error: ''})
+    this.props.onRoomImageChange({name: '', size: '', type: '', preview: '', raw: '', error: ''})
+  }
+
   render() {
     return (
-      <React.Fragment>
+      <Container>
         <H2>ROOM FLOORPLAN</H2>
         <Dropzone
           accept="image/*"
@@ -84,7 +102,12 @@ class ImageUploader extends Component {
             {this.state.error === '' ? '' : `${this.state.error}`}
           </div>
         </Dropzone>
-      </React.Fragment>
+
+        <FlatButton style={FlatButtonStyle} backgroundColor={`${colors.BLACK}`} onClick={this.resetImage} secondary>
+          RESET IMAGE
+        </FlatButton>
+
+      </Container>
     )
   }
 

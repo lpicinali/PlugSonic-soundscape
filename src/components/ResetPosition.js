@@ -2,6 +2,7 @@ import React, { Component} from "react"
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
 import * as colors from 'src/styles/colors'
+import styled from 'styled-components'
 
 import {H2} from 'src/styles/elements'
 import FlatButton from "material-ui/FlatButton"
@@ -13,6 +14,11 @@ const FlatButtonStyle = {
   margin: `auto`,
   textColor: `${colors.WHITE}`,
 }
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
 /* ========================================================================== */
 /* RESET POSITION */
 /* ========================================================================== */
@@ -21,12 +27,12 @@ class ResetPosition extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <div style={{display: `flex`, flexDirection: `column`, justifyContent:`center`}}>
+      <Container>
         <H2>RESET POSITION</H2>
         <FlatButton style={FlatButtonStyle} backgroundColor={`${colors.BLACK}`} onClick={() => this.props.onListenerMove({x:0,y:0,z:0,rotZAxis:0})} secondary>
           LISTENER
         </FlatButton>
-      </div>
+      </Container>
     )
   }
 }
