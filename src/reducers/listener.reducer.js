@@ -1,11 +1,4 @@
-/* ------------------- NOTES -------------------- */ /*
-
-TO DO:
-  - transfer listener controls/actions from controls to listener.reducer
-
-*/ /* ---------------------------------------------- */
-
-import { ActionType } from 'src/constants.js'
+import { ActionType, SpatializationMode } from 'src/constants.js'
 
 const initialState = {
   position: {
@@ -14,7 +7,7 @@ const initialState = {
     z: 0,
     rotZAxis: 0
   },
-  isPerformanceModeEnabled: false,
+  spatializationMode: SpatializationMode.HighQuality,
   headRadius: 0.0875,
   // isDirectionalityEnabled: true,
   // directionalityValue: 0,
@@ -30,8 +23,11 @@ export default function(state = initialState, { type, payload }) {
   if (type === ActionType.SET_HEAD_RADIUS) {
     return { ...state, headRadius: payload.radius }
   }
-  if (type === ActionType.SET_PERFORMANCE_MODE_ENABLED) {
-    return { ...state, isPerformanceModeEnabled: payload.isEnabled }
+  if (type === ActionType.SET_HIGH_PERFORMANCE_MODE) {
+    return { ...state, spatializationMode: SpatializationMode.HighPerformance }
+  }
+  if (type === ActionType.SET_HIGH_QUALITY_MODE) {
+    return { ...state, spatializationMode: SpatializationMode.HighQuality }
   }
 
   return state

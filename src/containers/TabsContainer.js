@@ -13,14 +13,14 @@ import Listener from "material-ui/svg-icons/av/hearing"
 import Soundscape from "material-ui/svg-icons/content/save"
 
 import RoomTab from 'src/containers/RoomTab'
-
+import ListenerTab from 'src/containers/ListenerTab'
 /* ========================================================================== */
 /* TABS */
 /* ========================================================================== */
 class TabsContainer extends Component {
 
   state = {
-    value: 'room',
+    value: 'listener',
   }
 
   handleChange = (value) => {
@@ -43,7 +43,7 @@ class TabsContainer extends Component {
           <RoomTab/>
         </Tab>
         <Tab icon={<Listener/>} value="listener">
-          <h2>Tab A</h2>
+          <ListenerTab/>
         </Tab>
         <Tab icon={<Soundscape/>} value="soundscape">
           <h2>Tab B</h2>

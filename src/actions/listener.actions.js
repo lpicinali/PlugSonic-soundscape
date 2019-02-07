@@ -16,9 +16,12 @@ export const setHeadRadius = radius => ({
   payload: { radius },
 })
 //
-export const setPerformanceMode = isEnabled => ({
-  type: ActionType.SET_PERFORMANCE_MODE_ENABLED,
-  payload: { isEnabled },
+export const setHighPerformanceMode = () => ({
+  type: ActionType.SET_HIGH_PERFORMANCE_MODE,
+})
+
+export const setHighQualityMode = () => ({
+  type: ActionType.SET_HIGH_QUALITY_MODE,
 })
 
 // export const setDirectionalityEnabled = isEnabled => ({

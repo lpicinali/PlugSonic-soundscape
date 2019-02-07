@@ -12,7 +12,7 @@ const muiTheme = getMuiTheme({
   palette: {
     primary1Color: colors.BLACK,
     accent1Color: colors.WHITE,
-    accent2Color: colors.TURQOISE,
+    accent2Color: colors.LIGHTGREY,
     textColor: colors.BLACK,
     alternateTextColor: colors.WHITE,
   },

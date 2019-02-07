@@ -17,7 +17,7 @@ const maxSize = 100
 /* ========================================================================== */
 export const style = {
   marginLeft: `20px`,
-  width: `248px`
+  width: `85%`
 }
 export const errorStyle = {
   textColor: `colors.BLACK`
