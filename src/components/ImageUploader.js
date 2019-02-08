@@ -1,8 +1,3 @@
-/* eslint react/prefer-stateless-function: 0 */
-/* eslint react/forbid-prop-types: 0 */
-/* eslint no-unused-vars: 0 */
-/* eslint react/no-unused-prop-types: 0 */
-/* eslint react/no-unused-state: 0 */
 import React, { Component } from 'react'
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
@@ -31,7 +26,7 @@ const Container = styled.div`
 /* ========================================================================== */
 class ImageUploader extends Component {
   state = {
-    name: '',
+    filename: '',
     size: '',
     type: '',
     preview: '',
@@ -51,12 +46,12 @@ class ImageUploader extends Component {
 
       reader.readAsDataURL(accepted[0])
 
-      reader.onabort = () => {this.setState({...this.state, name: '', size: '', error: 'File reading was aborted'})}
-      reader.onerror = () => {this.setState({...this.state, name: '', size: '', error: 'File reading has failed'})}
+      reader.onabort = () => {this.setState({...this.state, filename: '', size: '', error: 'File reading was aborted'})}
+      reader.onerror = () => {this.setState({...this.state, filename: '', size: '', error: 'File reading has failed'})}
       reader.onload = () => {
         this.setState({
           ...this.state,
-          name: accepted[0].name,
+          filename: accepted[0].name,
           size: accepted[0].size,
           type: accepted[0].type,
           preview: accepted[0].preview,
@@ -64,7 +59,7 @@ class ImageUploader extends Component {
           error: ''
         })
         this.props.onRoomImageChange({
-          name: this.state.name,
+          filename: this.state.name,
           size: this.state.size,
           type: this.state.type,
           preview: this.state.preview,
@@ -72,13 +67,13 @@ class ImageUploader extends Component {
         })
       }
     } else {
-      this.setState({...this.state, name: '', size: '', error: 'Please load only one file'})
+      this.setState({...this.state, filename: '', size: '', error: 'Please load only one file'})
     }
   }
 
   resetImage = () => {
-    this.setState({...this.state, name: '', size: '', type: '', preview: '', raw: '', error: ''})
-    this.props.onRoomImageChange({name: '', size: '', type: '', preview: '', raw: '', error: ''})
+    this.setState({...this.state, filename: '', size: '', type: '', preview: '', raw: '', error: ''})
+    this.props.onRoomImageChange({filename: '', size: '', type: '', preview: '', raw: '', error: ''})
   }
 
   render() {
@@ -91,10 +86,10 @@ class ImageUploader extends Component {
         >
           <ActionIcon/>
           <div>
-            {this.state.name === '' ? (
+            {this.state.filename === '' ? (
                 'Drop an image file here (or click) to load it.'
             ) : (
-                `${this.state.name} - ${this.state.size} bytes`
+                `${this.state.filename} - ${this.state.size} bytes`
             )
             }
           </div>

@@ -7,7 +7,7 @@ import { values, toNumber, isNaN } from 'lodash'
 
 import {H2} from 'src/styles/elements'
 
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui/TextField'
 
 import { setRoomSize } from 'src/actions/room.actions'
 import { RoomShape } from 'src/constants.js'

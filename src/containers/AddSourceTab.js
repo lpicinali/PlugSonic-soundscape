@@ -2,12 +2,11 @@ import React, { Component} from "react"
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { map } from 'lodash'
 import * as colors from 'src/styles/colors'
 
-import RoomShapeDropDownMenu from 'src/components/RoomShapeDropDownMenu'
-import RoomSizeTextFields from 'src/components/RoomSizeTextFields'
-import ImageUploader from 'src/components/ImageUploader'
-import ResetPositionButton from 'src/components/ResetPositionButton'
+import SourceUploader from 'src/components/SourceUploader'
+
 /* ========================================================================== */
 
 /* ========================================================================== */
@@ -17,12 +16,12 @@ class RoomTab extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
+
     return (
       <React.Fragment>
-        <RoomShapeDropDownMenu/>
-        <RoomSizeTextFields/>
-        <ImageUploader/>
-        <ResetPositionButton/>
+        <SourceUploader/>
+        {/* <SourceTextFields/> */}
+        {/* <AddSourceButton/> */}
       </React.Fragment>
 
     )

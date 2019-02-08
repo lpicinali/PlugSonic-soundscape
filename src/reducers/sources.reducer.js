@@ -4,33 +4,15 @@
 
 *//* ---------------------------------------------- */
 import { set } from 'lodash/fp'
-
-import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
+import { ADEtoXYZ } from 'src/utils'
+// import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
 const initialState = {
-  targets: audioFiles.reduce(
-    (aggr, file, index) => ({
-      ...aggr,
-      [file.filename]: {
-        title: file.title,
-        filename: file.filename,
-        url: file.url,
-        position: { azimuth: index * Math.PI / 6, distance: 3 },
-        volume: 0.5,
-        reach: {
-          radius: 3,
-          fadeDuration: 1000,
-        },
-        raw: [],
-      },
-    }),
-    {}
-  ),
-  selected: [],
+  sources: [],
   editing: null,
 }
 
-let azimuthIndex = Object.keys(initialState.targets).length
+let azimuthIndex = Object.keys(initialState.sources).length
 
 
 export default function(state = initialState, { type, payload }) {
@@ -74,35 +56,24 @@ export default function(state = initialState, { type, payload }) {
     }
 
 
-    case 'ADD_TARGET': {
-      const newTargets = Object.assign({}, state.targets)
-      if ( payload.filename in newTargets) {
-        if ( payload.url !== '' ) {
-          console.log('load URL')
-          newTargets[payload.filename].url = payload.url
-        } else {
-          console.log('load RAW')
-          console.log(payload.url)
-          newTargets[payload.filename].raw = payload.raw
-        }
-      } else {
-        console.log('load OBJECT')
-        const newTarget = {
-          title: payload.title,
-          filename: payload.filename,
-          url: payload.url,
-          position: { azimuth: azimuthIndex * Math.PI / 6, distance: 3 },
-          volume: 0.5,
-          reach: {
-            radius: 3,
-            fadeDuration: 1000,
-          },
-          raw: payload.raw,
-        }
-        azimuthIndex += 1
-        newTargets[payload.filename] = newTarget
+    case 'ADD_SOURCE': {
+      const newSource = {
+        filename: payload.filename,
+        hidden: false,
+        name: payload.name,
+        platform_id: null,
+        position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
+        raw: payload.raw,
+        reach: { radius: 3, fadeDuration: 1000 },
+        selected: true,
+        spatialised: true,
+        url: null,
+        volume: 0.5,
       }
-      return { ...state, targets: newTargets }
+      const newSources = state.sources.slice(0,-1)
+      newSources.push(newSource)
+      azimuthIndex += 1
+      return { ...state, sources: newSources }
     }
 
     case 'DELETE_TARGETS': {

@@ -22,7 +22,7 @@ const Container = styled.div`
 /* ========================================================================== */
 /* RESET POSITION */
 /* ========================================================================== */
-class ResetPosition extends Component {
+class ResetPositionButton extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
@@ -37,7 +37,7 @@ class ResetPosition extends Component {
   }
 }
 
-ResetPosition.propTypes = {
+ResetPositionButton.propTypes = {
   onListenerMove: PropTypes.func.isRequired,
 }
 
@@ -45,4 +45,4 @@ const mapDispatchToProps = dispatch => ({
   onListenerMove: position => dispatch(setListenerPosition(position)),
 })
 
-export default connect(null,mapDispatchToProps)(ResetPosition)
+export default connect(null,mapDispatchToProps)(ResetPositionButton)

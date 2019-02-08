@@ -8,7 +8,7 @@ const initialState = {
   shape: RoomShape.RECTANGULAR,
   size: { width: 30, depth: 20, height: 4  },
   image: {
-    name: '',
+    filename: '',
     size: '',
     type: '',
     preview: '',
