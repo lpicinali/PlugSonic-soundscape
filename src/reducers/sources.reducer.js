@@ -19,7 +19,7 @@ export default function(state = initialState, { type, payload }) {
 
   switch (type) {
 
-    case 'SET_TARGET': {
+    case 'SET_SOURCE': {
       const newSelected = state.selected.map(x => x)
       const index = newSelected.indexOf(payload.target)
       if (index >= 0) {
@@ -30,17 +30,17 @@ export default function(state = initialState, { type, payload }) {
       return { ...state, selected: newSelected }
     }
 
-    case 'SET_EDITING_TARGET': {
+    case 'SET_EDITING_SOURCE': {
       return set('editing', payload.target, state)
     }
 
-    case 'SET_TARGET_POSITION': {
+    case 'SET_SOURCE_POSITION': {
       const newTargets = Object.assign({}, state.targets)
       Object.assign(newTargets[payload.target].position, payload.position)
       return { ...state, targets: newTargets }
     }
 
-    case 'SET_TARGET_REACH': {
+    case 'SET_SOURCE_REACH': {
       const { radius, fadeDuration } = payload
       return set(
         ['targets', payload.target, 'reach'],
@@ -49,7 +49,7 @@ export default function(state = initialState, { type, payload }) {
       )
     }
 
-    case 'SET_TARGET_VOLUME': {
+    case 'SET_SOURCE_VOLUME': {
       const newTargets = Object.assign({}, state.targets)
       newTargets[payload.target].volume = payload.volume
       return { ...state, targets: newTargets }
@@ -68,7 +68,7 @@ export default function(state = initialState, { type, payload }) {
         selected: true,
         spatialised: true,
         url: null,
-        volume: 0.5,
+        volume: 1.0,
       }
       const newSources = state.sources.slice(0,-1)
       newSources.push(newSource)

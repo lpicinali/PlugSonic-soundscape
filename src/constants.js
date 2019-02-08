@@ -46,8 +46,9 @@ export const Ear = {
 }
 
 export const PlaybackState = {
-  PAUSED: 'PAUSED',
-  PLAYING: 'PLAYING',
+  PAUSE: 'PAUSE',
+  PLAY: 'PLAY',
+  STOP: 'STOP',
 }
 
 export const RoomShape = {
