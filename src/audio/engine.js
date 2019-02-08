@@ -108,15 +108,20 @@ export const setTargetVolume = (target, volume, fadeDuration) => {
 }
 
 export const setHeadRadius = radius => {
-
   getBinauralSpatializer().then(spatializer => {
     spatializer.setHeadRadius(radius)
   })
 }
 
-export const setPerformanceMode = isEnabled => {
+export const setPerformanceMode = () => {
   getBinauralSpatializer().then(spatializer => {
-    spatializer.setPerformanceMode(isEnabled)
+    spatializer.setPerformanceMode()
+  })
+}
+
+export const setQualityMode = () => {
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.setQualityMode()
   })
 }
 

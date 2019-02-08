@@ -14,6 +14,7 @@ import {
   setListenerPosition as engineSetListenerPosition,
   setHeadRadius as engineSetHeadRadius,
   setPerformanceMode as engineSetPerformanceMode,
+  setQualityMode as engineSetQualityMode,
   addSource as engineAddSource,
   deleteSources as engineDeleteSources,
   importSources as engineImportSources,
@@ -192,20 +193,27 @@ function* applyAddSource() {
 //   }
 // }
 
-// function* applyHeadRadius() {
-//   while (true) {
-//     const { payload } = yield take(ActionType.SET_HEAD_RADIUS)
-//     engineSetHeadRadius(payload.radius)
-//   }
-// }
+function* applyHeadRadius() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_HEAD_RADIUS)
+    engineSetHeadRadius(payload.radius)
+  }
+}
 
-// function* applyPerformanceMode() {
-//   while (true) {
-//     const { payload } = yield take(ActionType.SET_PERFORMANCE_MODE_ENABLED)
-//     engineSetPerformanceMode(payload.isEnabled)
-//   }
-// }
-//
+function* applyPerformanceMode() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_HIGH_PERFORMANCE_MODE)
+    engineSetPerformanceMode()
+  }
+}
+
+function* applyQualityMode() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_HIGH_QUALITY_MODE)
+    engineSetQualityMode()
+  }
+}
+
 // function* applyDirectionalityEnabled() {
 //   while (true) {
 //     const { payload } = yield take(ActionType.SET_DIRECTIONALITY_ENABLED)
@@ -233,8 +241,9 @@ export default function* rootSaga() {
     // applyMasterVolume(),
     // applyTargetVolume(),
     // rampTargetVolumesByTheirReach(),
-    // applyPerformanceMode(),
-    // applyHeadRadius(),
+    applyPerformanceMode(),
+    applyQualityMode(),
+    applyHeadRadius(),
     // applyDirectionalityEnabled(),
     // applyDirectionalityAttenuation(),
     // applySourcePosition(),

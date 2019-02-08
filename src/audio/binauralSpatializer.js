@@ -57,34 +57,49 @@ function setLPosition(x, y, z, rotZAxis) {
 /* BINAURAL SPATIALIZER */
 /* ========================================================================== */
 function createInstance() {
+
+  /* ======================================================================== */
   // SET SOURCE POSITION
+  /* ======================================================================== */
   function setSourcePosition(source, x, y, z) {
     setSPosition(source, x, y, z)
   }
 
+  /* ======================================================================== */
   // SET LISTENER POSITION
+  /* ======================================================================== */
   function setListenerPosition(x, y, z, rotZAxis) {
     setLPosition(x, y, z, rotZAxis)
   }
 
+  /* ======================================================================== */
   // SET PERFORMANCE MODE
-  // function setPerformanceMode(isEnabled) {
-  //   map(sources, source => {
-  //     // console.log(target.source);
-  //     source.source.SetSpatializationMode(
-  //       isEnabled
-  //         ? TSpatializationMode.HighPerformance
-  //         : TSpatializationMode.HighQuality
-  //     )
-  //   })
-  // }
+  /* ======================================================================== */
+  function setPerformanceMode() {
+    map(sources, source => {
+      source.source.SetSpatializationMode(TSpatializationMode.HighPerformance)
+    })
+  }
 
+  /* ======================================================================== */
+  // SET QUALITY MODE
+  /* ======================================================================== */
+  function setQualityMode() {
+    map(sources, source => {
+      source.source.SetSpatializationMode(TSpatializationMode.HighQuality)
+    })
+  }
+
+  /* ======================================================================== */
   // SET HEAD RADIUS
-  // function setHeadRadius(radius) {
-  //   listener.SetHeadRadius(radius)
-  // }
+  /* ======================================================================== */
+  function setHeadRadius(radius) {
+    listener.SetHeadRadius(radius)
+  }
 
+  /* ======================================================================== */
   // ADD SOURCE
+  /* ======================================================================== */
   function addSource(sourceObject) {
     const source = binauralApi.CreateSource()
     setSourcePosition(
@@ -257,8 +272,9 @@ function createInstance() {
       sources,
       setSourcePosition,
       setListenerPosition,
-      // setPerformanceMode,
-      // setHeadRadius,
+      setPerformanceMode,
+      setQualityMode,
+      setHeadRadius,
       addSource,
       deleteSources,
       deleteAllSources,

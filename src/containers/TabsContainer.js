@@ -21,7 +21,7 @@ import ListenerTab from 'src/containers/ListenerTab'
 class TabsContainer extends Component {
 
   state = {
-    value: 'add',
+    value: 'listener',
   }
 
   handleChange = (value) => {
