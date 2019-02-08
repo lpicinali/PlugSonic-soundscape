@@ -166,7 +166,7 @@ class SourceUploader extends Component {
         />
 
         <FlatButton
-          // disabled={this.state.filename === '' || this.state.errorFile !== ''}
+          disabled={this.state.name === '' || this.state.errorTextField !== ''}
           style={FlatButtonStyle}
           backgroundColor={`${colors.BLACK}`}
           onClick={this.handleAddSource}
