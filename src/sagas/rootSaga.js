@@ -33,32 +33,31 @@ function* applyPlayStop() {
   }
 }
 
-// function* manageSetSource(filename, url) {
-//   const selected = yield select(state => state.target.selected)
-//   const index = selected.indexOf(filename)
-//   if (index >= 0) {
-//     const sourceObject = yield select(state => state.target.targets[filename])
-//     yield call(engineSetSource, sourceObject)
-//   } else {
-//     yield call(engineUnsetSource, filename)
-//   }
-//   const playbackState = yield select(state => state.controls.playbackState)
-//
-//   if (playbackState === PlaybackState.PLAYING) {
-//     yield call(enginePlay)
-//   }
-// }
+function* manageSourceOnOff(name) {
+  const sources = yield select(state => state.sources.sources)
+  const sourceObject = sources[name]
+  if (sourceObject.selected === true) {
+    yield call(engineSetSource, sourceObject)
+  } else {
+    yield call(engineUnsetSource, sourceObject)
+  }
+  const playbackState = yield select(state => state.controls.playbackState)
 
-// function* applySetSource() {
-//   while (true) {
-//     const { type, payload } = yield take(ActionType.SET_SOURCE)
-//     yield spawn(manageSetSource, payload.source, payload.url)
-//   }
-// }
+  if (playbackState === PlaybackState.PLAY) {
+    yield call(enginePlay)
+  }
+}
+
+function* applySourceOnOff() {
+  while (true) {
+    const { type, payload } = yield take(ActionType.SOURCE_ONOFF)
+    yield spawn(manageSourceOnOff, payload.name)
+  }
+}
 
 function* manageAddSource(name) {
   const sources = yield select(state => state.sources.sources)
-  const sourceObject = sources.find(source => source.name === name)
+  const sourceObject = sources[name]
   console.log(`Saga -> Source Object`)
   console.log(sourceObject)
   yield call(engineAddSource, sourceObject)
@@ -233,7 +232,7 @@ function* applyQualityMode() {
 export default function* rootSaga() {
   yield [
     applyPlayStop(),
-    // applySetSource(),
+    applySourceOnOff(),
     applyAddSource(),
     // applyDeleteSources(),
     // applyImportSources(),

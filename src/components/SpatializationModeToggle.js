@@ -40,6 +40,7 @@ class SpatializationModeToggle extends PureComponent {
         style={toggleStyle}
         labelStyle={toggleLabelStyle}
         onToggle={this.toggleSpatializationMode}
+        toggled={this.props.spatializationMode === SpatializationMode.HighPerformance}
       />
     )
   }

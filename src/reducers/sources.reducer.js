@@ -8,7 +8,47 @@ import { ADEtoXYZ } from 'src/utils'
 // import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
 const initialState = {
-  sources: [],
+  sources: {
+    // "Source_1": {
+    //   filename: "river_gentle_flow_16bit.wav",
+    //   hidden: false,
+    //   name: "Source_1",
+    //   platform_id: null,
+    //   position: {x: 3, y: 0, z: 0},
+    //   raw: null,
+    //   reach: {radius: 3, fadeDuration: 1000},
+    //   selected: true,
+    //   spatialised: true,
+    //   url: null,
+    //   volume: 1,
+    // },
+    // "Source_2": {
+    //   filename: "river_gentle_flow_16bit.wav",
+    //   hidden: false,
+    //   name: "Source_2",
+    //   platform_id: null,
+    //   position: {x: 3, y: 0, z: 0},
+    //   raw: null,
+    //   reach: {radius: 3, fadeDuration: 1000},
+    //   selected: true,
+    //   spatialised: true,
+    //   url: null,
+    //   volume: 1,
+    // },
+    // "Source_3": {
+    //   filename: "river_gentle_flow_16bit.wav",
+    //   hidden: false,
+    //   name: "Source_3",
+    //   platform_id: null,
+    //   position: {x: 3, y: 0, z: 0},
+    //   raw: null,
+    //   reach: {radius: 3, fadeDuration: 1000},
+    //   selected: true,
+    //   spatialised: true,
+    //   url: null,
+    //   volume: 1,
+    // },
+  },
   editing: null,
 }
 
@@ -19,15 +59,10 @@ export default function(state = initialState, { type, payload }) {
 
   switch (type) {
 
-    case 'SET_SOURCE': {
-      const newSelected = state.selected.map(x => x)
-      const index = newSelected.indexOf(payload.target)
-      if (index >= 0) {
-        newSelected.splice(index, 1)
-      } else {
-        newSelected.push(payload.target)
-      }
-      return { ...state, selected: newSelected }
+    case 'SOURCE_ONOFF': {
+      const newSources = Object.assign({}, state.sources)
+      newSources[payload.name].selected = !(newSources[payload.name].selected)
+      return { ...state, sources: newSources }
     }
 
     case 'SET_EDITING_SOURCE': {
@@ -57,6 +92,7 @@ export default function(state = initialState, { type, payload }) {
 
 
     case 'ADD_SOURCE': {
+      const newSources = Object.assign({}, state.sources)
       const newSource = {
         filename: payload.filename,
         hidden: false,
@@ -70,9 +106,8 @@ export default function(state = initialState, { type, payload }) {
         url: null,
         volume: 1.0,
       }
-      const newSources = state.sources.slice(0,-1)
-      newSources.push(newSource)
       azimuthIndex += 1
+      newSources[payload.name] = newSource
       return { ...state, sources: newSources }
     }
 

@@ -57,9 +57,9 @@ export const setSource = sourceObject => {
   return null
 }
 
-export const unsetSource = filename => {
+export const unsetSource = sourceObject => {
   stop()
-  chainUnsetSourceNode(filename)
+  chainUnsetSourceNode(sourceObject.name)
 }
 
 export const addSource = sourceObject => {

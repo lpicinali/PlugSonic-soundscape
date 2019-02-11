@@ -6,9 +6,9 @@
 
 import { ActionType } from 'src/constants.js'
 
-export const setSource = (source, url) => ({
-  type: ActionType.SET_SOURCE,
-  payload: { source, url },
+export const sourceOnOff = (name) => ({
+  type: ActionType.SOURCE_ONOFF,
+  payload: { name },
 })
 
 export const setEditingSource = (source) => ({
