@@ -9,39 +9,24 @@ import Draggable from 'react-draggable'
 import styled from 'styled-components'
 import { clamp, pick } from 'lodash'
 
-import TabsContainer from 'src/containers/TabsContainer'
 import * as colors from 'src/styles/colors'
-
-// ===================================================================== //
-const drawerWidth = 288
-const navHeight = 48
 
 const PIXELS_PER_METER = 10
 const SOURCE_SIZE_METERS = 1
-
-const SOUNDSCAPE_CONTAINER_PADDING = 80
-// ===================================================================== //
-
-const Container = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-`
 
 const SoundscapeContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-grow: 1;
   height: 100%;
-  margin-left: auto;
-  margin-right: auto;
   background: ${colors.WHITE};
 `
 
 const SoundscapeRoom = styled.div`
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
   background-image: linear-gradient(
     to bottom right,
     ${colors.LIGHTBLUE},
@@ -58,139 +43,63 @@ const Source = styled.div`
   background: black;
 `
 
-const Drawer = styled.div`
-  background: ${colors.GREEN};
-  overflow-x: hidden;
-  overflow-y: scroll;
-  transition: width 0.5s;
-  width: ${drawerWidth}px;
-`
-
 /* ========================================================================== */
 /* SOUNDSCAPE */
 /* ========================================================================== */
 class Soundscape extends Component {
-  state = {
-    containerBounds: {
-      width: 0,
-      height: 0,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      x: 0,
-      y: 0,
-    },
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
-  }
-
-  $container = null
-
-  handleResize = () => {
-    if (this.$container !== null) {
-      this.storeContainerRef(this.$container)
-    }
-  }
-
-  storeContainerRef = $container => {
-    this.$container = $container
-
-    const bounds = $container.getBoundingClientRect()
-    this.setState({
-      containerBounds: {
-        width: bounds.width,
-        height: bounds.height,
-        top: bounds.top,
-        right: bounds.right,
-        bottom: bounds.bottom,
-        left: bounds.left,
-        x: bounds.x,
-        y: bounds.y,
-      },
-    })
+  static propTypes = {
+    size: PropTypes.shape({
+      width: PropTypes.number.isRequired,
+      height: PropTypes.number.isRequired,
+    }).isRequired,
+    showSettingsDrawer: PropTypes.bool.isRequired,
+    roomWidth: PropTypes.number.isRequired,
+    roomDepth: PropTypes.number.isRequired,
   }
 
   render() {
-    const {
-      width,
-      height,
-      showSettingsDrawer,
-      roomWidth,
-      roomDepth,
-    } = this.props
-    const { containerBounds } = this.state
+    const { size, showSettingsDrawer, roomWidth, roomDepth } = this.props
 
     const roomRatio = roomWidth / roomDepth
+    const containerRatio = size.width / size.height
 
     const viewportWidth =
-      roomRatio >= 1 ? containerBounds.width : containerBounds.width * roomRatio
-    const viewportHeight =
-      roomRatio >= 1
-        ? containerBounds.height / roomRatio
-        : containerBounds.height
+      roomRatio >= containerRatio ? size.width : roomRatio * size.height
+    const viewportHeight = viewportWidth / roomRatio
 
-    const viewportScale = viewportWidth / roomWidth
-    const relativeScale = viewportScale / PIXELS_PER_METER
+    const viewportResolution = viewportWidth / roomWidth
+    const relativeScale = viewportResolution / PIXELS_PER_METER
 
     const sourceSize = relativeScale * SOURCE_SIZE_METERS * PIXELS_PER_METER
 
     return (
-      <Container>
-        <SoundscapeContainer ref={this.storeContainerRef}>
-          <SoundscapeRoom
+      <SoundscapeContainer>
+        <SoundscapeRoom
+          style={{
+            width: viewportWidth,
+            height: viewportHeight,
+          }}
+        >
+          <div>
+            Soundscape
+            <br />
+            Normal resolution: {PIXELS_PER_METER} px/m
+            <br />
+            Rendered resolution: {viewportResolution} px/m
+            <br />
+            Relative scale: {relativeScale}
+          </div>
+
+          <Source
             style={{
-              width: viewportWidth,
-              height: viewportHeight,
+              width: sourceSize,
+              height: sourceSize,
             }}
-          >
-            <div>
-              Soundscape
-              <br />
-              Pixels per meter: {PIXELS_PER_METER}
-              <br />
-              Relative scale: {relativeScale}
-              <br />
-              Actual pixels per meter: {relativeScale * PIXELS_PER_METER}
-            </div>
-
-            <Source
-              style={{
-                width: sourceSize,
-                height: sourceSize,
-              }}
-            />
-          </SoundscapeRoom>
-        </SoundscapeContainer>
-
-        <Drawer>
-          <TabsContainer />
-        </Drawer>
-      </Container>
+          />
+        </SoundscapeRoom>
+      </SoundscapeContainer>
     )
   }
-}
-
-Soundscape.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  showSettingsDrawer: PropTypes.bool.isRequired,
-  roomWidth: PropTypes.number.isRequired,
-  roomDepth: PropTypes.number.isRequired,
-}
-
-Soundscape.defaultProps = {
-  width: 0,
-  height: 0,
-  showSettingsDrawer: false,
-  roomWidth: 0,
-  roomDepth: 0,
 }
 
 const mapStateToProps = state => ({

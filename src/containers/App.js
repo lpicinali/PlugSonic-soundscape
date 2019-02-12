@@ -1,11 +1,10 @@
 import React, { PureComponent, Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import ContainerDimensions from 'react-container-dimensions'
 
 import { AppContainer, Nav } from 'src/containers/App.style'
 import NavControls from 'src/containers/NavControls'
-import ScaledSoundscape from 'src/containers/ScaledSoundscape'
+import SoundscapeInterface from 'src/containers/SoundscapeInterface'
 
 class App extends Component {
   render() {
@@ -14,9 +13,8 @@ class App extends Component {
         <Nav>
           <NavControls />
         </Nav>
-        <ContainerDimensions>
-          <ScaledSoundscape />
-        </ContainerDimensions>
+
+        <SoundscapeInterface />
       </AppContainer>
     )
   }
