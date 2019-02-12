@@ -5,20 +5,19 @@ import ContainerDimensions from 'react-container-dimensions'
 
 import { AppContainer, Nav } from 'src/containers/App.style'
 import NavControls from 'src/containers/NavControls'
-import Soundscape from 'src/containers/Soundscape'
-
+import ScaledSoundscape from 'src/containers/ScaledSoundscape'
 
 class App extends Component {
   render() {
     return (
-          <AppContainer>
-            <Nav>
-              <NavControls/>
-            </Nav>
-            <ContainerDimensions>
-              <Soundscape/>
-            </ContainerDimensions>
-          </AppContainer>
+      <AppContainer>
+        <Nav>
+          <NavControls />
+        </Nav>
+        <ContainerDimensions>
+          <ScaledSoundscape />
+        </ContainerDimensions>
+      </AppContainer>
     )
   }
 }
