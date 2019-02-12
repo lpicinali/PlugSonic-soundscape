@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import ContainerDimensions from 'react-container-dimensions'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 
 import TabsContainer from 'src/containers/TabsContainer.js'
 import ScaledSoundscape from 'src/containers/ScaledSoundscape.js'
@@ -32,7 +33,13 @@ const Drawer = styled.div`
  * Soundscape Interface
  */
 class SoundscapeInterface extends PureComponent {
+  static propTypes = {
+    showSettingsDrawer: PropTypes.bool.isRequired,
+  }
+
   render() {
+    const { showSettingsDrawer } = this.props
+
     return (
       <SoundscapeInterfaceContainer>
         <SoundscapeArea>
@@ -43,12 +50,16 @@ class SoundscapeInterface extends PureComponent {
           </ContainerDimensions>
         </SoundscapeArea>
 
-        <Drawer>
-          <TabsContainer />
-        </Drawer>
+        {showSettingsDrawer === true && (
+          <Drawer>
+            <TabsContainer />
+          </Drawer>
+        )}
       </SoundscapeInterfaceContainer>
     )
   }
 }
 
-export default SoundscapeInterface
+export default connect(state => ({
+  showSettingsDrawer: state.controls.showSettingsDrawer,
+}))(SoundscapeInterface)

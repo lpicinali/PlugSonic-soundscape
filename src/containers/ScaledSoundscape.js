@@ -52,13 +52,12 @@ class Soundscape extends Component {
       width: PropTypes.number.isRequired,
       height: PropTypes.number.isRequired,
     }).isRequired,
-    showSettingsDrawer: PropTypes.bool.isRequired,
     roomWidth: PropTypes.number.isRequired,
     roomDepth: PropTypes.number.isRequired,
   }
 
   render() {
-    const { size, showSettingsDrawer, roomWidth, roomDepth } = this.props
+    const { size, roomWidth, roomDepth } = this.props
 
     const roomRatio = roomWidth / roomDepth
     const containerRatio = size.width / size.height
@@ -103,7 +102,6 @@ class Soundscape extends Component {
 }
 
 const mapStateToProps = state => ({
-  showSettingsDrawer: state.controls.showSettingsDrawer,
   roomWidth: state.room.size.width,
   roomDepth: state.room.size.depth,
 })
