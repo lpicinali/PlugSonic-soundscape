@@ -24,7 +24,7 @@ import { getDistanceBetweenSphericalPoints } from 'src/utils.js'
 function* applyPlayStop() {
   while (true) {
     const { payload: { state } } = yield take(ActionType.SET_PLAYBACK_STATE)
-    console.log('Saga -> Apply Play Stop')
+    // console.log('Saga -> Apply Play Stop')
     if (state === PlaybackState.PLAY) {
       enginePlay()
     } else if (state === PlaybackState.STOP) {
@@ -58,8 +58,8 @@ function* applySourceOnOff() {
 function* manageAddSource(name) {
   const sources = yield select(state => state.sources.sources)
   const sourceObject = sources[name]
-  console.log(`Saga -> Source Object`)
-  console.log(sourceObject)
+  // console.log(`Saga -> Source Object`)
+  // console.log(sourceObject)
   yield call(engineAddSource, sourceObject)
 
   if (sourceObject.selected === true){
@@ -75,7 +75,7 @@ function* manageAddSource(name) {
 function* applyAddSource() {
   while (true) {
     const { type, payload } = yield take(ActionType.ADD_SOURCE)
-    console.log('Saga -> applyAddSource')
+    // console.log('Saga -> applyAddSource')
     yield spawn(manageAddSource, payload.name)
   }
 }
