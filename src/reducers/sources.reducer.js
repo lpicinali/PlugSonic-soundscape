@@ -49,7 +49,7 @@ const initialState = {
     //   volume: 1,
     // },
   },
-  editing: null,
+  // editing: null,
 }
 
 let azimuthIndex = Object.keys(initialState.sources).length

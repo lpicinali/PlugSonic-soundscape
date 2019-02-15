@@ -9,7 +9,7 @@ import roomReducer from 'src/reducers/room.reducer'
 export default combineReducers({
   // alerts: alertsReducer,
   controls: controlsReducer,
-  sources: sourcesReducer,
   listener: listenerReducer,
   room: roomReducer,
+  sources: sourcesReducer,
 })

@@ -17,9 +17,12 @@
   "rules": {
     "import/extensions": 0,
     "import/prefer-default-export": 0,
+    "no-alert": 0,
     "no-console": 0,
     "no-lonely-if": 0,
+    "no-param-reassign": 0,
     "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
+    "no-restricted-globals": 0,
     "no-unused-expressions": 0,
     "no-unused-vars": 0,
     "object-shorthand": 0,
