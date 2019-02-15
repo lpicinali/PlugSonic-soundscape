@@ -18,6 +18,9 @@ import {
 
 import { isEmpty } from 'lodash'
 
+/* ======================================================================== */
+// PLAY
+/* ======================================================================== */
 export const play = () => {
   try {
     chainStartNodes()
@@ -27,6 +30,9 @@ export const play = () => {
   }
 }
 
+/* ======================================================================== */
+// STOP
+/* ======================================================================== */
 export const stop = () => {
   try {
     chainStopNodes()
@@ -36,6 +42,9 @@ export const stop = () => {
   }
 }
 
+/* ======================================================================== */
+// SET SOURCE
+/* ======================================================================== */
 export const setSource = sourceObject => {
   // console.log('Engine -> setSource')
   stop()
@@ -57,6 +66,9 @@ export const setSource = sourceObject => {
   return null
 }
 
+/* ======================================================================== */
+// UNSET SOURCE
+/* ======================================================================== */
 export const unsetSource = sourceObject => {
   stop()
   chainUnsetSourceNode(sourceObject.name)
@@ -64,61 +76,70 @@ export const unsetSource = sourceObject => {
 
 export const addSource = sourceObject => {
   stop()
-  // console.log('Engine -> Add Source')
-  // console.log(sourceObject)
+  console.log('Engine -> Add Source')
+  console.log(sourceObject)
   chainAddSource(sourceObject)
 }
 
-export const deleteSources = sourcesFilenames => {
-  chainDeleteSources(sourcesFilenames)
-}
 
-export const importSources = sourcesObject => {
+// export const deleteSources = sourcesFilenames => {
+//   chainDeleteSources(sourcesFilenames)
+// }
+
+/* ======================================================================== */
+// DELETE ALL SOURCE
+/* ======================================================================== */
+export const deleteAllSources = () => {
+  console.log('ENGINE -> Delete All Sources')
+  stop()
   chainDeleteAllSources()
-
-  for (const filename in sourcesObject) {
-    if (Object.prototype.hasOwnProperty.call(sourcesObject, filename)) {
-      chainAddSource(sourcesObject[filename])
-    }
-  }
 }
 
-export const setSourcePosition = (filename, { azimuth, distance }) => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.setSourcePosition(
-      spatializer.targets[filename].source,
-      azimuth,
-      distance
-    )
-  })
-}
+// export const setSourcePosition = (filename, { azimuth, distance }) => {
+//   getBinauralSpatializer().then(spatializer => {
+//     spatializer.setSourcePosition(
+//       spatializer.targets[filename].source,
+//       azimuth,
+//       distance
+//     )
+//   })
+// }
 
-export const setListenerPosition = ({ azimuth, distance, rotZAxis }) => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.setListenerPosition(azimuth, distance, rotZAxis)
-  })
-}
+// export const setListenerPosition = ({ azimuth, distance, rotZAxis }) => {
+//   getBinauralSpatializer().then(spatializer => {
+//     spatializer.setListenerPosition(azimuth, distance, rotZAxis)
+//   })
+// }
 
-export const setMasterVolume = volume => {
-  chainSetMasterVolume(volume)
-}
+// export const setMasterVolume = volume => {
+//   chainSetMasterVolume(volume)
+// }
 
-export const setTargetVolume = (target, volume, fadeDuration) => {
-    chainSetSourceVolume(target, volume, fadeDuration)
-}
+// export const setTargetVolume = (target, volume, fadeDuration) => {
+//     chainSetSourceVolume(target, volume, fadeDuration)
+// }
 
+/* ======================================================================== */
+// HEAD RADIUS
+/* ======================================================================== */
 export const setHeadRadius = radius => {
   getBinauralSpatializer().then(spatializer => {
     spatializer.setHeadRadius(radius)
   })
 }
 
+/* ======================================================================== */
+// PERFORMANCE MODE
+/* ======================================================================== */
 export const setPerformanceMode = () => {
   getBinauralSpatializer().then(spatializer => {
     spatializer.setPerformanceMode()
   })
 }
 
+/* ======================================================================== */
+// QUALITY MODE
+/* ======================================================================== */
 export const setQualityMode = () => {
   getBinauralSpatializer().then(spatializer => {
     spatializer.setQualityMode()

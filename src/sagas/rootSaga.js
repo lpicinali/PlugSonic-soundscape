@@ -17,10 +17,14 @@ import {
   setQualityMode as engineSetQualityMode,
   addSource as engineAddSource,
   deleteSources as engineDeleteSources,
+  deleteAllSources as engineDeleteAllSources,
   importSources as engineImportSources,
 } from 'src/audio/engine.js'
 import { getDistanceBetweenSphericalPoints } from 'src/utils.js'
 
+/* ======================================================================== */
+// PLAY/STOP
+/* ======================================================================== */
 function* applyPlayStop() {
   while (true) {
     const { payload: { state } } = yield take(ActionType.SET_PLAYBACK_STATE)
@@ -33,6 +37,9 @@ function* applyPlayStop() {
   }
 }
 
+/* ======================================================================== */
+// SOURCE ON/OFF
+/* ======================================================================== */
 function* manageSourceOnOff(name) {
   const sources = yield select(state => state.sources.sources)
   const sourceObject = sources[name]
@@ -55,11 +62,14 @@ function* applySourceOnOff() {
   }
 }
 
+/* ======================================================================== */
+// ADD SOURCE
+/* ======================================================================== */
 function* manageAddSource(name) {
   const sources = yield select(state => state.sources.sources)
   const sourceObject = sources[name]
-  // console.log(`Saga -> Source Object`)
-  // console.log(sourceObject)
+  console.log(`Saga -> Manage Add Source`)
+  console.log(sourceObject)
   yield call(engineAddSource, sourceObject)
 
   if (sourceObject.selected === true){
@@ -80,6 +90,24 @@ function* applyAddSource() {
   }
 }
 
+/* ======================================================================== */
+// IMPORT SOURCES
+/* ======================================================================== */
+function* manageImportSources(sourcesArray) {
+  yield call(engineDeleteAllSources)
+  for(let i=0; i<sourcesArray.length;i++){
+    yield spawn(manageAddSource, sourcesArray[i].name)
+  }
+}
+
+function* applyImportSources() {
+  while (true) {
+    const { type, payload } = yield take(ActionType.IMPORT_SOURCES)
+    const sourcesArray = payload.sources
+    yield call(manageImportSources, sourcesArray)
+  }
+}
+
 // function* applyDeleteSources() {
 //   while (true) {
 //     const { type, payload } = yield take(ActionType.DELETE_TARGETS)
@@ -95,46 +123,6 @@ function* applyAddSource() {
 //   }
 // }
 
-// function* applyImportSources() {
-//   while (true) {
-//     const { type, payload } = yield take(ActionType.IMPORT_TARGETS)
-//     const sources = payload.targets
-//     engineImportSources(sources)
-//   }
-// }
-
-// function* applyImportSelected() {
-//   while (true) {
-//     yield take(ActionType.IMPORT_SELECTED)
-//
-//     const selected = yield select(state => state.target.selected.map(filename => state.target.targets[filename]))
-//
-//     let alertMessage = ''
-//     // eslint-disable-next-line
-//     for (const targetObject of selected) {
-//       const response = yield call(engineSetSource, targetObject)
-//       if ( response === null ) {
-//         if ( alertMessage === '' )
-//           alertMessage = targetObject.title
-//         else
-//           alertMessage = `${alertMessage}, ${targetObject.title}`
-//       }
-//     }
-//
-//     if ( alertMessage !== '' ) {
-//       // eslint-disable-next-line
-//       alert(`Please import the following source/s: ${alertMessage}.\nUse the same Title/s specified here and ignore\nthe warning "Already in use"`)
-//     } else {
-//       // eslint-disable-next-line
-//       alert(`Soundscape successfully imported`)
-//     }
-//
-//     const playbackState = yield select(state => state.controls.playbackState)
-//     if (playbackState === PlaybackState.PLAYING) {
-//       yield call(enginePlay)
-//     }
-//   }
-// }
 
 // function* applySourcePosition() {
 //   while (true) {
@@ -192,6 +180,9 @@ function* applyAddSource() {
 //   }
 // }
 
+/* ======================================================================== */
+// HEAD RADIUS
+/* ======================================================================== */
 function* applyHeadRadius() {
   while (true) {
     const { payload } = yield take(ActionType.SET_HEAD_RADIUS)
@@ -199,6 +190,9 @@ function* applyHeadRadius() {
   }
 }
 
+/* ======================================================================== */
+// PERFORMANCE MODE
+/* ======================================================================== */
 function* applyPerformanceMode() {
   while (true) {
     const { payload } = yield take(ActionType.SET_HIGH_PERFORMANCE_MODE)
@@ -206,6 +200,9 @@ function* applyPerformanceMode() {
   }
 }
 
+/* ======================================================================== */
+// QUALITY MODE
+/* ======================================================================== */
 function* applyQualityMode() {
   while (true) {
     const { payload } = yield take(ActionType.SET_HIGH_QUALITY_MODE)
@@ -235,8 +232,7 @@ export default function* rootSaga() {
     applySourceOnOff(),
     applyAddSource(),
     // applyDeleteSources(),
-    // applyImportSources(),
-    // applyImportSelected(),
+    applyImportSources(),
     // applyMasterVolume(),
     // applyTargetVolume(),
     // rampTargetVolumesByTheirReach(),

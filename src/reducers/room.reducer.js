@@ -31,8 +31,8 @@ export default function(state = initialState, { type, payload }) {
     return { ...state, image: newImage }
   }
   if (type === ActionType.IMPORT_ROOM) {
-    const newRoom = Object.assign({}, payload.room)
-    return { ...state, shape: newRoom.shape, size: newRoom.size }
+    // const newRoom = Object.assign({}, payload.room)
+    return { ...state, shape: payload.room.shape, size: payload.room.size }
   }
   return state
 }

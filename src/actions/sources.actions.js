@@ -45,8 +45,3 @@ export const importSources = sources => ({
   type: ActionType.IMPORT_SOURCES,
   payload: { sources },
 })
-
-export const importSelected = selected => ({
-  type: ActionType.IMPORT_SELECTED,
-  payload: { selected },
-})

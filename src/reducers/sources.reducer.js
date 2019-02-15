@@ -120,14 +120,12 @@ export default function(state = initialState, { type, payload }) {
       return { ...state, targets: newTargets, selected: newSelected }
     }
 
-    case 'IMPORT_TARGETS': {
-      const newTargets = Object.assign({}, payload.targets)
-      return { ...state, targets: newTargets }
-    }
-
-    case 'IMPORT_SELECTED': {
-      const newSelected = payload.selected
-      return { ...state, selected: newSelected }
+    case 'IMPORT_SOURCES': {
+      const newSources = {}
+      payload.sources.forEach(source => {
+        newSources[source.name] = source
+      })
+      return { ...state, sources: newSources }
     }
 
     default:

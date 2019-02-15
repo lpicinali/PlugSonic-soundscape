@@ -21,7 +21,7 @@ const Container = styled.div`
   justify-content: center;
 `
 /* ========================================================================== */
-/* RESET POSITION */
+/* EXPORT META BUTTON */
 /* ========================================================================== */
 class ExportMetaButton extends Component {
 
@@ -46,7 +46,7 @@ class ExportMetaButton extends Component {
         source.raw = null
         return source
       })
-      
+
       const json = JSON.stringify(clone, null, 2)
       const blob = new File([json], { type: 'application/json' })
       alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)

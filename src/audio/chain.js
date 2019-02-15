@@ -50,16 +50,9 @@ getBinauralSpatializer().then(spatializer => {
   volume.connect(context.destination)
 })
 
-export const deleteAllSources = () => {
-  sourcesNodes = {}
-  sourcesInputs = {}
-  sourcesVolumes = {}
-
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.deleteAllSources()
-  })
-}
-
+/* ======================================================================== */
+// CREATE NODE
+/* ======================================================================== */
 export const createNode = audioBuffer => {
   const node = context.createBufferSource()
   node.buffer = audioBuffer
@@ -67,6 +60,21 @@ export const createNode = audioBuffer => {
   return node
 }
 
+/* ======================================================================== */
+// DELETE ALL SOURCE
+/* ======================================================================== */
+export const deleteAllSources = () => {
+  sourcesNodes = {}
+  sourcesInputs = {}
+  sourcesVolumes = {}
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.deleteAllSources()
+  })
+}
+
+/* ======================================================================== */
+// SET SOURCE NODE
+/* ======================================================================== */
 export const setSourceNode = (node, channel) => {
   if (sourcesNodes[channel]) {
     sourcesNodes[channel].disconnect()
@@ -98,6 +106,9 @@ export const setSourceNode = (node, channel) => {
   }
 }
 
+/* ======================================================================== */
+// UNSET SOURCE NODE
+/* ======================================================================== */
 export const unsetSourceNode = channel => {
   if (sourcesNodes[channel]) {
     sourcesNodes[channel].disconnect()
@@ -105,10 +116,16 @@ export const unsetSourceNode = channel => {
   }
 }
 
-export const setMasterVolume = newVolume => {
-  volume.gain.value = newVolume
-}
+/* ======================================================================== */
+// MASTER VOLUME
+/* ======================================================================== */
+// export const setMasterVolume = newVolume => {
+//   volume.gain.value = newVolume
+// }
 
+/* ======================================================================== */
+// SOURCE VOLUME
+/* ======================================================================== */
 export const setSourceVolume = (filename, newVolume, fadeDuration = 0) => {
   if (newVolume !== sourcesVolumeValues[filename]) {
     sourcesVolumeValues[filename] = newVolume
@@ -130,8 +147,12 @@ export const setSourceVolume = (filename, newVolume, fadeDuration = 0) => {
   }
 }
 
+/* ======================================================================== */
+// ADD SOURCE
+/* ======================================================================== */
 export const addSource = sourceObject => {
-  // console.log('Chain -> Add Source')
+  console.log('Chain -> Add Source')
+  console.log(sourceObject)
   sourcesNodes[sourceObject.name] = null
   sourcesInputs[sourceObject.name] = context.createGain()
   sourcesVolumes[sourceObject.name] = context.createGain()
@@ -150,17 +171,20 @@ export const addSource = sourceObject => {
   })
 }
 
-export const deleteSources = sourcesFilenames => {
-  sourcesFilenames.forEach(source => {
-    delete sourcesNodes[source]
-    delete sourcesInputs[source]
-    delete sourcesVolumes[source]
-  })
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.deleteSources(sourcesFilenames)
-  })
-}
+// export const deleteSources = sourcesFilenames => {
+//   sourcesFilenames.forEach(source => {
+//     delete sourcesNodes[source]
+//     delete sourcesInputs[source]
+//     delete sourcesVolumes[source]
+//   })
+//   getBinauralSpatializer().then(spatializer => {
+//     spatializer.deleteSources(sourcesFilenames)
+//   })
+// }
 
+/* ======================================================================== */
+// START NODES
+/* ======================================================================== */
 export const startNodes = () => {
   if (context.state !== 'running') {
     context.resume();
@@ -175,6 +199,9 @@ export const startNodes = () => {
   }
 }
 
+/* ======================================================================== */
+// STOP NODES
+/* ======================================================================== */
 export const stopNodes = () => {
   for (const filename in sourcesNodes) {
     if (Object.prototype.hasOwnProperty.call(sourcesNodes, filename)) {

@@ -24,6 +24,11 @@ export const setHighQualityMode = () => ({
   type: ActionType.SET_HIGH_QUALITY_MODE,
 })
 
+export const importListener = listener => ({
+  type: ActionType.IMPORT_LISTENER,
+  payload: { listener },
+})
+
 // export const setDirectionalityEnabled = isEnabled => ({
 //   type: ActionType.SET_DIRECTIONALITY_ENABLED,
 //   payload: { isEnabled },

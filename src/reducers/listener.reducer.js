@@ -29,6 +29,14 @@ export default function(state = initialState, { type, payload }) {
   if (type === ActionType.SET_HIGH_QUALITY_MODE) {
     return { ...state, spatializationMode: SpatializationMode.HighQuality }
   }
+  if (type === ActionType.IMPORT_LISTENER) {
+    return {
+      ...state,
+      position: payload.listener.position,
+      spatializationMode: payload.listener.spatializationMode,
+      headRadius: payload.listener.headRadius,
+    }
+  }
 
   return state
 }

@@ -22,7 +22,7 @@ const Container = styled.div`
   justify-content: center;
 `
 /* ========================================================================== */
-/* RESET POSITION */
+/* EXPORT RAW BUTTON */
 /* ========================================================================== */
 class ExportMetaButton extends Component {
 
