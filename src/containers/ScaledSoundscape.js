@@ -58,7 +58,9 @@ const Source = styled.div`
  * Soundscape
  *
  * The listener and sources are positioned using a meter-based coordinate
- * system, with {0, 0} being in the center and {1, 1} pointing south-east.
+ * system, with {0, 0} being in the center and {1, 1} pointing north-west.
+ *
+ * Points are {x, y}.
  */
 class Soundscape extends Component {
   static propTypes = {
@@ -129,8 +131,8 @@ class Soundscape extends Component {
             style={{
               width: sourceSize,
               height: sourceSize,
-              top: `${50 + (100 * listenerPosition.z) / roomDepth}%`,
-              left: `${50 + (100 * listenerPosition.x) / roomWidth}%`,
+              top: `${50 + (100 * -1 * listenerPosition.x) / roomDepth}%`,
+              left: `${50 + (100 * -1 * listenerPosition.y) / roomWidth}%`,
             }}
           />
 
@@ -141,8 +143,8 @@ class Soundscape extends Component {
               style={{
                 width: sourceSize,
                 height: sourceSize,
-                top: `${50 + (100 * source.position.z) / roomDepth}%`,
-                left: `${50 + (100 * source.position.x) / roomWidth}%`,
+                top: `${50 + (100 * -1 * source.position.x) / roomDepth}%`,
+                left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
               }}
             />
           ))}
