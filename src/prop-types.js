@@ -74,3 +74,24 @@ export const scrollable = makeRequirable((props, propName, componentName) => {
 
   return null
 })
+
+export const source = PropTypes.shape({
+  filename: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  platform_id: PropTypes.string,
+  raw: PropTypes.arrayOf(PropTypes.number).isRequired,
+  hidden: PropTypes.bool.isRequired,
+  position: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    z: PropTypes.number.isRequired,
+  }).isRequired,
+  reach: PropTypes.shape({
+    radius: PropTypes.number.isRequired,
+    fadeDuration: PropTypes.number.isRequired,
+  }),
+  selected: PropTypes.bool.isRequired,
+  spatialised: PropTypes.bool.isRequired,
+  url: PropTypes.string,
+  volume: PropTypes.number.isRequired,
+})

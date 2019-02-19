@@ -6,9 +6,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { clamp, pick } from 'lodash'
+import { clamp, pick, values } from 'lodash'
 
-import * as colors from 'src/styles/colors'
+import * as CustomPropTypes from 'src/prop-types.js'
+import * as colors from 'src/styles/colors.js'
 
 const PIXELS_PER_METER = 10
 const SOURCE_SIZE_METERS = 1
@@ -37,7 +38,8 @@ const Source = styled.div`
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   border-radius: 100%;
-  background: black;
+  background: ${props => (props.isSelected ? 'black' : 'transparent')};
+  border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
 `
 
 /* ========================================================================== */
@@ -52,6 +54,7 @@ class Soundscape extends Component {
     roomWidth: PropTypes.number.isRequired,
     roomDepth: PropTypes.number.isRequired,
     roomImage: PropTypes.string,
+    sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
   }
 
   static defaultProps = {
@@ -59,7 +62,7 @@ class Soundscape extends Component {
   }
 
   render() {
-    const { size, roomWidth, roomDepth, roomImage } = this.props
+    const { size, roomWidth, roomDepth, roomImage, sources } = this.props
 
     const roomRatio = roomWidth / roomDepth
     const containerRatio = size.width / size.height
@@ -92,12 +95,18 @@ class Soundscape extends Component {
             Relative scale: {relativeScale}
           </div>
 
-          <Source
-            style={{
-              width: sourceSize,
-              height: sourceSize,
-            }}
-          />
+          {sources.map(source => (
+            <Source
+              key={source.name}
+              isSelected={source.selected === true}
+              style={{
+                width: sourceSize,
+                height: sourceSize,
+                top: `${50 + (100 * source.position.z) / roomDepth}%`,
+                left: `${50 + (100 * source.position.x) / roomWidth}%`,
+              }}
+            />
+          ))}
         </SoundscapeRoom>
       </SoundscapeContainer>
     )
@@ -108,6 +117,7 @@ const mapStateToProps = state => ({
   roomWidth: state.room.size.width,
   roomDepth: state.room.size.depth,
   roomImage: state.room.image.raw,
+  sources: values(state.sources.sources),
 })
 
 export default connect(
