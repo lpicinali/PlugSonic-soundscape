@@ -27,9 +27,19 @@ const SoundscapeRoom = styled.div`
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
+  overflow: hidden;
   background-color: ${colors.GREY};
   background-image: url(${props => props.imageUrl});
   background-size: cover;
+`
+
+const Listener = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  border-radius: 100%;
+  background: ${colors.LIGHTBLUE};
 `
 
 const Source = styled.div`
@@ -42,9 +52,12 @@ const Source = styled.div`
   border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
 `
 
-/* ========================================================================== */
-/* SOUNDSCAPE */
-/* ========================================================================== */
+/**
+ * Soundscape
+ *
+ * The listener and sources are positioned using a meter-based coordinate
+ * system, with {0, 0} being in the center.
+ */
 class Soundscape extends Component {
   static propTypes = {
     size: PropTypes.shape({
@@ -54,6 +67,11 @@ class Soundscape extends Component {
     roomWidth: PropTypes.number.isRequired,
     roomDepth: PropTypes.number.isRequired,
     roomImage: PropTypes.string,
+    listenerPosition: PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+      z: PropTypes.number.isRequired,
+    }).isRequired,
     sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
   }
 
@@ -62,7 +80,14 @@ class Soundscape extends Component {
   }
 
   render() {
-    const { size, roomWidth, roomDepth, roomImage, sources } = this.props
+    const {
+      size,
+      roomWidth,
+      roomDepth,
+      roomImage,
+      listenerPosition,
+      sources,
+    } = this.props
 
     const roomRatio = roomWidth / roomDepth
     const containerRatio = size.width / size.height
@@ -95,6 +120,15 @@ class Soundscape extends Component {
             Relative scale: {relativeScale}
           </div>
 
+          <Listener
+            style={{
+              width: sourceSize,
+              height: sourceSize,
+              top: `${50 + (100 * listenerPosition.z) / roomDepth}%`,
+              left: `${50 + (100 * listenerPosition.x) / roomWidth}%`,
+            }}
+          />
+
           {sources.map(source => (
             <Source
               key={source.name}
@@ -117,6 +151,7 @@ const mapStateToProps = state => ({
   roomWidth: state.room.size.width,
   roomDepth: state.room.size.depth,
   roomImage: state.room.image.raw,
+  listenerPosition: state.listener.position,
   sources: values(state.sources.sources),
 })
 
