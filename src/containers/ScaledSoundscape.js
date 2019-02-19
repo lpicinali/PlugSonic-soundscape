@@ -5,7 +5,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import Draggable from 'react-draggable'
 import styled from 'styled-components'
 import { clamp, pick } from 'lodash'
 
