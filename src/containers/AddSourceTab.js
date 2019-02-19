@@ -10,9 +10,9 @@ import SourceUploader from 'src/components/SourceUploader'
 /* ========================================================================== */
 
 /* ========================================================================== */
-/* ROOM TAB */
+/* ADD SOURCE TAB */
 /* ========================================================================== */
-class RoomTab extends Component {
+class AddSourceTab extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
@@ -20,12 +20,10 @@ class RoomTab extends Component {
     return (
       <React.Fragment>
         <SourceUploader/>
-        {/* <SourceTextFields/> */}
-        {/* <AddSourceButton/> */}
       </React.Fragment>
 
     )
   }
 }
 
-export default RoomTab
+export default AddSourceTab
