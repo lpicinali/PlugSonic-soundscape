@@ -38,7 +38,7 @@ const Listener = styled.div`
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
-  border-radius: 100%;
+  border-radius: 50%;
   background: ${colors.LIGHTBLUE};
 `
 
@@ -47,7 +47,7 @@ const Source = styled.div`
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
-  border-radius: 100%;
+  border-radius: 50%;
   background: ${props => (props.isSelected ? 'black' : 'transparent')};
   border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
 `
