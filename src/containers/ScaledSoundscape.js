@@ -37,8 +37,10 @@ const Listener = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0) rotate(${props => props.rotation}deg);
   border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: ${colors.DARKBLUE};
   background: ${colors.LIGHTBLUE};
 `
 
@@ -56,7 +58,7 @@ const Source = styled.div`
  * Soundscape
  *
  * The listener and sources are positioned using a meter-based coordinate
- * system, with {0, 0} being in the center.
+ * system, with {0, 0} being in the center and {1, 1} pointing south-east.
  */
 class Soundscape extends Component {
   static propTypes = {
@@ -72,6 +74,7 @@ class Soundscape extends Component {
       y: PropTypes.number.isRequired,
       z: PropTypes.number.isRequired,
     }).isRequired,
+    listenerRotation: PropTypes.number.isRequired,
     sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
   }
 
@@ -86,6 +89,7 @@ class Soundscape extends Component {
       roomDepth,
       roomImage,
       listenerPosition,
+      listenerRotation,
       sources,
     } = this.props
 
@@ -121,6 +125,7 @@ class Soundscape extends Component {
           </div>
 
           <Listener
+            rotation={listenerRotation}
             style={{
               width: sourceSize,
               height: sourceSize,
@@ -152,6 +157,7 @@ const mapStateToProps = state => ({
   roomDepth: state.room.size.depth,
   roomImage: state.room.image.raw,
   listenerPosition: state.listener.position,
+  listenerRotation: state.listener.position.rotZAxis,
   sources: values(state.sources.sources),
 })
 
