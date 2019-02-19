@@ -10,9 +10,13 @@ import Search from "material-ui/svg-icons/action/search"
 import Sources from "material-ui/svg-icons/av/queue-music"
 import Room from "material-ui/svg-icons/action/aspect-ratio"
 import Listener from "material-ui/svg-icons/av/hearing"
-import Soundscape from "material-ui/svg-icons/content/save"
+import Exhibition from "material-ui/svg-icons/content/save"
 
+import AddSourceTab from 'src/containers/AddSourceTab'
 import RoomTab from 'src/containers/RoomTab'
+import SourcesTab from 'src/containers/SourcesTab'
+import ListenerTab from 'src/containers/ListenerTab'
+import ExhibitionTab from 'src/containers/ExhibitionTab'
 
 /* ========================================================================== */
 /* TABS */
@@ -20,7 +24,7 @@ import RoomTab from 'src/containers/RoomTab'
 class TabsContainer extends Component {
 
   state = {
-    value: 'room',
+    value: 'exhibition',
   }
 
   handleChange = (value) => {
@@ -31,22 +35,27 @@ class TabsContainer extends Component {
     return (
       <Tabs value={this.state.value} onChange={this.handleChange}>
         <Tab icon={<Add/>} value="add">
-          <h2>Tab A</h2>
+          <AddSourceTab/>
         </Tab>
+
         <Tab icon={<Search/>} value="search">
           <h2>Tab B</h2>
         </Tab>
+
         <Tab icon={<Sources/>} value="sources">
-          <h2>Tab A</h2>
+          <SourcesTab/>
         </Tab>
+
         <Tab icon={<Room/>} value="room">
           <RoomTab/>
         </Tab>
+
         <Tab icon={<Listener/>} value="listener">
-          <h2>Tab A</h2>
+          <ListenerTab/>
         </Tab>
-        <Tab icon={<Soundscape/>} value="soundscape">
-          <h2>Tab B</h2>
+
+        <Tab icon={<Exhibition/>} value="exhibition">
+          <ExhibitionTab/>
         </Tab>
       </Tabs>
     )

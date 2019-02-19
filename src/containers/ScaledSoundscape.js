@@ -27,11 +27,9 @@ const SoundscapeRoom = styled.div`
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
-  background-image: linear-gradient(
-    to bottom right,
-    ${colors.LIGHTBLUE},
-    ${colors.ORANGE}
-  );
+  background-color: ${colors.GREY};
+  background-image: url(${props => props.imageUrl});
+  background-size: cover;
 `
 
 const Source = styled.div`
@@ -54,10 +52,15 @@ class Soundscape extends Component {
     }).isRequired,
     roomWidth: PropTypes.number.isRequired,
     roomDepth: PropTypes.number.isRequired,
+    roomImage: PropTypes.string,
+  }
+
+  static defaultProps = {
+    roomImage: '',
   }
 
   render() {
-    const { size, roomWidth, roomDepth } = this.props
+    const { size, roomWidth, roomDepth, roomImage } = this.props
 
     const roomRatio = roomWidth / roomDepth
     const containerRatio = size.width / size.height
@@ -78,9 +81,10 @@ class Soundscape extends Component {
             width: viewportWidth,
             height: viewportHeight,
           }}
+          imageUrl={roomImage}
         >
           <div>
-            Soundscape
+            Soundscapez
             <br />
             Normal resolution: {PIXELS_PER_METER} px/m
             <br />
@@ -104,6 +108,7 @@ class Soundscape extends Component {
 const mapStateToProps = state => ({
   roomWidth: state.room.size.width,
   roomDepth: state.room.size.depth,
+  roomImage: state.room.image.raw,
 })
 
 export default connect(

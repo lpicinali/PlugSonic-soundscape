@@ -14,6 +14,11 @@ export const setRoomSize = size => ({
   payload: { size },
 })
 
+export const setRoomImage = image => ({
+  type: ActionType.SET_ROOM_IMAGE,
+  payload: { image },
+})
+
 export const importRoom = room => ({
   type: ActionType.IMPORT_ROOM,
   payload: { room },

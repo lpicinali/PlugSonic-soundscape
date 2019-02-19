@@ -5,7 +5,7 @@
 import { ActionType, PlaybackState } from 'src/constants.js'
 
 const initialState = {
-  playbackState: PlaybackState.PAUSED,
+  playbackState: PlaybackState.STOP,
   masterVolume: 0.5,
   showSettingsDrawer: true,
 }
@@ -15,6 +15,7 @@ export default function(state = initialState, { type, payload }) {
     return { ...state, masterVolume: payload.volume }
   }
   if (type === ActionType.SET_PLAYBACK_STATE) {
+    console.log(`Controls -> ${payload.state}`)
     return { ...state, playbackState: payload.state }
   }
   if (type === ActionType.SHOW_SETTINGS_DRAWER) {

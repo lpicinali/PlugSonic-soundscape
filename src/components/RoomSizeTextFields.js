@@ -7,7 +7,7 @@ import { values, toNumber, isNaN } from 'lodash'
 
 import {H2} from 'src/styles/elements'
 
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui/TextField'
 
 import { setRoomSize } from 'src/actions/room.actions'
 import { RoomShape } from 'src/constants.js'
@@ -17,7 +17,7 @@ const maxSize = 100
 /* ========================================================================== */
 export const style = {
   marginLeft: `20px`,
-  width: `248px`
+  width: `85%`
 }
 export const errorStyle = {
   textColor: `colors.BLACK`

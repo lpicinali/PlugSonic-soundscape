@@ -10,8 +10,8 @@ export const H2 = styled.h2`
 `
 
 export const H3 = styled.h3`
-  color: ${colors.DARKGRAY};
-  font-size: 12px;
+  color: ${colors.BLACK};
+  font-size: 14px;
   letter-spacing: 1px;
   text-transform: uppercase;
 `
@@ -23,7 +23,7 @@ export const H4 = styled.h4`
 
 export const P = styled.p`
   color: ${colors.BLACK};
-  font-size: 16px;
+  font-size: 12px;
 `
 
 export const ModuleBox = styled.div`

@@ -23,7 +23,7 @@ export const Nav = styled.div`
   flex-direction: row;
   flex-shrink: 0;
   height: 48px;
-  justify-content: flex-end;
+  justify-content: center;
 `
 
 
