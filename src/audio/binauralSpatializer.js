@@ -1,4 +1,17 @@
+import { map, reduce } from 'lodash'
 import {
+  fetchHrtfFile,
+  registerHrtf,
+} from '@reactify/3dti-toolkit/lib/binaural/hrtf.js'
+
+import // Ear,
+'src/constants.js'
+
+import context from 'src/audio/context.js'
+import { audioFiles } from 'src/audio/audio-files.js'
+import toolkit from 'src/audio/toolkit.js'
+
+const {
   BinauralAPI,
   CMonoBuffer,
   CStereoBuffer,
@@ -7,16 +20,8 @@ import {
   CQuaternion,
   // T_ear,
   TSpatializationMode,
-} from '3dti-toolkit'
-import { map, reduce } from 'lodash'
+} = toolkit
 
-import // Ear,
-'src/constants.js'
-
-import context from 'src/audio/context.js'
-import { fetchHrirsVector } from 'src/audio/hrir_utils'
-import hrirUrls from 'src/audio/hrir_files'
-import { audioFiles } from 'src/audio/audio-files.js'
 /* ========================================================================== */
 const binauralApi = new BinauralAPI()
 let instancePromise = null
@@ -211,17 +216,30 @@ function createInstance() {
     )
   }
 
-  return fetchHrirsVector(hrirUrls, context).then(hrirsVector => {
+  // Fetch the default HRTF file
+  return fetchHrtfFile('/assets/audio/hrtf/3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf').then(hrtfData => {
     console.log('')
     console.log(`binauralSpatializer: INIT - begins`)
+
     // CREATE and SETUP LISTENER
-    listener = binauralApi.CreateListener(hrirsVector, 0.0875)
+    listener = binauralApi.CreateListener(0.0875)
     listener.SetListenerTransform(new CTransform())
     // listener.EnableDirectionality(T_ear.LEFT)
     // listener.EnableDirectionality(T_ear.RIGHT)
     // Customized ITD is required for the HighPerformance mode to work
     listener.EnableCustomizedITD()
+
+    // Register the HRTF file with
+    const virtualHrtfFilePath = registerHrtf(toolkit, '3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf', hrtfData)
+
+    // Set the HRTF using the toolkit API.
+    //
+    // (The toolkit will read data from a virtual file system,
+    // which is why we register it in the command above.)
+    toolkit.HRTF_CreateFrom3dti(virtualHrtfFilePath, listener)
+
     console.log('LISTENER - initialised')
+
     // CREATE and SETUP TARGET SOURCE(S) - mono
     sources = audioFiles.reduce((aggr, file, index) => {
       const source = binauralApi.CreateSource()

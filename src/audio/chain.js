@@ -1,11 +1,11 @@
 /* global window */
 /* eslint no-restricted-syntax: 0 */
 import { clamp } from 'lodash'
-import toolkit from '3dti-toolkit'
 
 import { audioFiles } from 'src/audio/audio-files.js';
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
+import toolkit from 'src/audio/toolkit.js'
 
 window.toolkit = toolkit || { nope: false }
 
