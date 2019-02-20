@@ -103,6 +103,22 @@ function createInstance() {
   }
 
   /* ======================================================================== */
+  // SET HRTF
+  /* ======================================================================== */
+  function setHrtf(hrtfFilename) {
+    return fetchHrtfFile(`/assets/audio/hrtf/${hrtfFilename}`).then(hrtfData => {
+      // Register the HRTF file with
+      const virtualHrtfFilePath = registerHrtf(toolkit, hrtfFilename, hrtfData)
+
+      // Set the HRTF using the toolkit API.
+      //
+      // (The toolkit will read data from a virtual file system,
+      // which is why we register it in the command above.)
+      toolkit.HRTF_CreateFrom3dti(virtualHrtfFilePath, listener)
+    })
+  }
+
+  /* ======================================================================== */
   // ADD SOURCE
   /* ======================================================================== */
   function addSource(sourceObject) {
@@ -216,89 +232,78 @@ function createInstance() {
     )
   }
 
-  // Fetch the default HRTF file
-  return fetchHrtfFile('/assets/audio/hrtf/3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf').then(hrtfData => {
-    console.log('')
-    console.log(`binauralSpatializer: INIT - begins`)
+  console.log('')
+  console.log(`binauralSpatializer: INIT - begins`)
 
-    // CREATE and SETUP LISTENER
-    listener = binauralApi.CreateListener(0.0875)
-    listener.SetListenerTransform(new CTransform())
-    // listener.EnableDirectionality(T_ear.LEFT)
-    // listener.EnableDirectionality(T_ear.RIGHT)
-    // Customized ITD is required for the HighPerformance mode to work
-    listener.EnableCustomizedITD()
+  // CREATE and SETUP LISTENER
+  listener = binauralApi.CreateListener(0.0875)
+  listener.SetListenerTransform(new CTransform())
+  // listener.EnableDirectionality(T_ear.LEFT)
+  // listener.EnableDirectionality(T_ear.RIGHT)
+  // Customized ITD is required for the HighPerformance mode to work
+  listener.EnableCustomizedITD()
 
-    // Register the HRTF file with
-    const virtualHrtfFilePath = registerHrtf(toolkit, '3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf', hrtfData)
+  console.log('LISTENER - initialised')
 
-    // Set the HRTF using the toolkit API.
-    //
-    // (The toolkit will read data from a virtual file system,
-    // which is why we register it in the command above.)
-    toolkit.HRTF_CreateFrom3dti(virtualHrtfFilePath, listener)
+  // CREATE and SETUP TARGET SOURCE(S) - mono
+  sources = audioFiles.reduce((aggr, file, index) => {
+    const source = binauralApi.CreateSource()
+    setSourcePosition(source, index * Math.PI / 6, 3)
 
-    console.log('LISTENER - initialised')
+    const sourceInputMonoBuffer = new CMonoBuffer()
+    sourceInputMonoBuffer.resize(512, 0)
 
-    // CREATE and SETUP TARGET SOURCE(S) - mono
-    sources = audioFiles.reduce((aggr, file, index) => {
-      const source = binauralApi.CreateSource()
-      setSourcePosition(source, index * Math.PI / 6, 3)
+    const sourceOutputStereoBuffer = new CStereoBuffer()
+    sourceOutputStereoBuffer.resize(1024, 0)
+    // Script Node (bufferSize, # InputChannels, # OutputChannels)
+    const processor = context.createScriptProcessor(512, 1, 2)
+    // PROCESSING FUNCTION
+    processor.onaudioprocess = audioProcessingEvent => {
+      const { inputBuffer, outputBuffer } = audioProcessingEvent
+      const inputData = inputBuffer.getChannelData(0)
 
-      const sourceInputMonoBuffer = new CMonoBuffer()
-      sourceInputMonoBuffer.resize(512, 0)
-
-      const sourceOutputStereoBuffer = new CStereoBuffer()
-      sourceOutputStereoBuffer.resize(1024, 0)
-      // Script Node (bufferSize, # InputChannels, # OutputChannels)
-      const processor = context.createScriptProcessor(512, 1, 2)
-      // PROCESSING FUNCTION
-      processor.onaudioprocess = audioProcessingEvent => {
-        const { inputBuffer, outputBuffer } = audioProcessingEvent
-        const inputData = inputBuffer.getChannelData(0)
-
-        for (let i = 0; i < inputData.length; i++) {
-          sourceInputMonoBuffer.set(i, inputData[i])
-        }
-        // process data
-        source.ProcessAnechoic(
-          sourceInputMonoBuffer,
-          sourceOutputStereoBuffer
-        )
-        const outputDataLeft = outputBuffer.getChannelData(0)
-        const outputDataRight = outputBuffer.getChannelData(1)
-
-        for (let i = 0; i < outputDataLeft.length; i++) {
-          outputDataLeft[i] = sourceOutputStereoBuffer.get(i * 2)
-          outputDataRight[i] = sourceOutputStereoBuffer.get(i * 2 + 1)
-        }
+      for (let i = 0; i < inputData.length; i++) {
+        sourceInputMonoBuffer.set(i, inputData[i])
       }
+      // process data
+      source.ProcessAnechoic(
+        sourceInputMonoBuffer,
+        sourceOutputStereoBuffer
+      )
+      const outputDataLeft = outputBuffer.getChannelData(0)
+      const outputDataRight = outputBuffer.getChannelData(1)
 
-      return {
-        ...aggr,
-        [file.filename]: {
-          source: source,
-          processor: processor,
-        },
+      for (let i = 0; i < outputDataLeft.length; i++) {
+        outputDataLeft[i] = sourceOutputStereoBuffer.get(i * 2)
+        outputDataRight[i] = sourceOutputStereoBuffer.get(i * 2 + 1)
       }
-    }, {}) // end of .reduce
-    console.log(`binauralSpatializer: INIT - ends`)
-    console.log('')
+    }
 
     return {
-      listener,
-      sources,
-      setSourcePosition,
-      setListenerPosition,
-      setPerformanceMode,
-      setQualityMode,
-      setHeadRadius,
-      addSource,
-      deleteSources,
-      deleteAllSources,
-      importSources,
+      ...aggr,
+      [file.filename]: {
+        source: source,
+        processor: processor,
+      },
     }
-  }) // end of .then
+  }, {}) // end of .reduce
+  console.log(`binauralSpatializer: INIT - ends`)
+  console.log('')
+
+  return {
+    listener,
+    sources,
+    setSourcePosition,
+    setListenerPosition,
+    setPerformanceMode,
+    setQualityMode,
+    setHeadRadius,
+    setHrtf,
+    addSource,
+    deleteSources,
+    deleteAllSources,
+    importSources,
+  }
 }
 
 /* ========================================================================== */
@@ -307,6 +312,7 @@ export function getInstance() {
     return instancePromise
   }
 
-  instancePromise = createInstance()
+  const instance = createInstance()
+  instancePromise = Promise.resolve(instance)
   return instancePromise
 }

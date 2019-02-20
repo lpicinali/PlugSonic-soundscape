@@ -3,6 +3,7 @@ import { map } from 'lodash'
 
 import { ActionType, PlaybackState } from 'src/constants.js'
 import { getFileUrl } from 'src/audio/audio-files.js'
+import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   play as enginePlay,
   stop as engineStop,
@@ -239,6 +240,19 @@ function* applyQualityMode() {
 //   }
 // }
 
+/* ======================================================================== */
+// HRTF
+/* ======================================================================== */
+function* initDefaultHrtf() {
+  try {
+    const binauralInstance = yield call(getBinauralSpatializer)
+    yield call(binauralInstance.setHrtf, '3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf')
+  } catch (err) {
+    console.log('Could not set default HRTF:')
+    console.error(err)
+  }
+}
+
 export default function* rootSaga() {
   yield [
     applyPlayStop(),
@@ -257,5 +271,6 @@ export default function* rootSaga() {
     // applyDirectionalityAttenuation(),
     applySourcePosition(),
     applyListenerPosition(),
+    initDefaultHrtf(),
   ]
 }
