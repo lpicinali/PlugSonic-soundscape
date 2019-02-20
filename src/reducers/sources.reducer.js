@@ -91,19 +91,41 @@ export default function(state = initialState, { type, payload }) {
     }
 
 
-    case 'ADD_SOURCE': {
+    case 'ADD_SOURCE_LOCAL': {
       const newSources = Object.assign({}, state.sources)
       const newSource = {
         filename: payload.filename,
         hidden: false,
         name: payload.name,
-        platform_id: null,
+        platform_asset_id: null,
+        platform_media_id: null,
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: payload.raw,
         reach: { radius: 3, fadeDuration: 1000 },
         selected: true,
         spatialised: true,
         url: null,
+        volume: 1.0,
+      }
+      azimuthIndex += 1
+      newSources[payload.name] = newSource
+      return { ...state, sources: newSources }
+    }
+
+    case 'ADD_SOURCE_REMOTE': {
+      const newSources = Object.assign({}, state.sources)
+      const newSource = {
+        filename: payload.filename,
+        hidden: false,
+        name: payload.name,
+        platform_asset_id: payload.assetId,
+        platform_media_id: payload.mediaId,
+        position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
+        raw: null,
+        reach: { radius: 3, fadeDuration: 1000 },
+        selected: true,
+        spatialised: true,
+        url: payload.url,
         volume: 1.0,
       }
       azimuthIndex += 1

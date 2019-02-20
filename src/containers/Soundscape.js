@@ -25,7 +25,7 @@ const SoundscapeContainer = styled.div`
 `
 
 const Drawer = styled.div`
-  background: ${colors.GREEN};
+  background: ${colors.WHITE};
   flex-shrink: 0;
   overflow-x: hidden;
   overflow-y: scroll;

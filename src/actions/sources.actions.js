@@ -31,9 +31,14 @@ export const setSourceVolume = (source, volume) => ({
   payload: { source, volume },
 })
 
-export const addSource = (filename, name, raw) => ({
-  type: ActionType.ADD_SOURCE,
+export const addSourceLocal = (filename, name, raw) => ({
+  type: ActionType.ADD_SOURCE_LOCAL,
   payload: { filename, name, raw },
+})
+
+export const addSourceRemote = (filename, name, url, assetId, mediaId) => ({
+  type: ActionType.ADD_SOURCE_REMOTE,
+  payload: { filename, name, url, assetId, mediaId },
 })
 
 export const deleteSources = sources => ({

@@ -11,7 +11,7 @@ import {Dropzone, ActionIcon} from 'src/components/SourceUploader.style'
 import FlatButton from "material-ui/FlatButton"
 import TextField from 'material-ui/TextField'
 
-import { addSource } from 'src/actions/sources.actions'
+import { addSourceLocal } from 'src/actions/sources.actions'
 /* ========================================================================== */
 const FlatButtonStyle = {
   width: '85%',
@@ -195,7 +195,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onAddSource: (filename, name, raw) =>
-      dispatch(addSource(filename, name, raw)),
+      dispatch(addSourceLocal(filename, name, raw)),
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(SourceUploader)

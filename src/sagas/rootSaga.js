@@ -82,9 +82,17 @@ function* manageAddSource(name) {
   }
 }
 
-function* applyAddSource() {
+function* applyAddSourceLocal() {
   while (true) {
-    const { type, payload } = yield take(ActionType.ADD_SOURCE)
+    const { type, payload } = yield take(ActionType.ADD_SOURCE_LOCAL)
+    // console.log('Saga -> applyAddSource')
+    yield spawn(manageAddSource, payload.name)
+  }
+}
+
+function* applyAddSourceRemote() {
+  while (true) {
+    const { type, payload } = yield take(ActionType.ADD_SOURCE_REMOTE)
     // console.log('Saga -> applyAddSource')
     yield spawn(manageAddSource, payload.name)
   }
@@ -230,7 +238,8 @@ export default function* rootSaga() {
   yield [
     applyPlayStop(),
     applySourceOnOff(),
-    applyAddSource(),
+    applyAddSourceLocal(),
+    applyAddSourceRemote(),
     // applyDeleteSources(),
     applyImportSources(),
     // applyMasterVolume(),

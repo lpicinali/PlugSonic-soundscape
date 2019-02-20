@@ -13,6 +13,7 @@ import Listener from "material-ui/svg-icons/av/hearing"
 import Exhibition from "material-ui/svg-icons/content/save"
 
 import AddSourceTab from 'src/containers/AddSourceTab'
+import SearchTab from 'src/containers/SearchTab'
 import RoomTab from 'src/containers/RoomTab'
 import SourcesTab from 'src/containers/SourcesTab'
 import ListenerTab from 'src/containers/ListenerTab'
@@ -24,7 +25,7 @@ import ExhibitionTab from 'src/containers/ExhibitionTab'
 class TabsContainer extends Component {
 
   state = {
-    value: 'exhibition',
+    value: 'search',
   }
 
   handleChange = (value) => {
@@ -39,7 +40,7 @@ class TabsContainer extends Component {
         </Tab>
 
         <Tab icon={<Search/>} value="search">
-          <h2>Tab B</h2>
+          <SearchTab/>
         </Tab>
 
         <Tab icon={<Sources/>} value="sources">

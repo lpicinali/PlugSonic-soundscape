@@ -74,13 +74,15 @@ export const unsetSource = sourceObject => {
   chainUnsetSourceNode(sourceObject.name)
 }
 
+/* ======================================================================== */
+// ADD SOURCE
+/* ======================================================================== */
 export const addSource = sourceObject => {
   stop()
   console.log('Engine -> Add Source')
   console.log(sourceObject)
   chainAddSource(sourceObject)
 }
-
 
 // export const deleteSources = sourcesFilenames => {
 //   chainDeleteSources(sourcesFilenames)
