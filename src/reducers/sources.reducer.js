@@ -8,52 +8,11 @@ import { ADEtoXYZ } from 'src/utils'
 // import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
 const initialState = {
-  sources: {
-    // "Source_1": {
-    //   filename: "river_gentle_flow_16bit.wav",
-    //   hidden: false,
-    //   name: "Source_1",
-    //   platform_id: null,
-    //   position: {x: 3, y: 0, z: 0},
-    //   raw: null,
-    //   reach: {radius: 3, fadeDuration: 1000},
-    //   selected: true,
-    //   spatialised: true,
-    //   url: null,
-    //   volume: 1,
-    // },
-    // "Source_2": {
-    //   filename: "river_gentle_flow_16bit.wav",
-    //   hidden: false,
-    //   name: "Source_2",
-    //   platform_id: null,
-    //   position: {x: 3, y: 0, z: 0},
-    //   raw: null,
-    //   reach: {radius: 3, fadeDuration: 1000},
-    //   selected: true,
-    //   spatialised: true,
-    //   url: null,
-    //   volume: 1,
-    // },
-    // "Source_3": {
-    //   filename: "river_gentle_flow_16bit.wav",
-    //   hidden: false,
-    //   name: "Source_3",
-    //   platform_id: null,
-    //   position: {x: 3, y: 0, z: 0},
-    //   raw: null,
-    //   reach: {radius: 3, fadeDuration: 1000},
-    //   selected: true,
-    //   spatialised: true,
-    //   url: null,
-    //   volume: 1,
-    // },
-  },
+  sources: {},
   // editing: null,
 }
 
 let azimuthIndex = Object.keys(initialState.sources).length
-
 
 export default function(state = initialState, { type, payload }) {
 
@@ -70,9 +29,9 @@ export default function(state = initialState, { type, payload }) {
     }
 
     case 'SET_SOURCE_POSITION': {
-      const newTargets = Object.assign({}, state.targets)
-      Object.assign(newTargets[payload.target].position, payload.position)
-      return { ...state, targets: newTargets }
+      const newSources = Object.assign({}, state.sources)
+      Object.assign(newSources[payload.source].position, payload.position)
+      return { ...state, sources: newSources }
     }
 
     case 'SET_SOURCE_REACH': {

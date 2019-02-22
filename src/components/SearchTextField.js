@@ -167,7 +167,7 @@ class SearchTextField extends Component {
     console.log(sourceFilename)
     console.log(sourceUrl)
 
-    this.props.onAddSource(sourceName, sourceFilename, sourceUrl, assetId, mediaId)
+    this.props.onAddSource(sourceFilename, sourceName, sourceUrl, assetId, mediaId)
 
     this.setState({
       ...this.state,
@@ -264,7 +264,8 @@ class SearchTextField extends Component {
         </FlatButton>
 
         <Divider style={DividerStyle}/>
-        { this.state.assets.length===0 ? <div/> : searchResults }
+
+        {this.state.assets.length > 0 && searchResults}
       </Container>
     )
   }
@@ -280,8 +281,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onAddSource: (title, filename, url, assetId, mediaId) =>
-    dispatch(addSourceRemote(title, filename, url, assetId, mediaId)),
+  onAddSource: (filename, name, url, assetId, mediaId) =>
+    dispatch(addSourceRemote(filename, name, url, assetId, mediaId)),
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(SearchTextField)

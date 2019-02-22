@@ -79,7 +79,7 @@ export const source = PropTypes.shape({
   filename: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   platform_id: PropTypes.string,
-  raw: PropTypes.arrayOf(PropTypes.number).isRequired,
+  raw: PropTypes.arrayOf(PropTypes.number),
   hidden: PropTypes.bool.isRequired,
   position: PropTypes.shape({
     x: PropTypes.number.isRequired,

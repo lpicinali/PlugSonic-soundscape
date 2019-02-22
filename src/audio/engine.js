@@ -97,21 +97,23 @@ export const deleteAllSources = () => {
   chainDeleteAllSources()
 }
 
-// export const setSourcePosition = (filename, { azimuth, distance }) => {
-//   getBinauralSpatializer().then(spatializer => {
-//     spatializer.setSourcePosition(
-//       spatializer.targets[filename].source,
-//       azimuth,
-//       distance
-//     )
-//   })
-// }
+/* ======================================================================== */
+// SET SOURCE POSITION
+/* ======================================================================== */
+export const setSourcePosition = (name, { x, y, z }) => {
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.setSourcePosition(spatializer.sources[name].source, x, y, z)
+  })
+}
 
-// export const setListenerPosition = ({ azimuth, distance, rotZAxis }) => {
-//   getBinauralSpatializer().then(spatializer => {
-//     spatializer.setListenerPosition(azimuth, distance, rotZAxis)
-//   })
-// }
+/* ======================================================================== */
+// SET LISTENER POSITION
+/* ======================================================================== */
+export const setListenerPosition = ({ x, y, z, rotZAxis }) => {
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.setListenerPosition(x, y, z, rotZAxis)
+  })
+}
 
 // export const setMasterVolume = volume => {
 //   chainSetMasterVolume(volume)

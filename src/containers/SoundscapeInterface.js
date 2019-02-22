@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import TabsContainer from 'src/containers/TabsContainer.js'
 import ScaledSoundscape from 'src/containers/ScaledSoundscape.js'
 import * as colors from 'src/styles/colors.js'
-
+/* ========================================================================== */
 const SoundscapeInterfaceContainer = styled.div`
   height: 100%;
   display: flex;
@@ -28,15 +28,15 @@ const Drawer = styled.div`
   background: ${colors.GREEN};
   transition: width 0.5s;
 `
-
-/**
- * Soundscape Interface
- */
+/* ========================================================================== */
+/* SOUNDSCAPE INTERFACE */
+/* ========================================================================== */
 class SoundscapeInterface extends PureComponent {
   static propTypes = {
     showSettingsDrawer: PropTypes.bool.isRequired,
   }
 
+  /* ------------------------------------------------------------------------ */
   render() {
     const { showSettingsDrawer } = this.props
 
@@ -44,8 +44,8 @@ class SoundscapeInterface extends PureComponent {
       <SoundscapeInterfaceContainer>
         <SoundscapeArea>
           <ContainerDimensions>
-            {({ width, height }) => (
-              <ScaledSoundscape size={{ width, height }} />
+            {({ width, height, top, bottom, left, right }) => (
+              <ScaledSoundscape size={{ width, height }} rect={{ top, bottom, left, right }}/>
             )}
           </ContainerDimensions>
         </SoundscapeArea>

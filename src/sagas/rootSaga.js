@@ -131,23 +131,28 @@ function* applyImportSources() {
 //   }
 // }
 
+/* ======================================================================== */
+// SOURCE POSITION
+/* ======================================================================== */
+function* applySourcePosition() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_SOURCE_POSITION)
+    const name = payload.source
+    const { x, y, z } = payload.position
+    engineSetSourcePosition(name, { x, y, z })
+  }
+}
 
-// function* applySourcePosition() {
-//   while (true) {
-//     const { payload } = yield take(ActionType.SET_TARGET_POSITION)
-//     const filename = payload.target
-//     const { azimuth, distance } = payload.position
-//     engineSetSourcePosition(filename, { azimuth, distance })
-//   }
-// }
-
-// function* applyListenerPosition() {
-//   while (true) {
-//     const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
-//     const { azimuth, distance, rotZAxis } = payload.position
-//     engineSetListenerPosition({ azimuth, distance, rotZAxis })
-//   }
-// }
+/* ======================================================================== */
+// LISTENER POSITION
+/* ======================================================================== */
+function* applyListenerPosition() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
+    const { x, y, z, rotZAxis } = payload.position
+    engineSetListenerPosition({ x, y, z, rotZAxis })
+  }
+}
 
 // function* applyMasterVolume() {
 //   while (true) {
@@ -250,7 +255,7 @@ export default function* rootSaga() {
     applyHeadRadius(),
     // applyDirectionalityEnabled(),
     // applyDirectionalityAttenuation(),
-    // applySourcePosition(),
-    // applyListenerPosition(),
+    applySourcePosition(),
+    applyListenerPosition(),
   ]
 }

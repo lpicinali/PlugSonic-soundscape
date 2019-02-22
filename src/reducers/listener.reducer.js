@@ -5,7 +5,7 @@ const initialState = {
     x: 0,
     y: 0,
     z: 0,
-    rotZAxis: 0
+    rotZAxis: 0,
   },
   spatializationMode: SpatializationMode.HighQuality,
   headRadius: 0.0875,

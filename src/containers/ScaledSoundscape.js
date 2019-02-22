@@ -10,10 +10,14 @@ import { clamp, pick, values } from 'lodash'
 
 import * as CustomPropTypes from 'src/prop-types.js'
 import * as colors from 'src/styles/colors.js'
+import { RoomShape } from 'src/constants.js'
 
+import ListenerRenderer from 'src/components/ListenerRenderer'
+import SourceRenderer from 'src/components/SourceRenderer'
+/* ========================================================================== */
 const PIXELS_PER_METER = 10
 const SOURCE_SIZE_METERS = 1
-
+/* ========================================================================== */
 const SoundscapeContainer = styled.div`
   display: flex;
   align-items: center;
@@ -21,7 +25,6 @@ const SoundscapeContainer = styled.div`
   height: 100%;
   background: ${colors.WHITE};
 `
-
 const SoundscapeRoom = styled.div`
   position: absolute;
   top: 50%;
@@ -31,70 +34,53 @@ const SoundscapeRoom = styled.div`
   background-color: ${colors.GREY};
   background-image: url(${props => props.imageUrl});
   background-size: cover;
+  border-radius: ${props => props.roomShape === RoomShape.ROUND ? '9999px' : '5px'};
 `
+// const Listener = styled.div`
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate3d(-50%, -50%, 0) rotate(${props => props.rotation}deg);
+//   border-radius: 50%;
+//   border: 2px solid transparent;
+//   border-top-color: ${colors.DARKBLUE};
+//   background: ${colors.LIGHTBLUE};
+// `
+// const Source = styled.div`
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate3d(-50%, -50%, 0);
+//   border-radius: 50%;
+//   background: ${props => (props.isSelected ? 'black' : 'transparent')};
+//   border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
+// `
+/* ========================================================================== */
+/* SOUNDSCAPE INTERFACE
+/* ========================================================================== */
+/*
+* The listener and sources are positioned using a meter-based coordinate
+* system, with {0, 0} being in the center and {1, 1} pointing north-west.
+*
+* Points are {x, y}.
+*/
+class ScaledSoundscape extends Component {
 
-const Listener = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0) rotate(${props => props.rotation}deg);
-  border-radius: 50%;
-  border: 2px solid transparent;
-  border-top-color: ${colors.DARKBLUE};
-  background: ${colors.LIGHTBLUE};
-`
-
-const Source = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  border-radius: 50%;
-  background: ${props => (props.isSelected ? 'black' : 'transparent')};
-  border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
-`
-
-/**
- * Soundscape
- *
- * The listener and sources are positioned using a meter-based coordinate
- * system, with {0, 0} being in the center and {1, 1} pointing north-west.
- *
- * Points are {x, y}.
- */
-class Soundscape extends Component {
-  static propTypes = {
-    size: PropTypes.shape({
-      width: PropTypes.number.isRequired,
-      height: PropTypes.number.isRequired,
-    }).isRequired,
-    roomWidth: PropTypes.number.isRequired,
-    roomDepth: PropTypes.number.isRequired,
-    roomImage: PropTypes.string,
-    listenerPosition: PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired,
-      z: PropTypes.number.isRequired,
-    }).isRequired,
-    listenerRotation: PropTypes.number.isRequired,
-    sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
-  }
-
-  static defaultProps = {
-    roomImage: '',
-  }
-
+  /* ------------------------------------------------------------------------ */
   render() {
     const {
       size,
+      rect,
       roomWidth,
       roomDepth,
+      roomShape,
       roomImage,
       listenerPosition,
       listenerRotation,
       sources,
     } = this.props
 
+    // console.log(rect)
     const roomRatio = roomWidth / roomDepth
     const containerRatio = size.width / size.height
 
@@ -107,6 +93,17 @@ class Soundscape extends Component {
 
     const sourceSize = relativeScale * SOURCE_SIZE_METERS * PIXELS_PER_METER
 
+    const viewportLeft =
+      roomRatio >= containerRatio ? rect.left : rect.left + (size.width - viewportWidth) / 2
+    const viewportRight =
+      roomRatio >= containerRatio ? rect.right : viewportLeft + viewportWidth
+    const viewportTop =
+      roomRatio >= containerRatio ? rect.top + (size.height - viewportHeight) / 2 : rect.top
+    const viewportBottom =
+      roomRatio >= containerRatio ? viewportTop + viewportHeight : rect.bottom
+
+
+
     return (
       <SoundscapeContainer>
         <SoundscapeRoom
@@ -114,10 +111,12 @@ class Soundscape extends Component {
             width: viewportWidth,
             height: viewportHeight,
           }}
+          roomShape={roomShape}
           imageUrl={roomImage}
         >
+
           <div>
-            Soundscapez
+            Soundscape
             <br />
             Normal resolution: {PIXELS_PER_METER} px/m
             <br />
@@ -126,26 +125,35 @@ class Soundscape extends Component {
             Relative scale: {relativeScale}
           </div>
 
-          <Listener
-            rotation={listenerRotation}
-            style={{
-              width: sourceSize,
-              height: sourceSize,
-              top: `${50 + (100 * -1 * listenerPosition.x) / roomDepth}%`,
-              left: `${50 + (100 * -1 * listenerPosition.y) / roomWidth}%`,
-            }}
+          <ListenerRenderer
+            iconWidth={sourceSize}
+            iconHeight={sourceSize}
+            containerSize={{width: viewportWidth, height: viewportHeight}}
+            containerRect={{top: viewportTop, bottom: viewportBottom, left: viewportLeft, right: viewportRight}}
           />
 
-          {sources.map(source => (
+          {/* {sources.map(source => (
             <Source
               key={source.name}
               isSelected={source.selected === true}
               style={{
-                width: sourceSize,
-                height: sourceSize,
-                top: `${50 + (100 * -1 * source.position.x) / roomDepth}%`,
-                left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
+            width: sourceSize,
+            height: sourceSize,
+            top: `${50 + (100 * -1 * source.position.x) / roomDepth}%`,
+            left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
               }}
+            />
+          ))} */}
+          {sources.map(source => (
+            <SourceRenderer
+              key={source.name}
+              name={source.name}
+              isSelected={source.selected === true}
+              position={source.position}
+              iconWidth={sourceSize}
+              iconHeight={sourceSize}
+              containerSize={{width: viewportWidth, height: viewportHeight}}
+              containerRect={{top: viewportTop, bottom: viewportBottom, left: viewportLeft, right: viewportRight}}
             />
           ))}
         </SoundscapeRoom>
@@ -154,16 +162,42 @@ class Soundscape extends Component {
   }
 }
 
+ScaledSoundscape.propTypes = {
+  size: PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+  }).isRequired,
+  rect: PropTypes.shape({
+    top: PropTypes.number.isRequired,
+    bottom: PropTypes.number.isRequired,
+    left: PropTypes.number.isRequired,
+    right: PropTypes.number.isRequired,
+  }).isRequired,
+  roomWidth: PropTypes.number.isRequired,
+  roomDepth: PropTypes.number.isRequired,
+  roomShape: PropTypes.oneOf(values(RoomShape)).isRequired,
+  roomImage: PropTypes.string,
+  listenerPosition: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    z: PropTypes.number.isRequired,
+  }).isRequired,
+  listenerRotation: PropTypes.number.isRequired,
+  sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
+}
+
+ScaledSoundscape.defaultProps = {
+  roomImage: '',
+}
+
 const mapStateToProps = state => ({
   roomWidth: state.room.size.width,
   roomDepth: state.room.size.depth,
   roomImage: state.room.image.raw,
+  roomShape: state.room.shape,
   listenerPosition: state.listener.position,
   listenerRotation: state.listener.position.rotZAxis,
   sources: values(state.sources.sources),
 })
 
-export default connect(
-  mapStateToProps,
-  null
-)(Soundscape)
+export default connect(mapStateToProps,null)(ScaledSoundscape)
