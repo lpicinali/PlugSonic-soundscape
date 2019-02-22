@@ -3,9 +3,12 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import DropDownMenu from 'material-ui/DropDownMenu'
+import MenuItem from 'material-ui/MenuItem'
 import { values } from 'lodash'
 
 import { setHrtfFilename } from 'src/actions/listener.actions.js'
+import * as colors from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements'
 
 const hrtfFunctions = [
@@ -37,6 +40,18 @@ const Container = styled.div`
   margin: auto;
 `
 
+const DropDownMenuStyle = {
+  width: '100%',
+}
+
+const IconStyle = {
+  fill: colors.BLACK,
+}
+
+const UnderlineStyle = {
+  borderTop: `solid 1px ${colors.BLACK}`,
+}
+
 /**
  * Hrtf Select
  */
@@ -66,26 +81,38 @@ class HrtfSelect extends PureComponent {
     return (
       <Container>
         <H3>HRTF function</H3>
-        <select
+        <DropDownMenu
+          style={DropDownMenuStyle}
+          iconStyle={IconStyle}
+          underlineStyle={UnderlineStyle}
           value={fn}
           onChange={evt => this.handleChange('fn', evt.target.value)}
         >
           {hrtfFunctions.map(hrtfFunction => (
-            <option key={hrtfFunction}>{hrtfFunction}</option>
+            <MenuItem
+              key={hrtfFunction}
+              value={hrtfFunction}
+              primaryText={hrtfFunction}
+            />
           ))}
-        </select>
+        </DropDownMenu>
 
         <H3>HRTF sample length</H3>
-        <select
+        <DropDownMenu
+          style={DropDownMenuStyle}
+          iconStyle={IconStyle}
+          underlineStyle={UnderlineStyle}
           value={len}
           onChange={evt => this.handleChange('len', evt.target.value)}
         >
           {hrtfLengths.map(hrtfLength => (
-            <option key={hrtfLength} value={hrtfLength}>
-              {hrtfLength} samples
-            </option>
+            <MenuItem
+              key={hrtfLength}
+              value={hrtfLength}
+              primaryText={`${hrtfLength} samples`}
+            />
           ))}
-        </select>
+        </DropDownMenu>
       </Container>
     )
   }
