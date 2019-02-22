@@ -2,9 +2,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import styled from 'styled-components'
 import { values } from 'lodash'
 
 import { setHrtfFilename } from 'src/actions/listener.actions.js'
+import { H3 } from 'src/styles/elements'
 
 const hrtfFunctions = [
   'IRC1008',
@@ -29,6 +31,11 @@ function getHrtfFromFilename(url) {
     len: parseInt(len.replace(/s$/, ''), 10),
   }
 }
+
+const Container = styled.div`
+  width: 85%
+  margin: auto;
+`
 
 /**
  * Hrtf Select
@@ -57,7 +64,8 @@ class HrtfSelect extends PureComponent {
     const { fn, len } = getHrtfFromFilename(value)
 
     return (
-      <div>
+      <Container>
+        <H3>HRTF function</H3>
         <select
           value={fn}
           onChange={evt => this.handleChange('fn', evt.target.value)}
@@ -67,6 +75,7 @@ class HrtfSelect extends PureComponent {
           ))}
         </select>
 
+        <H3>HRTF sample length</H3>
         <select
           value={len}
           onChange={evt => this.handleChange('len', evt.target.value)}
@@ -77,7 +86,7 @@ class HrtfSelect extends PureComponent {
             </option>
           ))}
         </select>
-      </div>
+      </Container>
     )
   }
 }
