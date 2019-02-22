@@ -2,6 +2,7 @@ import { all, call, put, select, take, fork, spawn } from 'redux-saga/effects'
 import { map } from 'lodash'
 
 import { ActionType, PlaybackState } from 'src/constants.js'
+import { setHrtfFilename } from 'src/actions/listener.actions.js'
 import { getFileUrl } from 'src/audio/audio-files.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
@@ -239,12 +240,22 @@ function* applyQualityMode() {
 // HRTF
 /* ======================================================================== */
 function* initDefaultHrtf() {
-  try {
-    const binauralInstance = yield call(getBinauralSpatializer)
-    yield call(binauralInstance.setHrtf, '3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf')
-  } catch (err) {
-    console.log('Could not set default HRTF:')
-    console.error(err)
+  const hrtfFilename = yield select(state => state.listener.hrtfFilename)
+  const binauralInstance = yield call(getBinauralSpatializer)
+  yield call(binauralInstance.setHrtf, hrtfFilename)
+}
+
+function* applyHrtfs() {
+  while (true) {
+    const { payload: { filename } } = yield take(ActionType.SET_HRTF_FILENAME)
+
+    try {
+      const binauralInstance = yield call(getBinauralSpatializer)
+      yield call(binauralInstance.setHrtf, filename)
+    } catch (err) {
+      console.log('Could not set default HRTF:')
+      console.error(err)
+    }
   }
 }
 
@@ -267,5 +278,6 @@ export default function* rootSaga() {
     // applySourcePosition(),
     // applyListenerPosition(),
     initDefaultHrtf(),
+    applyHrtfs(),
   ]
 }

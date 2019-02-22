@@ -114,7 +114,8 @@ function createInstance() {
       //
       // (The toolkit will read data from a virtual file system,
       // which is why we register it in the command above.)
-      toolkit.HRTF_CreateFrom3dti(virtualHrtfFilePath, listener)
+      const success = toolkit.HRTF_CreateFrom3dti(virtualHrtfFilePath, listener)
+      return success
     })
   }
 
@@ -145,6 +146,7 @@ function createInstance() {
       for (let i = 0; i < inputData.length; i++) {
         sourceInputMonoBuffer.set(i, inputData[i])
       }
+
       // process data
       source.ProcessAnechoic(
         sourceInputMonoBuffer,
