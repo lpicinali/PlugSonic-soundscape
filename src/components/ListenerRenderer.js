@@ -3,13 +3,13 @@ import { connect } from "react-redux"
 import PropTypes from 'prop-types'
 import * as colors from 'src/styles/colors'
 import styled from 'styled-components'
-import { clamp, pick, values } from 'lodash'
+import { clamp, values } from 'lodash'
 
 import { RoomShape } from 'src/constants.js'
 import { setListenerPosition } from 'src/actions/listener.actions'
 /* ========================================================================== */
-const METERS_PER_STEP = 1
-const RADIANS_PER_STEP = Math.PI/16
+const METERS_PER_STEP = 0.25
+const RADIANS_PER_STEP = Math.PI/32
 /* ========================================================================== */
 const Listener = styled.div`
   position: absolute;
@@ -49,24 +49,28 @@ class ListenerRenderer extends Component {
       if (!this.state.isDragging) {
         const { roomShape, roomWidth, roomDepth, listenerPosition, listenerRotation } = this.props
         const { keys } = this.state
+
         keys[e.keyCode] = true
 
         this.setState({
           ...this.state,
           keys,
         })
+
         let newX = listenerPosition.x
         let newY = listenerPosition.y
         let rotZAxis = listenerRotation
         let deltaX
         let deltaY
-        if (e.keyCode === 40) {
+
+        if (e.keyCode === 40 || keys[40]) {
           deltaX = -Math.cos(listenerRotation) * METERS_PER_STEP
           deltaY = -Math.sin(listenerRotation) * METERS_PER_STEP
-        } else {
+        } else if (e.keyCode === 38 || keys[38]) {
           deltaX = Math.cos(listenerRotation) * METERS_PER_STEP
           deltaY = Math.sin(listenerRotation) * METERS_PER_STEP
         }
+
         if (roomShape === RoomShape.RECTANGULAR) {
           if (Math.abs(newX + deltaX) > roomDepth/2) {
             if (newX >= 0) {
@@ -93,7 +97,7 @@ class ListenerRenderer extends Component {
             }
           }
         }
-        console.log({deltaX,deltaY})
+
         if (keys && keys[37]) {
           rotZAxis = (rotZAxis + RADIANS_PER_STEP) % (2 * Math.PI)
         }
@@ -111,7 +115,6 @@ class ListenerRenderer extends Component {
           newX += deltaX
           newY += deltaY
         }
-
 
         const radius = roomWidth / 2
         if (roomShape === RoomShape.ROUND && newX**2 + newY**2 > radius**2) {

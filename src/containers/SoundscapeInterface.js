@@ -14,18 +14,16 @@ const SoundscapeInterfaceContainer = styled.div`
   flex-direction: row;
   justify-content: flex-end;
 `
-
 const SoundscapeArea = styled.div`
   flex-grow: 1;
 `
-
 const Drawer = styled.div`
   flex-basis: 288px;
   flex-shrink: 0;
   width: 288px;
   overflow-x: hidden;
   overflow-y: scroll;
-  background: ${colors.GREEN};
+  background: ${colors.WHITE};
   transition: width 0.5s;
 `
 /* ========================================================================== */
