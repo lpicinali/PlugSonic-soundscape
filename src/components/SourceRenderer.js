@@ -97,6 +97,7 @@ class SourceRenderer extends Component {
           height: this.props.iconHeight,
           top: `${50 + (100 * -1 * this.props.position.x) / this.props.roomDepth}%`,
           left: `${50 + (100 * -1 * this.props.position.y) / this.props.roomWidth}%`,
+          cursor: `${this.state.isDragging ? `grabbing` : `grab`}`,
         }}
         onMouseDown={this.handleSourceMouseDown}
       />

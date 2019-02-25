@@ -25,6 +25,7 @@ const Drawer = styled.div`
   overflow-y: scroll;
   background: ${colors.WHITE};
   transition: width 0.5s;
+  border: 1px solid ${colors.BLACK};
 `
 /* ========================================================================== */
 /* SOUNDSCAPE INTERFACE */

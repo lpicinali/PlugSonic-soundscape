@@ -226,6 +226,7 @@ class ListenerRenderer extends Component {
           height: this.props.iconHeight,
           top: `${50 + (100 * -1 * this.props.listenerPosition.x) / this.props.roomDepth}%`,
           left: `${50 + (100 * -1 * this.props.listenerPosition.y) / this.props.roomWidth}%`,
+          cursor: `${this.state.isDragging ? `grabbing` : `grab`}`,
         }}
         onMouseDown={this.handleListenerMouseDown}
       />
