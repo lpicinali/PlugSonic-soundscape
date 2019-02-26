@@ -29,6 +29,7 @@ function getHrtfFilename(fn, len) {
 
 function getHrtfFromFilename(url) {
   const [, , fn, len] = url.split('_')
+  console.log('getHrtfFilename', { url, fn, len })
   return {
     fn,
     len: parseInt(len.replace(/s$/, ''), 10),
