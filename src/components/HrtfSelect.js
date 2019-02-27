@@ -87,7 +87,7 @@ class HrtfSelect extends PureComponent {
           iconStyle={IconStyle}
           underlineStyle={UnderlineStyle}
           value={fn}
-          onChange={evt => this.handleChange('fn', evt.target.value)}
+          onChange={(evt, index, value) => this.handleChange('fn', value)}
         >
           {hrtfFunctions.map(hrtfFunction => (
             <MenuItem
@@ -104,7 +104,7 @@ class HrtfSelect extends PureComponent {
           iconStyle={IconStyle}
           underlineStyle={UnderlineStyle}
           value={len}
-          onChange={evt => this.handleChange('len', evt.target.value)}
+          onChange={(evt, index, value) => this.handleChange('len', value)}
         >
           {hrtfLengths.map(hrtfLength => (
             <MenuItem
