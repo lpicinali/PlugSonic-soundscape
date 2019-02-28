@@ -25,7 +25,7 @@ import ExhibitionTab from 'src/containers/ExhibitionTab'
 class TabsContainer extends Component {
 
   state = {
-    value: 'search',
+    value: 'exhibition',
   }
 
   handleChange = (value) => {

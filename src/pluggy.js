@@ -1,11 +1,9 @@
 // eslint-disable-next-line
-export const sessionToken = Pluggy.getToken()
-export const API = 'https://develop.pluggy.eu/api/v1/'
+// export const sessionToken = Pluggy.getToken()
+export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciJdLCJjbGllbnRJZCI6IndlYl9kZXYiLCJpYXQiOjE1NTEzNTIwMTAsImV4cCI6MTU1MTQzODQxMH0.PHTNrAOMgxD7O_E68YNFlbojNCsud_vgnJVkzw5nMuM'
+export const API = 'https://develop.pluggy.eu/api/v1'
 
 export function httpHintAsync(url, callback) {
-  // console.log('\nHTTP HINT ASYNC')
-  // console.log(`url: ${url}`)
-  // console.log(`callback: ${callback}`)
   const xhr = new XMLHttpRequest()
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200)
@@ -16,9 +14,6 @@ export function httpHintAsync(url, callback) {
 }
 
 export function httpGetAsync(url, callback, token) {
-  // console.log('\nHTTP GET ASYNC')
-  // console.log(`url: ${url}`)
-  // console.log(`callback: ${callback}`)
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4 && xhr.status === 200)
@@ -31,14 +26,26 @@ export function httpGetAsync(url, callback, token) {
   xhr.send(null);
 }
 
-export function httpPostAsync(theUrl, callback, body, token, type) {
+export function httpPostAsync(url, callback, body, token, type) {
   const xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = () => {
     if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
       callback(xmlHttp.responseText);
   }
-  // added Authorization header
-  xmlHttp.open("POST", theUrl, true); // true for asynchronous
+  xmlHttp.open("POST", url, true); // true for asynchronous
+  xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
+  if (type)
+    xmlHttp.setRequestHeader("Content-Type", type);
+  xmlHttp.send(body);
+}
+
+export function httpPutAsync(url, callback, body, token, type) {
+  const xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = () => {
+    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+      callback(xmlHttp.responseText);
+  }
+  xmlHttp.open("PUT", url, true); // true for asynchronous
   xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
   if (type)
     xmlHttp.setRequestHeader("Content-Type", type);

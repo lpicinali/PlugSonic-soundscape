@@ -7,7 +7,6 @@ import got from 'got'
 import * as colors from 'src/styles/colors.js'
 
 import {
-  sessionToken,
   API,
   httpHintAsync,
   httpGetAsync,
@@ -119,7 +118,7 @@ class SearchTextField extends Component {
   onSuggestionsFetchRequested = ({ value }) => {
     // console.log('\nON SUGGESTIONS FETCH REQUESTED')
     // console.log(`value = ${value}`)
-    httpHintAsync(`${API}hinting/title?q=${value}`, this.hintCallback)
+    httpHintAsync(`${API}/hinting/title?q=${value}`, this.hintCallback)
   }
 
   onSuggestionsClearRequested = () => {
@@ -137,7 +136,7 @@ class SearchTextField extends Component {
     const media = asset.mediaContent[0]
     const sourceFilename = media.filename
     const mediaId = media._id
-    const sourceUrl = `${API}assets/${asset._id}/media/${mediaId}`
+    const sourceUrl = `${API}/assets/${asset._id}/media/${mediaId}`
 
     // console.log('Adding...')
     // console.log(sourceTitle)
@@ -160,7 +159,7 @@ class SearchTextField extends Component {
     const sourceName = asset.title
     const assetId = asset._id
     const mediaId = media._id
-    const sourceUrl = `${API}assets/${assetId}/media/${mediaId}`
+    const sourceUrl = `${API}/assets/${assetId}/media/${mediaId}`
 
     console.log('Adding...')
     console.log(sourceName)
@@ -203,7 +202,7 @@ class SearchTextField extends Component {
 
   searchAssets = () => {
     // console.log('/nSEARCH ASSETS')
-    const assets = httpGetAsync(`${API}search?q=${this.state.searchTextFieldValue}`, this.searchAssetCallback)
+    const assets = httpGetAsync(`${API}/search?q=${this.state.searchTextFieldValue}`, this.searchAssetCallback)
 
     this.setState({
       ...this.state,

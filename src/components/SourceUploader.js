@@ -23,7 +23,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
 `
-export const TextButtonStyle = {
+export const textfieldStyle = {
   marginLeft: `20px`,
   width: `85%`
 }
@@ -160,7 +160,7 @@ class SourceUploader extends Component {
           floatingLabelText="Name"
           onChange={this.handleTextFieldChange}
           // inputStyle={tfInputStyle}
-          style={TextButtonStyle}
+          style={textfieldStyle}
           underlineFocusStyle={underlineFocusStyle}
           underlineStyle={underlineStyle}
         />
