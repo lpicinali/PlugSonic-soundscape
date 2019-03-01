@@ -123,8 +123,13 @@ class ExhibitionContainer extends Component {
   }
 
   handleTextFieldChange = (event) => {
+    const id = event.target.id
     const val = event.target.value
-    this.setState({ ...this.state, exhibitionTitle: val})
+    if(id === 'exhibitionTitle'){
+      this.setState({ ...this.state, exhibitionTitle: val})
+    } else {
+      this.setState({ ...this.state, exhibitionDescription: val})
+    }
   }
 
   /* ------------------------------------------------------------------------ */
@@ -139,6 +144,21 @@ class ExhibitionContainer extends Component {
           value={this.state.exhibitionTitle}
           floatingLabelFixed
           floatingLabelText="Title"
+          onChange={this.handleTextFieldChange}
+          style={textfieldStyle}
+          underlineFocusStyle={underlineFocusStyle}
+          underlineStyle={underlineStyle}
+        />
+
+        <TextField
+          id="exhibitionDescription"
+          type="text"
+          value={this.state.exhibitionDescription}
+          floatingLabelFixed
+          floatingLabelText="Description"
+          multiLine
+          rows={2}
+          rowsMax={4}
           onChange={this.handleTextFieldChange}
           style={textfieldStyle}
           underlineFocusStyle={underlineFocusStyle}
