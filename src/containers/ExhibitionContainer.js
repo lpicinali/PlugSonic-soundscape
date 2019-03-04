@@ -17,6 +17,7 @@ import {
 import TextField from 'material-ui/TextField'
 import FlatButton from "material-ui/FlatButton"
 import Divider from 'material-ui/Divider'
+import Chip from 'material-ui/Chip';
 /* ========================================================================== */
 export const textfieldStyle = {
   marginLeft: `20px`,
@@ -44,6 +45,14 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
 `
+const chipStyle = {
+  margin: 4,
+}
+const ChipWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 20px;
+`
 /* ========================================================================== */
 
 /* ========================================================================== */
@@ -54,6 +63,7 @@ class ExhibitionContainer extends Component {
   state = {
     exhibitionTitle: '',
     exhibitionDescription: '',
+    exhibitionNewTag: '',
     exhibitionTags: [],
     exhibitionId: null,
   }
@@ -74,7 +84,7 @@ class ExhibitionContainer extends Component {
       public: false,
       description: this.state.exhibitionDescription,
       metadata: soundscape,
-      tags: this.state.exhibitionTags,
+      tags: this.state.exhibitionTags.map(tag => tag.label),
       type: "soundscape"
     }
     httpPostAsync(`${API}/exhibitions`, this.createExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
@@ -101,7 +111,7 @@ class ExhibitionContainer extends Component {
       title: this.state.exhibitionTitle,
       description: this.state.exhibitionDescription,
       metadata: soundscape,
-      tags: this.state.exhibitionTags,
+      tags: this.state.exhibitionTags.map(tag => tag.label),
       type: "soundscape"
     }
     const exhibitionId = this.state.exhibitionId
@@ -112,7 +122,6 @@ class ExhibitionContainer extends Component {
     const updatedExhibition = JSON.parse(responseText)
     console.log(updatedExhibition)
   }
-
 
   handleSaveExhibition = () => {
     if (this.state.exhibitionId) {
@@ -125,11 +134,31 @@ class ExhibitionContainer extends Component {
   handleTextFieldChange = (event) => {
     const id = event.target.id
     const val = event.target.value
-    if(id === 'exhibitionTitle'){
-      this.setState({ ...this.state, exhibitionTitle: val})
-    } else {
-      this.setState({ ...this.state, exhibitionDescription: val})
+    if(id === 'exhibitionTitle') {
+      this.setState({ ...this.state, exhibitionTitle: val })
+    } else if (id === 'exhibitionDescription') {
+      this.setState({ ...this.state, exhibitionDescription: val })
+    } else if (id === 'exhibitionNewTag') {
+      this.setState({ ...this.state, exhibitionNewTag: val })
     }
+  }
+
+  handleKeyUp = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      const tags = this.state.exhibitionTags
+      const newTagKey = tags.length
+      const newTagLabel = e.target.value
+      tags.push({key: newTagKey, label: newTagLabel})
+      this.setState({ ...this.state, exhibitionNewTag: '', exhibitionTags: tags})
+    }
+  }
+
+  handleRequestDelete = (key) => {
+    const tags = this.state.exhibitionTags
+    const tagToDelete = tags.map((tag) => tag.key).indexOf(key)
+    tags.splice(tagToDelete, 1);
+    this.setState({ ...this.state, exhibitionTags: tags });
   }
 
   /* ------------------------------------------------------------------------ */
@@ -164,6 +193,31 @@ class ExhibitionContainer extends Component {
           underlineFocusStyle={underlineFocusStyle}
           underlineStyle={underlineStyle}
         />
+
+        <TextField
+          id="exhibitionNewTag"
+          type="text"
+          value={this.state.exhibitionNewTag}
+          floatingLabelFixed
+          floatingLabelText="Tags"
+          onChange={this.handleTextFieldChange}
+          onKeyUp={this.handleKeyUp}
+          style={textfieldStyle}
+          underlineFocusStyle={underlineFocusStyle}
+          underlineStyle={underlineStyle}
+        />
+
+        <ChipWrapper>
+          {this.state.exhibitionTags.map(tag => (
+            <Chip
+              key={tag.key}
+              onRequestDelete={() => this.handleRequestDelete(tag.key)}
+              style={chipStyle}
+            >
+              {tag.label}
+            </Chip>
+          ))}
+        </ChipWrapper>
 
         <FlatButton
           disabled={this.state.exhibitionTitle === ''}
