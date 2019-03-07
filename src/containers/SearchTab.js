@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { map } from 'lodash'
 import * as colors from 'src/styles/colors'
 
-import SearchTextField from 'src/components/SearchTextField'
+import SearchAssetContainer from 'src/containers/SearchAssetContainer'
 /* ========================================================================== */
 
 /* ========================================================================== */
@@ -18,7 +18,7 @@ class SearchTab extends Component {
 
     return (
       <React.Fragment>
-        <SearchTextField/>
+        <SearchAssetContainer/>
       </React.Fragment>
     )
   }

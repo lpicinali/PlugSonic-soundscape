@@ -95,9 +95,9 @@ const renderInputComponent = inputProps => {
   );
 }
 /* ========================================================================== */
-/* SEARCH TEXTFIELD */
+/* SEARCH ASSET CONTAINER */
 /* ========================================================================== */
-class SearchTextField extends Component {
+class SearchAssetContainer extends Component {
 
   state = {
     title: '',
@@ -270,7 +270,7 @@ class SearchTextField extends Component {
   }
 }
 
-SearchTextField.propTypes = {
+SearchAssetContainer.propTypes = {
   sources: PropTypes.object.isRequired,
   onAddSource: PropTypes.func.isRequired,
 }
@@ -284,4 +284,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch(addSourceRemote(filename, name, url, assetId, mediaId)),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(SearchTextField)
+export default connect(mapStateToProps,mapDispatchToProps)(SearchAssetContainer)
