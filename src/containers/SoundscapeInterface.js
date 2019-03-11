@@ -17,12 +17,26 @@ const SoundscapeInterfaceContainer = styled.div`
 const SoundscapeArea = styled.div`
   flex-grow: 1;
 `
+const DrawersContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+`
 const Drawer = styled.div`
-  flex-basis: 288px;
-  flex-shrink: 0;
   width: 288px;
+  flex-shrink: 1;
+  flex-grow: 1;
   overflow-x: hidden;
   overflow-y: scroll;
+  background: ${colors.WHITE};
+  transition: width 0.5s;
+  border: 1px solid ${colors.BLACK};
+`
+const ArrowsDrawer = styled.div`
+  flex-shrink: 0;
+  width: 288px;
+  height: 100px;
+  overflow: hidden;
   background: ${colors.WHITE};
   transition: width 0.5s;
   border: 1px solid ${colors.BLACK};
@@ -33,11 +47,14 @@ const Drawer = styled.div`
 class SoundscapeInterface extends PureComponent {
   static propTypes = {
     showSettingsDrawer: PropTypes.bool.isRequired,
+    showArrowsDrawer: PropTypes.bool.isRequired,
   }
 
   /* ------------------------------------------------------------------------ */
   render() {
-    const { showSettingsDrawer } = this.props
+    const { showSettingsDrawer, showArrowsDrawer } = this.props
+
+    const showTouchArrowsDrawer = false
 
     return (
       <SoundscapeInterfaceContainer>
@@ -49,11 +66,17 @@ class SoundscapeInterface extends PureComponent {
           </ContainerDimensions>
         </SoundscapeArea>
 
-        {showSettingsDrawer === true && (
-          <Drawer>
-            <TabsContainer />
-          </Drawer>
-        )}
+        <DrawersContainer>
+          {showSettingsDrawer === true && (
+            <Drawer>
+              <TabsContainer />
+            </Drawer>
+          )}
+
+          {showArrowsDrawer === true && (
+            <ArrowsDrawer/>
+          )}
+        </DrawersContainer>
       </SoundscapeInterfaceContainer>
     )
   }
@@ -61,4 +84,5 @@ class SoundscapeInterface extends PureComponent {
 
 export default connect(state => ({
   showSettingsDrawer: state.controls.showSettingsDrawer,
+  showArrowsDrawer: state.controls.showArrowsDrawer,
 }))(SoundscapeInterface)

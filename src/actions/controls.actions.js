@@ -21,3 +21,11 @@ export const showSettingsDrawer = () => ({
 export const hideSettingsDrawer = () => ({
   type: ActionType.HIDE_SETTINGS_DRAWER,
 })
+
+export const showArrowsDrawer = () => ({
+  type: ActionType.SHOW_ARROWS_DRAWER,
+})
+
+export const hideArrowsDrawer = () => ({
+  type: ActionType.HIDE_ARROWS_DRAWER,
+})

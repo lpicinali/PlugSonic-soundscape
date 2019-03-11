@@ -10,9 +10,16 @@ import PlayIcon from "material-ui/svg-icons/av/play-arrow"
 import StopIcon from "material-ui/svg-icons/av/stop"
 import SettingsIcon from "material-ui/svg-icons/action/settings"
 import ArrowIcon from "material-ui/svg-icons/navigation/chevron-right"
+import ArrowsIcon from "material-ui/svg-icons/av/games"
 
 import { PlaybackState } from 'src/constants.js'
-import { setPlaybackState, showSettingsDrawer, hideSettingsDrawer } from 'src/actions/controls.actions'
+import {
+  setPlaybackState,
+  showSettingsDrawer,
+  hideSettingsDrawer,
+  showArrowsDrawer,
+  hideArrowsDrawer,
+} from 'src/actions/controls.actions'
 /* ========================================================================== */
 const FlatButtonStyle = {
   minWidth: '48px',
@@ -32,6 +39,10 @@ class NavControls extends Component {
 
   toggleSettings = () => {
     this.props.showSettingsDrawer ? this.props.onHideSettingsDrawer() : this.props.onShowSettingsDrawer()
+  }
+
+  toggleArrows = () => {
+    this.props.showArrowsDrawer ? this.props.onHideArrowsDrawer() : this.props.onShowArrowsDrawer()
   }
 
   /* ------------------------------------------------------------------------ */
@@ -56,6 +67,12 @@ class NavControls extends Component {
         />
 
         <FlatButton
+          icon={<ArrowsIcon color={colors.WHITE}/>}
+          style={FlatButtonStyle}
+          onClick={this.toggleArrows}
+        />
+
+        <FlatButton
           icon={DrawerIcon}
           style={SettingsButtonStyle}
           onClick={this.toggleSettings}
@@ -68,24 +85,31 @@ class NavControls extends Component {
 NavControls.propTypes = {
   playbackState: PropTypes.oneOf(values(PlaybackState)).isRequired,
   showSettingsDrawer: PropTypes.bool.isRequired,
+  showArrowsDrawer: PropTypes.bool.isRequired,
   onShowSettingsDrawer: PropTypes.func.isRequired,
   onHideSettingsDrawer: PropTypes.func.isRequired,
+  onShowArrowsDrawer: PropTypes.func.isRequired,
+  onHideArrowsDrawer: PropTypes.func.isRequired,
   onPlaybackStateChange: PropTypes.func.isRequired,
 }
 
 NavControls.defaultProps = {
   showSettingsDrawer: false,
+  showArrowsDrawer: false,
 }
 
 const mapStateToProps = state => ({
   playbackState: state.controls.playbackState,
   showSettingsDrawer: state.controls.showSettingsDrawer,
+  showArrowsDrawer: state.controls.showArrowsDrawer,
 })
 
 const mapDispatchToProps = dispatch => ({
   onPlaybackStateChange: state => dispatch(setPlaybackState(state)),
   onShowSettingsDrawer: () => dispatch(showSettingsDrawer()),
   onHideSettingsDrawer: () => dispatch(hideSettingsDrawer()),
+  onShowArrowsDrawer: () => dispatch(showArrowsDrawer()),
+  onHideArrowsDrawer: () => dispatch(hideArrowsDrawer()),
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(NavControls)
