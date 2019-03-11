@@ -8,7 +8,7 @@ import ArrowButton from 'src/components/ArrowButton'
 import { RoomShape } from 'src/constants.js'
 import { setListenerPosition } from 'src/actions/listener.actions'
 /* ========================================================================== */
-const REPEAT_TIME = 1000
+const REPEAT_TIME = 50
 const METERS_PER_STEP = 0.25
 const RADIANS_PER_STEP = Math.PI/32
 /* ========================================================================== */
