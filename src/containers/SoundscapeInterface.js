@@ -4,6 +4,7 @@ import ContainerDimensions from 'react-container-dimensions'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
+import ArrowControlsContainer from 'src/containers/ArrowControlsContainer'
 import TabsContainer from 'src/containers/TabsContainer.js'
 import ScaledSoundscape from 'src/containers/ScaledSoundscape.js'
 import * as colors from 'src/styles/colors.js'
@@ -22,7 +23,7 @@ const DrawersContainer = styled.div`
   flex-direction: column;
   justify-content: flex-end;
 `
-const Drawer = styled.div`
+const SettingsDrawer = styled.div`
   width: 288px;
   flex-shrink: 1;
   flex-grow: 1;
@@ -35,7 +36,7 @@ const Drawer = styled.div`
 const ArrowsDrawer = styled.div`
   flex-shrink: 0;
   width: 288px;
-  height: 100px;
+  height: 140px;
   overflow: hidden;
   background: ${colors.WHITE};
   transition: width 0.5s;
@@ -68,13 +69,15 @@ class SoundscapeInterface extends PureComponent {
 
         <DrawersContainer>
           {showSettingsDrawer === true && (
-            <Drawer>
+            <SettingsDrawer>
               <TabsContainer />
-            </Drawer>
+            </SettingsDrawer>
           )}
 
           {showArrowsDrawer === true && (
-            <ArrowsDrawer/>
+            <ArrowsDrawer>
+              <ArrowControlsContainer/>
+            </ArrowsDrawer>
           )}
         </DrawersContainer>
       </SoundscapeInterfaceContainer>
