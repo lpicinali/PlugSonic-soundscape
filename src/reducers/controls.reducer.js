@@ -8,6 +8,7 @@ const initialState = {
   playbackState: PlaybackState.STOP,
   masterVolume: 0.5,
   showSettingsDrawer: true,
+  showArrowsDrawer: true,
 }
 
 export default function(state = initialState, { type, payload }) {
@@ -24,6 +25,11 @@ export default function(state = initialState, { type, payload }) {
   if (type === ActionType.HIDE_SETTINGS_DRAWER) {
     return { ...state, showSettingsDrawer: false, }
   }
-
+  if (type === ActionType.SHOW_ARROWS_DRAWER) {
+    return { ...state, showArrowsDrawer: true, }
+  }
+  if (type === ActionType.HIDE_ARROWS_DRAWER) {
+    return { ...state, showArrowsDrawer: false, }
+  }
   return state
 }
