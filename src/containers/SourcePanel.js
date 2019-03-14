@@ -1,4 +1,4 @@
-import React, { Component} from "react"
+import React, { PureComponent } from "react"
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -6,9 +6,12 @@ import * as colors from 'src/styles/colors'
 
 import { List, ListItem } from "material-ui/List"
 import Divider from "material-ui/Divider"
+import Slider from 'material-ui/Slider'
 import Toggle from 'material-ui/Toggle'
 
-import { sourceOnOff } from 'src/actions/sources.actions'
+import * as CustomPropTypes from 'src/prop-types.js'
+import { setSourcePosition, sourceOnOff } from 'src/actions/sources.actions'
+import { H3 } from 'src/styles/elements.js'
 /* ========================================================================== */
 const toggleStyle = {
   margin: `auto`,
@@ -24,24 +27,36 @@ const toggleLabelStyle = {
 /* ========================================================================== */
 /* SOURCES TAB */
 /* ========================================================================== */
-class SourcePanel extends Component {
+class SourcePanel extends PureComponent {
 
   handleSourceOnOff = (name) => {
     this.props.onSourceOnOff(this.props.sourceObject.name)
   }
-  /* ------------------------------------------------------------------------ */
+
+  handleSourceMove = (axis, value) => {
+    const { sourceObject, onSourcePositionChange } = this.props
+
+    const newPosition = {
+      ...sourceObject.position,
+      [axis]: value,
+    }
+
+    onSourcePositionChange(sourceObject.name, newPosition)
+  }
+
   render() {
+    const { roomSize, sourceObject } = this.props
 
     const nestedItems = []
 
     nestedItems.push(
       <ListItem
-        key={`${this.props.sourceObject.name}-onofftoggle`}
+        key={`${sourceObject.name}-onofftoggle`}
         primaryText="ON/OFF"
         rightToggle={
           <Toggle
-            onToggle={() => this.props.onSourceOnOff(this.props.sourceObject.name)}
-            toggled={this.props.sourceObject.selected}
+            onToggle={() => this.props.onSourceOnOff(sourceObject.name)}
+            toggled={sourceObject.selected}
           />
         }
       />
@@ -49,24 +64,40 @@ class SourcePanel extends Component {
 
     nestedItems.push(
       <ListItem
-        key="item_2"
-        primaryText="PrimaryText_2"
-        secondaryText="SecondaryText_2"
-      />
-    )
+        key={`${sourceObject.name}-position`}
+      >
+        <H3>Position</H3>
 
-    nestedItems.push(
-      <ListItem
-        key="item_3"
-        primaryText="PrimaryText_3"
-        secondaryText="SecondaryText_3"
-      />
+        <label>X</label>
+        <Slider
+          min={-roomSize.depth / 2}
+          max={roomSize.depth / 2}
+          value={sourceObject.position.x}
+          onChange={(event, value) => this.handleSourceMove('x', value)}
+        />
+
+        <label>Y</label>
+        <Slider
+          min={-roomSize.width / 2}
+          max={roomSize.width / 2}
+          value={-sourceObject.position.y}
+          onChange={(event, value) => this.handleSourceMove('y', -value)}
+        />
+
+        <label>Z</label>
+        <Slider
+          min={0}
+          max={roomSize.height / 2}
+          value={sourceObject.position.z}
+          onChange={(event, value) => this.handleSourceMove('z', value)}
+        />
+      </ListItem>
     )
 
     return (
       <ListItem
-        key={this.props.sourceObject.name}
-        primaryText={this.props.sourceObject.name}
+        key={sourceObject.name}
+        primaryText={sourceObject.name}
         primaryTogglesNestedList
         nestedItems={nestedItems}
       />
@@ -75,20 +106,23 @@ class SourcePanel extends Component {
 }
 
 SourcePanel.propTypes = {
-  sourceObject: PropTypes.object.isRequired,
+  roomSize: PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    depth: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+  }).isRequired,
+  sourceObject: CustomPropTypes.source.isRequired,
   onSourceOnOff: PropTypes.func.isRequired,
-}
-
-SourcePanel.defaultProps = {
-  sourceObject: {},
+  onSourcePositionChange: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-  sources: state.sources.sources,
+  roomSize: state.room.size,
 })
 
 const mapDispatchToProps = dispatch => ({
   onSourceOnOff: name => dispatch(sourceOnOff(name)),
+  onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(SourcePanel)
+export default connect(mapStateToProps, mapDispatchToProps)(SourcePanel)
