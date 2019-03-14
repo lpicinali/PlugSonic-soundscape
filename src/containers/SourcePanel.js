@@ -24,6 +24,12 @@ const toggleLabelStyle = {
   textTransform: `uppercase`,
   letterSpacing: `1px`,
 }
+
+const SliderValue = styled.span`
+  float: right;
+  text-transform: none;
+`
+
 /* ========================================================================== */
 /* SOURCES TAB */
 /* ========================================================================== */
@@ -70,7 +76,10 @@ class SourcePanel extends PureComponent {
       <ListItem
         key={`${sourceObject.name}-volume`}
       >
-        <H3>Volume</H3>
+        <div>
+          <H3>Volume</H3>
+          <SliderValue>{sourceObject.volume}</SliderValue>
+        </div>
         <Slider
           min={0}
           max={1}
@@ -86,7 +95,10 @@ class SourcePanel extends PureComponent {
       >
         <H3>Position</H3>
 
-        <label>X</label>
+        <div>
+          <label>X</label>
+          <SliderValue>{sourceObject.position.x} m</SliderValue>
+        </div>
         <Slider
           min={-roomSize.depth / 2}
           max={roomSize.depth / 2}
@@ -94,7 +106,10 @@ class SourcePanel extends PureComponent {
           onChange={(event, value) => this.handleSourceMove('x', value)}
         />
 
-        <label>Y</label>
+        <div>
+          <label>Y</label>
+          <SliderValue>{-sourceObject.position.y} m</SliderValue>
+        </div>
         <Slider
           min={-roomSize.width / 2}
           max={roomSize.width / 2}
@@ -102,7 +117,10 @@ class SourcePanel extends PureComponent {
           onChange={(event, value) => this.handleSourceMove('y', -value)}
         />
 
-        <label>Z</label>
+        <div>
+          <label>Z</label>
+          <SliderValue>{sourceObject.position.z} m</SliderValue>
+        </div>
         <Slider
           min={0}
           max={roomSize.height / 2}
