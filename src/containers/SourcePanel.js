@@ -10,7 +10,7 @@ import Slider from 'material-ui/Slider'
 import Toggle from 'material-ui/Toggle'
 
 import * as CustomPropTypes from 'src/prop-types.js'
-import { setSourcePosition, sourceOnOff } from 'src/actions/sources.actions'
+import { setSourcePosition, setSourceVolume, sourceOnOff } from 'src/actions/sources.actions'
 import { H3 } from 'src/styles/elements.js'
 /* ========================================================================== */
 const toggleStyle = {
@@ -31,6 +31,10 @@ class SourcePanel extends PureComponent {
 
   handleSourceOnOff = (name) => {
     this.props.onSourceOnOff(this.props.sourceObject.name)
+  }
+
+  handleSourceVolume = volume => {
+    this.props.onSourceVolumeChange(this.props.sourceObject.name, volume)
   }
 
   handleSourceMove = (axis, value) => {
@@ -60,6 +64,20 @@ class SourcePanel extends PureComponent {
           />
         }
       />
+    )
+
+    nestedItems.push(
+      <ListItem
+        key={`${sourceObject.name}-volume`}
+      >
+        <H3>Volume</H3>
+        <Slider
+          min={0}
+          max={1}
+          value={sourceObject.volume}
+          onChange={(event, value) => this.handleSourceVolume(value)}
+        />
+      </ListItem>
     )
 
     nestedItems.push(
@@ -113,6 +131,7 @@ SourcePanel.propTypes = {
   }).isRequired,
   sourceObject: CustomPropTypes.source.isRequired,
   onSourceOnOff: PropTypes.func.isRequired,
+  onSourceVolumeChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
 }
 
@@ -122,6 +141,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onSourceOnOff: name => dispatch(sourceOnOff(name)),
+  onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
 })
 

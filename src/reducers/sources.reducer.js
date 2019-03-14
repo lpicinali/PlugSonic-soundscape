@@ -44,9 +44,9 @@ export default function(state = initialState, { type, payload }) {
     }
 
     case 'SET_SOURCE_VOLUME': {
-      const newTargets = Object.assign({}, state.targets)
-      newTargets[payload.target].volume = payload.volume
-      return { ...state, targets: newTargets }
+      const newSources = Object.assign({}, state.sources)
+      newSources[payload.source].volume = payload.volume
+      return { ...state, sources: newSources }
     }
 
 
