@@ -2,7 +2,6 @@ import React, { PureComponent } from "react"
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import * as colors from 'src/styles/colors'
 
 import { List, ListItem } from "material-ui/List"
 import Divider from "material-ui/Divider"
@@ -11,6 +10,7 @@ import Toggle from 'material-ui/Toggle'
 
 import * as CustomPropTypes from 'src/prop-types.js'
 import { setSourcePosition, setSourceVolume, sourceOnOff } from 'src/actions/sources.actions'
+import * as colors from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements.js'
 /* ========================================================================== */
 const toggleStyle = {
