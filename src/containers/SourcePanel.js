@@ -102,6 +102,7 @@ class SourcePanel extends PureComponent {
         <Slider
           min={-roomSize.depth / 2}
           max={roomSize.depth / 2}
+          step={0.1}
           value={sourceObject.position.x}
           onChange={(event, value) => this.handleSourceMove('x', value)}
         />
@@ -113,6 +114,7 @@ class SourcePanel extends PureComponent {
         <Slider
           min={-roomSize.width / 2}
           max={roomSize.width / 2}
+          step={0.1}
           value={-sourceObject.position.y}
           onChange={(event, value) => this.handleSourceMove('y', -value)}
         />
@@ -124,6 +126,7 @@ class SourcePanel extends PureComponent {
         <Slider
           min={0}
           max={roomSize.height / 2}
+          step={0.1}
           value={sourceObject.position.z}
           onChange={(event, value) => this.handleSourceMove('z', value)}
         />
