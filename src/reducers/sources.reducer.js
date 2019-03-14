@@ -28,11 +28,12 @@ export default function(state = initialState, { type, payload }) {
       return set('editing', payload.target, state)
     }
 
-    case 'SET_SOURCE_POSITION': {
-      const newSources = Object.assign({}, state.sources)
-      Object.assign(newSources[payload.source].position, payload.position)
-      return { ...state, sources: newSources }
-    }
+    case 'SET_SOURCE_POSITION':
+      return set(
+        ['sources', payload.source, 'position'],
+        payload.position,
+        state
+      )
 
     case 'SET_SOURCE_REACH': {
       const { radius, fadeDuration } = payload
@@ -43,11 +44,12 @@ export default function(state = initialState, { type, payload }) {
       )
     }
 
-    case 'SET_SOURCE_VOLUME': {
-      const newSources = Object.assign({}, state.sources)
-      newSources[payload.source].volume = payload.volume
-      return { ...state, sources: newSources }
-    }
+    case 'SET_SOURCE_VOLUME':
+      return set(
+        ['sources', payload.source, 'volume'],
+        payload.volume,
+        state
+      )
 
 
     case 'ADD_SOURCE_LOCAL': {
