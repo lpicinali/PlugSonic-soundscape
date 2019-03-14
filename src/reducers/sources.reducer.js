@@ -3,7 +3,7 @@
 /* ------------------- NOTES -------------------- */ /*
 
 *//* ---------------------------------------------- */
-import { set } from 'lodash/fp'
+import { omit, set } from 'lodash/fp'
 import { ADEtoXYZ } from 'src/utils'
 // import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
@@ -94,14 +94,12 @@ export default function(state = initialState, { type, payload }) {
       return { ...state, sources: newSources }
     }
 
-    case 'DELETE_TARGETS': {
-      const newTargets = Object.assign({}, state.targets)
-      payload.targets.forEach(filename => {
-        delete newTargets[filename]
-      })
-      const newSelected = []
-      return { ...state, targets: newTargets, selected: newSelected }
-    }
+    case 'DELETE_SOURCES':
+      return set(
+        'sources',
+        omit(payload.sources, state.sources),
+        state
+      )
 
     case 'IMPORT_SOURCES': {
       const newSources = {}

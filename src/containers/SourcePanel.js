@@ -3,13 +3,27 @@ import { connect } from "react-redux"
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core'
 import { List, ListItem } from "material-ui/List"
 import Divider from "material-ui/Divider"
+import FlatButton from "material-ui/FlatButton"
 import Slider from 'material-ui/Slider'
 import Toggle from 'material-ui/Toggle'
 
 import * as CustomPropTypes from 'src/prop-types.js'
-import { setSourcePosition, setSourceVolume, sourceOnOff } from 'src/actions/sources.actions'
+import {
+  deleteSources,
+  setSourcePosition,
+  setSourceVolume,
+  sourceOnOff,
+} from 'src/actions/sources.actions'
 import * as colors from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements.js'
 /* ========================================================================== */
@@ -34,6 +48,9 @@ const SliderValue = styled.span`
 /* SOURCES TAB */
 /* ========================================================================== */
 class SourcePanel extends PureComponent {
+  state = {
+    isPromptingDelete: false,
+  }
 
   handleSourceOnOff = (name) => {
     this.props.onSourceOnOff(this.props.sourceObject.name)
@@ -54,8 +71,25 @@ class SourcePanel extends PureComponent {
     onSourcePositionChange(sourceObject.name, newPosition)
   }
 
+  handleSourceDelete = () => {
+    this.setState({
+      isPromptingDelete: true,
+    })
+  }
+
+  handleSourceDeletionResponse = shouldDelete => {
+    if (shouldDelete === true) {
+      this.props.onSourceDelete(this.props.sourceObject.name)
+    }
+
+    this.setState({
+      isPromptingDelete: false,
+    })
+  }
+
   render() {
     const { roomSize, sourceObject } = this.props
+    const { isPromptingDelete } = this.state
 
     const nestedItems = []
 
@@ -133,6 +167,44 @@ class SourcePanel extends PureComponent {
       </ListItem>
     )
 
+    nestedItems.push(
+      <ListItem key={`${sourceObject.name}-delete`}>
+        <Button variant="contained" color="secondary" onClick={this.handleSourceDelete}>
+          Delete
+        </Button>
+
+        <Dialog
+          open={isPromptingDelete}
+          onClose={() => this.handleSourceDeletionResponse(false)}
+        >
+          <DialogTitle>Just to make sure</DialogTitle>
+
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this source?
+            </DialogContentText>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              color="secondary"
+              onClick={() => this.handleSourceDeletionResponse(false)}
+            >
+              No
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleSourceDeletionResponse(true)}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ListItem>
+    )
+
     return (
       <ListItem
         key={sourceObject.name}
@@ -154,6 +226,7 @@ SourcePanel.propTypes = {
   onSourceOnOff: PropTypes.func.isRequired,
   onSourceVolumeChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
+  onSourceDelete: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -164,6 +237,7 @@ const mapDispatchToProps = dispatch => ({
   onSourceOnOff: name => dispatch(sourceOnOff(name)),
   onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
+  onSourceDelete: name => dispatch(deleteSources([name])),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SourcePanel)
