@@ -44,9 +44,12 @@ const SliderValue = styled.span`
   text-transform: none;
 `
 
-/* ========================================================================== */
-/* SOURCES TAB */
-/* ========================================================================== */
+/**
+ * Source Panel
+ *
+ * NOTE: The behaviour of X and Y are presented in a way that
+ *       follows the X/Y convention that most people are used to.
+ */
 class SourcePanel extends PureComponent {
   state = {
     isPromptingDelete: false,
@@ -131,18 +134,6 @@ class SourcePanel extends PureComponent {
 
         <div>
           <label>X</label>
-          <SliderValue>{sourceObject.position.x} m</SliderValue>
-        </div>
-        <Slider
-          min={-roomSize.depth / 2}
-          max={roomSize.depth / 2}
-          step={0.1}
-          value={sourceObject.position.x}
-          onChange={(event, value) => this.handleSourceMove('x', value)}
-        />
-
-        <div>
-          <label>Y</label>
           <SliderValue>{-sourceObject.position.y} m</SliderValue>
         </div>
         <Slider
@@ -151,6 +142,18 @@ class SourcePanel extends PureComponent {
           step={0.1}
           value={-sourceObject.position.y}
           onChange={(event, value) => this.handleSourceMove('y', -value)}
+        />
+
+        <div>
+          <label>Y</label>
+          <SliderValue>{sourceObject.position.x} m</SliderValue>
+        </div>
+        <Slider
+          min={-roomSize.depth / 2}
+          max={roomSize.depth / 2}
+          step={0.1}
+          value={sourceObject.position.x}
+          onChange={(event, value) => this.handleSourceMove('x', value)}
         />
 
         <div>
