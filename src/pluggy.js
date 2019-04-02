@@ -83,6 +83,9 @@ function getExhibitionCallback(responseText) {
   title = response.data.title
   description = response.data.description
   tags = response.data.tags
+  console.log(`TITLE = ${title}`)
+  console.log(`DESCRIPTION = ${description}`)
+  console.log(`TAGS = ${tags}`)
 }
 
 httpGetAsync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, sessionToken)
@@ -90,6 +93,3 @@ httpGetAsync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, sessio
 export const exhibitionTitle = title
 export const exhibitionDescription = description
 export const exhibitionTags = tags
-console.log(`TITLE = ${exhibitionTitle}`)
-console.log(`DESCRIPTION = ${exhibitionDescription}`)
-console.log(`TAGS = ${exhibitionTags}`)
