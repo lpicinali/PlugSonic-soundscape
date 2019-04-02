@@ -68,6 +68,14 @@ export const sessionToken = Pluggy.getToken()
 export const exhibitionUrl = window.location.href
 export const exhibitionQuery = window.location.search.substring(1)
 export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
-console.log(`URL = ${exhibitionUrl}`)
 console.log(`TOKEN = ${sessionToken}`)
 console.log(`ID = ${exhibitionId}`)
+
+function getExhibitionCallback(responseText) {
+  console.log(`\nGET EXHIBITION CALLBACK`)
+  const response = JSON.parse(responseText)
+  console.log(`response`)
+  console.log(response)
+}
+
+httpGetAsync(`${API}/exhibitionId/${exhibitionId}`, getExhibitionCallback, sessionToken)
