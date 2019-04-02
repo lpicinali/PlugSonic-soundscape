@@ -171,6 +171,11 @@ class ExhibitionContainer extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
 
+    console.log(this.state.exhibitionTitle)
+    console.log(this.state.exhibitionDescription)
+    console.log(this.state.exhibitionTags)
+    console.log(this.state.exhibitionId)
+
     return (
       <Container>
 
