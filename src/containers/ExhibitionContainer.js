@@ -10,6 +10,7 @@ import {
   API,
   URL,
   QUERY,
+  getQueryVariable,
   httpGetAsync,
   httpPostAsync,
   httpPutAsync,
@@ -166,11 +167,7 @@ class ExhibitionContainer extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
 
-    // const url = window.location.href
-
-    console.log(`URL = ${URL}`)
-    console.log(`QUERY = ${QUERY}`)
-    console.log(`Token = ${sessionToken}`)
+    console.log(`exhibitionId = ${getQueryVariable(QUERY,'exhibitionId')}`)
 
     return (
       <Container>
