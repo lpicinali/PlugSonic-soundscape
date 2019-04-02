@@ -21,9 +21,14 @@ export const setSourcePosition = (source, position) => ({
   payload: { source, position },
 })
 
-export const setSourceReach = (source, radius, fadeDuration) => ({
-  type: ActionType.SET_SOURCE_REACH,
-  payload: { source, radius, fadeDuration },
+export const setSourceReachEnabled = (source, isEnabled) => ({
+  type: ActionType.SET_SOURCE_REACH_ENABLED,
+  payload: { source, isEnabled },
+})
+
+export const setSourceReachRadius = (source, radius) => ({
+  type: ActionType.SET_SOURCE_REACH_RADIUS,
+  payload: { source, radius },
 })
 
 export const setSourceVolume = (source, volume) => ({

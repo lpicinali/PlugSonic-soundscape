@@ -137,7 +137,7 @@ class SourceRenderer extends Component {
         }}
         onMouseDown={this.handleSourceMouseDown}
       >
-        <SourceReach radiusSize={reachRadiusSize} />
+        {source.reach.isEnabled && <SourceReach radiusSize={reachRadiusSize} />}
         <SourceBody radiusSize={size / 2} isSelected={source.selected} />
       </Source>
     )

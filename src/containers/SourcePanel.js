@@ -21,7 +21,8 @@ import * as CustomPropTypes from 'src/prop-types.js'
 import {
   deleteSources,
   setSourcePosition,
-  setSourceReach,
+  setSourceReachEnabled,
+  setSourceReachRadius,
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
@@ -92,7 +93,7 @@ class SourcePanel extends PureComponent {
   }
 
   render() {
-    const { roomSize, sourceObject, onSourceReachChange } = this.props
+    const { roomSize, sourceObject, onSourceReachEnabledChange, onSourceReachRadiusChange } = this.props
     const { isPromptingDelete } = this.state
 
     const nestedItems = []
@@ -175,13 +176,19 @@ class SourcePanel extends PureComponent {
       <ListItem key="reach">
         <H3>Reach</H3>
 
+        <Toggle
+          toggled={sourceObject.reach.isEnabled}
+          onToggle={(event, isEnabled) => onSourceReachEnabledChange(sourceObject.name, isEnabled)}
+        />
+
         <Slider
           min={0}
           max={Math.max(roomSize.width, roomSize.height) / 2}
           step={0.1}
           value={sourceObject.reach.radius}
+          disabled={sourceObject.reach.isEnabled === false}
           onChange={(event, value) =>
-            onSourceReachChange(sourceObject.name, value, sourceObject.reach.fadeDuration)
+            onSourceReachRadiusChange(sourceObject.name, value)
           }
         />
       </ListItem>
@@ -246,7 +253,8 @@ SourcePanel.propTypes = {
   onSourceOnOff: PropTypes.func.isRequired,
   onSourceVolumeChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
-  onSourceReachChange: PropTypes.func.isRequired,
+  onSourceReachEnabledChange: PropTypes.func.isRequired,
+  onSourceReachRadiusChange: PropTypes.func.isRequired,
   onSourceDelete: PropTypes.func.isRequired,
 }
 
@@ -258,7 +266,8 @@ const mapDispatchToProps = dispatch => ({
   onSourceOnOff: name => dispatch(sourceOnOff(name)),
   onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
-  onSourceReachChange: (name, radius, fadeDuration) => dispatch(setSourceReach(name, radius, fadeDuration)),
+  onSourceReachEnabledChange: (name, isEnabled) => dispatch(setSourceReachEnabled(name, isEnabled)),
+  onSourceReachRadiusChange: (name, radius) => dispatch(setSourceReachRadius(name, radius)),
   onSourceDelete: name => dispatch(deleteSources([name])),
 })
 

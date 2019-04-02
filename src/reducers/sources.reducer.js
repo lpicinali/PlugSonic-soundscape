@@ -35,14 +35,19 @@ export default function(state = initialState, { type, payload }) {
         state
       )
 
-    case 'SET_SOURCE_REACH': {
-      const { radius, fadeDuration } = payload
+    case 'SET_SOURCE_REACH_ENABLED':
       return set(
-        ['sources', payload.source, 'reach'],
-        { radius, fadeDuration },
+        ['sources', payload.source, 'reach', 'isEnabled'],
+        payload.isEnabled,
         state
       )
-    }
+
+    case 'SET_SOURCE_REACH_RADIUS':
+      return set(
+        ['sources', payload.source, 'reach', 'radius'],
+        payload.radius,
+        state
+      )
 
     case 'SET_SOURCE_VOLUME':
       return set(
@@ -62,7 +67,7 @@ export default function(state = initialState, { type, payload }) {
         platform_media_id: null,
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: payload.raw,
-        reach: { radius: 3, fadeDuration: 1000 },
+        reach: { isEnabled: true, radius: 3, fadeDuration: 1000 },
         selected: true,
         spatialised: true,
         url: null,
@@ -83,7 +88,7 @@ export default function(state = initialState, { type, payload }) {
         platform_media_id: payload.mediaId,
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: null,
-        reach: { radius: 3, fadeDuration: 1000 },
+        reach: { isEnabled: true, radius: 3, fadeDuration: 1000 },
         selected: true,
         spatialised: true,
         url: payload.url,

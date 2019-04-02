@@ -84,6 +84,7 @@ export const source = PropTypes.shape({
   hidden: PropTypes.bool.isRequired,
   position: vector3.isRequired,
   reach: PropTypes.shape({
+    isEnabled: PropTypes.bool.isRequired,
     radius: PropTypes.number.isRequired,
     fadeDuration: PropTypes.number.isRequired,
   }),
