@@ -68,14 +68,28 @@ export const sessionToken = Pluggy.getToken()
 export const exhibitionUrl = window.location.href
 export const exhibitionQuery = window.location.search.substring(1)
 export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+let title
+let description
+let tags
+
 console.log(`TOKEN = ${sessionToken}`)
 console.log(`ID = ${exhibitionId}`)
 
 function getExhibitionCallback(responseText) {
-  console.log(`\nGET EXHIBITION CALLBACK`)
+  // console.log(`\nGET EXHIBITION CALLBACK`)
   const response = JSON.parse(responseText)
-  console.log(`response`)
-  console.log(response)
+  // console.log(`response`)
+  // console.log(response)
+  title = response.data.title
+  description = response.data.description
+  tags = response.data.tags
 }
 
 httpGetAsync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, sessionToken)
+
+export const exhibitionTitle = title
+export const exhibitionDescription = description
+export const exhibitionTags = tags
+console.log(`TITLE = ${exhibitionTitle}`)
+console.log(`DESCRIPTION = ${exhibitionDescription}`)
+console.log(`TAGS = ${exhibitionTags}`)
