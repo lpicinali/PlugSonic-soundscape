@@ -21,6 +21,7 @@ import * as CustomPropTypes from 'src/prop-types.js'
 import {
   deleteSources,
   setSourcePosition,
+  setSourceReach,
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
@@ -91,7 +92,7 @@ class SourcePanel extends PureComponent {
   }
 
   render() {
-    const { roomSize, sourceObject } = this.props
+    const { roomSize, sourceObject, onSourceReachChange } = this.props
     const { isPromptingDelete } = this.state
 
     const nestedItems = []
@@ -171,6 +172,22 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
+      <ListItem key="reach">
+        <H3>Reach</H3>
+
+        <Slider
+          min={0}
+          max={Math.max(roomSize.width, roomSize.height) / 2}
+          step={0.1}
+          value={sourceObject.reach.radius}
+          onChange={(event, value) =>
+            onSourceReachChange(sourceObject.name, value, sourceObject.reach.fadeDuration)
+          }
+        />
+      </ListItem>
+    )
+
+    nestedItems.push(
       <ListItem key={`${sourceObject.name}-delete`}>
         <Button variant="contained" color="secondary" onClick={this.handleSourceDelete}>
           Delete
@@ -229,6 +246,7 @@ SourcePanel.propTypes = {
   onSourceOnOff: PropTypes.func.isRequired,
   onSourceVolumeChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
+  onSourceReachChange: PropTypes.func.isRequired,
   onSourceDelete: PropTypes.func.isRequired,
 }
 
@@ -240,6 +258,7 @@ const mapDispatchToProps = dispatch => ({
   onSourceOnOff: name => dispatch(sourceOnOff(name)),
   onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
+  onSourceReachChange: (name, radius, fadeDuration) => dispatch(setSourceReach(name, radius, fadeDuration)),
   onSourceDelete: name => dispatch(deleteSources([name])),
 })
 

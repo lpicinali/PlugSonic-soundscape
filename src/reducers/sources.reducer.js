@@ -38,7 +38,7 @@ export default function(state = initialState, { type, payload }) {
     case 'SET_SOURCE_REACH': {
       const { radius, fadeDuration } = payload
       return set(
-        ['targets', payload.target, 'reach'],
+        ['sources', payload.source, 'reach'],
         { radius, fadeDuration },
         state
       )
