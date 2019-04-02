@@ -8,9 +8,9 @@ import * as colors from 'src/styles/colors.js'
 
 import {
   API,
-  exhibitionUrl,
-  exhibitionQuery,
-  exhibitionId,
+  // exhibitionUrl,
+  // exhibitionQuery,
+  // exhibitionId,
   getQueryVariable,
   httpGetAsync,
   httpPostAsync,
@@ -58,17 +58,38 @@ const ChipWrapper = styled.div`
   margin-left: 20px;
 `
 /* ========================================================================== */
+// =================== RETRIEVE EXHIBITION ============================= //
+const exhibitionUrl = window.location.href
+const exhibitionQuery = window.location.search.substring(1)
+const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+let exhibitionTitle = null
+let exhibitionDescription = null
+let exhibitionTags = null
 
+console.log(`TOKEN = ${sessionToken}`)
+console.log(`ID = ${exhibitionId}`)
+
+function getExhibitionCallback(responseText) {
+  console.log(`\nGET EXHIBITION CALLBACK`)
+  const response = JSON.parse(responseText)
+  console.log(`response`)
+  console.log(response)
+  exhibitionTitle = response.data.title
+  exhibitionDescription = response.data.description
+  exhibitionTags = response.data.tags
+}
+
+httpGetAsync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, sessionToken)
 /* ========================================================================== */
 /* EXHIBITION CONTAINER */
 /* ========================================================================== */
 class ExhibitionContainer extends Component {
 
   state = {
-    exhibitionTitle: '',
-    exhibitionDescription: '',
+    exhibitionTitle: exhibitionTitle,
+    exhibitionDescription: exhibitionDescription,
     exhibitionNewTag: '',
-    exhibitionTags: [],
+    exhibitionTags: exhibitionTags,
     exhibitionId: exhibitionId,
   }
 
