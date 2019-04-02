@@ -227,7 +227,7 @@ class ExhibitionContainer extends Component {
         </ChipWrapper>
 
         <FlatButton
-          disabled={this.state.exhibitionTitle === ''}
+          // disabled={this.state.exhibitionTitle === ''}
           style={FlatButtonStyle}
           backgroundColor={`${colors.BLACK}`}
           onClick={this.handleSaveExhibition}
