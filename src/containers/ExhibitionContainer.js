@@ -11,6 +11,9 @@ import {
   exhibitionUrl,
   exhibitionQuery,
   exhibitionId,
+  exhibitionTitle,
+  exhibitionDescription,
+  exhibitionTags,
   getQueryVariable,
   httpGetAsync,
   httpPostAsync,
@@ -65,10 +68,10 @@ const ChipWrapper = styled.div`
 class ExhibitionContainer extends Component {
 
   state = {
-    exhibitionTitle: '',
-    exhibitionDescription: '',
+    exhibitionTitle: exhibitionTitle,
+    exhibitionDescription: exhibitionDescription,
     exhibitionNewTag: '',
-    exhibitionTags: [],
+    exhibitionTags:exhibitionTags,
     exhibitionId: exhibitionId,
   }
 
