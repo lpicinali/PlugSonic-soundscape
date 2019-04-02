@@ -8,8 +8,9 @@ import * as colors from 'src/styles/colors.js'
 
 import {
   API,
-  URL,
-  QUERY,
+  exhibitionUrl,
+  exhibitionQuery,
+  exhibitionId,
   getQueryVariable,
   httpGetAsync,
   httpPostAsync,
@@ -68,7 +69,7 @@ class ExhibitionContainer extends Component {
     exhibitionDescription: '',
     exhibitionNewTag: '',
     exhibitionTags: [],
-    exhibitionId: null,
+    exhibitionId: exhibitionId,
   }
 
   createExhibition = () => {
@@ -117,8 +118,8 @@ class ExhibitionContainer extends Component {
       tags: this.state.exhibitionTags.map(tag => tag.label),
       type: "soundscape"
     }
-    const exhibitionId = this.state.exhibitionId
-    httpPutAsync(`${API}/exhibitions/${exhibitionId}`, this.updateExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
+
+    httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.updateExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
   }
 
   updateExhibitionCallback = (responseText) => {
@@ -166,8 +167,6 @@ class ExhibitionContainer extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
-
-    console.log(`exhibitionId = ${getQueryVariable(QUERY,'exhibitionId')}`)
 
     return (
       <Container>

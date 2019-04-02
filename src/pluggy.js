@@ -1,10 +1,3 @@
-// eslint-disable-next-line
-export const API = 'https://develop.pluggy.eu/api/v1'
-export const sessionToken = Pluggy.getToken()
-// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciJdLCJjbGllbnRJZCI6IndlYl9kZXYiLCJpYXQiOjE1NTE5Nzk4MDQsImV4cCI6MTU1MjA2NjIwNH0.3mJFG4FfoPS_zsaXuN6SvZg-aoqOZcnBLNWTmUvNwpM'
-export const URL = window.location.href
-export const QUERY = window.location.search.substring(1)
-
 export function getQueryVariable(query, variable) {
   const vars = query.split("&");
   for (let i=0; i < vars.length; i++) {
@@ -64,3 +57,17 @@ export function httpPutAsync(url, callback, body, token, type) {
     xmlHttp.setRequestHeader("Content-Type", type);
   xmlHttp.send(body);
 }
+
+
+// eslint-disable-next-line
+export const API = 'https://develop.pluggy.eu/api/v1'
+// eslint-disable-next-line
+export const sessionToken = Pluggy.getToken()
+
+// =================== RETRIEVE EXHIBITION ============================= //
+export const exhibitionUrl = window.location.href
+export const exhibitionQuery = window.location.search.substring(1)
+export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+console.log(`URL = ${exhibitionUrl}`)
+console.log(`TOKEN = ${sessionToken}`)
+console.log(`ID = ${exhibitionId}`)
