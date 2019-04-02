@@ -78,4 +78,4 @@ function getExhibitionCallback(responseText) {
   console.log(response)
 }
 
-httpGetAsync(`${API}/exhibitionId/${exhibitionId}`, getExhibitionCallback, sessionToken)
+httpGetAsync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, sessionToken)
