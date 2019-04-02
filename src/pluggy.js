@@ -32,6 +32,19 @@ export function httpGetAsync(url, callback, token) {
   xhr.send(null);
 }
 
+export function httpGetSync(url, callback, token) {
+  const xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4 && xhr.status === 200)
+      callback(xhr.responseText)
+  }
+  xhr.open("GET", url, false) // true for asynchronous
+  if (token) {
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+  }
+  xhr.send(null);
+}
+
 export function httpPostAsync(url, callback, body, token, type) {
   const xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = () => {
@@ -62,34 +75,42 @@ export function httpPutAsync(url, callback, body, token, type) {
 // eslint-disable-next-line
 export const API = 'https://develop.pluggy.eu/api/v1'
 // eslint-disable-next-line
-export const sessionToken = Pluggy.getToken()
+// export const sessionToken = Pluggy.getToken()
+export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQyMDU4MDEsImV4cCI6MTU1NDI5MjIwMX0.hlXSASeysOR8isLTGqu3Bp531MLGpxw2SYeR-wrB_dw'
 
 // =================== RETRIEVE EXHIBITION ============================= //
-export const exhibitionUrl = window.location.href
-export const exhibitionQuery = window.location.search.substring(1)
-export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+// export const exhibitionUrl = window.location.href
+// export const exhibitionQuery = window.location.search.substring(1)
+// export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+export const exhibitionId = '5ca398b0cd2eb4f3c4eba5e4'
 let title
 let description
 let tags
+let metadata
 
-console.log(`TOKEN = ${sessionToken}`)
-console.log(`ID = ${exhibitionId}`)
+// console.log(`TOKEN = ${sessionToken}`)
+// console.log(`ID = ${exhibitionId}`)
 
 function getExhibitionCallback(responseText) {
-  // console.log(`\nGET EXHIBITION CALLBACK`)
+  console.log(`\nGET EXHIBITION CALLBACK`)
   const response = JSON.parse(responseText)
-  // console.log(`response`)
-  // console.log(response)
+  console.log(`response`)
+  console.log(response)
   title = response.data.title
   description = response.data.description
-  tags = response.data.tags
-  // console.log(`TITLE = ${title}`)
-  // console.log(`DESCRIPTION = ${description}`)
-  // console.log(`TAGS = ${tags}`)
+  tags = response.data.tags.map((tag,index) => (
+    {key: index, label: tag}
+  ))
+  metadata = response.data.metadata
+  console.log(`TITLE = ${title}`)
+  console.log(`DESCRIPTION = ${description}`)
+  console.log(`TAGS =`); console.log(tags)
+  console.log(`METADATA = `); console.log(metadata)
 }
 
-httpGetAsync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, sessionToken)
+httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, sessionToken)
 
 export const exhibitionTitle = title
 export const exhibitionDescription = description
 export const exhibitionTags = tags
+export const exhibitionMetadata = metadata

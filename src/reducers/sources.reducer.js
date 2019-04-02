@@ -7,9 +7,19 @@ import { set } from 'lodash/fp'
 import { ADEtoXYZ } from 'src/utils'
 // import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
-const initialState = {
-  sources: {},
-  // editing: null,
+import { exhibitionId, exhibitionMetadata } from 'src/pluggy'
+
+let initialState
+
+if (exhibitionId) {
+  initialState = {
+    sources: exhibitionMetadata.sources,
+  }
+} else {
+  initialState = {
+    sources: {},
+    // editing: null,
+  }
 }
 
 let azimuthIndex = Object.keys(initialState.sources).length

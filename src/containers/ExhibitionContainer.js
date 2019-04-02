@@ -68,10 +68,10 @@ const ChipWrapper = styled.div`
 class ExhibitionContainer extends Component {
 
   state = {
-    exhibitionTitle: '',
-    exhibitionDescription: '',
+    exhibitionTitle: exhibitionTitle,
+    exhibitionDescription: exhibitionDescription,
     exhibitionNewTag: '',
-    exhibitionTags: [],
+    exhibitionTags: exhibitionTags,
     exhibitionId: exhibitionId,
   }
 
@@ -171,7 +171,7 @@ class ExhibitionContainer extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
 
-    console.log(`TITLE = ${this.state.exhibitionTitle}`)
+    // console.log(`TITLE = ${this.state.exhibitionTitle}`)
 
     return (
       <Container>
