@@ -1,7 +1,8 @@
 // eslint-disable-next-line
-// export const sessionToken = Pluggy.getToken()
-export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciJdLCJjbGllbnRJZCI6IndlYl9kZXYiLCJpYXQiOjE1NTE5Nzk4MDQsImV4cCI6MTU1MjA2NjIwNH0.3mJFG4FfoPS_zsaXuN6SvZg-aoqOZcnBLNWTmUvNwpM'
 export const API = 'https://develop.pluggy.eu/api/v1'
+export const sessionToken = Pluggy.getToken()
+// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciJdLCJjbGllbnRJZCI6IndlYl9kZXYiLCJpYXQiOjE1NTE5Nzk4MDQsImV4cCI6MTU1MjA2NjIwNH0.3mJFG4FfoPS_zsaXuN6SvZg-aoqOZcnBLNWTmUvNwpM'
+export const URL = window.location.href
 
 export function httpHintAsync(url, callback) {
   const xhr = new XMLHttpRequest()
