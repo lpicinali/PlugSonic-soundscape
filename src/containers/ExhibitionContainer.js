@@ -9,6 +9,7 @@ import * as colors from 'src/styles/colors.js'
 import {
   API,
   URL,
+  QUERY,
   httpGetAsync,
   httpPostAsync,
   httpPutAsync,
@@ -168,6 +169,7 @@ class ExhibitionContainer extends Component {
     // const url = window.location.href
 
     console.log(`URL = ${URL}`)
+    console.log(`QUERY = ${QUERY}`)
     console.log(`Token = ${sessionToken}`)
 
     return (
