@@ -23,6 +23,7 @@ import {
   setSourcePosition,
   setSourceReachEnabled,
   setSourceReachRadius,
+  setSourceReachFadeDuration,
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
@@ -93,7 +94,13 @@ class SourcePanel extends PureComponent {
   }
 
   render() {
-    const { roomSize, sourceObject, onSourceReachEnabledChange, onSourceReachRadiusChange } = this.props
+    const {
+      roomSize,
+      sourceObject,
+      onSourceReachEnabledChange,
+      onSourceReachRadiusChange,
+      onSourceReachFadeDurationChange,
+    } = this.props
     const { isPromptingDelete } = this.state
 
     const nestedItems = []
@@ -191,6 +198,17 @@ class SourcePanel extends PureComponent {
             onSourceReachRadiusChange(sourceObject.name, value)
           }
         />
+
+        <Slider
+          min={0}
+          max={20}
+          step={0.1}
+          value={sourceObject.reach.fadeDuration / 1000}
+          disabled={sourceObject.reach.isEnabled === false}
+          onChange={(event, value) =>
+            onSourceReachFadeDurationChange(sourceObject.name, value * 1000)
+          }
+        />
       </ListItem>
     )
 
@@ -255,6 +273,7 @@ SourcePanel.propTypes = {
   onSourcePositionChange: PropTypes.func.isRequired,
   onSourceReachEnabledChange: PropTypes.func.isRequired,
   onSourceReachRadiusChange: PropTypes.func.isRequired,
+  onSourceReachFadeDurationChange: PropTypes.func.isRequired,
   onSourceDelete: PropTypes.func.isRequired,
 }
 
@@ -268,6 +287,7 @@ const mapDispatchToProps = dispatch => ({
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
   onSourceReachEnabledChange: (name, isEnabled) => dispatch(setSourceReachEnabled(name, isEnabled)),
   onSourceReachRadiusChange: (name, radius) => dispatch(setSourceReachRadius(name, radius)),
+  onSourceReachFadeDurationChange: (name, fadeDuration) => dispatch(setSourceReachFadeDuration(name, fadeDuration)),
   onSourceDelete: name => dispatch(deleteSources([name])),
 })
 

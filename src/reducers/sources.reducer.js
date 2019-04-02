@@ -49,6 +49,13 @@ export default function(state = initialState, { type, payload }) {
         state
       )
 
+    case 'SET_SOURCE_REACH_FADE_DURATION':
+      return set(
+        ['sources', payload.source, 'reach', 'fadeDuration'],
+        payload.fadeDuration,
+        state
+      )
+
     case 'SET_SOURCE_VOLUME':
       return set(
         ['sources', payload.source, 'volume'],
