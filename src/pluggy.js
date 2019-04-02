@@ -83,9 +83,9 @@ function getExhibitionCallback(responseText) {
   title = response.data.title
   description = response.data.description
   tags = response.data.tags
-  console.log(`TITLE = ${title}`)
-  console.log(`DESCRIPTION = ${description}`)
-  console.log(`TAGS = ${tags}`)
+  // console.log(`TITLE = ${title}`)
+  // console.log(`DESCRIPTION = ${description}`)
+  // console.log(`TAGS = ${tags}`)
 }
 
 httpGetAsync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, sessionToken)

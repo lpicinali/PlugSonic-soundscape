@@ -171,6 +171,8 @@ class ExhibitionContainer extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
 
+    console.log(`TITLE = ${this.state.exhibitionTitle}`)
+
     return (
       <Container>
 
