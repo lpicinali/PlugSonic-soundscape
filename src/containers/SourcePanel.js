@@ -20,6 +20,7 @@ import Toggle from 'material-ui/Toggle'
 import * as CustomPropTypes from 'src/prop-types.js'
 import {
   deleteSources,
+  setSourceLoop,
   setSourcePosition,
   setSourceReachEnabled,
   setSourceReachRadius,
@@ -97,6 +98,7 @@ class SourcePanel extends PureComponent {
     const {
       roomSize,
       sourceObject,
+      onSourceLoopChange,
       onSourceReachEnabledChange,
       onSourceReachRadiusChange,
       onSourceReachFadeDurationChange,
@@ -175,6 +177,17 @@ class SourcePanel extends PureComponent {
           step={0.1}
           value={sourceObject.position.z}
           onChange={(event, value) => this.handleSourceMove('z', value)}
+        />
+      </ListItem>
+    )
+
+    nestedItems.push(
+      <ListItem key="loop">
+        <H3>Loop</H3>
+
+        <Toggle
+          toggled={sourceObject.loop}
+          onToggle={(event, isEnabled) => onSourceLoopChange(sourceObject.name, isEnabled)}
         />
       </ListItem>
     )
@@ -270,6 +283,7 @@ SourcePanel.propTypes = {
   sourceObject: CustomPropTypes.source.isRequired,
   onSourceOnOff: PropTypes.func.isRequired,
   onSourceVolumeChange: PropTypes.func.isRequired,
+  onSourceLoopChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
   onSourceReachEnabledChange: PropTypes.func.isRequired,
   onSourceReachRadiusChange: PropTypes.func.isRequired,
@@ -284,6 +298,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onSourceOnOff: name => dispatch(sourceOnOff(name)),
   onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
+  onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
   onSourceReachEnabledChange: (name, isEnabled) => dispatch(setSourceReachEnabled(name, isEnabled)),
   onSourceReachRadiusChange: (name, radius) => dispatch(setSourceReachRadius(name, radius)),

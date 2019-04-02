@@ -28,6 +28,13 @@ export default function(state = initialState, { type, payload }) {
       return set('editing', payload.target, state)
     }
 
+    case 'SET_SOURCE_LOOP':
+      return set(
+        ['sources', payload.source, 'loop'],
+        payload.loop,
+        state
+      )
+
     case 'SET_SOURCE_POSITION':
       return set(
         ['sources', payload.source, 'position'],
@@ -75,6 +82,7 @@ export default function(state = initialState, { type, payload }) {
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: payload.raw,
         reach: { isEnabled: true, radius: 3, fadeDuration: 1000 },
+        loop: true,
         selected: true,
         spatialised: true,
         url: null,
@@ -96,6 +104,7 @@ export default function(state = initialState, { type, payload }) {
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: null,
         reach: { isEnabled: true, radius: 3, fadeDuration: 1000 },
+        loop: true,
         selected: true,
         spatialised: true,
         url: payload.url,

@@ -16,6 +16,11 @@ export const setEditingSource = (source) => ({
   payload: { source },
 })
 
+export const setSourceLoop = (source, loop) => ({
+  type: ActionType.SET_SOURCE_LOOP,
+  payload: { source, loop },
+})
+
 export const setSourcePosition = (source, position) => ({
   type: ActionType.SET_SOURCE_POSITION,
   payload: { source, position },
