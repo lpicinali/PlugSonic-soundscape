@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { clamp, pick, values } from 'lodash'
 
 import { RoomShape } from 'src/constants'
+import * as CustomPropTypes from 'src/prop-types.js'
 import { setSourcePosition } from 'src/actions/sources.actions'
 
 /**
@@ -19,15 +20,37 @@ function getScaleForZ(z, roomHeight) {
 }
 
 /* ========================================================================== */
+
 const Source = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0) scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
+`
+
+const SourceReach = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  width: ${props => props.radiusSize * 2}px;
+  height: ${props => props.radiusSize * 2}px;
+  background: rgba(255, 255, 0, 0.2);
   border-radius: 50%;
+`
+
+const SourceBody = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  width: ${props => props.radiusSize * 2}px;
+  height: ${props => props.radiusSize * 2}px;
   background: ${props => (props.isSelected ? 'black' : 'transparent')};
+  border-radius: 50%;
   border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
 `
+
 /* ========================================================================== */
 /* SOURCE RENDERER */
 /* ========================================================================== */
@@ -47,7 +70,7 @@ class SourceRenderer extends Component {
   }
 
   handleSourceMouseDrag = (e) => {
-    const { name, roomShape, roomWidth, roomDepth, containerSize, containerRect } = this.props
+    const { source, roomShape, roomWidth, roomDepth, containerSize, containerRect } = this.props
     const { isDragging } = this.state
 
     if (isDragging) {
@@ -81,8 +104,8 @@ class SourceRenderer extends Component {
       }
 
       this.props.setSourcePosition(
-        this.props.name,
-        { x: newX, y: newY, z: this.props.position.z }
+        source.name,
+        { x: newX, y: newY, z: source.position.z }
       )
     }
   }
@@ -99,35 +122,32 @@ class SourceRenderer extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
+    const { source, size, reachRadiusSize, roomWidth, roomHeight, roomDepth } = this.props
+    const { isDragging } = this.state
+
     return (
       <Source
-        key={this.props.name}
-        isSelected={this.props.isSelected}
-        roomHeight={this.props.roomHeight}
-        position={this.props.position}
+        key={name}
+        roomHeight={roomHeight}
+        position={source.position}
         style={{
-          width: this.props.iconWidth,
-          height: this.props.iconHeight,
-          top: `${50 + (100 * -1 * this.props.position.x) / this.props.roomDepth}%`,
-          left: `${50 + (100 * -1 * this.props.position.y) / this.props.roomWidth}%`,
+          top: `${50 + (100 * -1 * source.position.x) / roomDepth}%`,
+          left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
           cursor: `${this.state.isDragging ? `grabbing` : `grab`}`,
         }}
         onMouseDown={this.handleSourceMouseDown}
-      />
+      >
+        <SourceReach radiusSize={reachRadiusSize} />
+        <SourceBody radiusSize={size / 2} isSelected={source.selected} />
+      </Source>
     )
   }
 }
 
 SourceRenderer.propTypes = {
-  name: PropTypes.string.isRequired,
-  isSelected: PropTypes.bool.isRequired,
-  position: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    z: PropTypes.number.isRequired,
-  }).isRequired,
-  iconWidth: PropTypes.number.isRequired,
-  iconHeight: PropTypes.number.isRequired,
+  source: CustomPropTypes.source.isRequired,
+  size: PropTypes.number.isRequired,
+  reachRadiusSize: PropTypes.number.isRequired,
   roomWidth: PropTypes.number.isRequired,
   roomDepth: PropTypes.number.isRequired,
   roomHeight: PropTypes.number.isRequired,

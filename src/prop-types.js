@@ -37,15 +37,16 @@ function makeRequirable(validate) {
 // export const grade = PropTypes.oneOf(values(HearingLossGrade))
 
 export const rect = PropTypes.shape({
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
   top: PropTypes.number.isRequired,
+  bottom: PropTypes.number.isRequired,
   left: PropTypes.number.isRequired,
+  right: PropTypes.number.isRequired,
 })
 
-export const position = PropTypes.shape({
-  azimuth: PropTypes.number.isRequired,
-  distance: PropTypes.number.isRequired,
+export const vector3 = PropTypes.shape({
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  z: PropTypes.number.isRequired,
 })
 
 export const scrollable = makeRequirable((props, propName, componentName) => {
@@ -81,11 +82,7 @@ export const source = PropTypes.shape({
   platform_id: PropTypes.string,
   raw: PropTypes.arrayOf(PropTypes.number),
   hidden: PropTypes.bool.isRequired,
-  position: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    z: PropTypes.number.isRequired,
-  }).isRequired,
+  position: vector3.isRequired,
   reach: PropTypes.shape({
     radius: PropTypes.number.isRequired,
     fadeDuration: PropTypes.number.isRequired,
