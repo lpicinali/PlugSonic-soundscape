@@ -10,6 +10,7 @@ import {
   stop as engineStop,
   playSource as enginePlaySource,
   stopSource as engineStopSource,
+  setSourceLoop as engineSetSourceLoop,
   setSource as engineSetSource,
   unsetSource as engineUnsetSource,
   setMasterVolume as engineSetMasterVolume,
@@ -133,6 +134,23 @@ function* applyImportSources() {
 //     }
 //   }
 // }
+
+/* ======================================================================== */
+// LOOP
+/* ======================================================================== */
+function* applyLoopChanges() {
+  while (true) {
+    const { payload: { source, loop } } = yield take(ActionType.SET_SOURCE_LOOP)
+    yield call(engineSetSourceLoop, source, loop)
+
+    const playbackState = yield select(state => state.controls.playbackState)
+
+    if (playbackState === PlaybackState.PLAY) {
+      yield call(engineStopSource, source)
+      yield call(enginePlaySource, source)
+    }
+  }
+}
 
 /* ======================================================================== */
 // SOURCE POSITION
@@ -287,6 +305,7 @@ export default function* rootSaga() {
     applyImportSources(),
     // applyMasterVolume(),
     // applyTargetVolume(),
+    applyLoopChanges(),
     handleSourcesReach(),
     applyPerformanceMode(),
     applyQualityMode(),

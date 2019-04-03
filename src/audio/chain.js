@@ -208,8 +208,10 @@ export const startNodes = () => {
 /* ======================================================================== */
 export const stopNode = name => {
   if (sourcesNodes[name]) {
+    const loop = sourcesNodes[name].loop
     sourcesNodes[name].disconnect()
     sourcesNodes[name] = createNode(sourcesNodes[name].buffer)
+    sourcesNodes[name].loop = loop
     setSourceNode(sourcesNodes[name], name)
   }
 }
@@ -219,5 +221,14 @@ export const stopNodes = () => {
     if (Object.prototype.hasOwnProperty.call(sourcesNodes, name)) {
       stopNode(name)
     }
+  }
+}
+
+/* ======================================================================== */
+// LOOP NODES
+/* ======================================================================== */
+export const setSourceLoop = (name, loop) => {
+  if (sourcesNodes[name]) {
+    sourcesNodes[name].loop = loop
   }
 }
