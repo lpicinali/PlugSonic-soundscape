@@ -80,14 +80,14 @@ export function httpPutAsync(url, callback, body, token, type) {
 // eslint-disable-next-line
 export const API = 'https://develop.pluggy.eu/api/v1'
 // eslint-disable-next-line
-// export const sessionToken = Pluggy.getToken()
-export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQzMDg4MjYsImV4cCI6MTU1NDM5NTIyNn0.LVENrbrkSiqz0p_l6H20UTgaWVX9quAIMF6Yid3bxhg'
+export const sessionToken = Pluggy.getToken()
+// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQzMDg4MjYsImV4cCI6MTU1NDM5NTIyNn0.LVENrbrkSiqz0p_l6H20UTgaWVX9quAIMF6Yid3bxhg'
 
 // =================== RETRIEVE EXHIBITION ============================= //
-// export const exhibitionUrl = window.location.href
-// export const exhibitionQuery = window.location.search.substring(1)
-// export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
-export const exhibitionId = '5ca4aae0cd2eb4f3c4ebab20'
+export const exhibitionUrl = window.location.href
+export const exhibitionQuery = window.location.search.substring(1)
+export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+// export const exhibitionId = '5ca4aae0cd2eb4f3c4ebab20'
 
 let title
 let description

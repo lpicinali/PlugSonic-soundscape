@@ -132,13 +132,13 @@ class SourceUploader extends Component {
     return (
       <Container>
         <Dropzone
-          accept="audio/*"
+          accept="audio/mp3, audio/mpeg"
           onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
         >
           <ActionIcon/>
           <div>
             {this.state.filename === '' ? (
-                'Drop an audio file here (or click) to load it.'
+                'Drop an mp3 file here (or click) to load it.'
             ) : (
                 `${this.state.filename} - ${this.state.size} bytes`
             )

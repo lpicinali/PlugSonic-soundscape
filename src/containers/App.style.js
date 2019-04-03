@@ -10,7 +10,7 @@ import { MAX_WIDTH } from 'src/styles/layout'
 // ======================= _APP CONTAINER_ ==================================== //
 
 export const  AppContainer  = styled.div`
-    background: ${colors.LIGHTGREY};
+    background: ${colors.WHITE};
     height: 100vh;
     display: flex;
     flex-direction: column;

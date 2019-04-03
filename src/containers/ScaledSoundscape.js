@@ -115,7 +115,7 @@ class ScaledSoundscape extends Component {
           imageUrl={roomImage}
         >
 
-          <div>
+          {/* <div>
             Soundscape
             <br />
             Normal resolution: {PIXELS_PER_METER} px/m
@@ -123,7 +123,7 @@ class ScaledSoundscape extends Component {
             Rendered resolution: {viewportResolution} px/m
             <br />
             Relative scale: {relativeScale}
-          </div>
+          </div> */}
 
           <ListenerRenderer
             iconWidth={sourceSize}
