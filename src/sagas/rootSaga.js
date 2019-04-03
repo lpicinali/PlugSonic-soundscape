@@ -280,14 +280,11 @@ export default function* rootSaga() {
     applyHeadRadius(),
     // applyDirectionalityEnabled(),
     // applyDirectionalityAttenuation(),
-<<<<<<< HEAD
     applySourcePosition(),
     applyListenerPosition(),
-=======
     // applySourcePosition(),
     // applyListenerPosition(),
     initDefaultHrtf(),
     applyHrtfs(),
->>>>>>> listener-features
   ]
 }
