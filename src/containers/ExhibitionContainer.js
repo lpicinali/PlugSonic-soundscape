@@ -110,9 +110,9 @@ class ExhibitionContainer extends Component {
       listener: this.props.listener,
       room: this.props.room,
     }
-    console.log('UPDATE')
-    console.log(soundscape)
-    const clone = JSON.parse(JSON.stringify(soundscape))
+
+    soundscape.sources = map(soundscape.sources, source => source)
+
     // exhibition object
     const exhibition = {
       title: this.state.exhibitionTitle,

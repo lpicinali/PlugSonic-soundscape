@@ -40,14 +40,15 @@ class ExportMetaButton extends Component {
         listener: this.props.listener,
         room: this.props.room,
       }
-      const clone = JSON.parse(JSON.stringify(soundscape))
 
+      const clone = JSON.parse(JSON.stringify(soundscape))
       clone.sources = map(clone.sources, source => {
         source.raw = null
         return source
       })
 
       const json = JSON.stringify(clone, null, 2)
+
       const blob = new File([json], { type: 'application/json' })
       alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
       FileSaver.saveAs(blob, 'soundscape_meta.json')
