@@ -9,7 +9,9 @@ import {
   unsetSourceNode as chainUnsetSourceNode,
   setMasterVolume as chainSetMasterVolume,
   setSourceVolume as chainSetSourceVolume,
+  startNode as chainStartNode,
   startNodes as chainStartNodes,
+  stopNode as chainStopNode,
   stopNodes as chainStopNodes,
   addSource as chainAddSource,
   deleteSources as chainDeleteSources,
@@ -30,6 +32,8 @@ export const play = () => {
   }
 }
 
+export { chainStartNode as playSource }
+
 /* ======================================================================== */
 // STOP
 /* ======================================================================== */
@@ -41,6 +45,8 @@ export const stop = () => {
     console.error(err)
   }
 }
+
+export { chainStopNode as stopSource }
 
 /* ======================================================================== */
 // SET SOURCE

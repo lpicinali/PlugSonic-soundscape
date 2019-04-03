@@ -4,7 +4,9 @@
 
 *//* ---------------------------------------------- */
 import { omit, set } from 'lodash/fp'
-import { ADEtoXYZ } from 'src/utils'
+
+import { ReachAction } from 'src/constants.js'
+import { ADEtoXYZ } from 'src/utils.js'
 // import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
 const initialState = {
@@ -49,6 +51,13 @@ export default function(state = initialState, { type, payload }) {
         state
       )
 
+    case 'SET_SOURCE_REACH_ACTION':
+      return set(
+        ['sources', payload.source, 'reach', 'action'],
+        payload.action,
+        state
+      )
+
     case 'SET_SOURCE_REACH_RADIUS':
       return set(
         ['sources', payload.source, 'reach', 'radius'],
@@ -81,7 +90,12 @@ export default function(state = initialState, { type, payload }) {
         platform_media_id: null,
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: payload.raw,
-        reach: { isEnabled: true, radius: 3, fadeDuration: 1000 },
+        reach: {
+          isEnabled: true,
+          action: ReachAction.TOGGLE_VOLUME,
+          radius: 3,
+          fadeDuration: 1000,
+        },
         loop: true,
         selected: true,
         spatialised: true,
@@ -103,7 +117,12 @@ export default function(state = initialState, { type, payload }) {
         platform_media_id: payload.mediaId,
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: null,
-        reach: { isEnabled: true, radius: 3, fadeDuration: 1000 },
+        reach: {
+          isEnabled: true,
+          action: ReachAction.TOGGLE_VOLUME,
+          radius: 3,
+          fadeDuration: 1000,
+        },
         loop: true,
         selected: true,
         spatialised: true,

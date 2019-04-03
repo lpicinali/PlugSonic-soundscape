@@ -1,13 +1,15 @@
 import { all, call, put, select, take, fork, spawn } from 'redux-saga/effects'
 import { map } from 'lodash'
 
-import { ActionType, PlaybackState } from 'src/constants.js'
+import { ActionType, PlaybackState, ReachAction } from 'src/constants.js'
 import { setHrtfFilename } from 'src/actions/listener.actions.js'
 import { getFileUrl } from 'src/audio/audio-files.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   play as enginePlay,
   stop as engineStop,
+  playSource as enginePlaySource,
+  stopSource as engineStopSource,
   setSource as engineSetSource,
   unsetSource as engineUnsetSource,
   setMasterVolume as engineSetMasterVolume,
@@ -170,7 +172,7 @@ function* applyListenerPosition() {
 //   }
 // }
 
-function* rampTargetVolumesByTheirReach() {
+function* handleSourcesReach() {
   while (true) {
     yield take([
       ActionType.SET_LISTENER_POSITION,
@@ -190,9 +192,18 @@ function* rampTargetVolumesByTheirReach() {
         (listener.position.x - source.position.x) ** 2 +
         (listener.position.y - source.position.y) ** 2
       )
-      const volume = distanceToListener <= source.reach.radius ? source.volume : 0
+      const isInsideReach = distanceToListener <= source.reach.radius
 
-      yield call(engineSetSourceVolume, source.name, volume, source.reach.fadeDuration)
+      if (source.reach.action === ReachAction.TOGGLE_VOLUME) {
+        const volume = isInsideReach === true ? source.volume : 0
+        yield call(engineSetSourceVolume, source.name, volume, source.reach.fadeDuration)
+      } else if (source.reach.action === ReachAction.TOGGLE_PLAYBACK) {
+        yield call(engineStopSource, source.name)
+
+        if (isInsideReach === true) {
+          yield call(enginePlaySource, source.name)
+        }
+      }
     }
   }
 }
@@ -276,7 +287,7 @@ export default function* rootSaga() {
     applyImportSources(),
     // applyMasterVolume(),
     // applyTargetVolume(),
-    rampTargetVolumesByTheirReach(),
+    handleSourcesReach(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),

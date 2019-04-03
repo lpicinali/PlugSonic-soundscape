@@ -31,6 +31,11 @@ export const setSourceReachEnabled = (source, isEnabled) => ({
   payload: { source, isEnabled },
 })
 
+export const setSourceReachAction = (source, action) => ({
+  type: ActionType.SET_SOURCE_REACH_ACTION,
+  payload: { source, action },
+})
+
 export const setSourceReachRadius = (source, radius) => ({
   type: ActionType.SET_SOURCE_REACH_RADIUS,
   payload: { source, radius },

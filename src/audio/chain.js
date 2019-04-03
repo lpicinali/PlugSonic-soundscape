@@ -185,6 +185,12 @@ export const addSource = sourceObject => {
 /* ======================================================================== */
 // START NODES
 /* ======================================================================== */
+export const startNode = name => {
+  if (sourcesNodes[name]) {
+    sourcesNodes[name].start(0)
+  }
+}
+
 export const startNodes = () => {
   if (context.state !== 'running') {
     context.resume();
@@ -192,9 +198,7 @@ export const startNodes = () => {
 
   for (const name in sourcesNodes) {
     if (Object.prototype.hasOwnProperty.call(sourcesNodes, name)) {
-      if (sourcesNodes[name]) {
-        sourcesNodes[name].start(0)
-      }
+      startNode(name)
     }
   }
 }
@@ -202,14 +206,18 @@ export const startNodes = () => {
 /* ======================================================================== */
 // STOP NODES
 /* ======================================================================== */
+export const stopNode = name => {
+  if (sourcesNodes[name]) {
+    sourcesNodes[name].disconnect()
+    sourcesNodes[name] = createNode(sourcesNodes[name].buffer)
+    setSourceNode(sourcesNodes[name], name)
+  }
+}
+
 export const stopNodes = () => {
   for (const name in sourcesNodes) {
     if (Object.prototype.hasOwnProperty.call(sourcesNodes, name)) {
-      if (sourcesNodes[name]) {
-        sourcesNodes[name].disconnect()
-        sourcesNodes[name] = createNode(sourcesNodes[name].buffer)
-        setSourceNode(sourcesNodes[name], name)
-      }
+      stopNode(name)
     }
   }
 }

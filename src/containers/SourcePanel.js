@@ -13,16 +13,20 @@ import {
 } from '@material-ui/core'
 import { List, ListItem } from "material-ui/List"
 import Divider from "material-ui/Divider"
+import DropDownMenu from 'material-ui/DropDownMenu'
 import FlatButton from "material-ui/FlatButton"
+import MenuItem from 'material-ui/MenuItem'
 import Slider from 'material-ui/Slider'
 import Toggle from 'material-ui/Toggle'
 
+import { ReachAction } from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
 import {
   deleteSources,
   setSourceLoop,
   setSourcePosition,
   setSourceReachEnabled,
+  setSourceReachAction,
   setSourceReachRadius,
   setSourceReachFadeDuration,
   setSourceVolume,
@@ -100,6 +104,7 @@ class SourcePanel extends PureComponent {
       sourceObject,
       onSourceLoopChange,
       onSourceReachEnabledChange,
+      onSourceReachActionChange,
       onSourceReachRadiusChange,
       onSourceReachFadeDurationChange,
     } = this.props
@@ -212,6 +217,17 @@ class SourcePanel extends PureComponent {
           }
         />
 
+        <DropDownMenu
+          style={{ width: '100%' }}
+          iconStyle={{ fill: colors.BLACK }}
+          underlineStyle={{ borderTop: `solid 1px ${colors.BLACK}` }}
+          value={sourceObject.reach.action}
+          onChange={(event, index, value) => onSourceReachActionChange(sourceObject.name, value)}
+        >
+          <MenuItem value={ReachAction.TOGGLE_PLAYBACK} primaryText="Toggle playback" />
+          <MenuItem value={ReachAction.TOGGLE_VOLUME} primaryText="Toggle volume" />
+        </DropDownMenu>
+
         <Slider
           min={0}
           max={20}
@@ -286,6 +302,7 @@ SourcePanel.propTypes = {
   onSourceLoopChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
   onSourceReachEnabledChange: PropTypes.func.isRequired,
+  onSourceReachActionChange: PropTypes.func.isRequired,
   onSourceReachRadiusChange: PropTypes.func.isRequired,
   onSourceReachFadeDurationChange: PropTypes.func.isRequired,
   onSourceDelete: PropTypes.func.isRequired,
@@ -301,6 +318,7 @@ const mapDispatchToProps = dispatch => ({
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
   onSourceReachEnabledChange: (name, isEnabled) => dispatch(setSourceReachEnabled(name, isEnabled)),
+  onSourceReachActionChange: (name, action) => dispatch(setSourceReachAction(name, action)),
   onSourceReachRadiusChange: (name, radius) => dispatch(setSourceReachRadius(name, radius)),
   onSourceReachFadeDurationChange: (name, fadeDuration) => dispatch(setSourceReachFadeDuration(name, fadeDuration)),
   onSourceDelete: name => dispatch(deleteSources([name])),
