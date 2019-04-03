@@ -35,6 +35,16 @@ let sources = null
            |
       Y <--o Z
 *//* ------------------------------------------------------------------------ */
+
+/**
+ * NOTE (Alexander):
+ *
+ * The axis convention in the JavaScript port is set to match Web Audio API
+ * and cannot be configured. Hence we're setting positions to { -y, x, z }
+ * below. We should probably migrate to use Web Audio API axes, or solve
+ * this more neatly some other way.
+ */
+
 // Rotation Axes
 // const xAxis = new CVector3(1,0,0)
 // const yAxis = new CVector3(0,1,0)
@@ -42,7 +52,7 @@ const zAxis = new CVector3(0,0,1)
 /* ========================================================================== */
 function setSPosition(source, x, y, z) {
   const transform = new CTransform()
-  const position = new CVector3(x, y, z)
+  const position = new CVector3(-y, x, z)
   transform.SetPosition(position)
   source.SetSourceTransform(transform)
   transform.delete()
@@ -50,7 +60,7 @@ function setSPosition(source, x, y, z) {
 
 function setLPosition(x, y, z, rotZAxis) {
   const transform = new CTransform()
-  const position = new CVector3(x, y, z)
+  const position = new CVector3(-y, x, z)
   const orientation = CQuaternion.FromAxisAngle(zAxis, rotZAxis)
   transform.SetPosition(position)
   transform.SetOrientation(orientation)
