@@ -16,7 +16,7 @@ class App extends Component {
   componentDidMount() {
     console.log('METADATA')
     console.log(exhibitionMetadata)
-    if (exhibitionMetadata === [] || exhibitionMetadata === undefined || exhibitionMetadata === null ) {
+    if (exhibitionMetadata.length === 0 ) {
       console.log('DO NOTHING')
     } else {
       console.log('DO SOMETHING')
