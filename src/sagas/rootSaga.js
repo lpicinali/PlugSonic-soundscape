@@ -22,7 +22,6 @@ import {
   deleteAllSources as engineDeleteAllSources,
   importSources as engineImportSources,
 } from 'src/audio/engine.js'
-import { getDistanceBetweenSphericalPoints } from 'src/utils.js'
 
 /* ======================================================================== */
 // PLAY/STOP
@@ -171,29 +170,32 @@ function* applyListenerPosition() {
 //   }
 // }
 
-// function* rampTargetVolumesByTheirReach() {
-//   while (true) {
-//     yield take([
-//       ActionType.SET_LISTENER_POSITION,
-//       ActionType.SET_TARGET_POSITION,
-//       ActionType.SET_TARGET_REACH,
-//       ActionType.SET_PLAYBACK_STATE,
-//     ])
-//
-//     const [listener, targets] = yield all([
-//       select(state => state.listener),
-//       select(state => state.target.selected.map(filename => state.target.targets[filename])),
-//     ])
-//
-//     // eslint-disable-next-line
-//     for (const target of targets) {
-//       const distanceToListener = getDistanceBetweenSphericalPoints(listener.position, target.position)
-//       const volume = distanceToListener <= target.reach.radius ? target.volume : 0
-//
-//       yield call(engineSetSourceVolume, target.filename, volume, target.reach.fadeDuration)
-//     }
-//   }
-// }
+function* rampTargetVolumesByTheirReach() {
+  while (true) {
+    yield take([
+      ActionType.SET_LISTENER_POSITION,
+      ActionType.SET_SOURCE_POSITION,
+      ActionType.SET_SOURCE_REACH,
+      ActionType.SET_PLAYBACK_STATE,
+    ])
+
+    const [listener, sources] = yield all([
+      select(state => state.listener),
+      select(state => Object.values(state.sources.sources).filter(x => x.spatialised === true)),
+    ])
+
+    // eslint-disable-next-line
+    for (const source of sources) {
+      const distanceToListener = Math.sqrt(
+        (listener.position.x - source.position.x) ** 2 +
+        (listener.position.y - source.position.y) ** 2
+      )
+      const volume = distanceToListener <= source.reach.radius ? source.volume : 0
+
+      yield call(engineSetSourceVolume, source.name, volume, source.reach.fadeDuration)
+    }
+  }
+}
 
 /* ======================================================================== */
 // HEAD RADIUS
@@ -274,7 +276,7 @@ export default function* rootSaga() {
     applyImportSources(),
     // applyMasterVolume(),
     // applyTargetVolume(),
-    // rampTargetVolumesByTheirReach(),
+    rampTargetVolumesByTheirReach(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),

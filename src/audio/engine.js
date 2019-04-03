@@ -119,6 +119,8 @@ export const setListenerPosition = ({ x, y, z, rotZAxis }) => {
 //   chainSetMasterVolume(volume)
 // }
 
+export { chainSetSourceVolume as setSourceVolume }
+
 // export const setTargetVolume = (target, volume, fadeDuration) => {
 //     chainSetSourceVolume(target, volume, fadeDuration)
 // }
