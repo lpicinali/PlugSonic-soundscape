@@ -3,7 +3,7 @@
 /* ------------------- NOTES -------------------- */ /*
 
 *//* ---------------------------------------------- */
-import { set } from 'lodash/fp'
+import { omit, set } from 'lodash/fp'
 import { ADEtoXYZ } from 'src/utils'
 // import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
@@ -28,11 +28,12 @@ export default function(state = initialState, { type, payload }) {
       return set('editing', payload.target, state)
     }
 
-    case 'SET_SOURCE_POSITION': {
-      const newSources = Object.assign({}, state.sources)
-      Object.assign(newSources[payload.source].position, payload.position)
-      return { ...state, sources: newSources }
-    }
+    case 'SET_SOURCE_POSITION':
+      return set(
+        ['sources', payload.source, 'position'],
+        payload.position,
+        state
+      )
 
     case 'SET_SOURCE_REACH': {
       const { radius, fadeDuration } = payload
@@ -43,11 +44,12 @@ export default function(state = initialState, { type, payload }) {
       )
     }
 
-    case 'SET_SOURCE_VOLUME': {
-      const newTargets = Object.assign({}, state.targets)
-      newTargets[payload.target].volume = payload.volume
-      return { ...state, targets: newTargets }
-    }
+    case 'SET_SOURCE_VOLUME':
+      return set(
+        ['sources', payload.source, 'volume'],
+        payload.volume,
+        state
+      )
 
 
     case 'ADD_SOURCE_LOCAL': {
@@ -92,14 +94,12 @@ export default function(state = initialState, { type, payload }) {
       return { ...state, sources: newSources }
     }
 
-    case 'DELETE_TARGETS': {
-      const newTargets = Object.assign({}, state.targets)
-      payload.targets.forEach(filename => {
-        delete newTargets[filename]
-      })
-      const newSelected = []
-      return { ...state, targets: newTargets, selected: newSelected }
-    }
+    case 'DELETE_SOURCES':
+      return set(
+        'sources',
+        omit(payload.sources, state.sources),
+        state
+      )
 
     case 'IMPORT_SOURCES': {
       const newSources = {}

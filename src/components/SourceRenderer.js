@@ -1,3 +1,4 @@
+/* global Math */
 import React, { Component} from "react"
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
@@ -7,12 +8,22 @@ import { clamp, pick, values } from 'lodash'
 
 import { RoomShape } from 'src/constants'
 import { setSourcePosition } from 'src/actions/sources.actions'
+
+/**
+ * Returns a CSS transform scale value for a given z.
+ *
+ * This function assumes z >= 0
+ */
+function getScaleForZ(z, roomHeight) {
+  return 1 + (z / roomHeight)
+}
+
 /* ========================================================================== */
 const Source = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0) scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
   border-radius: 50%;
   background: ${props => (props.isSelected ? 'black' : 'transparent')};
   border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
@@ -92,6 +103,8 @@ class SourceRenderer extends Component {
       <Source
         key={this.props.name}
         isSelected={this.props.isSelected}
+        roomHeight={this.props.roomHeight}
+        position={this.props.position}
         style={{
           width: this.props.iconWidth,
           height: this.props.iconHeight,
@@ -117,6 +130,7 @@ SourceRenderer.propTypes = {
   iconHeight: PropTypes.number.isRequired,
   roomWidth: PropTypes.number.isRequired,
   roomDepth: PropTypes.number.isRequired,
+  roomHeight: PropTypes.number.isRequired,
   roomShape: PropTypes.oneOf(values(RoomShape)).isRequired,
   containerSize: PropTypes.shape({
     width: PropTypes.number.isRequired,
@@ -134,6 +148,7 @@ SourceRenderer.propTypes = {
 const mapStateToProps = state => ({
   roomWidth: state.room.size.width,
   roomDepth: state.room.size.depth,
+  roomHeight: state.room.size.height,
   roomShape: state.room.shape,
 })
 

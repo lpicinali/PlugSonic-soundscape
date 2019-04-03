@@ -282,8 +282,11 @@ export default function* rootSaga() {
     // applyDirectionalityAttenuation(),
     applySourcePosition(),
     applyListenerPosition(),
+<<<<<<< HEAD
     // applySourcePosition(),
     // applyListenerPosition(),
+=======
+>>>>>>> b5485b1d28b0d603bcebcfa42af8a309033d7152
     initDefaultHrtf(),
     applyHrtfs(),
   ]
