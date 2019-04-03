@@ -193,7 +193,7 @@ export const startNode = name => {
 
 export const startNodes = () => {
   if (context.state !== 'running') {
-    context.resume();
+    context.resume()
   }
 
   for (const name in sourcesNodes) {
