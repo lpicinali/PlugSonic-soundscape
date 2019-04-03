@@ -116,6 +116,8 @@ function* applyImportSources() {
   }
 }
 
+
+
 // function* applyDeleteSources() {
 //   while (true) {
 //     const { type, payload } = yield take(ActionType.DELETE_TARGETS)
@@ -150,6 +152,17 @@ function* applyListenerPosition() {
   while (true) {
     const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
     const { x, y, z, rotZAxis } = payload.position
+    engineSetListenerPosition({ x, y, z, rotZAxis })
+  }
+}
+
+/* ======================================================================== */
+// IMPORT LISTENER
+/* ======================================================================== */
+function* applyImportListener() {
+  while (true) {
+    const { payload } = yield take(ActionType.IMPORT_LISTENER)
+    const { x, y, z, rotZAxis } = payload.listener.position
     engineSetListenerPosition({ x, y, z, rotZAxis })
   }
 }
@@ -245,8 +258,11 @@ export default function* rootSaga() {
     applySourceOnOff(),
     applyAddSourceLocal(),
     applyAddSourceRemote(),
-    // applyDeleteSources(),
     applyImportSources(),
+    applySourcePosition(),
+    // applyDeleteSources(),
+    applyImportListener(),
+    applyListenerPosition(),
     // applyMasterVolume(),
     // applyTargetVolume(),
     // rampTargetVolumesByTheirReach(),
@@ -255,7 +271,5 @@ export default function* rootSaga() {
     applyHeadRadius(),
     // applyDirectionalityEnabled(),
     // applyDirectionalityAttenuation(),
-    applySourcePosition(),
-    applyListenerPosition(),
   ]
 }

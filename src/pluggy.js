@@ -87,7 +87,7 @@ export const sessionToken = Pluggy.getToken()
 export const exhibitionUrl = window.location.href
 export const exhibitionQuery = window.location.search.substring(1)
 export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
-// export const exhibitionId = '5ca499ebcd2eb4f3c4eba93c'
+// export const exhibitionId = '5ca4aae0cd2eb4f3c4ebab20'
 
 let title
 let description
