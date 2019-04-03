@@ -151,8 +151,8 @@ export const setSourceVolume = (filename, newVolume, fadeDuration = 0) => {
 // ADD SOURCE
 /* ======================================================================== */
 export const addSource = sourceObject => {
-  console.log('Chain -> Add Source')
-  console.log(sourceObject)
+  // console.log('Chain -> Add Source')
+  // console.log(sourceObject)
   sourcesNodes[sourceObject.name] = null
   sourcesInputs[sourceObject.name] = context.createGain()
   sourcesVolumes[sourceObject.name] = context.createGain()

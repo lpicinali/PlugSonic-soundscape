@@ -80,14 +80,14 @@ export function httpPutAsync(url, callback, body, token, type) {
 // eslint-disable-next-line
 export const API = 'https://develop.pluggy.eu/api/v1'
 // eslint-disable-next-line
-export const sessionToken = Pluggy.getToken()
-// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQyODM2OTcsImV4cCI6MTU1NDM3MDA5N30.ulIT2nGCgHtV8qbiN9Qgkc3isqqTr4RfHZ_dnTtS63k'
+// export const sessionToken = Pluggy.getToken()
+export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQzMDg4MjYsImV4cCI6MTU1NDM5NTIyNn0.LVENrbrkSiqz0p_l6H20UTgaWVX9quAIMF6Yid3bxhg'
 
 // =================== RETRIEVE EXHIBITION ============================= //
-export const exhibitionUrl = window.location.href
-export const exhibitionQuery = window.location.search.substring(1)
-export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
-// export const exhibitionId = '5ca4aae0cd2eb4f3c4ebab20'
+// export const exhibitionUrl = window.location.href
+// export const exhibitionQuery = window.location.search.substring(1)
+// export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+export const exhibitionId = '5ca4aae0cd2eb4f3c4ebab20'
 
 let title
 let description
@@ -96,7 +96,8 @@ let metadata
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
-
+  console.log('EXHIBITION RESPONSE')
+  console.log(response)
   title = response.data.title
   description = response.data.description
   tags = response.data.tags.map((tag,index) => (
@@ -117,10 +118,10 @@ export const exhibitionDescription = description
 export const exhibitionTags = tags
 export const exhibitionMetadata = metadata
 
-console.log('EXHIBITION:')
-console.log(`Id: ${exhibitionId}`)
-console.log(`Title: ${exhibitionTitle}`)
-console.log(`Description: ${exhibitionDescription}`)
-console.log(`Tags: ${exhibitionTags}`)
-console.log(`Metadata:`)
-console.log(exhibitionMetadata)
+// console.log('EXHIBITION:')
+// console.log(`Id: ${exhibitionId}`)
+// console.log(`Title: ${exhibitionTitle}`)
+// console.log(`Description: ${exhibitionDescription}`)
+// console.log(`Tags: ${exhibitionTags}`)
+// console.log(`Metadata:`)
+// console.log(exhibitionMetadata)

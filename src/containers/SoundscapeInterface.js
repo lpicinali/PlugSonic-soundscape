@@ -10,7 +10,7 @@ import ScaledSoundscape from 'src/containers/ScaledSoundscape.js'
 import * as colors from 'src/styles/colors.js'
 /* ========================================================================== */
 const SoundscapeInterfaceContainer = styled.div`
-  height: 100%;
+  height: calc(100% - 48px);
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

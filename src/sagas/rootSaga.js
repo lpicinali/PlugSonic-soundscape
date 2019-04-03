@@ -68,8 +68,8 @@ function* applySourceOnOff() {
 function* manageAddSource(name) {
   const sources = yield select(state => state.sources.sources)
   const sourceObject = sources[name]
-  console.log(`Saga -> Manage Add Source`)
-  console.log(sourceObject)
+  // console.log(`Saga -> Manage Add Source`)
+  // console.log(sourceObject)
   yield call(engineAddSource, sourceObject)
 
   if (sourceObject.selected === true){

@@ -79,8 +79,8 @@ export const unsetSource = sourceObject => {
 /* ======================================================================== */
 export const addSource = sourceObject => {
   stop()
-  console.log('Engine -> Add Source')
-  console.log(sourceObject)
+  // console.log('Engine -> Add Source')
+  // console.log(sourceObject)
   chainAddSource(sourceObject)
 }
 
@@ -92,7 +92,7 @@ export const addSource = sourceObject => {
 // DELETE ALL SOURCE
 /* ======================================================================== */
 export const deleteAllSources = () => {
-  console.log('ENGINE -> Delete All Sources')
+  // console.log('ENGINE -> Delete All Sources')
   stop()
   chainDeleteAllSources()
 }
