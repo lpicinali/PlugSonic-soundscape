@@ -116,3 +116,9 @@ export const exhibitionTitle = title
 export const exhibitionDescription = description
 export const exhibitionTags = tags
 export const exhibitionMetadata = metadata
+
+console.log('EXHIBITION:')
+console.log(`Title: ${exhibitionTitle}`)
+console.log(`Description: ${exhibitionDescription}`)
+console.log(`Tags: ${exhibitionTags}`)
+console.log(`Metadata: ${exhibitionMetadata}`)
