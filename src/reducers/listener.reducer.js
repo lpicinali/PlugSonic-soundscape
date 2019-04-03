@@ -11,10 +11,10 @@ const initialState = {
   headRadius: 0.0875,
   // isDirectionalityEnabled: true,
   // directionalityValue: 0,
+  hrtfFilename: '3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf',
 }
 
 export default function(state = initialState, { type, payload }) {
-
   if (type === ActionType.SET_LISTENER_POSITION) {
     const newPosition = Object.assign({}, state.position)
     Object.assign(newPosition, payload.position)
@@ -36,6 +36,9 @@ export default function(state = initialState, { type, payload }) {
       spatializationMode: payload.listener.spatializationMode,
       headRadius: payload.listener.headRadius,
     }
+  }
+  if (type === ActionType.SET_HRTF_FILENAME) {
+    return { ...state, hrtfFilename: payload.filename }
   }
 
   return state

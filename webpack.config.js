@@ -13,7 +13,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        // exclude: /node_modules/,
+        exclude: /node_modules/,
       },
     ],
   },
@@ -21,7 +21,6 @@ module.exports = {
     alias: {
       src: path.resolve('./src'),
       fs: path.resolve('./src/shims/fs.js'),
-      '3dti-toolkit': path.resolve('./src/shims/3dti-toolkit.js'),
     },
     extensions: ['.js', '.json'],
   },

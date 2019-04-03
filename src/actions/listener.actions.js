@@ -38,3 +38,8 @@ export const importListener = listener => ({
 //   type: ActionType.SET_DIRECTIONALITY_VALUE,
 //   payload: { value },
 // })
+
+export const setHrtfFilename = filename => ({
+  type: ActionType.SET_HRTF_FILENAME,
+  payload: { filename },
+})
