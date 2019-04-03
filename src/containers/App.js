@@ -14,11 +14,11 @@ import { exhibitionMetadata } from 'src/pluggy'
 class App extends Component {
 
   componentDidMount() {
-    // if (exhibitionMetadata){
-    //   this.props.onImportSources(exhibitionMetadata.sources)
-    //   this.props.onImportListener(exhibitionMetadata.listener)
-    //   this.props.onImportRoom(exhibitionMetadata.room)
-    // }
+    if (exhibitionMetadata !== []){
+      this.props.onImportSources(exhibitionMetadata.sources)
+      this.props.onImportListener(exhibitionMetadata.listener)
+      this.props.onImportRoom(exhibitionMetadata.room)
+    }
   }
 
   render() {
