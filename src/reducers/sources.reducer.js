@@ -4,7 +4,9 @@
 
 *//* ---------------------------------------------- */
 import { omit, set } from 'lodash/fp'
-import { ADEtoXYZ } from 'src/utils'
+
+import { ReachAction } from 'src/constants.js'
+import { ADEtoXYZ } from 'src/utils.js'
 // import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
 const initialState = {
@@ -28,6 +30,13 @@ export default function(state = initialState, { type, payload }) {
       return set('editing', payload.target, state)
     }
 
+    case 'SET_SOURCE_LOOP':
+      return set(
+        ['sources', payload.source, 'loop'],
+        payload.loop,
+        state
+      )
+
     case 'SET_SOURCE_POSITION':
       return set(
         ['sources', payload.source, 'position'],
@@ -35,14 +44,33 @@ export default function(state = initialState, { type, payload }) {
         state
       )
 
-    case 'SET_SOURCE_REACH': {
-      const { radius, fadeDuration } = payload
+    case 'SET_SOURCE_REACH_ENABLED':
       return set(
-        ['targets', payload.target, 'reach'],
-        { radius, fadeDuration },
+        ['sources', payload.source, 'reach', 'isEnabled'],
+        payload.isEnabled,
         state
       )
-    }
+
+    case 'SET_SOURCE_REACH_ACTION':
+      return set(
+        ['sources', payload.source, 'reach', 'action'],
+        payload.action,
+        state
+      )
+
+    case 'SET_SOURCE_REACH_RADIUS':
+      return set(
+        ['sources', payload.source, 'reach', 'radius'],
+        payload.radius,
+        state
+      )
+
+    case 'SET_SOURCE_REACH_FADE_DURATION':
+      return set(
+        ['sources', payload.source, 'reach', 'fadeDuration'],
+        payload.fadeDuration,
+        state
+      )
 
     case 'SET_SOURCE_VOLUME':
       return set(
@@ -62,7 +90,13 @@ export default function(state = initialState, { type, payload }) {
         platform_media_id: null,
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: payload.raw,
-        reach: { radius: 3, fadeDuration: 1000 },
+        reach: {
+          isEnabled: true,
+          action: ReachAction.TOGGLE_VOLUME,
+          radius: 3,
+          fadeDuration: 1000,
+        },
+        loop: true,
         selected: true,
         spatialised: true,
         url: null,
@@ -83,7 +117,13 @@ export default function(state = initialState, { type, payload }) {
         platform_media_id: payload.mediaId,
         position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
         raw: null,
-        reach: { radius: 3, fadeDuration: 1000 },
+        reach: {
+          isEnabled: true,
+          action: ReachAction.TOGGLE_VOLUME,
+          radius: 3,
+          fadeDuration: 1000,
+        },
+        loop: true,
         selected: true,
         spatialised: true,
         url: payload.url,

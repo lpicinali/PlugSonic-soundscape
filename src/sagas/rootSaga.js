@@ -1,13 +1,16 @@
 import { all, call, put, select, take, fork, spawn } from 'redux-saga/effects'
 import { map } from 'lodash'
 
-import { ActionType, PlaybackState } from 'src/constants.js'
+import { ActionType, PlaybackState, ReachAction } from 'src/constants.js'
 import { setHrtfFilename } from 'src/actions/listener.actions.js'
 import { getFileUrl } from 'src/audio/audio-files.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   play as enginePlay,
   stop as engineStop,
+  playSource as enginePlaySource,
+  stopSource as engineStopSource,
+  setSourceLoop as engineSetSourceLoop,
   setSource as engineSetSource,
   unsetSource as engineUnsetSource,
   setMasterVolume as engineSetMasterVolume,
@@ -22,7 +25,6 @@ import {
   deleteAllSources as engineDeleteAllSources,
   importSources as engineImportSources,
 } from 'src/audio/engine.js'
-import { getDistanceBetweenSphericalPoints } from 'src/utils.js'
 
 /* ======================================================================== */
 // PLAY/STOP
@@ -134,6 +136,23 @@ function* applyImportSources() {
 // }
 
 /* ======================================================================== */
+// LOOP
+/* ======================================================================== */
+function* applyLoopChanges() {
+  while (true) {
+    const { payload: { source, loop } } = yield take(ActionType.SET_SOURCE_LOOP)
+    yield call(engineSetSourceLoop, source, loop)
+
+    const playbackState = yield select(state => state.controls.playbackState)
+
+    if (playbackState === PlaybackState.PLAY) {
+      yield call(engineStopSource, source)
+      yield call(enginePlaySource, source)
+    }
+  }
+}
+
+/* ======================================================================== */
 // SOURCE POSITION
 /* ======================================================================== */
 function* applySourcePosition() {
@@ -171,29 +190,41 @@ function* applyListenerPosition() {
 //   }
 // }
 
-// function* rampTargetVolumesByTheirReach() {
-//   while (true) {
-//     yield take([
-//       ActionType.SET_LISTENER_POSITION,
-//       ActionType.SET_TARGET_POSITION,
-//       ActionType.SET_TARGET_REACH,
-//       ActionType.SET_PLAYBACK_STATE,
-//     ])
-//
-//     const [listener, targets] = yield all([
-//       select(state => state.listener),
-//       select(state => state.target.selected.map(filename => state.target.targets[filename])),
-//     ])
-//
-//     // eslint-disable-next-line
-//     for (const target of targets) {
-//       const distanceToListener = getDistanceBetweenSphericalPoints(listener.position, target.position)
-//       const volume = distanceToListener <= target.reach.radius ? target.volume : 0
-//
-//       yield call(engineSetSourceVolume, target.filename, volume, target.reach.fadeDuration)
-//     }
-//   }
-// }
+function* handleSourcesReach() {
+  while (true) {
+    yield take([
+      ActionType.SET_LISTENER_POSITION,
+      ActionType.SET_SOURCE_POSITION,
+      ActionType.SET_SOURCE_REACH,
+      ActionType.SET_PLAYBACK_STATE,
+    ])
+
+    const [listener, sources] = yield all([
+      select(state => state.listener),
+      select(state => Object.values(state.sources.sources).filter(x => x.spatialised === true)),
+    ])
+
+    // eslint-disable-next-line
+    for (const source of sources) {
+      const distanceToListener = Math.sqrt(
+        (listener.position.x - source.position.x) ** 2 +
+        (listener.position.y - source.position.y) ** 2
+      )
+      const isInsideReach = distanceToListener <= source.reach.radius
+
+      if (source.reach.action === ReachAction.TOGGLE_VOLUME) {
+        const volume = isInsideReach === true ? source.volume : 0
+        yield call(engineSetSourceVolume, source.name, volume, source.reach.fadeDuration)
+      } else if (source.reach.action === ReachAction.TOGGLE_PLAYBACK) {
+        yield call(engineStopSource, source.name)
+
+        if (isInsideReach === true) {
+          yield call(enginePlaySource, source.name)
+        }
+      }
+    }
+  }
+}
 
 /* ======================================================================== */
 // HEAD RADIUS
@@ -274,7 +305,8 @@ export default function* rootSaga() {
     applyImportSources(),
     // applyMasterVolume(),
     // applyTargetVolume(),
-    // rampTargetVolumesByTheirReach(),
+    applyLoopChanges(),
+    handleSourcesReach(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),

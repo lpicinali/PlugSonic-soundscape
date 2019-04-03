@@ -9,8 +9,11 @@ import {
   unsetSourceNode as chainUnsetSourceNode,
   setMasterVolume as chainSetMasterVolume,
   setSourceVolume as chainSetSourceVolume,
+  startNode as chainStartNode,
   startNodes as chainStartNodes,
+  stopNode as chainStopNode,
   stopNodes as chainStopNodes,
+  setSourceLoop as chainSetSourceLoop,
   addSource as chainAddSource,
   deleteSources as chainDeleteSources,
   deleteAllSources as chainDeleteAllSources,
@@ -30,6 +33,8 @@ export const play = () => {
   }
 }
 
+export { chainStartNode as playSource }
+
 /* ======================================================================== */
 // STOP
 /* ======================================================================== */
@@ -42,6 +47,14 @@ export const stop = () => {
   }
 }
 
+export { chainStopNode as stopSource }
+
+/* ======================================================================== */
+// LOOP
+/* ======================================================================== */
+
+export { chainSetSourceLoop as setSourceLoop }
+
 /* ======================================================================== */
 // SET SOURCE
 /* ======================================================================== */
@@ -52,6 +65,7 @@ export const setSource = sourceObject => {
     return fetchAudioBuffer(sourceObject.url)
       .then(audioBuffer => {
         const node = chainCreateNode(audioBuffer)
+        node.loop = sourceObject.loop
         chainSetSourceNode(node, sourceObject.name)
       })
       .catch(err => console.error(err))
@@ -118,6 +132,8 @@ export const setListenerPosition = ({ x, y, z, rotZAxis }) => {
 // export const setMasterVolume = volume => {
 //   chainSetMasterVolume(volume)
 // }
+
+export { chainSetSourceVolume as setSourceVolume }
 
 // export const setTargetVolume = (target, volume, fadeDuration) => {
 //     chainSetSourceVolume(target, volume, fadeDuration)

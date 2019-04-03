@@ -13,14 +13,22 @@ import {
 } from '@material-ui/core'
 import { List, ListItem } from "material-ui/List"
 import Divider from "material-ui/Divider"
+import DropDownMenu from 'material-ui/DropDownMenu'
 import FlatButton from "material-ui/FlatButton"
+import MenuItem from 'material-ui/MenuItem'
 import Slider from 'material-ui/Slider'
 import Toggle from 'material-ui/Toggle'
 
+import { ReachAction } from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
 import {
   deleteSources,
+  setSourceLoop,
   setSourcePosition,
+  setSourceReachEnabled,
+  setSourceReachAction,
+  setSourceReachRadius,
+  setSourceReachFadeDuration,
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
@@ -91,7 +99,15 @@ class SourcePanel extends PureComponent {
   }
 
   render() {
-    const { roomSize, sourceObject } = this.props
+    const {
+      roomSize,
+      sourceObject,
+      onSourceLoopChange,
+      onSourceReachEnabledChange,
+      onSourceReachActionChange,
+      onSourceReachRadiusChange,
+      onSourceReachFadeDurationChange,
+    } = this.props
     const { isPromptingDelete } = this.state
 
     const nestedItems = []
@@ -171,6 +187,61 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
+      <ListItem key="loop">
+        <H3>Loop</H3>
+
+        <Toggle
+          toggled={sourceObject.loop}
+          onToggle={(event, isEnabled) => onSourceLoopChange(sourceObject.name, isEnabled)}
+        />
+      </ListItem>
+    )
+
+    nestedItems.push(
+      <ListItem key="reach">
+        <H3>Reach</H3>
+
+        <Toggle
+          toggled={sourceObject.reach.isEnabled}
+          onToggle={(event, isEnabled) => onSourceReachEnabledChange(sourceObject.name, isEnabled)}
+        />
+
+        <Slider
+          min={0}
+          max={Math.max(roomSize.width, roomSize.height) / 2}
+          step={0.1}
+          value={sourceObject.reach.radius}
+          disabled={sourceObject.reach.isEnabled === false}
+          onChange={(event, value) =>
+            onSourceReachRadiusChange(sourceObject.name, value)
+          }
+        />
+
+        <DropDownMenu
+          style={{ width: '100%' }}
+          iconStyle={{ fill: colors.BLACK }}
+          underlineStyle={{ borderTop: `solid 1px ${colors.BLACK}` }}
+          value={sourceObject.reach.action}
+          onChange={(event, index, value) => onSourceReachActionChange(sourceObject.name, value)}
+        >
+          <MenuItem value={ReachAction.TOGGLE_PLAYBACK} primaryText="Toggle playback" />
+          <MenuItem value={ReachAction.TOGGLE_VOLUME} primaryText="Toggle volume" />
+        </DropDownMenu>
+
+        <Slider
+          min={0}
+          max={20}
+          step={0.1}
+          value={sourceObject.reach.fadeDuration / 1000}
+          disabled={sourceObject.reach.isEnabled === false}
+          onChange={(event, value) =>
+            onSourceReachFadeDurationChange(sourceObject.name, value * 1000)
+          }
+        />
+      </ListItem>
+    )
+
+    nestedItems.push(
       <ListItem key={`${sourceObject.name}-delete`}>
         <Button variant="contained" color="secondary" onClick={this.handleSourceDelete}>
           Delete
@@ -228,7 +299,12 @@ SourcePanel.propTypes = {
   sourceObject: CustomPropTypes.source.isRequired,
   onSourceOnOff: PropTypes.func.isRequired,
   onSourceVolumeChange: PropTypes.func.isRequired,
+  onSourceLoopChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
+  onSourceReachEnabledChange: PropTypes.func.isRequired,
+  onSourceReachActionChange: PropTypes.func.isRequired,
+  onSourceReachRadiusChange: PropTypes.func.isRequired,
+  onSourceReachFadeDurationChange: PropTypes.func.isRequired,
   onSourceDelete: PropTypes.func.isRequired,
 }
 
@@ -239,7 +315,12 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onSourceOnOff: name => dispatch(sourceOnOff(name)),
   onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
+  onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
+  onSourceReachEnabledChange: (name, isEnabled) => dispatch(setSourceReachEnabled(name, isEnabled)),
+  onSourceReachActionChange: (name, action) => dispatch(setSourceReachAction(name, action)),
+  onSourceReachRadiusChange: (name, radius) => dispatch(setSourceReachRadius(name, radius)),
+  onSourceReachFadeDurationChange: (name, fadeDuration) => dispatch(setSourceReachFadeDuration(name, fadeDuration)),
   onSourceDelete: name => dispatch(deleteSources([name])),
 })
 

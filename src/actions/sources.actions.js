@@ -16,14 +16,34 @@ export const setEditingSource = (source) => ({
   payload: { source },
 })
 
+export const setSourceLoop = (source, loop) => ({
+  type: ActionType.SET_SOURCE_LOOP,
+  payload: { source, loop },
+})
+
 export const setSourcePosition = (source, position) => ({
   type: ActionType.SET_SOURCE_POSITION,
   payload: { source, position },
 })
 
-export const setSourceReach = (source, radius, fadeDuration) => ({
-  type: ActionType.SET_SOURCE_REACH,
-  payload: { source, radius, fadeDuration },
+export const setSourceReachEnabled = (source, isEnabled) => ({
+  type: ActionType.SET_SOURCE_REACH_ENABLED,
+  payload: { source, isEnabled },
+})
+
+export const setSourceReachAction = (source, action) => ({
+  type: ActionType.SET_SOURCE_REACH_ACTION,
+  payload: { source, action },
+})
+
+export const setSourceReachRadius = (source, radius) => ({
+  type: ActionType.SET_SOURCE_REACH_RADIUS,
+  payload: { source, radius },
+})
+
+export const setSourceReachFadeDuration = (source, fadeDuration) => ({
+  type: ActionType.SET_SOURCE_REACH_FADE_DURATION,
+  payload: { source, fadeDuration },
 })
 
 export const setSourceVolume = (source, volume) => ({

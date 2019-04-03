@@ -126,11 +126,11 @@ export const unsetSourceNode = channel => {
 /* ======================================================================== */
 // SOURCE VOLUME
 /* ======================================================================== */
-export const setSourceVolume = (filename, newVolume, fadeDuration = 0) => {
-  if (newVolume !== sourcesVolumeValues[filename]) {
-    sourcesVolumeValues[filename] = newVolume
+export const setSourceVolume = (name, newVolume, fadeDuration = 0) => {
+  if (newVolume !== sourcesVolumeValues[name]) {
+    sourcesVolumeValues[name] = newVolume
 
-    const gainNode = sourcesVolumes[filename].gain
+    const gainNode = sourcesVolumes[name].gain
 
     // This makes fades act sort of naturally when you change
     // volume again within the duration
@@ -185,16 +185,20 @@ export const addSource = sourceObject => {
 /* ======================================================================== */
 // START NODES
 /* ======================================================================== */
+export const startNode = name => {
+  if (sourcesNodes[name]) {
+    sourcesNodes[name].start(0)
+  }
+}
+
 export const startNodes = () => {
   if (context.state !== 'running') {
-    context.resume();
+    context.resume()
   }
 
-  for (const filename in sourcesNodes) {
-    if (Object.prototype.hasOwnProperty.call(sourcesNodes, filename)) {
-      if (sourcesNodes[filename]) {
-        sourcesNodes[filename].start(0)
-      }
+  for (const name in sourcesNodes) {
+    if (Object.prototype.hasOwnProperty.call(sourcesNodes, name)) {
+      startNode(name)
     }
   }
 }
@@ -202,14 +206,29 @@ export const startNodes = () => {
 /* ======================================================================== */
 // STOP NODES
 /* ======================================================================== */
+export const stopNode = name => {
+  if (sourcesNodes[name]) {
+    const loop = sourcesNodes[name].loop
+    sourcesNodes[name].disconnect()
+    sourcesNodes[name] = createNode(sourcesNodes[name].buffer)
+    sourcesNodes[name].loop = loop
+    setSourceNode(sourcesNodes[name], name)
+  }
+}
+
 export const stopNodes = () => {
-  for (const filename in sourcesNodes) {
-    if (Object.prototype.hasOwnProperty.call(sourcesNodes, filename)) {
-      if (sourcesNodes[filename]) {
-        sourcesNodes[filename].disconnect()
-        sourcesNodes[filename] = createNode(sourcesNodes[filename].buffer)
-        setSourceNode(sourcesNodes[filename], filename)
-      }
+  for (const name in sourcesNodes) {
+    if (Object.prototype.hasOwnProperty.call(sourcesNodes, name)) {
+      stopNode(name)
     }
+  }
+}
+
+/* ======================================================================== */
+// LOOP NODES
+/* ======================================================================== */
+export const setSourceLoop = (name, loop) => {
+  if (sourcesNodes[name]) {
+    sourcesNodes[name].loop = loop
   }
 }
