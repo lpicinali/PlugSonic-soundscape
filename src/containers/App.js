@@ -16,6 +16,11 @@ class App extends Component {
   componentDidMount() {
     console.log('METADATA')
     console.log(exhibitionMetadata)
+    if (exhibitionMetadata === []) {
+      console.log('DO NOTHING')
+    } else {
+      console.log('DO SOMETHING')
+    }
     // if (exhibitionMetadata !== []){
     //   this.props.onImportSources(exhibitionMetadata.sources)
     //   this.props.onImportListener(exhibitionMetadata.listener)
