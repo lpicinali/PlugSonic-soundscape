@@ -48,9 +48,8 @@
   },
   "dependencies": {
     "@material-ui/core": "^3.5.1",
-    "@reactify/3dti-toolkit": "^0.7.3",
+    "@reactify/3dti-toolkit": "^0.7.6",
     "@types/file-saver": "^1.3.0",
-    "audio-decode": "^1.4.0",
     "autosuggest-highlight": "^3.1.1",
     "base64-arraybuffer": "^0.1.5",
     "blob": "0.0.4",
