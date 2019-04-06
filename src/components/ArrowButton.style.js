@@ -3,9 +3,9 @@ import * as colors from 'src/styles/colors.js'
 
 export const StyledArrowButton = styled.button`
   appearance: none;
-  width: 80px !important;
-  height: 60px !important;
-  margin: 5px;
+  width: 72px !important;
+  height: 48px !important;
+  margin: 1px;
   padding: 0px 0px;
   background: ${colors.BLACK};
   border: none;
@@ -23,8 +23,8 @@ export const StyledArrowButton = styled.button`
   }
 
   svg {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     transform: rotate(${props => props.rotateIcon}deg);
     padding: 0px;
   }

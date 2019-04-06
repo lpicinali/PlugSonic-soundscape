@@ -8,9 +8,12 @@ import ArrowControlsContainer from 'src/containers/ArrowControlsContainer'
 import TabsContainer from 'src/containers/TabsContainer.js'
 import ScaledSoundscape from 'src/containers/ScaledSoundscape.js'
 import * as colors from 'src/styles/colors.js'
+import { H4 } from 'src/styles/elements'
+
+
 /* ========================================================================== */
 const SoundscapeInterfaceContainer = styled.div`
-  height: calc{100% - 48px};
+  height: calc(100% - 70px);
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -36,7 +39,7 @@ const SettingsDrawer = styled.div`
 const ArrowsDrawer = styled.div`
   flex-shrink: 0;
   width: 288px;
-  height: 140px;
+  height: 124px;
   overflow: hidden;
   background: ${colors.WHITE};
   transition: width 0.5s;
@@ -76,6 +79,7 @@ class SoundscapeInterface extends PureComponent {
 
           {showArrowsDrawer === true && (
             <ArrowsDrawer>
+              <H4>Work only on touchscreens</H4>
               <ArrowControlsContainer/>
             </ArrowsDrawer>
           )}

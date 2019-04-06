@@ -150,36 +150,36 @@ class SourcePanel extends PureComponent {
 
         <div>
           <label>X</label>
-          <SliderValue>{-sourceObject.position.y} m</SliderValue>
+          <SliderValue>{parseFloat(Math.round(-sourceObject.position.y * 100) / 100).toFixed(2)} m</SliderValue>
         </div>
         <Slider
           min={-roomSize.width / 2}
           max={roomSize.width / 2}
-          step={0.1}
+          step={0.01}
           value={-sourceObject.position.y}
           onChange={(event, value) => this.handleSourceMove('y', -value)}
         />
 
         <div>
           <label>Y</label>
-          <SliderValue>{sourceObject.position.x} m</SliderValue>
+          <SliderValue>{parseFloat(Math.round(sourceObject.position.x * 100) / 100).toFixed(2)} m</SliderValue>
         </div>
         <Slider
           min={-roomSize.depth / 2}
           max={roomSize.depth / 2}
-          step={0.1}
+          step={0.01}
           value={sourceObject.position.x}
           onChange={(event, value) => this.handleSourceMove('x', value)}
         />
 
         <div>
           <label>Z</label>
-          <SliderValue>{sourceObject.position.z} m</SliderValue>
+          <SliderValue>{parseFloat(Math.round(sourceObject.position.z * 100) / 100).toFixed(2)} m</SliderValue>
         </div>
         <Slider
           min={0}
           max={roomSize.height / 2}
-          step={0.1}
+          step={0.01}
           value={sourceObject.position.z}
           onChange={(event, value) => this.handleSourceMove('z', value)}
         />

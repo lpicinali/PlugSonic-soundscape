@@ -19,6 +19,8 @@ export const H3 = styled.h3`
 export const H4 = styled.h4`
   color: ${colors.GRAY};
   font-size: 12px;
+  text-align: center;
+  margin: 4px 0px 4px 0px;
 `
 
 export const P = styled.p`
