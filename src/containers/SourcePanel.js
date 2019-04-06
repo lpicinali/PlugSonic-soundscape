@@ -102,6 +102,7 @@ class SourcePanel extends PureComponent {
     const {
       roomSize,
       sourceObject,
+      onSourceOnOff,
       onSourceLoopChange,
       onSourceReachEnabledChange,
       onSourceReachActionChange,
@@ -118,8 +119,8 @@ class SourcePanel extends PureComponent {
         primaryText="ON/OFF"
         rightToggle={
           <Toggle
-            onToggle={() => this.props.onSourceOnOff(sourceObject.name)}
             toggled={sourceObject.selected}
+            onToggle={(event, isEnabled) => onSourceOnOff(sourceObject.name, isEnabled)}
           />
         }
       />
@@ -313,7 +314,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onSourceOnOff: name => dispatch(sourceOnOff(name)),
+  onSourceOnOff: (name, selected) => dispatch(sourceOnOff(name, selected)),
   onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
   onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),

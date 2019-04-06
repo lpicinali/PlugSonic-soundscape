@@ -20,11 +20,12 @@ export default function(state = initialState, { type, payload }) {
 
   switch (type) {
 
-    case 'SOURCE_ONOFF': {
-      const newSources = Object.assign({}, state.sources)
-      newSources[payload.name].selected = !(newSources[payload.name].selected)
-      return { ...state, sources: newSources }
-    }
+    case 'SOURCE_ONOFF':
+      return set(
+        ['sources', payload.name, 'selected'],
+        payload.selected,
+        state
+      )
 
     case 'SET_EDITING_SOURCE': {
       return set('editing', payload.target, state)
