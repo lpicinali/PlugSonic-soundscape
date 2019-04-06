@@ -55,14 +55,14 @@ class NavControls extends Component {
         <FlatButton
           icon={<PlayIcon color={colors.WHITE}/>}
           style={FlatButtonStyle}
-          disabled={this.props.playbackState === PlaybackState.PLAY}
+          // disabled={this.props.playbackState === PlaybackState.PLAY}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.PLAY)}
         />
 
         <FlatButton
           icon={<StopIcon color={colors.WHITE}/>}
           style={FlatButtonStyle}
-          disabled={this.props.playbackState === PlaybackState.STOP}
+          // disabled={this.props.playbackState === PlaybackState.STOP}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.STOP)}
         />
 
