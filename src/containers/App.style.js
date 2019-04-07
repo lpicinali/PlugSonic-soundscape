@@ -14,6 +14,10 @@ export const  AppContainer  = styled.div`
     height: 100vh;
     display: flex;
     flex-direction: column;
+
+    width: 100vw;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch; /* enables “momentum” (smooth) scrolling */
 `
 
 export const Nav = styled.div`

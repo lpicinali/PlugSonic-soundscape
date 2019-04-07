@@ -35,7 +35,6 @@ const SettingsDrawer = styled.div`
   background: ${colors.WHITE};
   transition: width 0.5s;
   border: 1px solid ${colors.BLACK};
-  overscroll-behavior: contain;
 `
 const ArrowsDrawer = styled.div`
   flex-shrink: 0;
