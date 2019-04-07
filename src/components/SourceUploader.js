@@ -66,9 +66,9 @@ class SourceUploader extends Component {
 
   handleOnDrop = (accepted, rejected) => {
     if (accepted.length === 0) {
+      console.log('Unsupported')
       this.setState({
-        ...this.state,
-        error: 'Unsupported file format)'
+        errorFile: 'Unsupported file format'
       })
     } else if (accepted.length === 1) {
       const reader = new FileReader()
@@ -93,6 +93,9 @@ class SourceUploader extends Component {
                 filename: accepted[0].name, size: accepted[0].size, errorFile: 'Error with file format (Number of Channels > 2)'
               })
             } else {
+              if ( audioBuffer.numberOfChannels === 2 ) {
+                alert(`You are about to import a stereo file.\n This will be converted to mono (Left and Right channels will be summed)\nPress OK to continue...`)
+              }
               this.setState({
                 ...this.state,
                 raw:  array,
@@ -106,7 +109,7 @@ class SourceUploader extends Component {
         .catch(err => console.error(err))
       }
     } else {
-      this.setState({...this.state, filename: '', size: '', error: 'Please load only one file'})
+      this.setState({...this.state, filename: '', size: '', errorFile: 'Please load only one file'})
     }
   }
 
@@ -132,13 +135,13 @@ class SourceUploader extends Component {
     return (
       <Container>
         <Dropzone
-          accept="audio/*"
+          accept="audio/mp3, audio/mpeg"
           onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
         >
           <ActionIcon/>
           <div>
             {this.state.filename === '' ? (
-                'Drop an audio file here (or click) to load it.'
+                'Drop an mp3 file here (or click) to load it.'
             ) : (
                 `${this.state.filename} - ${this.state.size} bytes`
             )
