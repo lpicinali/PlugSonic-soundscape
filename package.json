@@ -42,8 +42,9 @@
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.7.0",
     "prettier": "^1.16.4",
-    "webpack": "^2.7.0",
-    "webpack-dev-server": "^2.11.2"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
     "@material-ui/core": "^3.5.1",

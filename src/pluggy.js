@@ -81,7 +81,7 @@ export function httpPutAsync(url, callback, body, token, type) {
 export const API = 'https://develop.pluggy.eu/api/v1'
 // eslint-disable-next-line
 export const sessionToken = Pluggy.getToken()
-// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQzMDg4MjYsImV4cCI6MTU1NDM5NTIyNn0.LVENrbrkSiqz0p_l6H20UTgaWVX9quAIMF6Yid3bxhg'
+// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQ2NjM4OTksImV4cCI6MTU1NDc1MDI5OX0.KG_eqQWpyvhTHXZ5FcpjamnF6UagpVMZBDKaDjMyIzE'
 
 // =================== RETRIEVE EXHIBITION ============================= //
 export const exhibitionUrl = window.location.href
@@ -89,21 +89,23 @@ export const exhibitionQuery = window.location.search.substring(1)
 export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
 // export const exhibitionId = '5ca4aae0cd2eb4f3c4ebab20'
 
-let title
-let description
-let tags
-let metadata
+let title = ''
+let description = ''
+let tags = []
+let metadata = []
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
-  console.log('EXHIBITION RESPONSE')
+  console.log('RETRIEVE EXHIBITION RESPONSE')
   console.log(response)
-  title = response.data.title
-  description = response.data.description
-  tags = response.data.tags.map((tag,index) => (
-    {key: index, label: tag}
-  ))
-  metadata = response.data.metadata
+  if (response.success) {
+    title = response.data.title
+    description = response.data.description
+    tags = response.data.tags.map((tag,index) => (
+      {key: index, label: tag}
+    ))
+    metadata = response.data.metadata
+  }
 }
 
 function getExhibitionErrorCallback(responseText) {
