@@ -50,12 +50,15 @@ class NavControls extends Component {
     const DrawerIcon = this.props.showSettingsDrawer ?
       <ArrowIcon color={colors.WHITE}/> : <SettingsIcon color={colors.WHITE}/>
 
+    const PlayButtonIcon = this.props.playbackState === PlaybackState.PLAY ?
+      <PlayIcon color={colors.RED}/> : <PlayIcon color={colors.WHITE}/>
+
     return (
       <React.Fragment>
         <FlatButton
-          icon={<PlayIcon color={colors.WHITE}/>}
+          icon={PlayButtonIcon}
           style={FlatButtonStyle}
-          // disabled={this.props.playbackState === PlaybackState.PLAY}
+          disabled={this.props.playbackState === PlaybackState.PLAY}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.PLAY)}
         />
 
