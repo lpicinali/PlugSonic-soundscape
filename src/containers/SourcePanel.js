@@ -63,10 +63,6 @@ class SourcePanel extends PureComponent {
     isPromptingDelete: false,
   }
 
-  handleSourceOnOff = (name) => {
-    this.props.onSourceOnOff(this.props.sourceObject.name)
-  }
-
   handleSourceVolume = volume => {
     this.props.onSourceVolumeChange(this.props.sourceObject.name, volume)
   }

@@ -2,12 +2,11 @@
 /* eslint no-unused-vars: 0 */
 /* ------------------- NOTES -------------------- */ /*
 
-*//* ---------------------------------------------- */
+*/ /* ---------------------------------------------- */
 import { omit, set } from 'lodash/fp'
 
 import { ReachAction } from 'src/constants.js'
 import { ADEtoXYZ } from 'src/utils.js'
-// import { audioFiles, getFileUrl } from 'src/audio/audio-files.js'
 
 const initialState = {
   sources: {},
@@ -17,7 +16,6 @@ const initialState = {
 let azimuthIndex = Object.keys(initialState.sources).length
 
 export default function(state = initialState, { type, payload }) {
-
   switch (type) {
 
     case 'SOURCE_ONOFF':
@@ -32,11 +30,7 @@ export default function(state = initialState, { type, payload }) {
     }
 
     case 'SET_SOURCE_LOOP':
-      return set(
-        ['sources', payload.source, 'loop'],
-        payload.loop,
-        state
-      )
+      return set(['sources', payload.source, 'loop'], payload.loop, state)
 
     case 'SET_SOURCE_POSITION':
       return set(
@@ -74,23 +68,18 @@ export default function(state = initialState, { type, payload }) {
       )
 
     case 'SET_SOURCE_VOLUME':
-      return set(
-        ['sources', payload.source, 'volume'],
-        payload.volume,
-        state
-      )
+      return set(['sources', payload.source, 'volume'], payload.volume, state)
 
-
-    case 'ADD_SOURCE_LOCAL': {
-      const newSources = Object.assign({}, state.sources)
+    case 'ADD_SOURCE': {
       const newSource = {
-        filename: payload.filename,
-        hidden: false,
         name: payload.name,
-        platform_asset_id: null,
-        platform_media_id: null,
-        position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
-        raw: payload.raw,
+        filename: payload.filename,
+        origin: payload.origin,
+        hidden: false,
+        platform_asset_id: payload.assetId || null,
+        platform_media_id: payload.mediaId || null,
+        position: ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
+        // raw: payload.raw,
         reach: {
           isEnabled: true,
           action: ReachAction.TOGGLE_VOLUME,
@@ -100,47 +89,17 @@ export default function(state = initialState, { type, payload }) {
         loop: true,
         selected: true,
         spatialised: true,
-        url: null,
+        url: payload.url || null,
         volume: 1.0,
       }
-      azimuthIndex += 1
-      newSources[payload.name] = newSource
-      return { ...state, sources: newSources }
-    }
 
-    case 'ADD_SOURCE_REMOTE': {
-      const newSources = Object.assign({}, state.sources)
-      const newSource = {
-        filename: payload.filename,
-        hidden: false,
-        name: payload.name,
-        platform_asset_id: payload.assetId,
-        platform_media_id: payload.mediaId,
-        position: ADEtoXYZ(azimuthIndex * Math.PI/6, 3, 0),
-        raw: null,
-        reach: {
-          isEnabled: true,
-          action: ReachAction.TOGGLE_VOLUME,
-          radius: 3,
-          fadeDuration: 1000,
-        },
-        loop: true,
-        selected: true,
-        spatialised: true,
-        url: payload.url,
-        volume: 1.0,
-      }
       azimuthIndex += 1
-      newSources[payload.name] = newSource
-      return { ...state, sources: newSources }
+
+      return set(['sources', payload.name], newSource, state)
     }
 
     case 'DELETE_SOURCES':
-      return set(
-        'sources',
-        omit(payload.sources, state.sources),
-        state
-      )
+      return set('sources', omit(payload.sources, state.sources), state)
 
     case 'IMPORT_SOURCES': {
       const newSources = {}

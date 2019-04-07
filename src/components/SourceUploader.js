@@ -1,18 +1,22 @@
 import React, { Component } from 'react'
-import { connect } from "react-redux"
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { map } from 'lodash'
-import { fetchAudioBufferRaw } from 'src/utils'
 
-import * as colors from 'src/styles/colors'
-import {H2} from 'src/styles/elements'
-import {Dropzone, ActionIcon} from 'src/components/SourceUploader.style'
-import FlatButton from "material-ui/FlatButton"
+import FlatButton from 'material-ui/FlatButton'
 import TextField from 'material-ui/TextField'
 
-import { addSourceLocal } from 'src/actions/sources.actions'
+import { SourceOrigin } from 'src/constants.js'
+import { fetchAudioBufferRaw } from 'src/utils.js'
+import { addSource } from 'src/actions/sources.actions.js'
+import { storeSourceAudioBuffer } from 'src/audio/engine.js'
+import { Dropzone, ActionIcon } from 'src/components/SourceUploader.style.js'
+import * as colors from 'src/styles/colors.js'
+import { H2 } from 'src/styles/elements.js'
+
 /* ========================================================================== */
+
 const FlatButtonStyle = {
   width: '85%',
   margin: `auto`,
@@ -25,10 +29,10 @@ const Container = styled.div`
 `
 export const textfieldStyle = {
   marginLeft: `20px`,
-  width: `85%`
+  width: `85%`,
 }
 export const errorStyle = {
-  textColor: `colors.BLACK`
+  textColor: `colors.BLACK`,
 }
 const underlineStyle = {
   borderColor: `colors.BLACK`,
@@ -40,18 +44,18 @@ const underlineFocusStyle = {
 /* SOURCE UPLOADER */
 /* ========================================================================== */
 class SourceUploader extends Component {
-
   state = {
     file: {},
     filename: '',
     size: '',
     raw: [],
+    audioBuffer: null,
     errorFile: '',
     name: '',
     errorTextField: '',
   }
 
-  handleTextFieldChange = (event) => {
+  handleTextFieldChange = event => {
     const val = event.target.value
     if (this.props.names.indexOf(val) >= 0) {
       this.setState({
@@ -76,10 +80,20 @@ class SourceUploader extends Component {
       reader.readAsArrayBuffer(accepted[0])
 
       reader.onabort = () => {
-        this.setState({...this.state, filename: '', size: '', errorFile: 'File reading was aborted'})
+        this.setState({
+          ...this.state,
+          filename: '',
+          size: '',
+          errorFile: 'File reading was aborted',
+        })
       }
       reader.onerror = () => {
-        this.setState({...this.state, filename: '', size: '', errorFile: 'File reading has failed'})
+        this.setState({
+          ...this.state,
+          filename: '',
+          size: '',
+          errorFile: 'File reading has failed',
+        })
       }
       reader.onload = () => {
         const view = new Uint8Array(reader.result)
@@ -87,10 +101,12 @@ class SourceUploader extends Component {
 
         fetchAudioBufferRaw(array)
           .then(audioBuffer => {
-            if ( audioBuffer.numberOfChannels > 2 ) {
+            if (audioBuffer.numberOfChannels > 2) {
               this.setState({
                 ...this.state,
-                filename: accepted[0].name, size: accepted[0].size, errorFile: 'Error with file format (Number of Channels > 2)'
+                filename: accepted[0].name,
+                size: accepted[0].size,
+                errorFile: 'Error with file format (Number of Channels > 2)',
               })
             } else {
               if ( audioBuffer.numberOfChannels === 2 ) {
@@ -98,15 +114,16 @@ class SourceUploader extends Component {
               }
               this.setState({
                 ...this.state,
-                raw:  array,
+                audioBuffer,
+                raw: array,
                 file: accepted[0],
                 filename: accepted[0].name,
                 size: accepted[0].size,
-                errorFile: ''
+                errorFile: '',
               })
             }
           })
-        .catch(err => console.error(err))
+          .catch(err => console.error(err))
       }
     } else {
       this.setState({...this.state, filename: '', size: '', errorFile: 'Please load only one file'})
@@ -114,13 +131,16 @@ class SourceUploader extends Component {
   }
 
   handleAddSource = () => {
-    this.props.onAddSource(
-      this.state.filename.replace(/\s/g,'').toLowerCase(),
-      this.state.name,
-      this.state.raw
-    )
+    const { onAddSource } = this.props
+    const { name, filename, audioBuffer } = this.state
+
+    storeSourceAudioBuffer(name, audioBuffer)
+
+    onAddSource(filename.replace(/\s/g, '').toLowerCase(), name)
+
     this.setState({
       raw: [],
+      audioBuffer: null,
       file: {},
       filename: '',
       size: '',
@@ -138,14 +158,11 @@ class SourceUploader extends Component {
           accept="audio/mp3, audio/mpeg"
           onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
         >
-          <ActionIcon/>
+          <ActionIcon />
           <div>
-            {this.state.filename === '' ? (
-                'Drop an mp3 file here (or click) to load it.'
-            ) : (
-                `${this.state.filename} - ${this.state.size} bytes`
-            )
-            }
+            {this.state.filename === ''
+              ? 'Drop an audio file here (or click) to load it.'
+              : `${this.state.filename} - ${this.state.size} bytes`}
           </div>
           <div style={{ height: `12px`, marginBottom: `10px` }}>
             {this.state.errorFile === '' ? '' : `${this.state.errorFile}`}
@@ -177,7 +194,6 @@ class SourceUploader extends Component {
         >
           ADD SOURCE
         </FlatButton>
-
       </Container>
     )
   }
@@ -185,7 +201,7 @@ class SourceUploader extends Component {
 
 SourceUploader.propTypes = {
   names: PropTypes.array.isRequired,
-  onAddSource: PropTypes.func.isRequired
+  onAddSource: PropTypes.func.isRequired,
 }
 
 SourceUploader.defaultProps = {
@@ -193,12 +209,15 @@ SourceUploader.defaultProps = {
 }
 
 const mapStateToProps = state => ({
-  names: map(state.sources.sources, source => source.name)
+  names: map(state.sources.sources, source => source.name),
 })
 
 const mapDispatchToProps = dispatch => ({
-  onAddSource: (filename, name, raw) =>
-      dispatch(addSourceLocal(filename, name, raw)),
+  onAddSource: (filename, name) =>
+    dispatch(addSource({ filename, name, origin: SourceOrigin.LOCAL })),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(SourceUploader)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SourceUploader)

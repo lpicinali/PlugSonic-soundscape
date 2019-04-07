@@ -1,29 +1,17 @@
-import { all, call, put, select, take, fork, spawn } from 'redux-saga/effects'
-import { map } from 'lodash'
+import { all, call, put, select, take } from 'redux-saga/effects'
 
 import { ActionType, PlaybackState, ReachAction } from 'src/constants.js'
-import { setHrtfFilename } from 'src/actions/listener.actions.js'
-import { getFileUrl } from 'src/audio/audio-files.js'
+import { addSource } from 'src/actions/sources.actions.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
-  play as enginePlay,
-  stop as engineStop,
-  playSource as enginePlaySource,
-  stopSource as engineStopSource,
-  setSourceLoop as engineSetSourceLoop,
-  setSource as engineSetSource,
-  unsetSource as engineUnsetSource,
-  setMasterVolume as engineSetMasterVolume,
-  setSourceVolume as engineSetSourceVolume,
-  setSourcePosition as engineSetSourcePosition,
-  setListenerPosition as engineSetListenerPosition,
-  setHeadRadius as engineSetHeadRadius,
-  setPerformanceMode as engineSetPerformanceMode,
-  setQualityMode as engineSetQualityMode,
-  addSource as engineAddSource,
-  deleteSources as engineDeleteSources,
-  deleteAllSources as engineDeleteAllSources,
-  importSources as engineImportSources,
+  playSource,
+  stopSource,
+  setSourceLoop,
+  // setMasterVolume,
+  setSourceVolume,
+  // spatializeSource,
+  // deleteSources,
+  deleteAllSources,
 } from 'src/audio/engine.js'
 
 /* ======================================================================== */
@@ -31,12 +19,35 @@ import {
 /* ======================================================================== */
 function* applyPlayStop() {
   while (true) {
-    const { payload: { state } } = yield take(ActionType.SET_PLAYBACK_STATE)
-    // console.log('Saga -> Apply Play Stop')
-    if (state === PlaybackState.PLAY) {
-      enginePlay()
-    } else if (state === PlaybackState.STOP) {
-      engineStop()
+    const { payload } = yield take(ActionType.SET_PLAYBACK_STATE)
+
+    const sources = yield select(state => state.sources.sources)
+
+    // eslint-disable-next-line
+    for (const source of Object.values(sources)) {
+      if (payload.state === PlaybackState.PLAY) {
+        if (source.selected === true) {
+          yield call(playSource, source)
+        }
+      } else {
+        yield call(stopSource, source)
+      }
+    }
+  }
+}
+
+/* ======================================================================== */
+// ADD SOURCE
+/* ======================================================================== */
+function* manageAddSource() {
+  while (true) {
+    const { payload } = yield take(ActionType.ADD_SOURCE)
+
+    const source = yield select(state => state.sources.sources[payload.name])
+    const playbackState = yield select(state => state.controls.playbackState)
+
+    if (source.selected === true && playbackState === PlaybackState.PLAY) {
+      yield call(playSource, source)
     }
   }
 }
@@ -44,79 +55,35 @@ function* applyPlayStop() {
 /* ======================================================================== */
 // SOURCE ON/OFF
 /* ======================================================================== */
-function* manageSourceOnOff(name) {
-  const sources = yield select(state => state.sources.sources)
-  const sourceObject = sources[name]
-  if (sourceObject.selected === true) {
-    yield call(engineSetSource, sourceObject)
-  } else {
-    yield call(engineUnsetSource, sourceObject)
-  }
-  const playbackState = yield select(state => state.controls.playbackState)
-
-  if (playbackState === PlaybackState.PLAY) {
-    yield call(enginePlay)
-  }
-}
-
 function* applySourceOnOff() {
   while (true) {
-    const { type, payload } = yield take(ActionType.SOURCE_ONOFF)
-    yield spawn(manageSourceOnOff, payload.name)
-  }
-}
+    const { payload } = yield take(ActionType.SOURCE_ONOFF)
 
-/* ======================================================================== */
-// ADD SOURCE
-/* ======================================================================== */
-function* manageAddSource(name) {
-  const sources = yield select(state => state.sources.sources)
-  const sourceObject = sources[name]
-  console.log(`Saga -> Manage Add Source`)
-  console.log(sourceObject)
-  yield call(engineAddSource, sourceObject)
+    const source = yield select(state => state.sources.sources[payload.name])
+    const playbackState = yield select(state => state.controls.playbackState)
 
-  if (sourceObject.selected === true){
-    yield call(engineSetSource, sourceObject)
-  }
-
-  const playbackState = yield select(state => state.controls.playbackState)
-  if (playbackState === PlaybackState.PLAY) {
-    yield call(enginePlay)
-  }
-}
-
-function* applyAddSourceLocal() {
-  while (true) {
-    const { type, payload } = yield take(ActionType.ADD_SOURCE_LOCAL)
-    // console.log('Saga -> applyAddSource')
-    yield spawn(manageAddSource, payload.name)
-  }
-}
-
-function* applyAddSourceRemote() {
-  while (true) {
-    const { type, payload } = yield take(ActionType.ADD_SOURCE_REMOTE)
-    // console.log('Saga -> applyAddSource')
-    yield spawn(manageAddSource, payload.name)
+    if (source.selected === true && playbackState === PlaybackState.PLAY) {
+      yield call(playSource, source)
+    } else {
+      yield call(stopSource, source)
+    }
   }
 }
 
 /* ======================================================================== */
 // IMPORT SOURCES
 /* ======================================================================== */
-function* manageImportSources(sourcesArray) {
-  yield call(engineDeleteAllSources)
-  for(let i=0; i<sourcesArray.length;i++){
-    yield spawn(manageAddSource, sourcesArray[i].name)
-  }
-}
-
-function* applyImportSources() {
+function* manageImportSources() {
   while (true) {
-    const { type, payload } = yield take(ActionType.IMPORT_SOURCES)
-    const sourcesArray = payload.sources
-    yield call(manageImportSources, sourcesArray)
+    const {
+      payload: { sources },
+    } = yield take(ActionType.IMPORT_SOURCES)
+
+    yield call(deleteAllSources)
+
+    for (let i = 0; i < sources.length; i++) {
+      yield put(addSource(sources[i]))
+    }
   }
 }
 
@@ -124,13 +91,13 @@ function* applyImportSources() {
 //   while (true) {
 //     const { type, payload } = yield take(ActionType.DELETE_TARGETS)
 //     const selected = payload.targets
-//     engineStop()
+//     Stop()
 //
-//     yield call(engineDeleteSources, selected)
+//     yield call(DeleteSources, selected)
 //
 //     const playbackState = yield select(state => state.controls.playbackState)
 //     if (playbackState === PlaybackState.PLAYING) {
-//       yield call(enginePlay)
+//       yield call(Play)
 //     }
 //   }
 // }
@@ -140,14 +107,16 @@ function* applyImportSources() {
 /* ======================================================================== */
 function* applyLoopChanges() {
   while (true) {
-    const { payload: { source, loop } } = yield take(ActionType.SET_SOURCE_LOOP)
-    yield call(engineSetSourceLoop, source, loop)
+    const { payload } = yield take(ActionType.SET_SOURCE_LOOP)
 
+    const source = yield select(state => state.sources.sources[payload.source])
     const playbackState = yield select(state => state.controls.playbackState)
 
+    yield call(setSourceLoop, source.name, payload.loop)
+
     if (playbackState === PlaybackState.PLAY) {
-      yield call(engineStopSource, source)
-      yield call(enginePlaySource, source)
+      yield call(stopSource, source)
+      yield call(playSource, source)
     }
   }
 }
@@ -160,7 +129,9 @@ function* applySourcePosition() {
     const { payload } = yield take(ActionType.SET_SOURCE_POSITION)
     const name = payload.source
     const { x, y, z } = payload.position
-    engineSetSourcePosition(name, { x, y, z })
+
+    const spatializer = yield call(getBinauralSpatializer)
+    spatializer.setSourcePosition(name, { x, y, z })
   }
 }
 
@@ -171,14 +142,16 @@ function* applyListenerPosition() {
   while (true) {
     const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
     const { x, y, z, rotZAxis } = payload.position
-    engineSetListenerPosition({ x, y, z, rotZAxis })
+
+    const spatializer = yield call(getBinauralSpatializer)
+    spatializer.setListenerPosition({ x, y, z, rotZAxis })
   }
 }
 
 // function* applyMasterVolume() {
 //   while (true) {
 //     const { type, payload } = yield take(ActionType.SET_MASTER_VOLUME)
-//     engineSetMasterVolume(payload.volume)
+//     setMasterVolume(payload.volume)
 //   }
 // }
 
@@ -186,7 +159,7 @@ function* applyListenerPosition() {
 //   while (true) {
 //     const { type, payload } = yield take(ActionType.SET_TARGET_VOLUME)
 //     const { target, volume } = payload
-//     engineSetSourceVolume(target, volume)
+//     setSourceVolume(target, volume)
 //   }
 // }
 
@@ -201,25 +174,33 @@ function* handleSourcesReach() {
 
     const [listener, sources] = yield all([
       select(state => state.listener),
-      select(state => Object.values(state.sources.sources).filter(x => x.spatialised === true)),
+      select(state =>
+        Object.values(state.sources.sources).filter(x => x.spatialised === true)
+      ),
     ])
 
     // eslint-disable-next-line
     for (const source of sources) {
       const distanceToListener = Math.sqrt(
         (listener.position.x - source.position.x) ** 2 +
-        (listener.position.y - source.position.y) ** 2
+          (listener.position.y - source.position.y) ** 2
       )
       const isInsideReach = distanceToListener <= source.reach.radius
 
       if (source.reach.action === ReachAction.TOGGLE_VOLUME) {
         const volume = isInsideReach === true ? source.volume : 0
-        yield call(engineSetSourceVolume, source.name, volume, source.reach.fadeDuration)
+        // TODO: Put this back in
+        // yield call(
+        //   setSourceVolume,
+        //   source.name,
+        //   volume,
+        //   source.reach.fadeDuration
+        // )
       } else if (source.reach.action === ReachAction.TOGGLE_PLAYBACK) {
-        yield call(engineStopSource, source.name)
+        yield call(stopSource, source)
 
         if (isInsideReach === true) {
-          yield call(enginePlaySource, source.name)
+          yield call(playSource, source)
         }
       }
     }
@@ -232,7 +213,8 @@ function* handleSourcesReach() {
 function* applyHeadRadius() {
   while (true) {
     const { payload } = yield take(ActionType.SET_HEAD_RADIUS)
-    engineSetHeadRadius(payload.radius)
+    const spatializer = yield call(getBinauralSpatializer)
+    spatializer.setHeadRadius(payload.radius)
   }
 }
 
@@ -241,8 +223,9 @@ function* applyHeadRadius() {
 /* ======================================================================== */
 function* applyPerformanceMode() {
   while (true) {
-    const { payload } = yield take(ActionType.SET_HIGH_PERFORMANCE_MODE)
-    engineSetPerformanceMode()
+    yield take(ActionType.SET_HIGH_PERFORMANCE_MODE)
+    const spatializer = yield call(getBinauralSpatializer)
+    spatializer.setPerformanceMode()
   }
 }
 
@@ -251,8 +234,9 @@ function* applyPerformanceMode() {
 /* ======================================================================== */
 function* applyQualityMode() {
   while (true) {
-    const { payload } = yield take(ActionType.SET_HIGH_QUALITY_MODE)
-    engineSetQualityMode()
+    yield take(ActionType.SET_HIGH_QUALITY_MODE)
+    const spatializer = yield call(getBinauralSpatializer)
+    spatializer.setQualityMode()
   }
 }
 
@@ -283,7 +267,9 @@ function* initDefaultHrtf() {
 
 function* applyHrtfs() {
   while (true) {
-    const { payload: { filename } } = yield take(ActionType.SET_HRTF_FILENAME)
+    const {
+      payload: { filename },
+    } = yield take(ActionType.SET_HRTF_FILENAME)
 
     try {
       const binauralInstance = yield call(getBinauralSpatializer)
@@ -299,10 +285,9 @@ export default function* rootSaga() {
   yield [
     applyPlayStop(),
     applySourceOnOff(),
-    applyAddSourceLocal(),
-    applyAddSourceRemote(),
+    manageAddSource(),
     // applyDeleteSources(),
-    applyImportSources(),
+    manageImportSources(),
     // applyMasterVolume(),
     // applyTargetVolume(),
     applyLoopChanges(),

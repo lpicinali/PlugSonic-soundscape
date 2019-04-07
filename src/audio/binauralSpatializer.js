@@ -4,11 +4,7 @@ import {
   registerHrtf,
 } from '@reactify/3dti-toolkit/lib/binaural/hrtf.js'
 
-import // Ear,
-'src/constants.js'
-
 import context from 'src/audio/context.js'
-import { audioFiles } from 'src/audio/audio-files.js'
 import toolkit from 'src/audio/toolkit.js'
 
 const {
@@ -26,15 +22,14 @@ const {
 const binauralApi = new BinauralAPI()
 let instancePromise = null
 let listener = null
-let sources = null
-/* ========================================================================== */
-/* ------------------------ COORDINATE SYSTEM ----------------------------- *//*
+
+/*
       New Convention
 
            ^ X (azimuth = 0, increases anti-clockwise)
            |
       Y <--o Z
-*//* ------------------------------------------------------------------------ */
+*/
 
 /**
  * NOTE (Alexander):
@@ -45,10 +40,10 @@ let sources = null
  * this more neatly some other way.
  */
 
-// Rotation Axes
-// const xAxis = new CVector3(1,0,0)
-// const yAxis = new CVector3(0,1,0)
-const zAxis = new CVector3(0,0,1)
+/* ------------------------------------------------------------------------ */
+/* ========================================================================== */
+/* ------------------------ COORDINATE SYSTEM ----------------------------- */
+const zAxis = new CVector3(0, 0, 1)
 /* ========================================================================== */
 function setSPosition(source, x, y, z) {
   const transform = new CTransform()
@@ -72,18 +67,22 @@ function setLPosition(x, y, z, rotZAxis) {
 /* BINAURAL SPATIALIZER */
 /* ========================================================================== */
 function createInstance() {
+  const sources = {}
 
   /* ======================================================================== */
   // SET SOURCE POSITION
   /* ======================================================================== */
-  function setSourcePosition(source, x, y, z) {
-    setSPosition(source, x, y, z)
+  function setSourcePosition(name, { x, y, z }) {
+    const source = sources[name]
+    if (source) {
+      setSPosition(source.source, x, y, z)
+    }
   }
 
   /* ======================================================================== */
   // SET LISTENER POSITION
   /* ======================================================================== */
-  function setListenerPosition(x, y, z, rotZAxis) {
+  function setListenerPosition({ x, y, z, rotZAxis }) {
     setLPosition(x, y, z, rotZAxis)
   }
 
@@ -116,29 +115,38 @@ function createInstance() {
   // SET HRTF
   /* ======================================================================== */
   function setHrtf(hrtfFilename) {
-    return fetchHrtfFile(`/assets/audio/hrtf/${hrtfFilename}`).then(hrtfData => {
-      // Register the HRTF file with
-      const virtualHrtfFilePath = registerHrtf(toolkit, hrtfFilename, hrtfData)
+    return fetchHrtfFile(`/assets/audio/hrtf/${hrtfFilename}`).then(
+      hrtfData => {
+        // Register the HRTF file with
+        const virtualHrtfFilePath = registerHrtf(
+          toolkit,
+          hrtfFilename,
+          hrtfData
+        )
 
-      // Set the HRTF using the toolkit API.
-      //
-      // (The toolkit will read data from a virtual file system,
-      // which is why we register it in the command above.)
-      const success = toolkit.HRTF_CreateFrom3dti(virtualHrtfFilePath, listener)
-      return success
-    })
+        // Set the HRTF using the toolkit API.
+        //
+        // (The toolkit will read data from a virtual file system,
+        // which is why we register it in the command above.)
+        const success = toolkit.HRTF_CreateFrom3dti(
+          virtualHrtfFilePath,
+          listener
+        )
+        return success
+      }
+    )
   }
 
   /* ======================================================================== */
   // ADD SOURCE
   /* ======================================================================== */
-  function addSource(sourceObject) {
-    const source = binauralApi.CreateSource()
-    setSourcePosition(
-      source,
-      sourceObject.position.x,
-      sourceObject.position.y,
-      sourceObject.position.z
+  function addSource(source) {
+    const binauralSource = binauralApi.CreateSource()
+    setSPosition(
+      binauralSource,
+      source.position.x,
+      source.position.y,
+      source.position.z
     )
 
     const sourceInputMonoBuffer = new CMonoBuffer()
@@ -158,7 +166,7 @@ function createInstance() {
       }
 
       // process data
-      source.ProcessAnechoic(
+      binauralSource.ProcessAnechoic(
         sourceInputMonoBuffer,
         sourceOutputStereoBuffer
       )
@@ -171,15 +179,17 @@ function createInstance() {
       }
     }
 
-    sources[sourceObject.name] = {
-      source: source,
+    const spatializedSource = {
+      source: binauralSource,
       processor: processor,
     }
+
+    sources[source.name] = spatializedSource
   }
 
   // DELETE Source
-  function deleteSources(sourcesFilenames) {
-    sourcesFilenames.forEach(source => {
+  function deleteSources(sourcesNames) {
+    sourcesNames.forEach(source => {
       delete sources[source]
     })
   }
@@ -192,56 +202,8 @@ function createInstance() {
   }
 
   // IMPORT sources
-  function importSources(sourcesObject) {
-    sources = reduce(
-      sourcesObject,
-      (aggr, source) => {
-        const newSource = binauralApi.CreateSource()
-        setSourcePosition(
-          newSource,
-          source.position.azimuth,
-          source.position.distance
-        )
-
-        const sourceInputMonoBuffer = new CMonoBuffer()
-        sourceInputMonoBuffer.resize(512, 0)
-
-        const sourceOutputStereoBuffer = new CStereoBuffer()
-        sourceOutputStereoBuffer.resize(1024, 0)
-        // Script Node (bufferSize, # InputChannels, # OutputChannels)
-        const processor = context.createScriptProcessor(512, 1, 2)
-        // PROCESSING FUNCTION
-        processor.onaudioprocess = audioProcessingEvent => {
-          const { inputBuffer, outputBuffer } = audioProcessingEvent
-          const inputData = inputBuffer.getChannelData(0)
-
-          for (let i = 0; i < inputData.length; i++) {
-            sourceInputMonoBuffer.set(i, inputData[i])
-          }
-          // process data
-          source.ProcessAnechoic(
-            sourceInputMonoBuffer,
-            sourceOutputStereoBuffer
-          )
-          const outputDataLeft = outputBuffer.getChannelData(0)
-          const outputDataRight = outputBuffer.getChannelData(1)
-
-          for (let i = 0; i < outputDataLeft.length; i++) {
-            outputDataLeft[i] = sourceOutputStereoBuffer.get(i * 2)
-            outputDataRight[i] = sourceOutputStereoBuffer.get(i * 2 + 1)
-          }
-        }
-
-        return {
-          ...aggr,
-          [source.filename]: {
-            source: source,
-            processor: processor,
-          },
-        }
-      },
-      {}
-    )
+  function importSources(importedSources) {
+    Object.values(importedSources).forEach(source => addSource(source))
   }
 
   console.log('')
@@ -257,48 +219,6 @@ function createInstance() {
 
   console.log('LISTENER - initialised')
 
-  // CREATE and SETUP TARGET SOURCE(S) - mono
-  sources = audioFiles.reduce((aggr, file, index) => {
-    const source = binauralApi.CreateSource()
-    setSourcePosition(source, index * Math.PI / 6, 3)
-
-    const sourceInputMonoBuffer = new CMonoBuffer()
-    sourceInputMonoBuffer.resize(512, 0)
-
-    const sourceOutputStereoBuffer = new CStereoBuffer()
-    sourceOutputStereoBuffer.resize(1024, 0)
-    // Script Node (bufferSize, # InputChannels, # OutputChannels)
-    const processor = context.createScriptProcessor(512, 1, 2)
-    // PROCESSING FUNCTION
-    processor.onaudioprocess = audioProcessingEvent => {
-      const { inputBuffer, outputBuffer } = audioProcessingEvent
-      const inputData = inputBuffer.getChannelData(0)
-
-      for (let i = 0; i < inputData.length; i++) {
-        sourceInputMonoBuffer.set(i, inputData[i])
-      }
-      // process data
-      source.ProcessAnechoic(
-        sourceInputMonoBuffer,
-        sourceOutputStereoBuffer
-      )
-      const outputDataLeft = outputBuffer.getChannelData(0)
-      const outputDataRight = outputBuffer.getChannelData(1)
-
-      for (let i = 0; i < outputDataLeft.length; i++) {
-        outputDataLeft[i] = sourceOutputStereoBuffer.get(i * 2)
-        outputDataRight[i] = sourceOutputStereoBuffer.get(i * 2 + 1)
-      }
-    }
-
-    return {
-      ...aggr,
-      [file.filename]: {
-        source: source,
-        processor: processor,
-      },
-    }
-  }, {}) // end of .reduce
   console.log(`binauralSpatializer: INIT - ends`)
   console.log('')
 

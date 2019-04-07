@@ -11,7 +11,7 @@ export const sourceOnOff = (name, selected) => ({
   payload: { name, selected },
 })
 
-export const setEditingSource = (source) => ({
+export const setEditingSource = source => ({
   type: ActionType.SET_EDITING_SOURCE,
   payload: { source },
 })
@@ -51,14 +51,16 @@ export const setSourceVolume = (source, volume) => ({
   payload: { source, volume },
 })
 
-export const addSourceLocal = (filename, name, raw) => ({
-  type: ActionType.ADD_SOURCE_LOCAL,
-  payload: { filename, name, raw },
-})
-
-export const addSourceRemote = (filename, name, url, assetId, mediaId) => ({
-  type: ActionType.ADD_SOURCE_REMOTE,
-  payload: { filename, name, url, assetId, mediaId },
+export const addSource = ({
+  filename,
+  name,
+  origin,
+  url,
+  assetId,
+  mediaId,
+}) => ({
+  type: ActionType.ADD_SOURCE,
+  payload: { filename, name, origin, url, assetId, mediaId },
 })
 
 export const deleteSources = sources => ({

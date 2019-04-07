@@ -42,8 +42,7 @@ export const ActionType = {
   SET_SOURCE_REACH_FADE_DURATION: 'SET_SOURCE_REACH_FADE_DURATION',
   SET_SOURCE_VOLUME: 'SET_SOURCE_VOLUME',
   SET_MASTER_VOLUME: 'SET_MASTER_VOLUME',
-  ADD_SOURCE_LOCAL: 'ADD_SOURCE_LOCAL',
-  ADD_SOURCE_REMOTE: 'ADD_SOURCE_REMOTE',
+  ADD_SOURCE: 'ADD_SOURCE',
   DELETE_SOURCES: 'DELETE_SOURCES',
   IMPORT_SOURCES: 'IMPORT_SOURCES',
 }
@@ -67,6 +66,11 @@ export const ReachAction = {
 export const RoomShape = {
   ROUND: 'ROUND',
   RECTANGULAR: 'RECTANGULAR',
+}
+
+export const SourceOrigin = {
+  LOCAL: 'LOCAL',
+  REMOTE: 'REMOTE',
 }
 
 export const SpatializationMode = {

@@ -1,179 +1,162 @@
-/* eslint no-console: 0 */
-/* eslint arrow-body-style: 0 */
+/* global window */
 /* eslint no-restricted-syntax: 0 */
-import { fetchAudioBuffer, fetchAudioBufferRaw } from 'src/utils.js'
+import { clamp } from 'lodash'
+
+import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
-import {
-  createNode as chainCreateNode,
-  setSourceNode as chainSetSourceNode,
-  unsetSourceNode as chainUnsetSourceNode,
-  setMasterVolume as chainSetMasterVolume,
-  setSourceVolume as chainSetSourceVolume,
-  startNode as chainStartNode,
-  startNodes as chainStartNodes,
-  stopNode as chainStopNode,
-  stopNodes as chainStopNodes,
-  setSourceLoop as chainSetSourceLoop,
-  addSource as chainAddSource,
-  deleteSources as chainDeleteSources,
-  deleteAllSources as chainDeleteAllSources,
-} from 'src/audio/chain.js'
+import toolkit from 'src/audio/toolkit.js'
 
-import { isEmpty } from 'lodash'
+window.toolkit = toolkit || { nope: false }
 
-/* ======================================================================== */
-// PLAY
-/* ======================================================================== */
-export const play = () => {
-  try {
-    chainStartNodes()
-  } catch (err) {
-    console.log('could not start nodes:')
-    console.error(err)
+const sourceAudioBuffers = {}
+
+const sourceNodes = {}
+const sourceVolumes = {}
+
+// Master volume
+const masterVolume = context.createGain()
+masterVolume.gain.value = 0.5
+masterVolume.connect(context.destination)
+
+/**
+ * Stores a source's audio buffer for future reference
+ */
+export const storeSourceAudioBuffer = (name, audioBuffer) => {
+  sourceAudioBuffers[name] = audioBuffer
+}
+
+/**
+ * Creates a buffer source node with a given audio buffer.
+ *
+ * Previously: createNode()
+ */
+export const createSourceAudioNode = audioBuffer => {
+  const node = context.createBufferSource()
+  node.buffer = audioBuffer
+  return node
+}
+
+/**
+ * Creates and connects audio and effect nodes for a source
+ *
+ * Previously: setSource()
+ */
+export const createSourceAudioChain = source => {
+  if (sourceNodes[source.name]) {
+    sourceNodes[source.name].disconnect()
+  }
+
+  const audioBuffer = sourceAudioBuffers[source.name]
+  const node = createSourceAudioNode(audioBuffer)
+  node.loop = source.loop
+
+  const volume = context.createGain()
+  setVolume(volume.gain, source.volume)
+  node.connect(volume)
+
+  sourceNodes[source.name] = node
+  sourceVolumes[source.name] = volume
+}
+
+/**
+ * Destroys a source's audio chain
+ *
+ * Previously: unsetSource()
+ */
+export const destroySourceAudioChain = source => {
+  const { name } = source
+
+  if (sourceNodes[name]) {
+    sourceNodes[name].disconnect()
+    sourceVolumes[name].disconnect()
+
+    sourceNodes[name] = null
+    sourceVolumes[name] = null
   }
 }
 
-export { chainStartNode as playSource }
+/**
+ * Sets a source up to be spatialized.
+ *
+ * Previously: addSource()
+ */
+export const spatializeSource = source => {
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.addSource(source)
+    sourceVolumes[source.name].connect(
+      spatializer.sources[source.name].processor
+    )
+    spatializer.sources[source.name].processor.connect(masterVolume)
+  })
+}
+
+export const despatializeSource = source => {
+  getBinauralSpatializer().then(spatializer =>
+    spatializer.deleteSources([source.name])
+  )
+}
 
 /* ======================================================================== */
-// STOP
+// MASTER VOLUME
 /* ======================================================================== */
-export const stop = () => {
-  try {
-    chainStopNodes()
-  } catch (err) {
-    console.log('could not stop nodes:')
-    console.error(err)
+// export const setMasterVolume = newVolume => {
+//   masterVolume.gain.value = newVolume
+// }
+
+/* ======================================================================== */
+// SOURCE VOLUME
+/* ======================================================================== */
+const setVolume = (gainNode, volume, fadeDuration = 0) => {
+  // This makes fades act sort of naturally when you change
+  // volume again within the duration
+  gainNode.cancelScheduledValues(context.currentTime)
+  gainNode.setValueAtTime(gainNode.value, context.currentTime)
+
+  // Ramping in the Web Audio API does not allow end values
+  // of 0, so we need to make sure to have a tiny little
+  // fraction left
+  gainNode.exponentialRampToValueAtTime(
+    clamp(volume, 0.00001, Infinity),
+    context.currentTime + fadeDuration / 1000
+  )
+}
+
+export const setSourceVolume = (name, volume, fadeDuration = 0) => {
+  setVolume(sourceVolumes[name].gain, volume, fadeDuration)
+}
+
+/**
+ * Stops a source's audio
+ */
+export const stopSource = source => {
+  sourceNodes[source.name].stop()
+}
+
+/**
+ * Plays a source's audio
+ */
+export const playSource = source => {
+  if (context.state !== 'running') {
+    context.resume()
+  }
+
+  if (sourceNodes[source.name]) {
+    stopSource(source)
+    despatializeSource(source)
+    destroySourceAudioChain(source)
+  }
+
+  createSourceAudioChain(source)
+  spatializeSource(source)
+
+  sourceNodes[source.name].start(0)
+}
+
+/* ======================================================================== */
+// LOOP NODES
+/* ======================================================================== */
+export const setSourceLoop = (name, loop) => {
+  if (sourceNodes[name]) {
+    sourceNodes[name].loop = loop
   }
 }
-
-export { chainStopNode as stopSource }
-
-/* ======================================================================== */
-// LOOP
-/* ======================================================================== */
-
-export { chainSetSourceLoop as setSourceLoop }
-
-/* ======================================================================== */
-// SET SOURCE
-/* ======================================================================== */
-export const setSource = sourceObject => {
-  // console.log('Engine -> setSource')
-  stop()
-  if ( sourceObject.url !== null ) {
-    return fetchAudioBuffer(sourceObject.url)
-      .then(audioBuffer => {
-        const node = chainCreateNode(audioBuffer)
-        node.loop = sourceObject.loop
-        chainSetSourceNode(node, sourceObject.name)
-      })
-      .catch(err => console.error(err))
-  } else if ( !isEmpty(sourceObject.raw) ) {
-    return fetchAudioBufferRaw(sourceObject.raw)
-      .then(audioBuffer => {
-        const node = chainCreateNode(audioBuffer)
-        chainSetSourceNode(node, sourceObject.name)
-      })
-      .catch(err => console.error(err))
-  }
-  return null
-}
-
-/* ======================================================================== */
-// UNSET SOURCE
-/* ======================================================================== */
-export const unsetSource = sourceObject => {
-  stop()
-  chainUnsetSourceNode(sourceObject.name)
-}
-
-/* ======================================================================== */
-// ADD SOURCE
-/* ======================================================================== */
-export const addSource = sourceObject => {
-  stop()
-  console.log('Engine -> Add Source')
-  console.log(sourceObject)
-  chainAddSource(sourceObject)
-}
-
-// export const deleteSources = sourcesFilenames => {
-//   chainDeleteSources(sourcesFilenames)
-// }
-
-/* ======================================================================== */
-// DELETE ALL SOURCE
-/* ======================================================================== */
-export const deleteAllSources = () => {
-  console.log('ENGINE -> Delete All Sources')
-  stop()
-  chainDeleteAllSources()
-}
-
-/* ======================================================================== */
-// SET SOURCE POSITION
-/* ======================================================================== */
-export const setSourcePosition = (name, { x, y, z }) => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.setSourcePosition(spatializer.sources[name].source, x, y, z)
-  })
-}
-
-/* ======================================================================== */
-// SET LISTENER POSITION
-/* ======================================================================== */
-export const setListenerPosition = ({ x, y, z, rotZAxis }) => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.setListenerPosition(x, y, z, rotZAxis)
-  })
-}
-
-// export const setMasterVolume = volume => {
-//   chainSetMasterVolume(volume)
-// }
-
-export { chainSetSourceVolume as setSourceVolume }
-
-// export const setTargetVolume = (target, volume, fadeDuration) => {
-//     chainSetSourceVolume(target, volume, fadeDuration)
-// }
-
-/* ======================================================================== */
-// HEAD RADIUS
-/* ======================================================================== */
-export const setHeadRadius = radius => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.setHeadRadius(radius)
-  })
-}
-
-/* ======================================================================== */
-// PERFORMANCE MODE
-/* ======================================================================== */
-export const setPerformanceMode = () => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.setPerformanceMode()
-  })
-}
-
-/* ======================================================================== */
-// QUALITY MODE
-/* ======================================================================== */
-export const setQualityMode = () => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.setQualityMode()
-  })
-}
-
-// export const setDirectionalityEnabled = isEnabled => {
-//   getBinauralSpatializer().then(spatializer => {
-//     spatializer.setDirectionalityEnabled(isEnabled)
-//   })
-// }
-
-// export const setDirectionalityAttenuation = (ear, attenuation) => {
-//   getBinauralSpatializer().then(spatializer => {
-//     spatializer.setDirectionalityAttenuation(ear, attenuation)
-//   })
-// }
