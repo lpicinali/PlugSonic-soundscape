@@ -25,6 +25,7 @@ const Source = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 10;
   transform: translate3d(-50%, -50%, 0)
     scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
 `

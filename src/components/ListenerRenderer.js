@@ -1,5 +1,5 @@
-import React, { Component} from "react"
-import { connect } from "react-redux"
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import * as colors from 'src/styles/colors'
 import styled from 'styled-components'
@@ -9,12 +9,13 @@ import { RoomShape } from 'src/constants.js'
 import { setListenerPosition } from 'src/actions/listener.actions'
 /* ========================================================================== */
 const METERS_PER_STEP = 0.25
-const RADIANS_PER_STEP = Math.PI/32
+const RADIANS_PER_STEP = Math.PI / 32
 /* ========================================================================== */
 const Listener = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 20;
   transform: translate3d(-50%, -50%, 0) rotate(${props => -props.rotation}rad);
   border-radius: 50%;
   border: 2px solid transparent;
@@ -25,7 +26,6 @@ const Listener = styled.div`
 /* LISTENER RENDERER */
 /* ========================================================================== */
 class ListenerRenderer extends Component {
-
   state = {
     isDragging: false,
     keys: {},
@@ -42,12 +42,23 @@ class ListenerRenderer extends Component {
     document.removeEventListener('keyup', this.handleKeyUp)
   }
 
-  handleKeyDown = (e) => {
+  handleKeyDown = e => {
     // 37 = LEFT | 38 = UP | 39 = RIGHT | 40 = DOWN
-    if ( e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40 ) {
+    if (
+      e.keyCode === 37 ||
+      e.keyCode === 38 ||
+      e.keyCode === 39 ||
+      e.keyCode === 40
+    ) {
       e.preventDefault()
       if (!this.state.isDragging) {
-        const { roomShape, roomWidth, roomDepth, listenerPosition, listenerRotation } = this.props
+        const {
+          roomShape,
+          roomWidth,
+          roomDepth,
+          listenerPosition,
+          listenerRotation,
+        } = this.props
         const { keys } = this.state
 
         keys[e.keyCode] = true
@@ -72,11 +83,11 @@ class ListenerRenderer extends Component {
         }
 
         if (roomShape === RoomShape.RECTANGULAR) {
-          if (Math.abs(newX + deltaX) > roomDepth/2) {
+          if (Math.abs(newX + deltaX) > roomDepth / 2) {
             if (newX >= 0) {
-              deltaX = roomDepth/2 - newX
+              deltaX = roomDepth / 2 - newX
             } else {
-              deltaX = -roomDepth/2 - newX
+              deltaX = -roomDepth / 2 - newX
             }
             if (Math.abs(deltaY) >= 0.01) {
               deltaY = deltaX * Math.tan(listenerRotation)
@@ -84,11 +95,11 @@ class ListenerRenderer extends Component {
               deltaY = 0
             }
           }
-          if (Math.abs(newY + deltaY) > roomWidth/2) {
+          if (Math.abs(newY + deltaY) > roomWidth / 2) {
             if (newY >= 0) {
-              deltaY = roomWidth/2 - newY
+              deltaY = roomWidth / 2 - newY
             } else {
-              deltaY = -roomWidth/2 - newY
+              deltaY = -roomWidth / 2 - newY
             }
             if (Math.abs(deltaX) >= 0.01) {
               deltaX = deltaY * (1 / Math.tan(listenerRotation))
@@ -117,7 +128,10 @@ class ListenerRenderer extends Component {
         }
 
         const radius = roomWidth / 2
-        if (roomShape === RoomShape.ROUND && newX**2 + newY**2 > radius**2) {
+        if (
+          roomShape === RoomShape.ROUND &&
+          newX ** 2 + newY ** 2 > radius ** 2
+        ) {
           const theta = Math.atan(newY / newX) + (newX < 0 ? Math.PI : 0)
           newX = radius * Math.cos(theta)
           newY = radius * Math.sin(theta)
@@ -127,14 +141,19 @@ class ListenerRenderer extends Component {
           x: newX,
           y: newY,
           z: listenerPosition.z,
-          rotZAxis: rotZAxis
+          rotZAxis: rotZAxis,
         })
       }
     }
   }
 
-  handleKeyUp = (e) => {
-    if ( e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40 ) {
+  handleKeyUp = e => {
+    if (
+      e.keyCode === 37 ||
+      e.keyCode === 38 ||
+      e.keyCode === 39 ||
+      e.keyCode === 40
+    ) {
       e.preventDefault()
       const { keys } = this.state
       keys[e.keyCode] = false
@@ -161,8 +180,14 @@ class ListenerRenderer extends Component {
     document.addEventListener('mouseup', this.handleListenerMouseUp)
   }
 
-  handleListenerMouseDrag = (e) => {
-    const { roomShape, roomWidth, roomDepth, containerSize, containerRect } = this.props
+  handleListenerMouseDrag = e => {
+    const {
+      roomShape,
+      roomWidth,
+      roomDepth,
+      containerSize,
+      containerRect,
+    } = this.props
     const { isDragging } = this.state
 
     if (isDragging) {
@@ -179,13 +204,17 @@ class ListenerRenderer extends Component {
       )
       // in room coordinate system
       let newX =
-        -1 * (constrainedMouseY - (containerRect.top + containerSize.height / 2)) /
+        (-1 *
+          (constrainedMouseY -
+            (containerRect.top + containerSize.height / 2))) /
         (containerSize.height / 2)
       let newY =
-        -1 * (constrainedMouseX - (containerRect.left + containerSize.width / 2)) /
+        (-1 *
+          (constrainedMouseX -
+            (containerRect.left + containerSize.width / 2))) /
         (containerSize.width / 2)
 
-      if (roomShape === RoomShape.ROUND && newX**2 + newY**2 > 1) {
+      if (roomShape === RoomShape.ROUND && newX ** 2 + newY ** 2 > 1) {
         const theta = Math.atan(newY / newX) + (newX < 0 ? Math.PI : 0)
         const radius = roomWidth / 2
         newX = radius * Math.cos(theta)
@@ -199,7 +228,7 @@ class ListenerRenderer extends Component {
         x: newX,
         y: newY,
         z: this.props.listenerPosition.z,
-        rotZAxis: this.props.listenerRotation
+        rotZAxis: this.props.listenerRotation,
       })
     }
   }
@@ -219,13 +248,17 @@ class ListenerRenderer extends Component {
     // console.log(this.state.keys)
     return (
       <Listener
-        key='listener'
+        key="listener"
         rotation={this.props.listenerRotation}
         style={{
           width: this.props.iconWidth,
           height: this.props.iconHeight,
-          top: `${50 + (100 * -1 * this.props.listenerPosition.x) / this.props.roomDepth}%`,
-          left: `${50 + (100 * -1 * this.props.listenerPosition.y) / this.props.roomWidth}%`,
+          top: `${50 +
+            (100 * -1 * this.props.listenerPosition.x) /
+              this.props.roomDepth}%`,
+          left: `${50 +
+            (100 * -1 * this.props.listenerPosition.y) /
+              this.props.roomWidth}%`,
           cursor: `${this.state.isDragging ? `grabbing` : `grab`}`,
         }}
         onMouseDown={this.handleListenerMouseDown}
@@ -271,4 +304,7 @@ const mapDispatchToProps = dispatch => ({
   setListenerPosition: position => dispatch(setListenerPosition(position)),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(ListenerRenderer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ListenerRenderer)
