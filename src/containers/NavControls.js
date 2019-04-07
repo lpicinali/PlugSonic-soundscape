@@ -11,6 +11,7 @@ import StopIcon from "material-ui/svg-icons/av/stop"
 import SettingsIcon from "material-ui/svg-icons/action/settings"
 import ArrowIcon from "material-ui/svg-icons/navigation/chevron-right"
 import ArrowsIcon from "material-ui/svg-icons/av/games"
+import FullscreenIcon from "material-ui/svg-icons/navigation/fullscreen"
 
 import { PlaybackState } from 'src/constants.js'
 import {
@@ -45,6 +46,10 @@ class NavControls extends Component {
     this.props.showArrowsDrawer ? this.props.onHideArrowsDrawer() : this.props.onShowArrowsDrawer()
   }
 
+  toggleFullScreen = () => {
+    document.body.requestFullscreen()
+  }
+
   /* ------------------------------------------------------------------------ */
   render() {
     const DrawerIcon = this.props.showSettingsDrawer ?
@@ -73,6 +78,12 @@ class NavControls extends Component {
           icon={<ArrowsIcon color={colors.WHITE}/>}
           style={FlatButtonStyle}
           onClick={this.toggleArrows}
+        />
+
+        <FlatButton
+          icon={<FullscreenIcon color={colors.WHITE}/>}
+          style={FlatButtonStyle}
+          onClick={this.toggleFullScreen}
         />
 
         <FlatButton
