@@ -19,8 +19,9 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     font-family: 'Roboto', sans-serif;
     font-size: 10pt;
-    overscroll-behavior: none;
 
+
+    overscroll-behavior: none;
     position: fixed;
     overflow: hidden;
   }

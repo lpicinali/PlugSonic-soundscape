@@ -18,7 +18,7 @@ class App extends Component {
 
         <SoundscapeInterface />
 
-        <H4>Developed and tested on Google Chrome only.</H4>
+        <H4>Tested on Google Chrome only.</H4>
       </AppContainer>
     )
   }
