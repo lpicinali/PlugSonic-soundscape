@@ -155,13 +155,14 @@ function* applyListenerPosition() {
 //   }
 // }
 
-// function* applyTargetVolume() {
-//   while (true) {
-//     const { type, payload } = yield take(ActionType.SET_TARGET_VOLUME)
-//     const { target, volume } = payload
-//     setSourceVolume(target, volume)
-//   }
-// }
+function* applySourceVolume() {
+  while (true) {
+    const {
+      payload: { source, volume },
+    } = yield take(ActionType.SET_SOURCE_VOLUME)
+    yield call(setSourceVolume, source, volume)
+  }
+}
 
 function* handleSourcesReach() {
   while (true) {
@@ -289,7 +290,7 @@ export default function* rootSaga() {
     // applyDeleteSources(),
     manageImportSources(),
     // applyMasterVolume(),
-    // applyTargetVolume(),
+    applySourceVolume(),
     applyLoopChanges(),
     handleSourcesReach(),
     applyPerformanceMode(),

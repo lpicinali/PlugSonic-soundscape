@@ -106,7 +106,7 @@ export const despatializeSource = source => {
 /* ======================================================================== */
 // SOURCE VOLUME
 /* ======================================================================== */
-const setVolume = (gainNode, volume, fadeDuration = 0) => {
+const setVolume = (gainNode, volume, fadeDuration = 10) => {
   // This makes fades act sort of naturally when you change
   // volume again within the duration
   gainNode.cancelScheduledValues(context.currentTime)
@@ -117,11 +117,11 @@ const setVolume = (gainNode, volume, fadeDuration = 0) => {
   // fraction left
   gainNode.exponentialRampToValueAtTime(
     clamp(volume, 0.00001, Infinity),
-    context.currentTime + fadeDuration / 1000
+    context.currentTime + Math.max(0.01, fadeDuration / 1000)
   )
 }
 
-export const setSourceVolume = (name, volume, fadeDuration = 0) => {
+export const setSourceVolume = (name, volume, fadeDuration = 10) => {
   setVolume(sourceVolumes[name].gain, volume, fadeDuration)
 }
 
