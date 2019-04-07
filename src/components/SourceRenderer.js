@@ -1,6 +1,6 @@
 /* global Math */
-import React, { Component} from "react"
-import { connect } from "react-redux"
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import * as colors from 'src/styles/colors'
 import styled from 'styled-components'
@@ -16,7 +16,7 @@ import { setSourcePosition } from 'src/actions/sources.actions'
  * This function assumes z >= 0
  */
 function getScaleForZ(z, roomHeight) {
-  return 1 + (z / roomHeight)
+  return 1 + z / roomHeight
 }
 
 /* ========================================================================== */
@@ -25,7 +25,8 @@ const Source = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 0) scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
+  transform: translate3d(-50%, -50%, 0)
+    scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
 `
 
 const SourceReach = styled.div`
@@ -55,7 +56,6 @@ const SourceBody = styled.div`
 /* SOURCE RENDERER */
 /* ========================================================================== */
 class SourceRenderer extends Component {
-
   state = {
     isDragging: false,
     // keys: {},
@@ -69,8 +69,15 @@ class SourceRenderer extends Component {
     window.addEventListener('mouseup', this.handleSourceMouseUp)
   }
 
-  handleSourceMouseDrag = (e) => {
-    const { source, roomShape, roomWidth, roomDepth, containerSize, containerRect } = this.props
+  handleSourceMouseDrag = e => {
+    const {
+      source,
+      roomShape,
+      roomWidth,
+      roomDepth,
+      containerSize,
+      containerRect,
+    } = this.props
     const { isDragging } = this.state
 
     if (isDragging) {
@@ -87,13 +94,17 @@ class SourceRenderer extends Component {
       )
       // in room coordinate system
       let newX =
-        -1 * (constrainedMouseY - (containerRect.top + containerSize.height / 2)) /
+        (-1 *
+          (constrainedMouseY -
+            (containerRect.top + containerSize.height / 2))) /
         (containerSize.height / 2)
       let newY =
-        -1 * (constrainedMouseX - (containerRect.left + containerSize.width / 2)) /
+        (-1 *
+          (constrainedMouseX -
+            (containerRect.left + containerSize.width / 2))) /
         (containerSize.width / 2)
 
-      if (roomShape === RoomShape.ROUND && newX**2 + newY**2 > 1) {
+      if (roomShape === RoomShape.ROUND && newX ** 2 + newY ** 2 > 1) {
         const theta = Math.atan(newY / newX) + (newX < 0 ? Math.PI : 0)
         const radius = roomWidth / 2
         newX = radius * Math.cos(theta)
@@ -103,10 +114,11 @@ class SourceRenderer extends Component {
         newY *= roomWidth / 2
       }
 
-      this.props.setSourcePosition(
-        source.name,
-        { x: newX, y: newY, z: source.position.z }
-      )
+      this.props.setSourcePosition(source.name, {
+        x: newX,
+        y: newY,
+        z: source.position.z,
+      })
     }
   }
 
@@ -122,7 +134,14 @@ class SourceRenderer extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
-    const { source, size, reachRadiusSize, roomWidth, roomHeight, roomDepth } = this.props
+    const {
+      source,
+      size,
+      reachRadiusSize,
+      roomWidth,
+      roomHeight,
+      roomDepth,
+    } = this.props
     const { isDragging } = this.state
 
     return (
@@ -133,12 +152,17 @@ class SourceRenderer extends Component {
         style={{
           top: `${50 + (100 * -1 * source.position.x) / roomDepth}%`,
           left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
-          cursor: `${this.state.isDragging ? `grabbing` : `grab`}`,
         }}
-        onMouseDown={this.handleSourceMouseDown}
       >
         {source.reach.isEnabled && <SourceReach radiusSize={reachRadiusSize} />}
-        <SourceBody radiusSize={size / 2} isSelected={source.selected} />
+        <SourceBody
+          radiusSize={size / 2}
+          isSelected={source.selected}
+          onMouseDown={this.handleSourceMouseDown}
+          style={{
+            cursor: `${isDragging ? `grabbing` : `grab`}`,
+          }}
+        />
       </Source>
     )
   }
@@ -173,7 +197,11 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  setSourcePosition: (source,position) => dispatch(setSourcePosition(source,position)),
+  setSourcePosition: (source, position) =>
+    dispatch(setSourcePosition(source, position)),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(SourceRenderer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SourceRenderer)
