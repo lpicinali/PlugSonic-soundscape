@@ -2,9 +2,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import * as colors from 'src/styles/colors'
 import styled from 'styled-components'
-import { clamp, pick, values } from 'lodash'
+import { clamp, values } from 'lodash'
 
 import { RoomShape } from 'src/constants'
 import * as CustomPropTypes from 'src/prop-types.js'
