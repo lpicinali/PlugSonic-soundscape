@@ -84,23 +84,23 @@ export const API = 'https://develop.pluggy.eu/api/v1'
   Use this within the social platform
 */
 // eslint-disable-next-line
-// export const sessionToken = Pluggy.getToken()
+export const sessionToken = Pluggy.getToken()
 /*
   Use this out of the social platform
 */
-export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQ3MzIxMDQsImV4cCI6MTU1NDgxODUwNH0.05mPQaZ3Kz9g3J0f_UUceN9LdZMnbfVRftIsKhgCPz8'
+// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQ3MzIxMDQsImV4cCI6MTU1NDgxODUwNH0.05mPQaZ3Kz9g3J0f_UUceN9LdZMnbfVRftIsKhgCPz8'
 
 // =================== RETRIEVE EXHIBITION ============================= //
 /*
   Use this within the social platform
 */
-// export const exhibitionUrl = window.location.href
-// export const exhibitionQuery = window.location.search.substring(1)
-// export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+export const exhibitionUrl = window.location.href
+export const exhibitionQuery = window.location.search.substring(1)
+export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
 /*
   Use this out of the social platform
 */
-export const exhibitionId = '5cab54a8e3c2de61b60b4bea'
+// export const exhibitionId = '5cab54a8e3c2de61b60b4bea'
 
 let title = ''
 let description = ''
@@ -129,7 +129,7 @@ function getExhibitionErrorCallback(responseText) {
 /*
   comment to test in local
 */
-// httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 
 export const exhibitionTitle = title
 export const exhibitionDescription = description
