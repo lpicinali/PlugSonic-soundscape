@@ -1,7 +1,7 @@
 import { all, call, put, select, take } from 'redux-saga/effects'
 
 import { ActionType, PlaybackState, ReachAction } from 'src/constants.js'
-import { addSource } from 'src/actions/sources.actions.js'
+import { addSource, deleteSources } from 'src/actions/sources.actions.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   playSource,
@@ -9,9 +9,7 @@ import {
   setSourceLoop,
   // setMasterVolume,
   setSourceVolume,
-  // spatializeSource,
-  // deleteSources,
-  deleteAllSources,
+  destroySourceAudioChain,
 } from 'src/audio/engine.js'
 
 /* ======================================================================== */
@@ -79,28 +77,36 @@ function* manageImportSources() {
       payload: { sources },
     } = yield take(ActionType.IMPORT_SOURCES)
 
-    yield call(deleteAllSources)
+    // Delete current sources
+    const currentSources = yield select(state =>
+      Object.values(state.sources.sources)
+    )
+    yield put(deleteSources(currentSources.map(x => x.name)))
 
+    // Add the new ones
     for (let i = 0; i < sources.length; i++) {
       yield put(addSource(sources[i]))
     }
   }
 }
 
-// function* applyDeleteSources() {
-//   while (true) {
-//     const { type, payload } = yield take(ActionType.DELETE_TARGETS)
-//     const selected = payload.targets
-//     Stop()
-//
-//     yield call(DeleteSources, selected)
-//
-//     const playbackState = yield select(state => state.controls.playbackState)
-//     if (playbackState === PlaybackState.PLAYING) {
-//       yield call(Play)
-//     }
-//   }
-// }
+/* ======================================================================== */
+// DELETE SOURCES
+/* ======================================================================== */
+function* applyDeleteSource() {
+  while (true) {
+    const {
+      payload: { sources },
+    } = yield take(ActionType.DELETE_SOURCES)
+
+    for (let i = 0; i < sources.length; i++) {
+      const dangerousMockSourceObject = {
+        name: sources[i],
+      }
+      yield call(destroySourceAudioChain, dangerousMockSourceObject)
+    }
+  }
+}
 
 /* ======================================================================== */
 // LOOP
@@ -306,7 +312,7 @@ export default function* rootSaga() {
     applyPlayStop(),
     applySourceOnOff(),
     manageAddSource(),
-    // applyDeleteSources(),
+    applyDeleteSource(),
     manageImportSources(),
     // applyMasterVolume(),
     applySourceVolume(),
