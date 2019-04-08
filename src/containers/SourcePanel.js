@@ -125,8 +125,8 @@ class SourcePanel extends PureComponent {
     nestedItems.push(
       <ListItem key={`${sourceObject.name}-volume`}>
         <div>
-          <H3>Volume</H3>
           <SliderValue>{sourceObject.volume}</SliderValue>
+          <H3>Volume</H3>
         </div>
         <Slider
           min={0}
