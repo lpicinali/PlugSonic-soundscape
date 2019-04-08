@@ -49,6 +49,7 @@ export const createSourceAudioChain = source => {
   const audioBuffer = sourceAudioBuffers[source.name]
   const node = createSourceAudioNode(audioBuffer)
   node.loop = source.loop
+  node.addEventListener('ended', () => notifySourceEnded(source))
 
   const volume = context.createGain()
   setVolume(volume.gain, source.volume)
@@ -167,4 +168,17 @@ export const setSourceLoop = (name, loop) => {
   if (sourceNodes[name]) {
     sourceNodes[name].loop = loop
   }
+}
+
+/* ======================================================================== */
+// EVENTS
+/* ======================================================================== */
+const listeners = []
+
+export const subscribeToSourceEnd = listener => {
+  listeners.push(listener)
+}
+
+const notifySourceEnded = source => {
+  listeners.forEach(listener => listener({ source }))
 }
