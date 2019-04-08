@@ -1,5 +1,5 @@
-import React, { PureComponent } from "react"
-import { connect } from "react-redux"
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -11,10 +11,10 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@material-ui/core'
-import { List, ListItem } from "material-ui/List"
-import Divider from "material-ui/Divider"
+import { List, ListItem } from 'material-ui/List'
+import Divider from 'material-ui/Divider'
 import DropDownMenu from 'material-ui/DropDownMenu'
-import FlatButton from "material-ui/FlatButton"
+import FlatButton from 'material-ui/FlatButton'
 import MenuItem from 'material-ui/MenuItem'
 import Slider from 'material-ui/Slider'
 import Toggle from 'material-ui/Toggle'
@@ -123,9 +123,7 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <ListItem
-        key={`${sourceObject.name}-volume`}
-      >
+      <ListItem key={`${sourceObject.name}-volume`}>
         <div>
           <H3>Volume</H3>
           <SliderValue>{sourceObject.volume}</SliderValue>
@@ -140,9 +138,7 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <ListItem
-        key={`${sourceObject.name}-position`}
-      >
+      <ListItem key={`${sourceObject.name}-position`}>
         <H3>Position</H3>
 
         <div>
@@ -189,7 +185,9 @@ class SourcePanel extends PureComponent {
 
         <Toggle
           toggled={sourceObject.loop}
-          onToggle={(event, isEnabled) => onSourceLoopChange(sourceObject.name, isEnabled)}
+          onToggle={(event, isEnabled) =>
+            onSourceLoopChange(sourceObject.name, isEnabled)
+          }
         />
       </ListItem>
     )
@@ -200,9 +198,15 @@ class SourcePanel extends PureComponent {
 
         <Toggle
           toggled={sourceObject.reach.isEnabled}
-          onToggle={(event, isEnabled) => onSourceReachEnabledChange(sourceObject.name, isEnabled)}
+          onToggle={(event, isEnabled) =>
+            onSourceReachEnabledChange(sourceObject.name, isEnabled)
+          }
         />
 
+        <div>
+          <label>Radius</label>
+          <SliderValue>{sourceObject.reach.radius} m</SliderValue>
+        </div>
         <Slider
           min={0}
           max={Math.max(roomSize.width, roomSize.height) / 2}
@@ -214,17 +218,30 @@ class SourcePanel extends PureComponent {
           }
         />
 
+        <label>Reach behaviour</label>
         <DropDownMenu
           style={{ width: '100%' }}
           iconStyle={{ fill: colors.BLACK }}
           underlineStyle={{ borderTop: `solid 1px ${colors.BLACK}` }}
           value={sourceObject.reach.action}
-          onChange={(event, index, value) => onSourceReachActionChange(sourceObject.name, value)}
+          onChange={(event, index, value) =>
+            onSourceReachActionChange(sourceObject.name, value)
+          }
         >
-          <MenuItem value={ReachAction.TOGGLE_PLAYBACK} primaryText="Toggle playback" />
-          <MenuItem value={ReachAction.TOGGLE_VOLUME} primaryText="Toggle volume" />
+          <MenuItem
+            value={ReachAction.TOGGLE_VOLUME}
+            primaryText="Fade in and out"
+          />
+          <MenuItem
+            value={ReachAction.TOGGLE_PLAYBACK}
+            primaryText="Start when entering"
+          />
         </DropDownMenu>
 
+        <div>
+          <label>Fade duration</label>
+          <SliderValue>{sourceObject.reach.fadeDuration / 1000} s</SliderValue>
+        </div>
         <Slider
           min={0}
           max={20}
@@ -240,7 +257,11 @@ class SourcePanel extends PureComponent {
 
     nestedItems.push(
       <ListItem key={`${sourceObject.name}-delete`}>
-        <Button variant="contained" color="secondary" onClick={this.handleSourceDelete}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={this.handleSourceDelete}
+        >
           Delete
         </Button>
 
@@ -313,12 +334,20 @@ const mapDispatchToProps = dispatch => ({
   onSourceOnOff: (name, selected) => dispatch(sourceOnOff(name, selected)),
   onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
-  onSourcePositionChange: (name, position) => dispatch(setSourcePosition(name, position)),
-  onSourceReachEnabledChange: (name, isEnabled) => dispatch(setSourceReachEnabled(name, isEnabled)),
-  onSourceReachActionChange: (name, action) => dispatch(setSourceReachAction(name, action)),
-  onSourceReachRadiusChange: (name, radius) => dispatch(setSourceReachRadius(name, radius)),
-  onSourceReachFadeDurationChange: (name, fadeDuration) => dispatch(setSourceReachFadeDuration(name, fadeDuration)),
+  onSourcePositionChange: (name, position) =>
+    dispatch(setSourcePosition(name, position)),
+  onSourceReachEnabledChange: (name, isEnabled) =>
+    dispatch(setSourceReachEnabled(name, isEnabled)),
+  onSourceReachActionChange: (name, action) =>
+    dispatch(setSourceReachAction(name, action)),
+  onSourceReachRadiusChange: (name, radius) =>
+    dispatch(setSourceReachRadius(name, radius)),
+  onSourceReachFadeDurationChange: (name, fadeDuration) =>
+    dispatch(setSourceReachFadeDuration(name, fadeDuration)),
   onSourceDelete: name => dispatch(deleteSources([name])),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SourcePanel)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SourcePanel)
