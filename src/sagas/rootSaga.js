@@ -171,7 +171,7 @@ function* applySourceVolume() {
 }
 
 function* handleSourcesReach() {
-  function isWithingReach(listener, source) {
+  function isWithinReach(listener, source) {
     const distance = Math.sqrt(
       (listener.position.x - source.position.x) ** 2 +
         (listener.position.y - source.position.y) ** 2
@@ -185,6 +185,7 @@ function* handleSourcesReach() {
     yield take([
       ActionType.SET_LISTENER_POSITION,
       ActionType.SET_SOURCE_POSITION,
+      ActionType.SET_SOURCE_REACH_ENABLED,
       ActionType.SET_SOURCE_REACH_RADIUS,
       ActionType.SET_PLAYBACK_STATE,
     ])
@@ -201,7 +202,10 @@ function* handleSourcesReach() {
       if (source.reach.action === ReachAction.TOGGLE_VOLUME) {
         // Toggle volume
         const volume =
-          isWithingReach(listener, source) === true ? source.volume : 0
+          source.reach.isEnabled === false ||
+          isWithinReach(listener, source) === true
+            ? source.volume
+            : 0
         yield call(
           setSourceVolume,
           source.name,
@@ -210,14 +214,16 @@ function* handleSourcesReach() {
         )
       } else if (source.reach.action === ReachAction.TOGGLE_PLAYBACK) {
         // Toggle playback
-        const isReached = isWithingReach(listener, source)
+        const isReached =
+          source.reach.isEnabled === false || isWithinReach(listener, source)
 
         const prevSource = Object.values(prevState.sources.sources).find(
           x => x.name === source.name
         )
         const wasReached =
           prevSource !== undefined &&
-          isWithingReach(prevState.listener, prevSource)
+          (prevSource.reach.isEnabled === false ||
+            isWithinReach(prevState.listener, prevSource))
 
         // Stop the source if the listener exited the reach area
         if (wasReached === true && isReached === false) {
