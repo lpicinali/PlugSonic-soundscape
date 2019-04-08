@@ -3,13 +3,16 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { values } from 'lodash'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
-import { values } from 'lodash'
 
 import { setHrtfFilename } from 'src/actions/listener.actions.js'
 import * as colors from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements'
+import { setHighPerformanceMode, setHighQualityMode } from 'src/actions/listener.actions'
+import { SpatializationMode } from 'src/constants'
+
 
 const hrtfFunctions = [
   'IRC1008',
@@ -57,10 +60,6 @@ const UnderlineStyle = {
  * Hrtf Select
  */
 class HrtfSelect extends PureComponent {
-  static propTypes = {
-    value: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
-  }
 
   handleChange = (key, newValue) => {
     const { value, onChange } = this.props
@@ -72,6 +71,11 @@ class HrtfSelect extends PureComponent {
     }
 
     onChange(getHrtfFilename(newHrtf.fn, newHrtf.len))
+
+    this.props.spatializationMode === SpatializationMode.HighQuality ?
+      this.props.onSetHighQualityMode()
+        :
+      this.props.onSetHighPerformanceMode()
   }
 
   render() {
@@ -119,11 +123,27 @@ class HrtfSelect extends PureComponent {
   }
 }
 
-export default connect(
-  state => ({
-    value: state.listener.hrtfFilename,
-  }),
-  dispatch => ({
-    onChange: filename => dispatch(setHrtfFilename(filename)),
-  })
-)(HrtfSelect)
+HrtfSelect.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  spatializationMode: PropTypes.oneOf(values(SpatializationMode)).isRequired,
+  onSetHighPerformanceMode: PropTypes.func.isRequired,
+  onSetHighQualityMode: PropTypes.func.isRequired,
+}
+
+HrtfSelect.defaultProps = {
+  spatializationMode: SpatializationMode.HighQuality,
+}
+
+const mapStateToProps = state => ({
+  value: state.listener.hrtfFilename,
+  spatializationMode: state.listener.spatializationMode,
+})
+
+const mapDispatchToProps = dispatch => ({
+  onChange: filename => dispatch(setHrtfFilename(filename)),
+  onSetHighPerformanceMode: () => dispatch(setHighPerformanceMode()),
+  onSetHighQualityMode: () => dispatch(setHighQualityMode()),
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(HrtfSelect)
