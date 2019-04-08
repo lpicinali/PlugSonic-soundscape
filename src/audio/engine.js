@@ -144,12 +144,16 @@ export const playSource = source => {
 
   if (sourceNodes[source.name]) {
     stopSource(source)
-    despatializeSource(source)
+    if (source.spatialised === true) {
+      despatializeSource(source)
+    }
     destroySourceAudioChain(source)
   }
 
   createSourceAudioChain(source)
-  spatializeSource(source)
+  if (source.spatialised === true) {
+    spatializeSource(source)
+  }
 
   sourceNodes[source.name].start(0)
 }
