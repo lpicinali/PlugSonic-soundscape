@@ -160,9 +160,12 @@ class SourceUploader extends Component {
         >
           <ActionIcon />
           <div>
-            {this.state.filename === ''
-              ? 'Drop an audio file here (or click) to load it.'
-              : `${this.state.filename} - ${this.state.size} bytes`}
+            {this.state.filename === '' ? (
+                'Drop an mp3 file here (or click) to load it.'
+            ) : (
+                `${this.state.filename} - ${this.state.size} bytes`
+            )
+            }
           </div>
           <div style={{ height: `12px`, marginBottom: `10px` }}>
             {this.state.errorFile === '' ? '' : `${this.state.errorFile}`}

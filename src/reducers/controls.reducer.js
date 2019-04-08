@@ -8,7 +8,7 @@ const initialState = {
   playbackState: PlaybackState.STOP,
   masterVolume: 0.5,
   showSettingsDrawer: true,
-  showArrowsDrawer: true,
+  showArrowsDrawer: false,
 }
 
 export default function(state = initialState, { type, payload }) {

@@ -30,7 +30,7 @@ export function ADEtoXYZ(azimuth,distance,elevation) {
 }
 
 export function fetchAudioBuffer(url) {
-  console.log('fetchAudioBuffer')
+  // console.log('fetchAudioBuffer')
   return got(url, { encoding: null })
     .then(response => bufferToArrayBuffer(response.body))
     .then(arrayBuffer => decode(arrayBuffer, context))

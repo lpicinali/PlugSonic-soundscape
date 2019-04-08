@@ -11,11 +11,11 @@ import FlatButton from "material-ui/FlatButton"
 
 import {H2} from 'src/styles/elements'
 import * as colors from 'src/styles/colors'
-import { PlaybackState } from 'src/constants.js'
-import { setPlaybackState } from 'src/actions/controls.actions.js'
-import { importSources } from 'src/actions/sources.actions.js'
-import { importListener } from 'src/actions/listener.actions.js'
-import { importRoom } from 'src/actions/room.actions.js'
+import { PlaybackState } from 'src/constants'
+import { setPlaybackState } from 'src/actions/controls.actions'
+import { importSources } from 'src/actions/sources.actions'
+import { importListener } from 'src/actions/listener.actions'
+import { importRoom } from 'src/actions/room.actions'
 /* ========================================================================== */
 const FlatButtonStyle = {
   width: '85%',

@@ -180,6 +180,17 @@ function* applyListenerPosition() {
   }
 }
 
+/* ======================================================================== */
+// IMPORT LISTENER
+/* ======================================================================== */
+function* applyImportListener() {
+  while (true) {
+    const { payload } = yield take(ActionType.IMPORT_LISTENER)
+    const { x, y, z, rotZAxis } = payload.listener.position
+    engineSetListenerPosition({ x, y, z, rotZAxis })
+  }
+}
+
 // function* applyMasterVolume() {
 //   while (true) {
 //     const { type, payload } = yield take(ActionType.SET_MASTER_VOLUME)

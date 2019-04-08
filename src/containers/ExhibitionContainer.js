@@ -8,6 +8,13 @@ import * as colors from 'src/styles/colors.js'
 
 import {
   API,
+  exhibitionUrl,
+  exhibitionQuery,
+  exhibitionId,
+  exhibitionTitle,
+  exhibitionDescription,
+  exhibitionTags,
+  getQueryVariable,
   httpGetAsync,
   httpPostAsync,
   httpPutAsync,
@@ -61,11 +68,11 @@ const ChipWrapper = styled.div`
 class ExhibitionContainer extends Component {
 
   state = {
-    exhibitionTitle: '',
-    exhibitionDescription: '',
+    exhibitionTitle: exhibitionTitle,
+    exhibitionDescription: exhibitionDescription,
     exhibitionNewTag: '',
-    exhibitionTags: [],
-    exhibitionId: null,
+    exhibitionTags: exhibitionTags,
+    exhibitionId: exhibitionId,
   }
 
   createExhibition = () => {
@@ -103,19 +110,20 @@ class ExhibitionContainer extends Component {
       listener: this.props.listener,
       room: this.props.room,
     }
-    console.log('UPDATE')
-    console.log(soundscape)
-    const clone = JSON.parse(JSON.stringify(soundscape))
+
+    soundscape.sources = map(soundscape.sources, source => source)
+
     // exhibition object
     const exhibition = {
       title: this.state.exhibitionTitle,
+      public: this.state.exhibitionPublic,
       description: this.state.exhibitionDescription,
       metadata: soundscape,
       tags: this.state.exhibitionTags.map(tag => tag.label),
       type: "soundscape"
     }
-    const exhibitionId = this.state.exhibitionId
-    httpPutAsync(`${API}/exhibitions/${exhibitionId}`, this.updateExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
+
+    httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.updateExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
   }
 
   updateExhibitionCallback = (responseText) => {
@@ -129,6 +137,20 @@ class ExhibitionContainer extends Component {
     } else {
       this.createExhibition()
     }
+  }
+
+  handlePublishExhibition = () => {
+    // exhibition object
+    const exhibition = {
+      public: true,
+    }
+    
+    httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.publishExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
+  }
+
+  publishExhibitionCallback = (responseText) => {
+    const publishedExhibition = JSON.parse(responseText)
+    console.log(publishedExhibition)
   }
 
   handleTextFieldChange = (event) => {
@@ -163,6 +185,8 @@ class ExhibitionContainer extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
+
+    // console.log(`TITLE = ${this.state.exhibitionTitle}`)
 
     return (
       <Container>
@@ -220,13 +244,23 @@ class ExhibitionContainer extends Component {
         </ChipWrapper>
 
         <FlatButton
-          disabled={this.state.exhibitionTitle === ''}
+          // disabled={this.state.exhibitionTitle === ''}
           style={FlatButtonStyle}
           backgroundColor={`${colors.BLACK}`}
           onClick={this.handleSaveExhibition}
           secondary
         >
           SAVE
+        </FlatButton>
+
+        <FlatButton
+          // disabled={this.state.exhibitionTitle === ''}
+          style={FlatButtonStyle}
+          backgroundColor={`${colors.BLACK}`}
+          onClick={this.handlePublishExhibition}
+          secondary
+        >
+          PUBLISH
         </FlatButton>
 
         <Divider style={DividerStyle}/>
