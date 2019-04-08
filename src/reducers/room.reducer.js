@@ -5,8 +5,8 @@
 import { ActionType, RoomShape } from 'src/constants.js'
 
 const initialState = {
-  shape: RoomShape.ROUND,
-  size: { width: 30, depth: 30, height: 4  },
+  shape: RoomShape.RECTANGULAR,
+  size: { width: 30, depth: 20, height: 4  },
   image: {
     filename: '',
     size: '',

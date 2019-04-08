@@ -1,10 +1,8 @@
 import React, { Component} from "react"
 import { connect } from "react-redux"
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import * as colors from 'src/styles/colors'
 import { values, toNumber, isNaN } from 'lodash'
-
+import * as colors from 'src/styles/colors.js'
 import {H2} from 'src/styles/elements'
 
 import TextField from 'material-ui/TextField'
@@ -25,16 +23,16 @@ export const errorStyle = {
 const underlineStyle = {
   borderColor: `colors.BLACK`,
 }
-const underlineFocusStyle = {
-  borderColor: `colors.BLACK`,
-}
+// const underlineFocusStyle = {
+//   borderColor: `colors.BLACK`,
+// }
 /* ========================================================================== */
 /* ROOM SIZE TEXT FIELDS */
 /* ========================================================================== */
 class RoomSizeTextFields extends Component {
 
   state = {
-    size: { width: 30, depth: 20, height: 4 },
+    size: { width: 30, depth: 20, height: 4  },
     errorTextW: '',
     errorTextD: '',
     errorTextH: '',
@@ -214,6 +212,7 @@ class RoomSizeTextFields extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
+    console.log('errorTextW')
     console.log(this.state.errorTextW)
     return (
       <React.Fragment>
@@ -230,14 +229,20 @@ class RoomSizeTextFields extends Component {
           onChange={this.handleTextFieldChange}
           // inputStyle={tfInputStyle}
           style={style}
-          underlineFocusStyle={underlineFocusStyle}
+          underlineFocusStyle={
+            this.state.errorTextW === '' ?
+              {borderColor: `${colors.BLACK}`}:{borderColor: `${colors.RED}`}
+          }
           underlineStyle={underlineStyle}
         />
 
         <TextField
           id="depth"
           type="text"
-          value={this.state.size.depth}
+          value={
+            this.props.roomShape === RoomShape.ROUND ?
+            this.state.size.width : this.state.size.depth
+          }
           errorText={this.state.errorTextD}
           floatingLabelFixed
           // floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
@@ -246,8 +251,12 @@ class RoomSizeTextFields extends Component {
           onChange={this.handleTextFieldChange}
           // inputStyle={tfInputStyle}
           style={style}
-          underlineFocusStyle={underlineFocusStyle}
+          underlineFocusStyle={
+            this.state.errorTextD === '' ?
+              {borderColor: `${colors.BLACK}`}:{borderColor: `${colors.RED}`}
+          }
           underlineStyle={underlineStyle}
+          disabled={this.props.roomShape === RoomShape.ROUND}
         />
 
         <TextField
@@ -262,7 +271,10 @@ class RoomSizeTextFields extends Component {
           onChange={this.handleTextFieldChange}
           // inputStyle={tfInputStyle}
           style={style}
-          underlineFocusStyle={underlineFocusStyle}
+          underlineFocusStyle={
+            this.state.errorTextH === '' ?
+              {borderColor: `${colors.BLACK}`}:{borderColor: `${colors.RED}`}
+          }
           underlineStyle={underlineStyle}
         />
       </React.Fragment>
@@ -277,7 +289,6 @@ RoomSizeTextFields.propTypes = {
 }
 
 RoomSizeTextFields.defaultProps = {
-  roomSize: { width: 30, depth: 20, height: 4 },
   roomShape: RoomShape.RECTANGULAR,
 }
 
