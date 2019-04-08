@@ -12,6 +12,14 @@ import {
   destroySourceAudioChain,
 } from 'src/audio/engine.js'
 
+function isWithinReach(listener, source) {
+  const distance = Math.sqrt(
+    (listener.position.x - source.position.x) ** 2 +
+      (listener.position.y - source.position.y) ** 2
+  )
+  return distance <= source.reach.radius
+}
+
 /* ======================================================================== */
 // PLAY/STOP
 /* ======================================================================== */
@@ -60,10 +68,16 @@ function* applySourceOnOff() {
     const source = yield select(state => state.sources.sources[payload.name])
     const playbackState = yield select(state => state.controls.playbackState)
 
-    if (source.selected === true && playbackState === PlaybackState.PLAY) {
-      yield call(playSource, source)
-    } else {
+    if (source.selected === false) {
       yield call(stopSource, source)
+    } else if (playbackState === PlaybackState.PLAY) {
+      const listener = yield select(state => state.listener)
+      const isReached =
+        source.reach.isEnabled === false || isWithinReach(listener, source)
+
+      if (isReached === true) {
+        yield call(playSource, source)
+      }
     }
   }
 }
@@ -171,30 +185,30 @@ function* applySourceVolume() {
 }
 
 function* handleSourcesReach() {
-  function isWithinReach(listener, source) {
-    const distance = Math.sqrt(
-      (listener.position.x - source.position.x) ** 2 +
-        (listener.position.y - source.position.y) ** 2
-    )
-    return distance <= source.reach.radius
-  }
-
   while (true) {
     const prevState = yield select(state => state)
 
-    yield take([
+    const { type, payload } = yield take([
       ActionType.SET_LISTENER_POSITION,
       ActionType.SET_SOURCE_POSITION,
       ActionType.SET_SOURCE_REACH_ENABLED,
       ActionType.SET_SOURCE_REACH_RADIUS,
       ActionType.SET_PLAYBACK_STATE,
+      ActionType.SOURCE_ONOFF,
     ])
 
-    const [listener, sources] = yield all([
+    // This applies reach to newly activated sources, but does nothing
+    // when deactivated.
+    if (type === ActionType.SOURCE_ONOFF && payload.selected === false) {
+      continue
+    }
+
+    const [listener, sources, playbackState] = yield all([
       select(state => state.listener),
       select(state =>
         Object.values(state.sources.sources).filter(x => x.spatialised === true)
       ),
+      select(state => state.controls.playbackState),
     ])
 
     // eslint-disable-next-line
@@ -212,7 +226,11 @@ function* handleSourcesReach() {
           volume,
           source.reach.fadeDuration
         )
-      } else if (source.reach.action === ReachAction.TOGGLE_PLAYBACK) {
+      } else if (
+        source.reach.action === ReachAction.TOGGLE_PLAYBACK &&
+        source.selected === true &&
+        playbackState === PlaybackState.PLAY
+      ) {
         // Toggle playback
         const isReached =
           source.reach.isEnabled === false || isWithinReach(listener, source)
