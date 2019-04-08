@@ -122,7 +122,9 @@ const setVolume = (gainNode, volume, fadeDuration = 10) => {
 }
 
 export const setSourceVolume = (name, volume, fadeDuration = 10) => {
-  setVolume(sourceVolumes[name].gain, volume, fadeDuration)
+  if (sourceVolumes[name]) {
+    setVolume(sourceVolumes[name].gain, volume, fadeDuration)
+  }
 }
 
 /**
