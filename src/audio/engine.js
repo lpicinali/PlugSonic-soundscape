@@ -131,7 +131,9 @@ export const setSourceVolume = (name, volume, fadeDuration = 10) => {
  * Stops a source's audio
  */
 export const stopSource = source => {
-  sourceNodes[source.name].stop()
+  if (sourceNodes[source.name]) {
+    sourceNodes[source.name].stop()
+  }
 }
 
 /**
