@@ -58,9 +58,28 @@ export const addSource = ({
   url,
   assetId,
   mediaId,
+  position,
+  reach,
+  loop,
+  selected,
+  spatialised,
+  volume
 }) => ({
   type: ActionType.ADD_SOURCE,
-  payload: { filename, name, origin, url, assetId, mediaId },
+  payload: { 
+    filename,
+    name,
+    origin,
+    url,
+    assetId,
+    mediaId,
+    position,
+    reach,
+    loop,
+    selected,
+    spatialised,
+    volume
+  },
 })
 
 export const deleteSources = sources => ({

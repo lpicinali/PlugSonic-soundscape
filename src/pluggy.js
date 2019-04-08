@@ -79,28 +79,28 @@ export function httpPutAsync(url, callback, body, token, type) {
 
 // eslint-disable-next-line
 export const API = 'https://develop.pluggy.eu/api/v1'
-// eslint-disable-next-line
 
 /*
   Use this within the social platform
 */
-// export const sessionToken = Pluggy.getToken()
+// eslint-disable-next-line
+export const sessionToken = Pluggy.getToken()
 /*
   Use this out of the social platform
 */
-export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQ3MjMyNjMsImV4cCI6MTU1NDgwOTY2M30.nQ-KP-Evi__dMgTTpT1jNbAJPXdQtuMinrOuSWiC1B8'
+// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQ3MzIxMDQsImV4cCI6MTU1NDgxODUwNH0.05mPQaZ3Kz9g3J0f_UUceN9LdZMnbfVRftIsKhgCPz8'
 
 // =================== RETRIEVE EXHIBITION ============================= //
 /*
   Use this within the social platform
 */
-// export const exhibitionUrl = window.location.href
-// export const exhibitionQuery = window.location.search.substring(1)
-// export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+export const exhibitionUrl = window.location.href
+export const exhibitionQuery = window.location.search.substring(1)
+export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
 /*
   Use this out of the social platform
 */
-export const exhibitionId = '5ca4aae0cd2eb4f3c4ebab20'
+// export const exhibitionId = '5cab54a8e3c2de61b60b4bea'
 
 let title = ''
 let description = ''
@@ -109,8 +109,8 @@ let metadata = []
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
-  console.log('RETRIEVE EXHIBITION RESPONSE')
-  console.log(response)
+  // console.log('RETRIEVE EXHIBITION RESPONSE')
+  // console.log(response)
   if (response.success) {
     title = response.data.title
     description = response.data.description

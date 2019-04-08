@@ -78,19 +78,19 @@ export default function(state = initialState, { type, payload }) {
         hidden: false,
         platform_asset_id: payload.assetId || null,
         platform_media_id: payload.mediaId || null,
-        position: ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
+        position: payload.position || ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
         // raw: payload.raw,
-        reach: {
+        reach: payload.reach || {
           isEnabled: true,
           action: ReachAction.TOGGLE_VOLUME,
           radius: 3,
           fadeDuration: 1000,
         },
-        loop: true,
-        selected: true,
-        spatialised: true,
+        loop: payload.loop === undefined ? true : payload.loop,
+        selected: payload.selected === undefined ? true : payload.selected,
+        spatialised: payload.spatialised === undefined ? true : payload.spatialised,
         url: payload.url || null,
-        volume: 1.0,
+        volume: payload.volume || 1.0,
       }
 
       azimuthIndex += 1
@@ -106,6 +106,8 @@ export default function(state = initialState, { type, payload }) {
       payload.sources.forEach(source => {
         newSources[source.name] = source
       })
+      console.log('IMPORT SOURCES')
+      console.log(newSources)
       return { ...state, sources: newSources }
     }
 
