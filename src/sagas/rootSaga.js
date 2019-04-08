@@ -165,7 +165,17 @@ function* applySourceVolume() {
 }
 
 function* handleSourcesReach() {
+  function isWithingReach(listener, source) {
+    const distance = Math.sqrt(
+      (listener.position.x - source.position.x) ** 2 +
+        (listener.position.y - source.position.y) ** 2
+    )
+    return distance <= source.reach.radius
+  }
+
   while (true) {
+    const prevState = yield select(state => state)
+
     yield take([
       ActionType.SET_LISTENER_POSITION,
       ActionType.SET_SOURCE_POSITION,
@@ -182,25 +192,34 @@ function* handleSourcesReach() {
 
     // eslint-disable-next-line
     for (const source of sources) {
-      const distanceToListener = Math.sqrt(
-        (listener.position.x - source.position.x) ** 2 +
-          (listener.position.y - source.position.y) ** 2
-      )
-      const isInsideReach = distanceToListener <= source.reach.radius
-
       if (source.reach.action === ReachAction.TOGGLE_VOLUME) {
-        const volume = isInsideReach === true ? source.volume : 0
-        // TODO: Put this back in
-        // yield call(
-        //   setSourceVolume,
-        //   source.name,
-        //   volume,
-        //   source.reach.fadeDuration
-        // )
+        // Toggle volume
+        const volume =
+          isWithingReach(listener, source) === true ? source.volume : 0
+        yield call(
+          setSourceVolume,
+          source.name,
+          volume,
+          source.reach.fadeDuration
+        )
       } else if (source.reach.action === ReachAction.TOGGLE_PLAYBACK) {
-        yield call(stopSource, source)
+        // Toggle playback
+        const isReached = isWithingReach(listener, source)
 
-        if (isInsideReach === true) {
+        const prevSource = Object.values(prevState.sources.sources).find(
+          x => x.name === source.name
+        )
+        const wasReached =
+          prevSource !== undefined &&
+          isWithingReach(prevState.listener, prevSource)
+
+        // Stop the source if the listener exited the reach area
+        if (wasReached === true && isReached === false) {
+          yield call(stopSource, source)
+        }
+
+        // Play the source if the listener entered the reach area
+        if (wasReached === false && isReached === true) {
           yield call(playSource, source)
         }
       }
