@@ -1,4 +1,4 @@
-import { all, call, put, select, take } from 'redux-saga/effects'
+import { all, call, put, select, spawn, take } from 'redux-saga/effects'
 
 import {
   ActionType,
@@ -7,6 +7,7 @@ import {
   SourceOrigin,
 } from 'src/constants.js'
 import { fetchAudioBuffer } from 'src/utils.js'
+import { setListenerPosition } from 'src/actions/listener.actions.js'
 import { addSource, deleteSources } from 'src/actions/sources.actions.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
@@ -60,13 +61,19 @@ function* manageAddSource() {
     const playbackState = yield select(state => state.controls.playbackState)
 
     if (source.origin === SourceOrigin.REMOTE) {
-      const audioBuffer = yield call(fetchAudioBuffer, source.url)
-      yield call(storeSourceAudioBuffer, source.name, audioBuffer)
+      yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
     }
 
     if (source.selected === true && playbackState === PlaybackState.PLAY) {
       yield call(playSource, source)
     }
+  }
+}
+
+function fetchAndStoreSourceAudio(name, url) {
+  return function*() {
+    const audioBuffer = yield call(fetchAudioBuffer, url)
+    yield call(storeSourceAudioBuffer, name, audioBuffer)
   }
 }
 
@@ -111,7 +118,7 @@ function* manageImportSources() {
 
     // Add the new ones
     for (let i = 0; i < sources.length; i++) {
-      yield put(addSource(sources[i]))
+      yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
     }
   }
 }
@@ -186,8 +193,7 @@ function* applyListenerPosition() {
 function* applyImportListener() {
   while (true) {
     const { payload } = yield take(ActionType.IMPORT_LISTENER)
-    const { x, y, z, rotZAxis } = payload.listener.position
-    engineSetListenerPosition({ x, y, z, rotZAxis })
+    yield put(setListenerPosition(payload.listener.position))
   }
 }
 
@@ -361,6 +367,7 @@ export default function* rootSaga() {
     manageAddSource(),
     applyDeleteSource(),
     manageImportSources(),
+    applyImportListener(),
     // applyMasterVolume(),
     applySourceVolume(),
     applyLoopChanges(),
