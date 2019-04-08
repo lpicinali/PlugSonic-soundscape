@@ -1,16 +1,13 @@
-import React, {Component} from 'react'
-import { connect } from "react-redux"
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import * as colors from 'src/styles/colors'
+import React, { Component } from 'react'
 
-import {Tabs, Tab} from 'material-ui/Tabs'
-import Add from 'material-ui/svg-icons/content/add'
-import Search from "material-ui/svg-icons/action/search"
-import Sources from "material-ui/svg-icons/av/queue-music"
-import Room from "material-ui/svg-icons/action/aspect-ratio"
-import Listener from "material-ui/svg-icons/av/hearing"
-import Exhibition from "material-ui/svg-icons/content/save"
+import { Tabs, Tab } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
+import Add from '@material-ui/icons/Add'
+import Search from '@material-ui/icons/Search'
+import Sources from '@material-ui/icons/QueueMusic'
+import Room from '@material-ui/icons/AspectRatio'
+import Listener from '@material-ui/icons/Hearing'
+import Exhibition from '@material-ui/icons/Save'
 
 import AddSourceTab from 'src/containers/AddSourceTab'
 import SearchTab from 'src/containers/SearchTab'
@@ -19,46 +16,46 @@ import SourcesTab from 'src/containers/SourcesTab'
 import ListenerTab from 'src/containers/ListenerTab'
 import ExhibitionTab from 'src/containers/ExhibitionTab'
 
+const NarrowTab = withStyles({
+  root: {
+    flexGrow: 1,
+    minWidth: 0,
+  },
+})(Tab)
+
 /* ========================================================================== */
 /* TABS */
 /* ========================================================================== */
 class TabsContainer extends Component {
-
   state = {
-    value: 'exhibition',
+    value: 5,
   }
 
-  handleChange = (value) => {
+  handleChange = (event, value) => {
     this.setState({ ...this.state, value })
   }
 
   render() {
+    const { value } = this.state
+
     return (
-      <Tabs value={this.state.value} onChange={this.handleChange}>
-        <Tab icon={<Add/>} value="add">
-          <AddSourceTab/>
-        </Tab>
+      <div>
+        <Tabs value={value} onChange={this.handleChange}>
+          <NarrowTab icon={<Add />} />
+          <NarrowTab icon={<Search />} />
+          <NarrowTab icon={<Sources />} />
+          <NarrowTab icon={<Room />} />
+          <NarrowTab icon={<Listener />} />
+          <NarrowTab icon={<Exhibition />} />
+        </Tabs>
 
-        <Tab icon={<Search/>} value="search">
-          <SearchTab/>
-        </Tab>
-
-        <Tab icon={<Sources/>} value="sources">
-          <SourcesTab/>
-        </Tab>
-
-        <Tab icon={<Room/>} value="room">
-          <RoomTab/>
-        </Tab>
-
-        <Tab icon={<Listener/>} value="listener">
-          <ListenerTab/>
-        </Tab>
-
-        <Tab icon={<Exhibition/>} value="exhibition">
-          <ExhibitionTab/>
-        </Tab>
-      </Tabs>
+        {value === 0 && <AddSourceTab />}
+        {value === 1 && <SearchTab />}
+        {value === 2 && <SourcesTab />}
+        {value === 3 && <RoomTab />}
+        {value === 4 && <ListenerTab />}
+        {value === 5 && <ExhibitionTab />}
+      </div>
     )
   }
 }

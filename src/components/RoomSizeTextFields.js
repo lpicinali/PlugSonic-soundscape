@@ -1,36 +1,22 @@
-import React, { Component} from "react"
-import { connect } from "react-redux"
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { values, toNumber, isNaN } from 'lodash'
-import * as colors from 'src/styles/colors.js'
-import {H2} from 'src/styles/elements'
 
-import TextField from 'material-ui/TextField'
-
-import { setRoomSize } from 'src/actions/room.actions'
+import { FormControl, FormHelperText, TextField } from '@material-ui/core'
 import { RoomShape } from 'src/constants.js'
+import { setRoomSize } from 'src/actions/room.actions.js'
+import { H2 } from 'src/styles/elements.js'
+
 /* ========================================================================== */
 const minSize = 3
 const maxSize = 100
 /* ========================================================================== */
-export const style = {
-  marginLeft: `20px`,
-  width: `85%`
-}
-export const errorStyle = {
-  textColor: `colors.BLACK`
-}
-const underlineStyle = {
-  borderColor: `colors.BLACK`,
-}
-// const underlineFocusStyle = {
-//   borderColor: `colors.BLACK`,
-// }
+
 /* ========================================================================== */
 /* ROOM SIZE TEXT FIELDS */
 /* ========================================================================== */
 class RoomSizeTextFields extends Component {
-
   state = {
     size: { width: 30, depth: 20, height: 4  },
     errorTextW: '',
@@ -209,72 +195,53 @@ class RoomSizeTextFields extends Component {
     }
   }
 
-
   /* ------------------------------------------------------------------------ */
   render() {
     return (
       <React.Fragment>
         <H2>ROOM SIZE</H2>
-        <TextField
-          id="width"
-          type="text"
-          value={this.state.size.width}
-          errorText={this.state.errorTextW}
-          floatingLabelFixed
-          // floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
-          // floatingLabelStyle={tfFloatingLabelStyle}
-          floatingLabelText="Width (m)"
-          onChange={this.handleTextFieldChange}
-          // inputStyle={tfInputStyle}
-          style={style}
-          underlineFocusStyle={
-            this.state.errorTextW === '' ?
-              {borderColor: `${colors.BLACK}`}:{borderColor: `${colors.RED}`}
-          }
-          underlineStyle={underlineStyle}
-        />
 
-        <TextField
-          id="depth"
-          type="text"
-          value={
-            this.props.roomShape === RoomShape.ROUND ?
-            this.state.size.width : this.state.size.depth
-          }
-          errorText={this.state.errorTextD}
-          floatingLabelFixed
-          // floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
-          // floatingLabelStyle={tfFloatingLabelStyle}
-          floatingLabelText="Depth (m)"
-          onChange={this.handleTextFieldChange}
-          // inputStyle={tfInputStyle}
-          style={style}
-          underlineFocusStyle={
-            this.state.errorTextD === '' ?
-              {borderColor: `${colors.BLACK}`}:{borderColor: `${colors.RED}`}
-          }
-          underlineStyle={underlineStyle}
-          disabled={this.props.roomShape === RoomShape.ROUND}
-        />
+        <FormControl error={this.state.errorTextW !== ''}>
+          <TextField
+            id="width"
+            type="text"
+            value={this.state.size.width}
+            label="Width (m)"
+            fullWidth
+            onChange={this.handleTextFieldChange}
+          />
+          {this.state.errorTextW !== '' && (
+            <FormHelperText>this.state.errorTextW</FormHelperText>
+          )}
+        </FormControl>
 
-        <TextField
-          id="height"
-          type="text"
-          value={this.state.size.height}
-          errorText={this.state.errorTextH}
-          floatingLabelFixed
-          // floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
-          // floatingLabelStyle={tfFloatingLabelStyle}
-          floatingLabelText="Height (m)"
-          onChange={this.handleTextFieldChange}
-          // inputStyle={tfInputStyle}
-          style={style}
-          underlineFocusStyle={
-            this.state.errorTextH === '' ?
-              {borderColor: `${colors.BLACK}`}:{borderColor: `${colors.RED}`}
-          }
-          underlineStyle={underlineStyle}
-        />
+        <FormControl error={this.state.errorTextD !== ''}>
+          <TextField
+            id="depth"
+            type="text"
+            value={this.state.size.depth}
+            label="Depth (m)"
+            fullWidth
+            onChange={this.handleTextFieldChange}
+          />
+          {this.state.errorTextD !== '' && (
+            <FormHelperText>this.state.errorTextD</FormHelperText>
+          )}
+        </FormControl>
+
+        <FormControl error={this.state.errorTextH !== ''}>
+          <TextField
+            id="height"
+            type="text"
+            value={this.state.size.height}
+            label="Height (m)"
+            fullWidth
+            onChange={this.handleTextFieldChange}
+          />
+          {this.state.errorTextH !== '' && (
+            <FormHelperText>this.state.errorTextH</FormHelperText>
+          )}
+        </FormControl>
       </React.Fragment>
     )
   }
@@ -299,4 +266,7 @@ const mapDispatchToProps = dispatch => ({
   onRoomSizeChange: size => dispatch(setRoomSize(size)),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(RoomSizeTextFields)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RoomSizeTextFields)

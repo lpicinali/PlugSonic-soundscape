@@ -1,7 +1,7 @@
 /* eslint no-unused-vars: 0 */
 import styled from 'styled-components'
 import ReactDropzone from 'react-dropzone'
-import Icon from "material-ui/svg-icons/av/library-music"
+import Icon from '@material-ui/icons/LibraryMusic'
 import * as colors from 'src/styles/colors'
 
 // -------------------------------------------------------------------------- //

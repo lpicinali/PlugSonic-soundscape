@@ -30,7 +30,6 @@ const SettingsDrawer = styled.div`
   width: 288px;
   flex-shrink: 1;
   flex-grow: 1;
-  overflow-x: hidden;
   overflow-y: scroll;
   background: ${colors.WHITE};
   transition: width 0.5s;
@@ -65,7 +64,10 @@ class SoundscapeInterface extends PureComponent {
         <SoundscapeArea>
           <ContainerDimensions>
             {({ width, height, top, bottom, left, right }) => (
-              <ScaledSoundscape size={{ width, height }} rect={{ top, bottom, left, right }}/>
+              <ScaledSoundscape
+                size={{ width, height }}
+                rect={{ top, bottom, left, right }}
+              />
             )}
           </ContainerDimensions>
         </SoundscapeArea>

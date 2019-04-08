@@ -1,30 +1,21 @@
-import React, { Component} from "react"
-import { connect } from "react-redux"
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import * as colors from 'src/styles/colors'
 import { map } from 'lodash'
+import { Divider, List } from '@material-ui/core'
 
-import { List, ListItem } from 'material-ui/List'
-import Divider from 'material-ui/Divider'
-import SourcePanel from 'src/containers/SourcePanel'
-/* ========================================================================== */
+import SourcePanel from 'src/containers/SourcePanel.js'
 
 /* ========================================================================== */
 /* SOURCES TAB */
 /* ========================================================================== */
 class SourcesTab extends Component {
-
-
   /* ------------------------------------------------------------------------ */
   render() {
     return (
       <List>
         {map(this.props.sources, source => (
-          <span key={source.name}>
-            <SourcePanel sourceObject={source}/>
-            <Divider/>
-          </span>
+          <SourcePanel key={source.name} sourceObject={source} />
         ))}
       </List>
     )
@@ -43,4 +34,7 @@ const mapStateToProps = state => ({
   sources: state.sources.sources,
 })
 
-export default connect(mapStateToProps,null)(SourcesTab)
+export default connect(
+  mapStateToProps,
+  null
+)(SourcesTab)

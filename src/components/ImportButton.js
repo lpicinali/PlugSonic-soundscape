@@ -1,10 +1,10 @@
-import { connect } from "react-redux"
+import { connect } from 'react-redux'
 import FileReaderInput from 'react-file-reader-input'
 import PropTypes from 'prop-types'
-import React, { Component} from "react"
+import React, { Component } from 'react'
 import styled from 'styled-components'
 
-import FlatButton from "material-ui/FlatButton"
+import { Button } from '@material-ui/core'
 
 import * as colors from 'src/styles/colors'
 import { PlaybackState } from 'src/constants'
@@ -12,12 +12,13 @@ import { setPlaybackState } from 'src/actions/controls.actions'
 import { importSources } from 'src/actions/sources.actions'
 import { importListener } from 'src/actions/listener.actions'
 import { importRoom } from 'src/actions/room.actions'
+
 /* ========================================================================== */
 const FlatButtonStyle = {
   width: '85%',
   margin: `auto`,
-  textColor: `${colors.WHITE}`,
 }
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -27,7 +28,6 @@ const Container = styled.div`
 /* IMPORT BUTTON */
 /* ========================================================================== */
 class ImportButton extends Component {
-
   handleImportSoundscape = (evt, results) => {
     // const res = confirm('This action may require some time.\nPlease wait for another message before performing other actions.\nPress OK to continue...')
 
@@ -47,8 +47,7 @@ class ImportButton extends Component {
   render() {
     return (
       <Container>
-
-        <FlatButton style={FlatButtonStyle} backgroundColor={`${colors.BLACK}`} secondary>
+        <Button variant="contained" color="secondary" style={FlatButtonStyle}>
           <FileReaderInput
             type="file"
             accept=".json"
@@ -57,8 +56,7 @@ class ImportButton extends Component {
           >
             METADATA/META+ASSETS
           </FileReaderInput>
-        </FlatButton>
-
+        </Button>
       </Container>
     )
   }
@@ -78,4 +76,7 @@ const mapDispatchToProps = dispatch => ({
   onImportRoom: room => dispatch(importRoom(room)),
 })
 
-export default connect(null,mapDispatchToProps)(ImportButton)
+export default connect(
+  null,
+  mapDispatchToProps
+)(ImportButton)

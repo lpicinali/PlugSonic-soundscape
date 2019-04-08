@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { map } from 'lodash'
 import * as colors from 'src/styles/colors.js'
+import { Button, Chip, Divider, TextField } from '@material-ui/core'
 
 import {
   API,
@@ -16,31 +17,20 @@ import {
   sessionToken,
 } from 'src/pluggy'
 
-import TextField from 'material-ui/TextField'
-import FlatButton from "material-ui/FlatButton"
-import Divider from 'material-ui/Divider'
-import Chip from 'material-ui/Chip';
 /* ========================================================================== */
 export const textfieldStyle = {
   marginLeft: `20px`,
-  width: `85%`
-}
-const underlineStyle = {
-  borderColor: `colors.BLACK`,
-}
-const underlineFocusStyle = {
-  borderColor: `colors.BLACK`,
+  width: `85%`,
 }
 const FlatButtonStyle = {
   width: '85%',
   margin: `auto`,
-  marginTop:'10px',
+  marginTop: '10px',
   marginBottom: '10px',
-  textColor: `${colors.WHITE}`,
 }
 const DividerStyle = {
-  marginTop:'10px',
-  marginBottom: '10px'
+  marginTop: '10px',
+  marginBottom: '10px',
 }
 const Container = styled.div`
   display: flex;
@@ -61,7 +51,6 @@ const ChipWrapper = styled.div`
 /* EXHIBITION CONTAINER */
 /* ========================================================================== */
 class ExhibitionContainer extends Component {
-
   state = {
     exhibitionTitle: exhibitionTitle,
     exhibitionDescription: exhibitionDescription,
@@ -86,12 +75,18 @@ class ExhibitionContainer extends Component {
       description: this.state.exhibitionDescription,
       metadata: soundscape,
       tags: this.state.exhibitionTags.map(tag => tag.label),
-      type: "soundscape"
+      type: 'soundscape',
     }
-    httpPostAsync(`${API}/exhibitions`, this.createExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
+    httpPostAsync(
+      `${API}/exhibitions`,
+      this.createExhibitionCallback,
+      JSON.stringify(exhibition),
+      sessionToken,
+      'application/json'
+    )
   }
 
-  createExhibitionCallback = (responseText) => {
+  createExhibitionCallback = responseText => {
     const createdExhibition = JSON.parse(responseText)
     console.log(createdExhibition)
     this.state.exhibitionId = createdExhibition.data._id
@@ -114,13 +109,13 @@ class ExhibitionContainer extends Component {
       description: this.state.exhibitionDescription,
       metadata: soundscape,
       tags: this.state.exhibitionTags.map(tag => tag.label),
-      type: "soundscape"
+      type: 'soundscape',
     }
 
     httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.updateExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
   }
 
-  updateExhibitionCallback = (responseText) => {
+  updateExhibitionCallback = responseText => {
     const updatedExhibition = JSON.parse(responseText)
     console.log(updatedExhibition)
   }
@@ -150,7 +145,7 @@ class ExhibitionContainer extends Component {
   handleTextFieldChange = (event) => {
     const id = event.target.id
     const val = event.target.value
-    if(id === 'exhibitionTitle') {
+    if (id === 'exhibitionTitle') {
       this.setState({ ...this.state, exhibitionTitle: val })
     } else if (id === 'exhibitionDescription') {
       this.setState({ ...this.state, exhibitionDescription: val })
@@ -159,70 +154,61 @@ class ExhibitionContainer extends Component {
     }
   }
 
-  handleKeyUp = (e) => {
+  handleKeyUp = e => {
     if (e.keyCode === 13) {
       e.preventDefault()
       const tags = this.state.exhibitionTags
       const newTagKey = tags.length
       const newTagLabel = e.target.value
-      tags.push({key: newTagKey, label: newTagLabel})
-      this.setState({ ...this.state, exhibitionNewTag: '', exhibitionTags: tags})
+      tags.push({ key: newTagKey, label: newTagLabel })
+      this.setState({
+        ...this.state,
+        exhibitionNewTag: '',
+        exhibitionTags: tags,
+      })
     }
   }
 
-  handleRequestDelete = (key) => {
+  handleRequestDelete = key => {
     const tags = this.state.exhibitionTags
-    const tagToDelete = tags.map((tag) => tag.key).indexOf(key)
-    tags.splice(tagToDelete, 1);
-    this.setState({ ...this.state, exhibitionTags: tags });
+    const tagToDelete = tags.map(tag => tag.key).indexOf(key)
+    tags.splice(tagToDelete, 1)
+    this.setState({ ...this.state, exhibitionTags: tags })
   }
 
   /* ------------------------------------------------------------------------ */
   render() {
-
-    // console.log(`TITLE = ${this.state.exhibitionTitle}`)
-
     return (
       <Container>
-
         <TextField
           id="exhibitionTitle"
           type="text"
           value={this.state.exhibitionTitle}
-          floatingLabelFixed
-          floatingLabelText="Title*"
+          label="Title*"
           onChange={this.handleTextFieldChange}
           style={textfieldStyle}
-          underlineFocusStyle={underlineFocusStyle}
-          underlineStyle={underlineStyle}
         />
 
         <TextField
           id="exhibitionDescription"
           type="text"
           value={this.state.exhibitionDescription}
-          floatingLabelFixed
-          floatingLabelText="Description*"
-          multiLine
+          label="Description*"
+          multiline
           rows={2}
           rowsMax={4}
           onChange={this.handleTextFieldChange}
           style={textfieldStyle}
-          underlineFocusStyle={underlineFocusStyle}
-          underlineStyle={underlineStyle}
         />
 
         <TextField
           id="exhibitionNewTag"
           type="text"
           value={this.state.exhibitionNewTag}
-          floatingLabelFixed
-          floatingLabelText="Tags (Press ENTER to add)"
+          label="Tags (Press ENTER to add)"
           onChange={this.handleTextFieldChange}
           onKeyUp={this.handleKeyUp}
           style={textfieldStyle}
-          underlineFocusStyle={underlineFocusStyle}
-          underlineStyle={underlineStyle}
         />
 
         <ChipWrapper>
@@ -237,38 +223,37 @@ class ExhibitionContainer extends Component {
           ))}
         </ChipWrapper>
 
-        <FlatButton
-          disabled={
-            this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''
-          }
-          style={FlatButtonStyle}
-          backgroundColor={
-            this.state.exhibitionTitle === '' || this.state.exhibitionDescription === '' ?
-            `${colors.LIGHTGREY}`:`${colors.BLACK}`
-          }
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
+          style={{
+            ...FlatButtonStyle,
+            backgroundColor: this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''
+              ? colors.LIGHTGREY
+              : colors.BLACK
+          }}
           onClick={this.handleSaveExhibition}
-          secondary
         >
           SAVE
-        </FlatButton>
+        </Button>
 
-        <FlatButton
-          disabled={
-            this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''
-          }
-          style={FlatButtonStyle}
-          backgroundColor={
-            this.state.exhibitionTitle === '' || this.state.exhibitionDescription === '' ?
-            `${colors.LIGHTGREY}`:`${colors.BLACK}`
-          }
-          onClick={this.handlePublishExhibition}
-          secondary
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
+          style={{
+            ...FlatButtonStyle,
+            backgroundColor: this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''
+              ? colors.LIGHTGREY
+              : colors.BLACK
+          }}
+          onClick={this.handleSaveExhibition}
         >
           PUBLISH
-        </FlatButton>
+        </Button>
 
-        <Divider style={DividerStyle}/>
-
+        <Divider style={DividerStyle} />
       </Container>
     )
   }
@@ -293,4 +278,7 @@ const mapDispatchToProps = dispatch => ({
   //   dispatch(addSourceRemote(filename, name, url, assetId, mediaId)),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(ExhibitionContainer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ExhibitionContainer)

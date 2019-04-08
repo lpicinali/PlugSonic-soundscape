@@ -1,21 +1,26 @@
-import React, { PureComponent } from 'react'
+import React, { Fragment, PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import {
   Button,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
+  MenuItem,
+  Select,
+  Switch,
 } from '@material-ui/core'
-import { ListItem } from 'material-ui/List'
-import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem'
-import Slider from 'material-ui/Slider'
-import Toggle from 'material-ui/Toggle'
+import Slider from '@material-ui/lab/Slider'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import { PlaybackTiming, ReachAction } from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
@@ -31,20 +36,9 @@ import {
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
-import * as colors from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements.js'
-/* ========================================================================== */
-const toggleStyle = {
-  margin: `auto`,
-  marginTop: `20px`,
-  width: `85%`,
-}
 
-const toggleLabelStyle = {
-  fontSize: `14px`,
-  textTransform: `uppercase`,
-  letterSpacing: `1px`,
-}
+/* ========================================================================== */
 
 const SliderValue = styled.span`
   float: right;
@@ -59,6 +53,7 @@ const SliderValue = styled.span`
  */
 class SourcePanel extends PureComponent {
   state = {
+    isOpen: false,
     isPromptingDelete: false,
   }
 
@@ -106,23 +101,18 @@ class SourcePanel extends PureComponent {
       onSourceReachFadeDurationChange,
       onSourceTimingChange,
     } = this.props
-    const { isPromptingDelete } = this.state
+    const { isOpen, isPromptingDelete } = this.state
 
     const nestedItems = []
 
     nestedItems.push(
-      <ListItem
-        key={`${sourceObject.name}-onofftoggle`}
-        primaryText="ON/OFF"
-        rightToggle={
-          <Toggle
-            toggled={sourceObject.selected}
-            onToggle={(event, isEnabled) =>
-              onSourceOnOff(sourceObject.name, isEnabled)
-            }
-          />
-        }
-      />
+      <ListItem key={`${sourceObject.name}-onofftoggle`}>
+        <ListItemText primary="ON/OFF" />
+        <Switch
+          checked={sourceObject.selected}
+          onChange={() => onSourceOnOff(sourceObject.name)}
+        />
+      </ListItem>
     )
 
     nestedItems.push(
@@ -201,9 +191,9 @@ class SourcePanel extends PureComponent {
       <ListItem key="loop">
         <H3>Loop</H3>
 
-        <Toggle
-          toggled={sourceObject.loop}
-          onToggle={(event, isEnabled) =>
+        <Switch
+          checked={sourceObject.loop}
+          onChange={(event, isEnabled) =>
             onSourceLoopChange(sourceObject.name, isEnabled)
           }
         />
@@ -214,9 +204,9 @@ class SourcePanel extends PureComponent {
       <ListItem key="reach">
         <H3>Reach</H3>
 
-        <Toggle
-          toggled={sourceObject.reach.isEnabled}
-          onToggle={(event, isEnabled) =>
+        <Switch
+          checked={sourceObject.reach.isEnabled}
+          onChange={(event, isEnabled) =>
             onSourceReachEnabledChange(sourceObject.name, isEnabled)
           }
         />
@@ -237,10 +227,8 @@ class SourcePanel extends PureComponent {
         />
 
         <label>Reach behaviour</label>
-        <DropDownMenu
+        <Select
           style={{ width: '100%' }}
-          iconStyle={{ fill: colors.BLACK }}
-          underlineStyle={{ borderTop: `solid 1px ${colors.BLACK}` }}
           value={sourceObject.reach.action}
           onChange={(event, index, value) =>
             onSourceReachActionChange(sourceObject.name, value)
@@ -254,7 +242,7 @@ class SourcePanel extends PureComponent {
             value={ReachAction.TOGGLE_PLAYBACK}
             primaryText="Start when entering"
           />
-        </DropDownMenu>
+        </Select>
 
         <div>
           <label>Fade duration</label>
@@ -349,12 +337,16 @@ class SourcePanel extends PureComponent {
     )
 
     return (
-      <ListItem
-        key={sourceObject.name}
-        primaryText={sourceObject.name}
-        primaryTogglesNestedList
-        nestedItems={nestedItems}
-      />
+      <Fragment>
+        <ListItem button onClick={() => this.setState({ isOpen: !isOpen })}>
+          <ListItemText primary={sourceObject.name} />
+          {isOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+
+        <Collapse in={isOpen}>
+          <List>{nestedItems}</List>
+        </Collapse>
+      </Fragment>
     )
   }
 }

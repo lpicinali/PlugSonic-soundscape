@@ -4,15 +4,9 @@ import { connect } from 'react-redux'
 import Autosuggest from 'react-autosuggest'
 import styled from 'styled-components'
 import { map } from 'lodash'
-
-import TextField from 'material-ui/TextField'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
-import MenuItem from 'material-ui/MenuItem'
-import FlatButton from 'material-ui/FlatButton'
-import Paper from 'material-ui/Paper'
-import Divider from 'material-ui/Divider'
-import DropDownMenu from 'material-ui/DropDownMenu'
+import { Button, Divider, MenuItem, Paper, Select, TextField } from '@material-ui/core'
 
 import { SourceOrigin } from 'src/constants.js'
 import {
@@ -26,31 +20,12 @@ import * as colors from 'src/styles/colors.js'
 import {H2} from 'src/styles/elements'
 
 /* ========================================================================== */
-export const textFieldStyle = {
-  marginLeft: `20px`,
-  width: `85%`,
-}
-const underlineStyle = {
-  borderColor: `colors.BLACK`,
-}
-const underlineFocusStyle = {
-  borderColor: `colors.BLACK`,
-}
-const FlatButtonStyle = {
-  width: '85%',
-  margin: `auto`,
-  marginTop: '10px',
-  marginBottom: '10px',
-  textColor: `${colors.WHITE}`,
-}
-const DividerStyle = {
-  marginTop: '10px',
-  marginBottom: '10px',
-}
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 0 24px;
 `
 const DropDownMenuStyle = {
   width: '100%'
@@ -92,9 +67,6 @@ const renderInputComponent = inputProps => {
   return (
     <TextField
       id="search"
-      style={textFieldStyle}
-      underlineFocusStyle={underlineFocusStyle}
-      underlineStyle={underlineStyle}
       inputprops={{
         inputRef: node => {
           ref(node)
@@ -221,16 +193,16 @@ class SearchAssetContainer extends Component {
     const searchResults = this.state.assets.map(asset => {
       if (asset.type === 'audio') {
         return (
-          <FlatButton
+          <Button
+            variant="contained"
+            color="primary"
             key={asset._id}
-            label={asset.title}
             onClick={() => {
               this.handleClickSearchResult(asset._id)
             }}
-            style={FlatButtonStyle}
-            backgroundColor={`${colors.BLACK}`}
-            secondary
-          />
+          >
+            {asset.title}
+          </Button>
         )
       }
       return <div key={asset._id} />
@@ -250,6 +222,7 @@ class SearchAssetContainer extends Component {
             value: this.state.searchTextFieldValue,
             onChange: this.onChangeSearchTextField,
             type: 'search',
+            fullWidth: true,
           }}
           renderSuggestionsContainer={options => (
             <Paper {...options.containerProps}>{options.children}</Paper>
@@ -257,39 +230,24 @@ class SearchAssetContainer extends Component {
           focusInputOnSuggestionClick={false}
         />
 
-        <DropDownMenu
-          style={DropDownMenuStyle}
-          iconStyle={IconStyle}
-          underlineStyle={UnderlineStyle}
-          value={this.state.myAssets}
-          onChange={this.handleSearchDropDownChange}>
-          <MenuItem value={false} primaryText="All Pluggy" />
-          <MenuItem value primaryText="My Assets" />
-        </DropDownMenu>
+        <Select value={this.state.myAssets} onChange={this.handleSearchDropDownChange}>
+          <MenuItem value={false}>All Pluggy</MenuItem>
+          <MenuItem value>My Assets</MenuItem>
+        </Select>
 
-        <br/>
         <H2>ORDER BY</H2>
-        <DropDownMenu
-          style={DropDownMenuStyle}
-          iconStyle={IconStyle}
-          underlineStyle={UnderlineStyle}
-          value={this.state.orderBy}
-          onChange={this.handleOrderByDropDownChange}>
-          <MenuItem value="trending" primaryText="Trending" />
-          <MenuItem value="recent" primaryText="Recent" />
-          <MenuItem value="title" primaryText="Title" />
-        </DropDownMenu>
 
-        <FlatButton
-          style={FlatButtonStyle}
-          backgroundColor={`${colors.BLACK}`}
-          onClick={this.handleSearchAssets}
-          secondary
-        >
+        <Select value={this.state.orderBy} onChange={this.handleOrderByDropDownChange}>
+          <MenuItem value="trending">Trending</MenuItem>
+          <MenuItem value="recent">Recent</MenuItem>
+          <MenuItem value="title">Title</MenuItem>
+        </Select>
+
+        <Button variant="contained" color="primary" onClick={this.handleSearchAssets}>
           SEARCH
-        </FlatButton>
+        </Button>
 
-        <Divider style={DividerStyle} />
+        <Divider />
 
         {this.state.assets.length > 0 && searchResults}
       </Container>

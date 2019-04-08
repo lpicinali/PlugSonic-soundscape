@@ -4,8 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { values } from 'lodash'
-import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem'
+import { MenuItem, Select } from '@material-ui/core'
 
 import {
   setHrtfFilename,
@@ -13,9 +12,8 @@ import {
   setHighQualityMode
 } from 'src/actions/listener.actions.js'
 import * as colors from 'src/styles/colors.js'
-import { H3 } from 'src/styles/elements'
+import { H3 } from 'src/styles/elements.js'
 import { SpatializationMode } from 'src/constants'
-
 
 const hrtfFunctions = [
   'IRC1008',
@@ -82,45 +80,37 @@ class HrtfSelect extends PureComponent {
   }
 
   render() {
-    const { value, onChange } = this.props
+    const { value } = this.props
 
     const { fn, len } = getHrtfFromFilename(value)
 
     return (
       <Container>
         <H3>HRTF function</H3>
-        <DropDownMenu
-          style={DropDownMenuStyle}
-          iconStyle={IconStyle}
-          underlineStyle={UnderlineStyle}
+        <Select
           value={fn}
-          onChange={(evt, index, value) => this.handleChange('fn', value)}
+          onChange={(evt, index, newValue) => this.handleChange('fn', newValue)}
         >
           {hrtfFunctions.map(hrtfFunction => (
-            <MenuItem
-              key={hrtfFunction}
-              value={hrtfFunction}
-              primaryText={hrtfFunction}
-            />
+            <MenuItem key={hrtfFunction} value={hrtfFunction}>
+              {hrtfFunction}
+            </MenuItem>
           ))}
-        </DropDownMenu>
+        </Select>
 
         <H3>HRTF sample length</H3>
-        <DropDownMenu
-          style={DropDownMenuStyle}
-          iconStyle={IconStyle}
-          underlineStyle={UnderlineStyle}
+        <Select
           value={len}
-          onChange={(evt, index, value) => this.handleChange('len', value)}
+          onChange={(evt, index, newValue) =>
+            this.handleChange('len', newValue)
+          }
         >
           {hrtfLengths.map(hrtfLength => (
-            <MenuItem
-              key={hrtfLength}
-              value={hrtfLength}
-              primaryText={`${hrtfLength} samples`}
-            />
+            <MenuItem key={hrtfLength} value={hrtfLength}>
+              {`${hrtfLength} samples`}
+            </MenuItem>
           ))}
-        </DropDownMenu>
+        </Select>
       </Container>
     )
   }

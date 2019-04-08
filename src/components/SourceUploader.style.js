@@ -1,7 +1,7 @@
 /* eslint no-unused-vars: 0 */
 import styled from 'styled-components'
 import ReactDropzone from 'react-dropzone'
-import Icon from "material-ui/svg-icons/av/library-music"
+import Icon from '@material-ui/icons/LibraryMusic'
 import * as colors from 'src/styles/colors'
 
 // -------------------------------------------------------------------------- //
@@ -16,10 +16,7 @@ export const Dropzone = styled(ReactDropzone)`
   color: ${colors.GRAY};
   font-size: 12px;
   text-align: center;
-  width: 85%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+  margin-bottom: 20px;
 `
 
 export const ActionIcon = styled(Icon)`

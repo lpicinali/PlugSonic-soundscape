@@ -2,44 +2,43 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { values } from 'lodash'
+import { FormControlLabel, FormGroup, Switch } from '@material-ui/core'
 
-import Toggle from 'material-ui/Toggle'
-import { setHighPerformanceMode, setHighQualityMode } from 'src/actions/listener.actions'
-import { SpatializationMode } from 'src/constants'
-/* ========================================================================== */
-const toggleStyle = {
-  margin: `auto`,
-  marginTop: `20px`,
-  width: `85%`,
-}
+import { SpatializationMode } from 'src/constants.js'
+import {
+  setHighPerformanceMode,
+  setHighQualityMode,
+} from 'src/actions/listener.actions.js'
 
-const toggleLabelStyle = {
-  fontSize: `14px`,
-  textTransform: `uppercase`,
-  letterSpacing: `1px`,
-}
 /* ========================================================================== */
 /* SPATIALIZATION MODE TOGGLE */
 /* ========================================================================== */
 class SpatializationModeToggle extends PureComponent {
-
   toggleSpatializationMode = () => {
-    this.props.spatializationMode === SpatializationMode.HighQuality ?
+    if (this.props.spatializationMode === SpatializationMode.HighQuality) {
       this.props.onSetHighPerformanceMode()
-        :
+    } else {
       this.props.onSetHighQualityMode()
+    }
   }
 
   render() {
-
     return (
-      <Toggle
-        label="Performance Mode"
-        style={toggleStyle}
-        labelStyle={toggleLabelStyle}
-        onToggle={this.toggleSpatializationMode}
-        toggled={this.props.spatializationMode === SpatializationMode.HighPerformance}
-      />
+      <FormGroup row>
+        <FormControlLabel
+          label="Performance Mode"
+          labelPlacement="start"
+          control={
+            <Switch
+              onChange={this.toggleSpatializationMode}
+              checked={
+                this.props.spatializationMode ===
+                SpatializationMode.HighPerformance
+              }
+            />
+          }
+        />
+      </FormGroup>
     )
   }
 }
@@ -63,4 +62,7 @@ const mapDispatchToProps = dispatch => ({
   onSetHighQualityMode: () => dispatch(setHighQualityMode()),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(SpatializationModeToggle)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SpatializationModeToggle)
