@@ -2,20 +2,15 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { reduce, map } from 'lodash'
-import got from 'got'
+import { map } from 'lodash'
 import * as colors from 'src/styles/colors.js'
 
 import {
   API,
-  exhibitionUrl,
-  exhibitionQuery,
   exhibitionId,
   exhibitionTitle,
   exhibitionDescription,
   exhibitionTags,
-  getQueryVariable,
-  httpGetAsync,
   httpPostAsync,
   httpPutAsync,
   sessionToken,
@@ -84,7 +79,6 @@ class ExhibitionContainer extends Component {
     }
     console.log('CREATE')
     console.log(soundscape)
-    const clone = JSON.parse(JSON.stringify(soundscape))
     // exhibition object
     const exhibition = {
       title: this.state.exhibitionTitle,
@@ -144,7 +138,7 @@ class ExhibitionContainer extends Component {
     const exhibition = {
       public: true,
     }
-    
+
     httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.publishExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
   }
 
@@ -196,7 +190,7 @@ class ExhibitionContainer extends Component {
           type="text"
           value={this.state.exhibitionTitle}
           floatingLabelFixed
-          floatingLabelText="Title"
+          floatingLabelText="Title*"
           onChange={this.handleTextFieldChange}
           style={textfieldStyle}
           underlineFocusStyle={underlineFocusStyle}
@@ -208,7 +202,7 @@ class ExhibitionContainer extends Component {
           type="text"
           value={this.state.exhibitionDescription}
           floatingLabelFixed
-          floatingLabelText="Description"
+          floatingLabelText="Description*"
           multiLine
           rows={2}
           rowsMax={4}
@@ -223,7 +217,7 @@ class ExhibitionContainer extends Component {
           type="text"
           value={this.state.exhibitionNewTag}
           floatingLabelFixed
-          floatingLabelText="Tags"
+          floatingLabelText="Tags (Press ENTER to add)"
           onChange={this.handleTextFieldChange}
           onKeyUp={this.handleKeyUp}
           style={textfieldStyle}
@@ -244,9 +238,14 @@ class ExhibitionContainer extends Component {
         </ChipWrapper>
 
         <FlatButton
-          // disabled={this.state.exhibitionTitle === ''}
+          disabled={
+            this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''
+          }
           style={FlatButtonStyle}
-          backgroundColor={`${colors.BLACK}`}
+          backgroundColor={
+            this.state.exhibitionTitle === '' || this.state.exhibitionDescription === '' ?
+            `${colors.LIGHTGREY}`:`${colors.BLACK}`
+          }
           onClick={this.handleSaveExhibition}
           secondary
         >
@@ -254,9 +253,14 @@ class ExhibitionContainer extends Component {
         </FlatButton>
 
         <FlatButton
-          // disabled={this.state.exhibitionTitle === ''}
+          disabled={
+            this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''
+          }
           style={FlatButtonStyle}
-          backgroundColor={`${colors.BLACK}`}
+          backgroundColor={
+            this.state.exhibitionTitle === '' || this.state.exhibitionDescription === '' ?
+            `${colors.LIGHTGREY}`:`${colors.BLACK}`
+          }
           onClick={this.handlePublishExhibition}
           secondary
         >

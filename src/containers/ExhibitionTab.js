@@ -1,9 +1,4 @@
 import React, { Component} from "react"
-import { connect } from "react-redux"
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-
-import * as colors from 'src/styles/colors'
 import {H2} from 'src/styles/elements'
 
 import ExhibitionContainer from 'src/containers/ExhibitionContainer'
