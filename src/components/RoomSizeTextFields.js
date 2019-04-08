@@ -212,8 +212,6 @@ class RoomSizeTextFields extends Component {
 
   /* ------------------------------------------------------------------------ */
   render() {
-    console.log('errorTextW')
-    console.log(this.state.errorTextW)
     return (
       <React.Fragment>
         <H2>ROOM SIZE</H2>
