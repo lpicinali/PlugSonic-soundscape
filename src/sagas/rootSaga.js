@@ -1,6 +1,12 @@
 import { all, call, put, select, take } from 'redux-saga/effects'
 
-import { ActionType, PlaybackState, ReachAction } from 'src/constants.js'
+import {
+  ActionType,
+  PlaybackState,
+  ReachAction,
+  SourceOrigin,
+} from 'src/constants.js'
+import { fetchAudioBuffer } from 'src/utils.js'
 import { addSource, deleteSources } from 'src/actions/sources.actions.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
@@ -10,6 +16,7 @@ import {
   // setMasterVolume,
   setSourceVolume,
   destroySourceAudioChain,
+  storeSourceAudioBuffer,
 } from 'src/audio/engine.js'
 
 function isWithinReach(listener, source) {
@@ -51,6 +58,11 @@ function* manageAddSource() {
 
     const source = yield select(state => state.sources.sources[payload.name])
     const playbackState = yield select(state => state.controls.playbackState)
+
+    if (source.origin === SourceOrigin.REMOTE) {
+      const audioBuffer = yield call(fetchAudioBuffer, source.url)
+      yield call(storeSourceAudioBuffer, source.name, audioBuffer)
+    }
 
     if (source.selected === true && playbackState === PlaybackState.PLAY) {
       yield call(playSource, source)
