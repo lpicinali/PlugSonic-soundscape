@@ -185,7 +185,7 @@ function* handleSourcesReach() {
     yield take([
       ActionType.SET_LISTENER_POSITION,
       ActionType.SET_SOURCE_POSITION,
-      ActionType.SET_SOURCE_REACH,
+      ActionType.SET_SOURCE_REACH_RADIUS,
       ActionType.SET_PLAYBACK_STATE,
     ])
 
