@@ -9,7 +9,11 @@ import {
 } from 'src/constants.js'
 import { createSubscriptionSource, fetchAudioBuffer } from 'src/utils.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
-import { addSource, deleteSources } from 'src/actions/sources.actions.js'
+import {
+  addSource,
+  deleteSources,
+  setSourceTiming,
+} from 'src/actions/sources.actions.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   playSource,
@@ -142,6 +146,18 @@ function* applyDeleteSource() {
         name: sources[i],
       }
       yield call(destroySourceAudioChain, dangerousMockSourceObject)
+
+      // Remove PLAY_AFTER timings pointing to the deleted source
+      const dependants = yield select(state =>
+        Object.values(state.sources.sources).filter(
+          x => x.timings[PlaybackTiming.PLAY_AFTER] === sources[i]
+        )
+      )
+      for (let j = 0; j < dependants.length; j++) {
+        yield put(
+          setSourceTiming(dependants[j].name, PlaybackTiming.PLAY_AFTER, null)
+        )
+      }
     }
   }
 }
