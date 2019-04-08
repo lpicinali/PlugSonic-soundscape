@@ -303,7 +303,6 @@ function* applyHeadRadius() {
 function* applyPerformanceMode() {
   while (true) {
     yield take(ActionType.SET_HIGH_PERFORMANCE_MODE)
-    console.log('SET_HIGH_PERFORMANCE_MODE')
     const spatializer = yield call(getBinauralSpatializer)
     spatializer.setPerformanceMode()
   }
@@ -315,7 +314,6 @@ function* applyPerformanceMode() {
 function* applyQualityMode() {
   while (true) {
     yield take(ActionType.SET_HIGH_QUALITY_MODE)
-    console.log('SET_HIGH_QUALITY_MODE')
     const spatializer = yield call(getBinauralSpatializer)
     spatializer.setQualityMode()
   }
@@ -351,7 +349,6 @@ function* applyHrtfs() {
     const {
       payload: { filename },
     } = yield take(ActionType.SET_HRTF_FILENAME)
-    console.log('SET_HRTF_FILENAME')
     try {
       const binauralInstance = yield call(getBinauralSpatializer)
       yield call(binauralInstance.setHrtf, filename)
