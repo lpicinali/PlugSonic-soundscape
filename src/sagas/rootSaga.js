@@ -299,7 +299,11 @@ function* handleSourcesReach() {
         }
 
         // Play the source if the listener entered the reach area
-        if (wasReached === false && isReached === true) {
+        if (
+          wasReached === false &&
+          isReached === true &&
+          source.timings[PlaybackTiming.PLAY_AFTER] === null
+        ) {
           yield call(playSource, source)
         }
       }
