@@ -5,7 +5,7 @@
 */ /* ---------------------------------------------- */
 import { omit, set } from 'lodash/fp'
 
-import { ReachAction } from 'src/constants.js'
+import { PlaybackTiming, ReachAction } from 'src/constants.js'
 import { ADEtoXYZ } from 'src/utils.js'
 
 const initialState = {
@@ -17,13 +17,8 @@ let azimuthIndex = Object.keys(initialState.sources).length
 
 export default function(state = initialState, { type, payload }) {
   switch (type) {
-
     case 'SOURCE_ONOFF':
-      return set(
-        ['sources', payload.name, 'selected'],
-        payload.selected,
-        state
-      )
+      return set(['sources', payload.name, 'selected'], payload.selected, state)
 
     case 'SET_EDITING_SOURCE': {
       return set('editing', payload.target, state)
@@ -67,6 +62,13 @@ export default function(state = initialState, { type, payload }) {
         state
       )
 
+    case 'SET_SOURCE_TIMING':
+      return set(
+        ['sources', payload.source, 'timings', payload.timing],
+        payload.target,
+        state
+      )
+
     case 'SET_SOURCE_VOLUME':
       return set(['sources', payload.source, 'volume'], payload.volume, state)
 
@@ -86,9 +88,12 @@ export default function(state = initialState, { type, payload }) {
           radius: 3,
           fadeDuration: 1000,
         },
-        loop: payload.loop === undefined ? true : payload.loop,
-        selected: payload.selected === undefined ? true : payload.selected,
-        spatialised: payload.spatialised === undefined ? true : payload.spatialised,
+        timings: {
+          [PlaybackTiming.PLAY_AFTER]: null,
+        },
+        loop: true,
+        selected: true,
+        spatialised: true,
         url: payload.url || null,
         volume: payload.volume || 1.0,
       }
@@ -106,8 +111,6 @@ export default function(state = initialState, { type, payload }) {
       payload.sources.forEach(source => {
         newSources[source.name] = source
       })
-      console.log('IMPORT SOURCES')
-      console.log(newSources)
       return { ...state, sources: newSources }
     }
 

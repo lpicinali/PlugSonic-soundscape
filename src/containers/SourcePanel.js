@@ -19,7 +19,7 @@ import MenuItem from 'material-ui/MenuItem'
 import Slider from 'material-ui/Slider'
 import Toggle from 'material-ui/Toggle'
 
-import { ReachAction } from 'src/constants.js'
+import { PlaybackTiming, ReachAction } from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
 import {
   deleteSources,
@@ -29,6 +29,7 @@ import {
   setSourceReachAction,
   setSourceReachRadius,
   setSourceReachFadeDuration,
+  setSourceTiming,
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
@@ -97,6 +98,7 @@ class SourcePanel extends PureComponent {
   render() {
     const {
       roomSize,
+      sources,
       sourceObject,
       onSourceOnOff,
       onSourceLoopChange,
@@ -104,6 +106,7 @@ class SourcePanel extends PureComponent {
       onSourceReachActionChange,
       onSourceReachRadiusChange,
       onSourceReachFadeDurationChange,
+      onSourceTimingChange,
     } = this.props
     const { isPromptingDelete } = this.state
 
@@ -116,7 +119,9 @@ class SourcePanel extends PureComponent {
         rightToggle={
           <Toggle
             toggled={sourceObject.selected}
-            onToggle={(event, isEnabled) => onSourceOnOff(sourceObject.name, isEnabled)}
+            onToggle={(event, isEnabled) =>
+              onSourceOnOff(sourceObject.name, isEnabled)
+            }
           />
         }
       />
@@ -143,7 +148,12 @@ class SourcePanel extends PureComponent {
 
         <div>
           <label>X</label>
-          <SliderValue>{parseFloat(Math.round(-sourceObject.position.y * 100) / 100).toFixed(2)} m</SliderValue>
+          <SliderValue>
+            {parseFloat(
+              Math.round(-sourceObject.position.y * 100) / 100
+            ).toFixed(2)}{' '}
+            m
+          </SliderValue>
         </div>
         <Slider
           min={-roomSize.width / 2}
@@ -155,7 +165,12 @@ class SourcePanel extends PureComponent {
 
         <div>
           <label>Y</label>
-          <SliderValue>{parseFloat(Math.round(sourceObject.position.x * 100) / 100).toFixed(2)} m</SliderValue>
+          <SliderValue>
+            {parseFloat(
+              Math.round(sourceObject.position.x * 100) / 100
+            ).toFixed(2)}{' '}
+            m
+          </SliderValue>
         </div>
         <Slider
           min={-roomSize.depth / 2}
@@ -167,7 +182,12 @@ class SourcePanel extends PureComponent {
 
         <div>
           <label>Z</label>
-          <SliderValue>{parseFloat(Math.round(sourceObject.position.z * 100) / 100).toFixed(2)} m</SliderValue>
+          <SliderValue>
+            {parseFloat(
+              Math.round(sourceObject.position.z * 100) / 100
+            ).toFixed(2)}{' '}
+            m
+          </SliderValue>
         </div>
         <Slider
           min={0}
@@ -256,6 +276,39 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
+      <ListItem key="timings">
+        <H3>Timings</H3>
+
+        <p>Play this source after:</p>
+
+        <DropDownMenu
+          style={{ width: '100%' }}
+          iconStyle={{ fill: colors.BLACK }}
+          underlineStyle={{ borderTop: `solid 1px ${colors.BLACK}` }}
+          value={sourceObject.timings[PlaybackTiming.PLAY_AFTER]}
+          onChange={(event, index, value) =>
+            onSourceTimingChange(
+              sourceObject.name,
+              PlaybackTiming.PLAY_AFTER,
+              value
+            )
+          }
+        >
+          {sources
+            .filter(source => source.name !== sourceObject.name)
+            .map(source => (
+              <MenuItem
+                key={source.name}
+                value={source.name}
+                primaryText={source.name}
+                disabled={source.loop === true}
+              />
+            ))}
+        </DropDownMenu>
+      </ListItem>
+    )
+
+    nestedItems.push(
       <ListItem key={`${sourceObject.name}-delete`}>
         <Button
           variant="contained"
@@ -314,6 +367,7 @@ SourcePanel.propTypes = {
     depth: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
   }).isRequired,
+  sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
   sourceObject: CustomPropTypes.source.isRequired,
   onSourceOnOff: PropTypes.func.isRequired,
   onSourceVolumeChange: PropTypes.func.isRequired,
@@ -323,16 +377,19 @@ SourcePanel.propTypes = {
   onSourceReachActionChange: PropTypes.func.isRequired,
   onSourceReachRadiusChange: PropTypes.func.isRequired,
   onSourceReachFadeDurationChange: PropTypes.func.isRequired,
+  onSourceTimingChange: PropTypes.func.isRequired,
   onSourceDelete: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
   roomSize: state.room.size,
+  sources: Object.values(state.sources.sources),
 })
 
 const mapDispatchToProps = dispatch => ({
   onSourceOnOff: (name, selected) => dispatch(sourceOnOff(name, selected)),
-  onSourceVolumeChange: (name, volume) => dispatch(setSourceVolume(name, volume)),
+  onSourceVolumeChange: (name, volume) =>
+    dispatch(setSourceVolume(name, volume)),
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
   onSourcePositionChange: (name, position) =>
     dispatch(setSourcePosition(name, position)),
@@ -344,6 +401,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setSourceReachRadius(name, radius)),
   onSourceReachFadeDurationChange: (name, fadeDuration) =>
     dispatch(setSourceReachFadeDuration(name, fadeDuration)),
+  onSourceTimingChange: (name, timing, target) =>
+    dispatch(setSourceTiming(name, timing, target)),
   onSourceDelete: name => dispatch(deleteSources([name])),
 })
 

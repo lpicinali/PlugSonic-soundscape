@@ -3,12 +3,17 @@ import { all, call, put, select, spawn, take } from 'redux-saga/effects'
 import {
   ActionType,
   PlaybackState,
+  PlaybackTiming,
   ReachAction,
   SourceOrigin,
 } from 'src/constants.js'
-import { fetchAudioBuffer } from 'src/utils.js'
+import { createSubscriptionSource, fetchAudioBuffer } from 'src/utils.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
-import { addSource, deleteSources } from 'src/actions/sources.actions.js'
+import {
+  addSource,
+  deleteSources,
+  setSourceTiming,
+} from 'src/actions/sources.actions.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   playSource,
@@ -18,6 +23,7 @@ import {
   setSourceVolume,
   destroySourceAudioChain,
   storeSourceAudioBuffer,
+  subscribeToSourceEnd,
 } from 'src/audio/engine.js'
 
 function isWithinReach(listener, source) {
@@ -40,7 +46,10 @@ function* applyPlayStop() {
     // eslint-disable-next-line
     for (const source of Object.values(sources)) {
       if (payload.state === PlaybackState.PLAY) {
-        if (source.selected === true) {
+        if (
+          source.selected === true &&
+          source.timings[PlaybackTiming.PLAY_AFTER] === null
+        ) {
           yield call(playSource, source)
         }
       } else {
@@ -137,6 +146,18 @@ function* applyDeleteSource() {
         name: sources[i],
       }
       yield call(destroySourceAudioChain, dangerousMockSourceObject)
+
+      // Remove PLAY_AFTER timings pointing to the deleted source
+      const dependants = yield select(state =>
+        Object.values(state.sources.sources).filter(
+          x => x.timings[PlaybackTiming.PLAY_AFTER] === sources[i]
+        )
+      )
+      for (let j = 0; j < dependants.length; j++) {
+        yield put(
+          setSourceTiming(dependants[j].name, PlaybackTiming.PLAY_AFTER, null)
+        )
+      }
     }
   }
 }
@@ -278,8 +299,59 @@ function* handleSourcesReach() {
         }
 
         // Play the source if the listener entered the reach area
-        if (wasReached === false && isReached === true) {
+        if (
+          wasReached === false &&
+          isReached === true &&
+          source.timings[PlaybackTiming.PLAY_AFTER] === null
+        ) {
           yield call(playSource, source)
+        }
+      }
+    }
+  }
+}
+
+/* ======================================================================== */
+// SOURCE TIMINGS
+/* ======================================================================== */
+function* handlePlaybackTimings() {
+  const callbackSource = yield call(
+    createSubscriptionSource,
+    subscribeToSourceEnd
+  )
+
+  while (true) {
+    const { source } = yield call(callbackSource.nextMessage)
+
+    const [dependants, listener] = yield all([
+      select(state =>
+        Object.values(state.sources.sources).filter(
+          x => x.timings[PlaybackTiming.PLAY_AFTER] === source.name
+        )
+      ),
+      select(state => state.listener),
+    ])
+
+    // eslint-disable-next-line
+    for (const dependant of dependants) {
+      // NOTE: Duplication warning on this stuff
+      const isReached =
+        dependant.reach.isEnabled === false ||
+        isWithinReach(listener, dependant) === true
+
+      if (
+        isReached === true ||
+        dependant.reach.action === ReachAction.TOGGLE_VOLUME
+      ) {
+        yield call(playSource, dependant)
+
+        if (dependant.reach.action === ReachAction.TOGGLE_VOLUME) {
+          yield call(
+            setSourceVolume,
+            dependant.name,
+            isReached ? dependant.volume : 0,
+            dependant.reach.fadeDuration
+          )
         }
       }
     }
@@ -371,6 +443,7 @@ export default function* rootSaga() {
     applySourceVolume(),
     applyLoopChanges(),
     handleSourcesReach(),
+    handlePlaybackTimings(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),

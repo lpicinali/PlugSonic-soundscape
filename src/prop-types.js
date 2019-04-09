@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types'
 // import { values } from 'lodash'
 
-// import { HearingLossGrade } from 'src/constants.js'
+import { PlaybackTiming, ReachAction } from 'src/constants.js'
 
 function makeRequirable(validate) {
   function checkExists(
@@ -85,9 +85,13 @@ export const source = PropTypes.shape({
   position: vector3.isRequired,
   reach: PropTypes.shape({
     isEnabled: PropTypes.bool.isRequired,
+    action: PropTypes.oneOf(Object.values(ReachAction)),
     radius: PropTypes.number.isRequired,
     fadeDuration: PropTypes.number.isRequired,
   }),
+  timings: PropTypes.shape({
+    [PlaybackTiming.PLAY_AFTER]: PropTypes.string,
+  }).isRequired,
   selected: PropTypes.bool.isRequired,
   spatialised: PropTypes.bool.isRequired,
   url: PropTypes.string,

@@ -7,10 +7,13 @@ import { values } from 'lodash'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 
-import { setHrtfFilename } from 'src/actions/listener.actions.js'
+import {
+  setHrtfFilename,
+  setHighPerformanceMode,
+  setHighQualityMode
+} from 'src/actions/listener.actions.js'
 import * as colors from 'src/styles/colors.js'
 import { H3 } from 'src/styles/elements'
-import { setHighPerformanceMode, setHighQualityMode } from 'src/actions/listener.actions'
 import { SpatializationMode } from 'src/constants'
 
 

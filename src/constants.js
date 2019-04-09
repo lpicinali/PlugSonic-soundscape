@@ -1,5 +1,4 @@
 export const ActionType = {
-
   // ALERTS
   SET_DISCLAIMER_READ: 'SET_DISCLAIMER_READ',
   SET_PRESET_INFO_DISMISSED: 'SET_PRESET_INFO_DISMISSED',
@@ -40,6 +39,7 @@ export const ActionType = {
   SET_SOURCE_REACH_ACTION: 'SET_SOURCE_REACH_ACTION',
   SET_SOURCE_REACH_RADIUS: 'SET_SOURCE_REACH_RADIUS',
   SET_SOURCE_REACH_FADE_DURATION: 'SET_SOURCE_REACH_FADE_DURATION',
+  SET_SOURCE_TIMING: 'SET_SOURCE_TIMING',
   SET_SOURCE_VOLUME: 'SET_SOURCE_VOLUME',
   SET_MASTER_VOLUME: 'SET_MASTER_VOLUME',
   ADD_SOURCE: 'ADD_SOURCE',
@@ -56,6 +56,10 @@ export const PlaybackState = {
   PAUSE: 'PAUSE',
   PLAY: 'PLAY',
   STOP: 'STOP',
+}
+
+export const PlaybackTiming = {
+  PLAY_AFTER: 'PLAY_AFTER',
 }
 
 export const ReachAction = {
@@ -75,5 +79,5 @@ export const SourceOrigin = {
 
 export const SpatializationMode = {
   HighQuality: 'HighQuality',
-  HighPerformance: 'HighPerformance'
+  HighPerformance: 'HighPerformance',
 }

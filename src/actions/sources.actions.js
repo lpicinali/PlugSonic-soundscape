@@ -46,6 +46,11 @@ export const setSourceReachFadeDuration = (source, fadeDuration) => ({
   payload: { source, fadeDuration },
 })
 
+export const setSourceTiming = (source, timing, target) => ({
+  type: ActionType.SET_SOURCE_TIMING,
+  payload: { source, timing, target },
+})
+
 export const setSourceVolume = (source, volume) => ({
   type: ActionType.SET_SOURCE_VOLUME,
   payload: { source, volume },
