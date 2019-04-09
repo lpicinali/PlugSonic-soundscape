@@ -8,7 +8,6 @@ import Blob from 'blob'
 import { map } from 'lodash'
 import got from 'got'
 
-import {H2} from 'src/styles/elements'
 import FlatButton from "material-ui/FlatButton"
 /* ========================================================================== */
 const FlatButtonStyle = {
@@ -33,9 +32,9 @@ class ExportMetaButton extends Component {
       alert('The File APIs are not fully supported in this browser.')
     }
 
-    const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
+    // const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
 
-    if (res === true) {
+    // if (res === true) {
       const soundscape = {
         sources: this.props.sources,
         listener: this.props.listener,
@@ -61,7 +60,7 @@ class ExportMetaButton extends Component {
           alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
         }
       })
-    }
+    // }
   }
 
   /* ------------------------------------------------------------------------ */

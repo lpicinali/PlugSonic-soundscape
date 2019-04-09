@@ -1,15 +1,11 @@
 import { connect } from "react-redux"
-import { map } from 'lodash'
-import Blob from 'blob'
 import FileReaderInput from 'react-file-reader-input'
-import FileSaver from 'file-saver'
 import PropTypes from 'prop-types'
 import React, { Component} from "react"
 import styled from 'styled-components'
 
 import FlatButton from "material-ui/FlatButton"
 
-import {H2} from 'src/styles/elements'
 import * as colors from 'src/styles/colors'
 import { PlaybackState } from 'src/constants'
 import { setPlaybackState } from 'src/actions/controls.actions'
@@ -33,9 +29,9 @@ const Container = styled.div`
 class ImportButton extends Component {
 
   handleImportSoundscape = (evt, results) => {
-    const res = confirm('This action may require some time.\nPlease wait for another message before performing other actions.\nPress OK to continue...')
+    // const res = confirm('This action may require some time.\nPlease wait for another message before performing other actions.\nPress OK to continue...')
 
-    if (res === true) {
+    // if (res === true) {
       results.forEach(result => {
         const [e, file] = result
         const soundscape = JSON.parse(e.target.result)
@@ -44,7 +40,7 @@ class ImportButton extends Component {
         this.props.onImportListener(soundscape.listener)
         this.props.onImportRoom(soundscape.room)
       })
-    }
+    // }
   }
 
   /* ------------------------------------------------------------------------ */
