@@ -84,11 +84,11 @@ export const API = 'https://develop.pluggy.eu/api/v1'
   Use this within the social platform
 */
 // eslint-disable-next-line
-export const sessionToken = Pluggy.getToken()
+// export const sessionToken = Pluggy.getToken()
 /*
   Use this out of the social platform
 */
-// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTQ3MzIxMDQsImV4cCI6MTU1NDgxODUwNH0.05mPQaZ3Kz9g3J0f_UUceN9LdZMnbfVRftIsKhgCPz8'
+export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTUzMzU3MDMsImV4cCI6MTU1NTQyMjEwM30.QZKF7y6rkADf0ciYm1F3Q47IaIEFr4AUFuJc_K71rbI'
 
 // =================== RETRIEVE EXHIBITION ============================= //
 /*
@@ -129,7 +129,7 @@ function getExhibitionErrorCallback(responseText) {
 /*
   comment to test in local
 */
-httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+// httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 
 export const exhibitionTitle = title
 export const exhibitionDescription = description

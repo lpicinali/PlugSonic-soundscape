@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Autosuggest from 'react-autosuggest'
 import styled from 'styled-components'
-import { reduce, map } from 'lodash'
-import got from 'got'
+import { map } from 'lodash'
 
 import TextField from 'material-ui/TextField'
 import match from 'autosuggest-highlight/match'
@@ -100,6 +99,8 @@ class SearchAssetContainer extends Component {
     searchTextFieldValue: '',
     suggestions: [],
     assets: [],
+    orderBy: '',
+    myAssets: false,
   }
 
   onChangeSearchTextField = (event, { newValue }) => {
@@ -175,19 +176,6 @@ class SearchAssetContainer extends Component {
     })
   }
 
-  searchAssetCallback = responseText => {
-    console.log(`\nGET ASSET CALLBACK`)
-    const response = JSON.parse(responseText)
-    console.log(`response`)
-    console.log(response)
-    this.setState({
-      ...this.state,
-      assets: response.data.result,
-    })
-    console.log('\nthis.state.assets')
-    console.log(this.state.assets)
-  }
-
   hintCallback = responseText => {
     // console.log(`\nHINT CALLBACK`)
     const response = JSON.parse(responseText)
@@ -203,8 +191,9 @@ class SearchAssetContainer extends Component {
 
   searchAssets = () => {
     // console.log('/nSEARCH ASSETS')
-    const assets = httpGetAsync(
-      `${API}/search?q=${this.state.searchTextFieldValue}`,
+    httpGetAsync(
+      // `${API}/search?q=${this.state.searchTextFieldValue}`,
+      `${API}/search?q=${this.state.searchTextFieldValue}&type=audio&limit=1000`,
       this.searchAssetCallback
     )
 
@@ -213,6 +202,19 @@ class SearchAssetContainer extends Component {
       suggestions: [],
       searchTextFieldValue: '',
     })
+  }
+
+  searchAssetCallback = responseText => {
+    // console.log(`\nGET ASSET CALLBACK`)
+    const response = JSON.parse(responseText)
+    // console.log(`response`)
+    // console.log(response)
+    this.setState({
+      ...this.state,
+      assets: response.data.result,
+    })
+    // console.log('\nthis.state.assets')
+    // console.log(this.state.assets)
   }
 
   /* ------------------------------------------------------------------------ */
