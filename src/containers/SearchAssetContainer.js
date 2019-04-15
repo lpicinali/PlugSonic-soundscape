@@ -12,6 +12,7 @@ import MenuItem from 'material-ui/MenuItem'
 import FlatButton from 'material-ui/FlatButton'
 import Paper from 'material-ui/Paper'
 import Divider from 'material-ui/Divider'
+import DropDownMenu from 'material-ui/DropDownMenu'
 
 import { SourceOrigin } from 'src/constants.js'
 import { API, httpHintAsync, httpGetAsync } from 'src/pluggy.js'
@@ -45,6 +46,15 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
 `
+const DropDownMenuStyle = {
+  width: '100%'
+}
+const IconStyle = {
+  fill: colors.BLACK
+}
+const UnderlineStyle = {
+  borderTop: `solid 1px ${colors.BLACK}`,
+}
 /* ========================================================================== */
 
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
@@ -257,6 +267,16 @@ class SearchAssetContainer extends Component {
           )}
           focusInputOnSuggestionClick={false}
         />
+
+        {/* <DropDownMenu
+          style={DropDownMenuStyle}
+          iconStyle={IconStyle}
+          underlineStyle={UnderlineStyle}
+          value={this.props.roomShape}
+          onChange={this.handleChange}>
+          <MenuItem value={!this.state.myAssets} primaryText="All Pluggy" />
+          <MenuItem value={this.state.myAssets} primaryText="My Assets" />
+        </DropDownMenu> */}
 
         <FlatButton
           style={FlatButtonStyle}
