@@ -11,10 +11,8 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@material-ui/core'
-import { List, ListItem } from 'material-ui/List'
-import Divider from 'material-ui/Divider'
+import { ListItem } from 'material-ui/List'
 import DropDownMenu from 'material-ui/DropDownMenu'
-import FlatButton from 'material-ui/FlatButton'
 import MenuItem from 'material-ui/MenuItem'
 import Slider from 'material-ui/Slider'
 import Toggle from 'material-ui/Toggle'
