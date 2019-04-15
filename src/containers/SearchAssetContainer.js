@@ -15,9 +15,15 @@ import Divider from 'material-ui/Divider'
 import DropDownMenu from 'material-ui/DropDownMenu'
 
 import { SourceOrigin } from 'src/constants.js'
-import { API, httpHintAsync, httpGetAsync } from 'src/pluggy.js'
+import {
+  API,
+  userId,
+  httpHintAsync,
+  httpGetAsync,
+} from 'src/pluggy.js'
 import { addSource } from 'src/actions/sources.actions.js'
 import * as colors from 'src/styles/colors.js'
+import {H2} from 'src/styles/elements'
 
 /* ========================================================================== */
 export const textFieldStyle = {
@@ -109,55 +115,27 @@ class SearchAssetContainer extends Component {
     searchTextFieldValue: '',
     suggestions: [],
     assets: [],
-    orderBy: '',
+    orderBy: 'title',
     myAssets: false,
   }
 
   onChangeSearchTextField = (event, { newValue }) => {
-    // console.log('\nON CHANGE SEARCH')
-    // console.log(`state.searchTextFieldValue = ${newValue}`)
     this.setState({
       searchTextFieldValue: newValue,
     })
   }
 
-  onSuggestionsFetchRequested = ({ value }) => {
-    // console.log('\nON SUGGESTIONS FETCH REQUESTED')
-    // console.log(`value = ${value}`)
+  handleSuggestionsFetchRequested = ({ value }) => {
     httpHintAsync(`${API}/hinting/title?q=${value}`, this.hintCallback)
   }
 
-  onSuggestionsClearRequested = () => {
-    // console.log('\nON SUGGESTIONS CLEAR REQUESTED')
-    // console.log(`state.suggestions = []`)
+  handleSuggestionsClearRequested = () => {
     this.setState({
       suggestions: [],
     })
   }
 
-  onClickListItem = id => {
-    const asset = this.state.assets.find(ast => ast._id === id)
-
-    const sourceTitle = asset.title
-    const media = asset.mediaContent[0]
-    const sourceFilename = media.filename
-    const mediaId = media._id
-    const sourceUrl = `${API}/assets/${asset._id}/media/${mediaId}`
-
-    // console.log('Adding...')
-    // console.log(sourceTitle)
-    // console.log(sourceFilename)
-    // console.log(sourceUrl)
-
-    this.props.onAddSource(sourceTitle, sourceFilename, sourceUrl, [])
-
-    this.setState({
-      ...this.state,
-      assets: [],
-    })
-  }
-
-  onClickSearchResult = id => {
+  handleClickSearchResult = id => {
     const asset = this.state.assets.find(ast => ast._id === id)
 
     const media = asset.mediaContent[0]
@@ -187,23 +165,27 @@ class SearchAssetContainer extends Component {
   }
 
   hintCallback = responseText => {
-    // console.log(`\nHINT CALLBACK`)
     const response = JSON.parse(responseText)
-    // console.log(`response`)
-    // console.log(response)
     const hints = map(response.data, asset => ({ name: asset.title }))
-    // console.log(`HINTING suggests`)
-    // console.log(hints)
     this.setState({
       suggestions: hints,
     })
   }
 
-  searchAssets = () => {
-    // console.log('/nSEARCH ASSETS')
+  handleSearchAssets = () => {
+    console.log('/nSEARCH ASSETS')
+    let query = `${API}/search?q=${this.state.searchTextFieldValue}&type=audio&limit=1000`
+
+    if (this.state.myAssets) {
+      query = `${query}&user=${userId}`
+    }
+
+    query=`${query}&sort=${this.state.orderBy}`
+
+    console.log(query)
+
     httpGetAsync(
-      // `${API}/search?q=${this.state.searchTextFieldValue}`,
-      `${API}/search?q=${this.state.searchTextFieldValue}&type=audio&limit=1000`,
+      query,
       this.searchAssetCallback
     )
 
@@ -215,16 +197,23 @@ class SearchAssetContainer extends Component {
   }
 
   searchAssetCallback = responseText => {
-    // console.log(`\nGET ASSET CALLBACK`)
     const response = JSON.parse(responseText)
-    // console.log(`response`)
-    // console.log(response)
     this.setState({
       ...this.state,
       assets: response.data.result,
     })
-    // console.log('\nthis.state.assets')
-    // console.log(this.state.assets)
+  }
+
+  handleSearchDropDownChange = (event, index, value) => {
+    this.setState({
+      myAssets: value
+    })
+  }
+
+  handleOrderByDropDownChange = (event, index, value) => {
+    this.setState({
+      orderBy: value
+    })
   }
 
   /* ------------------------------------------------------------------------ */
@@ -236,7 +225,7 @@ class SearchAssetContainer extends Component {
             key={asset._id}
             label={asset.title}
             onClick={() => {
-              this.onClickSearchResult(asset._id)
+              this.handleClickSearchResult(asset._id)
             }}
             style={FlatButtonStyle}
             backgroundColor={`${colors.BLACK}`}
@@ -252,8 +241,8 @@ class SearchAssetContainer extends Component {
         <Autosuggest
           renderInputComponent={renderInputComponent}
           suggestions={this.state.suggestions}
-          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+          onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
           getSuggestionValue={getSuggestionValue}
           renderSuggestion={renderSuggestion}
           inputProps={{
@@ -268,20 +257,33 @@ class SearchAssetContainer extends Component {
           focusInputOnSuggestionClick={false}
         />
 
-        {/* <DropDownMenu
+        <DropDownMenu
           style={DropDownMenuStyle}
           iconStyle={IconStyle}
           underlineStyle={UnderlineStyle}
-          value={this.props.roomShape}
-          onChange={this.handleChange}>
-          <MenuItem value={!this.state.myAssets} primaryText="All Pluggy" />
-          <MenuItem value={this.state.myAssets} primaryText="My Assets" />
-        </DropDownMenu> */}
+          value={this.state.myAssets}
+          onChange={this.handleSearchDropDownChange}>
+          <MenuItem value={false} primaryText="All Pluggy" />
+          <MenuItem value primaryText="My Assets" />
+        </DropDownMenu>
+
+        <br/>
+        <H2>ORDER BY</H2>
+        <DropDownMenu
+          style={DropDownMenuStyle}
+          iconStyle={IconStyle}
+          underlineStyle={UnderlineStyle}
+          value={this.state.orderBy}
+          onChange={this.handleOrderByDropDownChange}>
+          <MenuItem value="trending" primaryText="Trending" />
+          <MenuItem value="recent" primaryText="Recent" />
+          <MenuItem value="title" primaryText="Title" />
+        </DropDownMenu>
 
         <FlatButton
           style={FlatButtonStyle}
           backgroundColor={`${colors.BLACK}`}
-          onClick={this.searchAssets}
+          onClick={this.handleSearchAssets}
           secondary
         >
           SEARCH

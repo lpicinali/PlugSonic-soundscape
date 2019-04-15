@@ -84,12 +84,10 @@ export const API = 'https://develop.pluggy.eu/api/v1'
   Use this within the social platform
 */
 export const sessionToken = Pluggy.getToken()
-export const userId = Pluggy.getParameterByName('userId')
-console.log(`USER ID = ${userId}`)
 /*
   Use this out of the social platform
 */
-// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTUzMzU3MDMsImV4cCI6MTU1NTQyMjEwM30.QZKF7y6rkADf0ciYm1F3Q47IaIEFr4AUFuJc_K71rbI'
+// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTUzMzk0OTYsImV4cCI6MTU1NTQyNTg5Nn0.Ja7hREiNtm9bLEudTETvkSZsr8emnL8iMK7R57wAgxc'
 
 // =================== RETRIEVE EXHIBITION ============================= //
 /*
@@ -101,9 +99,9 @@ export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
 /*
   Use this out of the social platform
 */
-// export const exhibitionId = '5cb47373d8f521a966ed2b15'
+// export const exhibitionId = '5cb49878d8f521a966ed2b1d'
 
-// let userId = ''
+let ownerId = ''
 let title = ''
 let description = ''
 let tags = []
@@ -114,6 +112,7 @@ function getExhibitionCallback(responseText) {
   console.log('RETRIEVE EXHIBITION RESPONSE')
   console.log(response)
   if (response.success) {
+    ownerId = response.data.owner._id
     title = response.data.title
     description = response.data.description
     tags = response.data.tags.map((tag,index) => (
@@ -133,6 +132,7 @@ function getExhibitionErrorCallback(responseText) {
 */
 httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 
+export const userId = ownerId
 export const exhibitionTitle = title
 export const exhibitionDescription = description
 export const exhibitionTags = tags
