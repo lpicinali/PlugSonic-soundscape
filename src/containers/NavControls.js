@@ -8,6 +8,7 @@ import * as colors from 'src/styles/colors'
 import FlatButton from "material-ui/FlatButton"
 import PlayIcon from "material-ui/svg-icons/av/play-arrow"
 import StopIcon from "material-ui/svg-icons/av/stop"
+import RecordIcon from "material-ui/svg-icons/av/fiber-manual-record"
 import SettingsIcon from "material-ui/svg-icons/action/settings"
 import ArrowIcon from "material-ui/svg-icons/navigation/chevron-right"
 import ArrowsIcon from "material-ui/svg-icons/av/games"
@@ -50,23 +51,34 @@ class NavControls extends Component {
     const DrawerIcon = this.props.showSettingsDrawer ?
       <ArrowIcon color={colors.WHITE}/> : <SettingsIcon color={colors.WHITE}/>
 
-    const PlayButtonIcon = this.props.playbackState === PlaybackState.PLAY ?
+    const PlayButtonIcon =
+      (this.props.playbackState === PlaybackState.PLAY || this.props.playbackState === PlaybackState.RECORD) ?
       <PlayIcon color={colors.RED}/> : <PlayIcon color={colors.WHITE}/>
+
+    const RecordButtonIcon = this.props.playbackState === PlaybackState.RECORD ?
+      <RecordIcon color={colors.RED}/> : <RecordIcon color={colors.WHITE}/>
 
     return (
       <React.Fragment>
         <FlatButton
           icon={PlayButtonIcon}
           style={FlatButtonStyle}
-          // disabled={this.props.playbackState === PlaybackState.PLAY}
+          disabled={this.props.playbackState === PlaybackState.PLAY}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.PLAY)}
         />
 
         <FlatButton
           icon={<StopIcon color={colors.WHITE}/>}
           style={FlatButtonStyle}
-          // disabled={this.props.playbackState === PlaybackState.STOP}
+          disabled={this.props.playbackState === PlaybackState.STOP}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.STOP)}
+        />
+
+        <FlatButton
+          icon={RecordButtonIcon}
+          style={FlatButtonStyle}
+          disabled={this.props.playbackState === PlaybackState.RECORD}
+          onClick={() => this.props.onPlaybackStateChange(PlaybackState.RECORD)}
         />
 
         <FlatButton

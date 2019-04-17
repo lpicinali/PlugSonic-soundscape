@@ -18,6 +18,8 @@ import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatial
 import {
   playSource,
   stopSource,
+  recordStart,
+  recordStop,
   setSourceLoop,
   // setMasterVolume,
   setSourceVolume,
@@ -45,7 +47,7 @@ function* applyPlayStop() {
 
     // eslint-disable-next-line
     for (const source of Object.values(sources)) {
-      if (payload.state === PlaybackState.PLAY) {
+      if (payload.state === PlaybackState.PLAY || payload.state === PlaybackState.RECORD) {
         if (
           source.selected === true &&
           source.timings[PlaybackTiming.PLAY_AFTER] === null
@@ -58,6 +60,22 @@ function* applyPlayStop() {
     }
   }
 }
+
+/* ======================================================================== */
+// RECORD
+/* ======================================================================== */
+function* applyRecordStartStop() {
+  while(true) {
+    const prevState = yield select(state => state.controls.playbackState)
+    const { payload } = yield take(ActionType.SET_PLAYBACK_STATE)
+    if (payload.state === PlaybackState.RECORD) {
+      yield call(recordStart)
+    } else if (payload.state === PlaybackState.STOP && prevState === PlaybackState.RECORD) {
+      yield call(recordStop)
+    }
+  }
+}
+
 
 /* ======================================================================== */
 // ADD SOURCE
@@ -73,7 +91,7 @@ function* manageAddSource() {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
     }
 
-    if (source.selected === true && playbackState === PlaybackState.PLAY) {
+    if (source.selected === true && (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD)) {
       yield call(playSource, source)
     }
   }
@@ -98,7 +116,7 @@ function* applySourceOnOff() {
 
     if (source.selected === false) {
       yield call(stopSource, source)
-    } else if (playbackState === PlaybackState.PLAY) {
+    } else if (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD) {
       const listener = yield select(state => state.listener)
       const isReached =
         source.reach.isEnabled === false || isWithinReach(listener, source)
@@ -174,7 +192,7 @@ function* applyLoopChanges() {
 
     yield call(setSourceLoop, source.name, payload.loop)
 
-    if (playbackState === PlaybackState.PLAY) {
+    if (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD) {
       yield call(stopSource, source)
       yield call(playSource, source)
     }
@@ -279,7 +297,7 @@ function* handleSourcesReach() {
       } else if (
         source.reach.action === ReachAction.TOGGLE_PLAYBACK &&
         source.selected === true &&
-        playbackState === PlaybackState.PLAY
+        (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD)
       ) {
         // Toggle playback
         const isReached =
@@ -434,6 +452,7 @@ function* applyHrtfs() {
 export default function* rootSaga() {
   yield [
     applyPlayStop(),
+    applyRecordStartStop(),
     applySourceOnOff(),
     manageAddSource(),
     applyDeleteSource(),

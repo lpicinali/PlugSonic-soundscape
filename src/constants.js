@@ -55,6 +55,7 @@ export const Ear = {
 export const PlaybackState = {
   PAUSE: 'PAUSE',
   PLAY: 'PLAY',
+  RECORD: 'RECORD',
   STOP: 'STOP',
 }
 

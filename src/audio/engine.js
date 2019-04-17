@@ -6,6 +6,8 @@ import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import toolkit from 'src/audio/toolkit.js'
 
+import FileSaver from 'file-saver'
+
 window.toolkit = toolkit || { nope: false }
 
 const sourceAudioBuffers = {}
@@ -17,6 +19,35 @@ const sourceVolumes = {}
 const masterVolume = context.createGain()
 masterVolume.gain.value = 0.5
 masterVolume.connect(context.destination)
+
+// Record
+let outputStream = []
+const streamDestination = context.createMediaStreamDestination();
+const mediaRecorder = new MediaRecorder(streamDestination.stream);
+masterVolume.connect(streamDestination);
+
+mediaRecorder.ondataavailable = (evt) => {
+  outputStream.push(evt.data);
+}
+
+mediaRecorder.onstop = () => {
+  const blob = new Blob(outputStream, { 'type': 'audio/wav;' });
+  FileSaver.saveAs(blob, 'record.wav')
+  outputStream = []
+}
+
+/* ======================================================================== */
+// RECORD START
+/* ======================================================================== */
+export const recordStart = () => {
+  mediaRecorder.start()
+}
+/* ======================================================================== */
+// RECORD STOP
+/* ======================================================================== */
+export const recordStop = () => {
+  mediaRecorder.stop()
+}
 
 /**
  * Stores a source's audio buffer for future reference
