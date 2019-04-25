@@ -7,6 +7,7 @@ import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatial
 import toolkit from 'src/audio/toolkit.js'
 
 import FileSaver from 'file-saver'
+import Recorder from 'recorderjs'
 
 window.toolkit = toolkit || { nope: false }
 
@@ -21,32 +22,26 @@ masterVolume.gain.value = 0.5
 masterVolume.connect(context.destination)
 
 // Record
-let outputStream = []
-const streamDestination = context.createMediaStreamDestination();
-const mediaRecorder = new MediaRecorder(streamDestination.stream);
-masterVolume.connect(streamDestination);
-
-mediaRecorder.ondataavailable = (evt) => {
-  outputStream.push(evt.data);
-}
-
-mediaRecorder.onstop = () => {
-  const blob = new Blob(outputStream, { 'type': 'audio/wav;' });
-  FileSaver.saveAs(blob, 'record.wav')
-  outputStream = []
-}
-
+const recorder = new Recorder(masterVolume)
+console.log('Recorder initialised.')
 /* ======================================================================== */
 // RECORD START
 /* ======================================================================== */
 export const recordStart = () => {
-  mediaRecorder.start()
+  recorder && recorder.record()
+  console.log('Recording...');
 }
 /* ======================================================================== */
 // RECORD STOP
 /* ======================================================================== */
 export const recordStop = () => {
-  mediaRecorder.stop()
+  recorder && recorder.stop();
+  console.log('Stopped recording.')
+  const type = 'audio/wav'
+  recorder && recorder.exportWAV((blob, type) => {
+    
+  })
+  recorder.clear();
 }
 
 /**

@@ -54,6 +54,7 @@
     "autosuggest-highlight": "^3.1.1",
     "base64-arraybuffer": "^0.1.5",
     "blob": "0.0.4",
+    "browserify": "^5.13.1",
     "buffer-to-arraybuffer": "0.0.4",
     "core-decorators": "^0.18.0",
     "core-js": "^2.5.5",
@@ -78,9 +79,11 @@
     "react-redux": "^5.0.7",
     "react-repeatable": "^1.1.1",
     "react-router-dom": "^4.3.1",
+    "recorderjs": "^1.0.1",
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
     "redux-saga": "^0.15.6",
-    "styled-components": "^4.1.1"
+    "styled-components": "^4.1.1",
+    "workerify": "^0.3.0"
   }
 }
