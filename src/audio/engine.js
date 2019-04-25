@@ -1,13 +1,12 @@
 /* global window */
 /* eslint no-restricted-syntax: 0 */
 import { clamp } from 'lodash'
+import FileSaver from 'file-saver'
+import Recorder from 'recorderjs'
 
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import toolkit from 'src/audio/toolkit.js'
-
-import FileSaver from 'file-saver'
-import Recorder from 'recorderjs'
 
 window.toolkit = toolkit || { nope: false }
 
@@ -21,13 +20,15 @@ const masterVolume = context.createGain()
 masterVolume.gain.value = 0.5
 masterVolume.connect(context.destination)
 
-// Record
-const recorder = new Recorder(masterVolume)
-console.log('Recorder initialised.')
+let recorder
+
 /* ======================================================================== */
 // RECORD START
 /* ======================================================================== */
 export const recordStart = () => {
+  recorder = new Recorder(masterVolume, {workerPath: './assets/js/recorderWorker.js'})
+  console.log('Recorder initialised.')
+  // eslint-disable-next-line
   recorder && recorder.record()
   console.log('Recording...');
 }
@@ -35,12 +36,14 @@ export const recordStart = () => {
 // RECORD STOP
 /* ======================================================================== */
 export const recordStop = () => {
+  // eslint-disable-next-line
   recorder && recorder.stop();
   console.log('Stopped recording.')
-  const type = 'audio/wav'
-  recorder && recorder.exportWAV((blob, type) => {
-    
-  })
+  const type = "audio/wav"
+  // eslint-disable-next-line
+  recorder && recorder.exportWAV(blob => {
+    FileSaver.saveAs(blob, 'record.wav')
+  },type)
   recorder.clear();
 }
 
