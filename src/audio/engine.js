@@ -27,7 +27,7 @@ let recorder
 /* ======================================================================== */
 export const recordStart = () => {
   recorder = new Recorder(masterVolume, {workerPath: '/assets/js/recorderWorker.js'})
-  console.log('Recorder initialised.')
+  // console.log('Recorder initialised.')
   // eslint-disable-next-line
   recorder && recorder.record()
   console.log('Recording...');
