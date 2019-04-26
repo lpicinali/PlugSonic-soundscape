@@ -83,7 +83,7 @@ export const API = 'https://develop.pluggy.eu/api/v1'
 /*
   Use this within the social platform
 */
-export const sessionToken = Pluggy.getToken()
+// export const sessionToken = Pluggy.getToken()
 /*
   Use this out of the social platform
 */
@@ -130,7 +130,7 @@ function getExhibitionErrorCallback(responseText) {
 /*
   comment to test in local
 */
-httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+// httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 
 export const userId = ownerId
 export const exhibitionTitle = title
