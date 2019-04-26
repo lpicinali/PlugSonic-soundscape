@@ -27,24 +27,24 @@ let recorder
 /* ======================================================================== */
 export const recordStart = () => {
   recorder = new Recorder(masterVolume)
-  // console.log('Recorder initialised.')
+  console.log('Recorder initialised.')
   // eslint-disable-next-line
-  // recorder && recorder.record()
-  // console.log('Recording...');
+  recorder && recorder.record()
+  console.log('Recording...');
 }
 /* ======================================================================== */
 // RECORD STOP
 /* ======================================================================== */
 export const recordStop = () => {
-  // // eslint-disable-next-line
-  // recorder && recorder.stop();
-  // console.log('Stopped recording.')
-  // const type = "audio/wav"
-  // // eslint-disable-next-line
-  // recorder && recorder.exportWAV(blob => {
-  //   FileSaver.saveAs(blob, 'record.wav')
-  // },type)
-  // recorder.clear();
+  // eslint-disable-next-line
+  recorder && recorder.stop();
+  console.log('Stopped recording.')
+  const type = "audio/wav"
+  // eslint-disable-next-line
+  recorder && recorder.exportWAV(blob => {
+    FileSaver.saveAs(blob, 'record.wav')
+  },type)
+  recorder.clear();
 }
 
 /**
