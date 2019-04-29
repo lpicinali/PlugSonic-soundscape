@@ -267,10 +267,8 @@ class SourcePanel extends PureComponent {
 
         <p>Play this source after:</p>
 
-        <DropDownMenu
+        <Select
           style={{ width: '100%' }}
-          iconStyle={{ fill: colors.BLACK }}
-          underlineStyle={{ borderTop: `solid 1px ${colors.BLACK}` }}
           value={sourceObject.timings[PlaybackTiming.PLAY_AFTER]}
           onChange={(event, index, value) =>
             onSourceTimingChange(
@@ -290,7 +288,7 @@ class SourcePanel extends PureComponent {
                 disabled={source.loop === true}
               />
             ))}
-        </DropDownMenu>
+        </Select>
       </ListItem>
     )
 
