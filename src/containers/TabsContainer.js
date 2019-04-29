@@ -16,6 +16,17 @@ import SourcesTab from 'src/containers/SourcesTab'
 import ListenerTab from 'src/containers/ListenerTab'
 import ExhibitionTab from 'src/containers/ExhibitionTab'
 
+import * as colors from 'src/styles/colors.js'
+
+const BlackTabs = withStyles({
+  root: {
+    backgroundColor: colors.BLACK,
+  },
+  indicator: {
+    backgroundColor: colors.WHITE,
+  },
+})(Tabs)
+
 const NarrowTab = withStyles({
   root: {
     flexGrow: 1,
@@ -40,14 +51,14 @@ class TabsContainer extends Component {
 
     return (
       <div>
-        <Tabs value={value} onChange={this.handleChange}>
-          <NarrowTab icon={<Add />} />
-          <NarrowTab icon={<Search />} />
-          <NarrowTab icon={<Sources />} />
-          <NarrowTab icon={<Room />} />
-          <NarrowTab icon={<Listener />} />
-          <NarrowTab icon={<Exhibition />} />
-        </Tabs>
+        <BlackTabs value={value} onChange={this.handleChange}>
+          <NarrowTab icon={<Add color="secondary" />} />
+          <NarrowTab icon={<Search color="secondary" />} />
+          <NarrowTab icon={<Sources color="secondary" />} />
+          <NarrowTab icon={<Room color="secondary" />} />
+          <NarrowTab icon={<Listener color="secondary" />} />
+          <NarrowTab icon={<Exhibition color="secondary" />} />
+        </BlackTabs>
 
         {value === 0 && <AddSourceTab />}
         {value === 1 && <SearchTab />}
