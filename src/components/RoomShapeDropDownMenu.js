@@ -1,19 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import * as colors from 'src/styles/colors'
 import { values } from 'lodash'
-import { MenuItem, Select } from '@material-ui/core'
+import { MenuItem } from '@material-ui/core'
 
 import { RoomShape } from 'src/constants.js'
 import { setRoomShape, setRoomSize } from 'src/actions/room.actions.js'
-import { H2 } from 'src/styles/elements.js'
+import { FullWidthSelect, H2 } from 'src/styles/elements.js'
 
 /* ========================================================================== */
 /* ROOM SHAPE DROPDOWN MENU */
 /* ========================================================================== */
 class RoomShapeDropDownMenu extends Component {
-  handleChange = (event, index, value) => {
+  handleChange = (evt) => {
+    const { value } = evt.target
+
     this.props.onRoomShapeChange(value)
     if (value === RoomShape.ROUND) {
       const newSize = {
@@ -29,10 +30,10 @@ class RoomShapeDropDownMenu extends Component {
     return (
       <React.Fragment>
         <H2>ROOM SHAPE</H2>
-        <Select value={this.props.roomShape} onChange={this.handleChange}>
+        <FullWidthSelect value={this.props.roomShape} onChange={this.handleChange}>
           <MenuItem value={RoomShape.RECTANGULAR}>Rectangular</MenuItem>
           <MenuItem value={RoomShape.ROUND}>Round</MenuItem>
-        </Select>
+        </FullWidthSelect>
       </React.Fragment>
     )
   }

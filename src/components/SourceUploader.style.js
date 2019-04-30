@@ -16,7 +16,7 @@ export const Dropzone = styled(ReactDropzone)`
   color: ${colors.GRAY};
   font-size: 12px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `
 
 export const ActionIcon = styled(Icon)`

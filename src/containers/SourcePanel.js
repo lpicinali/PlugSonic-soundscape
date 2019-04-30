@@ -11,7 +11,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  List,
+  FormGroup,
   ListItem,
   ListItemText,
   MenuItem,
@@ -36,7 +36,16 @@ import {
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
-import { H3 } from 'src/styles/elements.js'
+import {
+  FieldBox,
+  FieldGroup,
+  Label,
+  PanelContents,
+  H3,
+  SliderBox,
+  SwitchControlLabel,
+  SwitchBox,
+} from 'src/styles/elements.js'
 
 /* ========================================================================== */
 
@@ -106,36 +115,44 @@ class SourcePanel extends PureComponent {
     const nestedItems = []
 
     nestedItems.push(
-      <ListItem key={`${sourceObject.name}-onofftoggle`}>
-        <ListItemText primary="ON/OFF" />
-        <Switch
-          checked={sourceObject.selected}
-          onChange={() => onSourceOnOff(sourceObject.name)}
+      <FormGroup row key={`${sourceObject.name}-onofftoggle`}>
+        <SwitchControlLabel
+          label="ON/OFF"
+          labelPlacement="start"
+          control={
+            <Switch
+              color="primary"
+              checked={sourceObject.selected}
+              onChange={(evt, isSelected) => onSourceOnOff(sourceObject.name, isSelected)}
+            />
+          }
         />
-      </ListItem>
+      </FormGroup>
     )
 
     nestedItems.push(
-      <ListItem key={`${sourceObject.name}-volume`}>
+      <FieldGroup key={`${sourceObject.name}-volume`}>
         <div>
           <SliderValue>{sourceObject.volume}</SliderValue>
           <H3>Volume</H3>
         </div>
-        <Slider
-          min={0}
-          max={1}
-          value={sourceObject.volume}
-          onChange={(event, value) => this.handleSourceVolume(value)}
-        />
-      </ListItem>
+        <SliderBox>
+          <Slider
+            min={0}
+            max={1}
+            value={sourceObject.volume}
+            onChange={(event, value) => this.handleSourceVolume(value)}
+          />
+        </SliderBox>
+      </FieldGroup>
     )
 
     nestedItems.push(
-      <ListItem key={`${sourceObject.name}-position`}>
+      <FieldGroup key={`${sourceObject.name}-position`}>
         <H3>Position</H3>
 
         <div>
-          <label>X</label>
+          <Label>X</Label>
           <SliderValue>
             {parseFloat(
               Math.round(-sourceObject.position.y * 100) / 100
@@ -143,16 +160,18 @@ class SourcePanel extends PureComponent {
             m
           </SliderValue>
         </div>
-        <Slider
-          min={-roomSize.width / 2}
-          max={roomSize.width / 2}
-          step={0.01}
-          value={-sourceObject.position.y}
-          onChange={(event, value) => this.handleSourceMove('y', -value)}
-        />
+        <SliderBox>
+          <Slider
+            min={-roomSize.width / 2}
+            max={roomSize.width / 2}
+            step={0.01}
+            value={-sourceObject.position.y}
+            onChange={(event, value) => this.handleSourceMove('y', -value)}
+          />
+        </SliderBox>
 
         <div>
-          <label>Y</label>
+          <Label>Y</Label>
           <SliderValue>
             {parseFloat(
               Math.round(sourceObject.position.x * 100) / 100
@@ -160,16 +179,18 @@ class SourcePanel extends PureComponent {
             m
           </SliderValue>
         </div>
-        <Slider
-          min={-roomSize.depth / 2}
-          max={roomSize.depth / 2}
-          step={0.01}
-          value={sourceObject.position.x}
-          onChange={(event, value) => this.handleSourceMove('x', value)}
-        />
+        <SliderBox>
+          <Slider
+            min={-roomSize.depth / 2}
+            max={roomSize.depth / 2}
+            step={0.01}
+            value={sourceObject.position.x}
+            onChange={(event, value) => this.handleSourceMove('x', value)}
+          />
+        </SliderBox>
 
         <div>
-          <label>Z</label>
+          <Label>Z</Label>
           <SliderValue>
             {parseFloat(
               Math.round(sourceObject.position.z * 100) / 100
@@ -177,126 +198,140 @@ class SourcePanel extends PureComponent {
             m
           </SliderValue>
         </div>
-        <Slider
-          min={0}
-          max={roomSize.height / 2}
-          step={0.01}
-          value={sourceObject.position.z}
-          onChange={(event, value) => this.handleSourceMove('z', value)}
-        />
-      </ListItem>
-    )
-
-    nestedItems.push(
-      <ListItem key="loop">
-        <H3>Loop</H3>
-
-        <Switch
-          checked={sourceObject.loop}
-          onChange={(event, isEnabled) =>
-            onSourceLoopChange(sourceObject.name, isEnabled)
-          }
-        />
-      </ListItem>
-    )
-
-    nestedItems.push(
-      <ListItem key="reach">
-        <H3>Reach</H3>
-
-        <Switch
-          checked={sourceObject.reach.isEnabled}
-          onChange={(event, isEnabled) =>
-            onSourceReachEnabledChange(sourceObject.name, isEnabled)
-          }
-        />
-
-        <div>
-          <label>Radius</label>
-          <SliderValue>{sourceObject.reach.radius} m</SliderValue>
-        </div>
-        <Slider
-          min={0}
-          max={Math.max(roomSize.width, roomSize.height) / 2}
-          step={0.1}
-          value={sourceObject.reach.radius}
-          disabled={sourceObject.reach.isEnabled === false}
-          onChange={(event, value) =>
-            onSourceReachRadiusChange(sourceObject.name, value)
-          }
-        />
-
-        <label>Reach behaviour</label>
-        <Select
-          style={{ width: '100%' }}
-          value={sourceObject.reach.action}
-          onChange={(event, index, value) =>
-            onSourceReachActionChange(sourceObject.name, value)
-          }
-        >
-          <MenuItem
-            value={ReachAction.TOGGLE_VOLUME}
-            primaryText="Fade in and out"
+        <SliderBox>
+          <Slider
+            min={0}
+            max={roomSize.height / 2}
+            step={0.01}
+            value={sourceObject.position.z}
+            onChange={(event, value) => this.handleSourceMove('z', value)}
           />
-          <MenuItem
-            value={ReachAction.TOGGLE_PLAYBACK}
-            primaryText="Start when entering"
-          />
-        </Select>
-
-        <div>
-          <label>Fade duration</label>
-          <SliderValue>{sourceObject.reach.fadeDuration / 1000} s</SliderValue>
-        </div>
-        <Slider
-          min={0}
-          max={20}
-          step={0.1}
-          value={sourceObject.reach.fadeDuration / 1000}
-          disabled={sourceObject.reach.isEnabled === false}
-          onChange={(event, value) =>
-            onSourceReachFadeDurationChange(sourceObject.name, value * 1000)
-          }
-        />
-      </ListItem>
+        </SliderBox>
+      </FieldGroup>
     )
 
     nestedItems.push(
-      <ListItem key="timings">
+      <FieldGroup key="loop">
+        <SwitchBox>
+          <H3>Loop</H3>
+          <Switch
+            color="primary"
+            checked={sourceObject.loop}
+            onChange={(event, isEnabled) =>
+              onSourceLoopChange(sourceObject.name, isEnabled)
+            }
+          />
+        </SwitchBox>
+      </FieldGroup>
+    )
+
+    nestedItems.push(
+      <FieldGroup key="reach">
+        <SwitchBox>
+          <H3>Reach</H3>
+          <Switch
+            color="primary"
+            checked={sourceObject.reach.isEnabled}
+            onChange={(event, isEnabled) =>
+              onSourceReachEnabledChange(sourceObject.name, isEnabled)
+            }
+          />
+        </SwitchBox>
+
+        <FieldBox>
+          <div>
+            <Label>Radius</Label>
+            <SliderValue>{sourceObject.reach.radius} m</SliderValue>
+          </div>
+          <SliderBox>
+            <Slider
+              min={0}
+              max={Math.max(roomSize.width, roomSize.height) / 2}
+              step={0.1}
+              value={sourceObject.reach.radius}
+              disabled={sourceObject.reach.isEnabled === false}
+              onChange={(event, value) =>
+                onSourceReachRadiusChange(sourceObject.name, value)
+              }
+            />
+          </SliderBox>
+        </FieldBox>
+
+        <FieldBox>
+          <Label>Reach behaviour</Label>
+          <Select
+            style={{ width: '100%' }}
+            value={sourceObject.reach.action}
+            onChange={(evt) =>
+              onSourceReachActionChange(sourceObject.name, evt.target.value)
+            }
+          >
+            <MenuItem value={ReachAction.TOGGLE_VOLUME}>Fade in and out</MenuItem>
+            <MenuItem value={ReachAction.TOGGLE_PLAYBACK}>Start when entering</MenuItem>
+          </Select>
+        </FieldBox>
+
+        <FieldBox>
+          <div>
+            <Label>Fade duration</Label>
+            <SliderValue>{sourceObject.reach.fadeDuration / 1000} s</SliderValue>
+          </div>
+          <SliderBox>
+            <Slider
+              min={0}
+              max={20}
+              step={0.1}
+              value={sourceObject.reach.fadeDuration / 1000}
+              disabled={sourceObject.reach.isEnabled === false}
+              onChange={(event, value) =>
+                onSourceReachFadeDurationChange(sourceObject.name, value * 1000)
+              }
+            />
+          </SliderBox>
+        </FieldBox>
+      </FieldGroup>
+    )
+
+    nestedItems.push(
+      <FieldGroup key="timings">
         <H3>Timings</H3>
 
         <p>Play this source after:</p>
 
         <Select
           style={{ width: '100%' }}
-          value={sourceObject.timings[PlaybackTiming.PLAY_AFTER]}
-          onChange={(event, index, value) =>
+          displayEmpty
+          value={sourceObject.timings[PlaybackTiming.PLAY_AFTER] || ''}
+          onChange={(evt) =>
             onSourceTimingChange(
               sourceObject.name,
               PlaybackTiming.PLAY_AFTER,
-              value
+              evt.target.value === '' ? null : evt.target.value
             )
           }
         >
+          <MenuItem value=""><em>None</em></MenuItem>
+
           {sources
             .filter(source => source.name !== sourceObject.name)
             .map(source => (
               <MenuItem
                 key={source.name}
                 value={source.name}
-                primaryText={source.name}
                 disabled={source.loop === true}
-              />
+              >
+                {source.name}
+              </MenuItem>
             ))}
         </Select>
-      </ListItem>
+      </FieldGroup>
     )
 
     nestedItems.push(
-      <ListItem key={`${sourceObject.name}-delete`}>
+      <FieldGroup key={`${sourceObject.name}-delete`}>
         <Button
           variant="contained"
-          color="secondary"
+          color="primary"
           onClick={this.handleSourceDelete}
         >
           Delete
@@ -316,7 +351,6 @@ class SourcePanel extends PureComponent {
 
           <DialogActions>
             <Button
-              color="secondary"
               onClick={() => this.handleSourceDeletionResponse(false)}
             >
               No
@@ -331,7 +365,7 @@ class SourcePanel extends PureComponent {
             </Button>
           </DialogActions>
         </Dialog>
-      </ListItem>
+      </FieldGroup>
     )
 
     return (
@@ -342,7 +376,9 @@ class SourcePanel extends PureComponent {
         </ListItem>
 
         <Collapse in={isOpen}>
-          <List>{nestedItems}</List>
+          <PanelContents>
+            {nestedItems}
+          </PanelContents>
         </Collapse>
       </Fragment>
     )

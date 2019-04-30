@@ -1,10 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { map } from 'lodash'
-import * as colors from 'src/styles/colors.js'
-import { Button, Chip, Divider, TextField } from '@material-ui/core'
+import { Button, Chip, TextField } from '@material-ui/core'
 
 import {
   API,
@@ -16,27 +15,10 @@ import {
   httpPutAsync,
   sessionToken,
 } from 'src/pluggy'
+import { FieldBox } from 'src/styles/elements'
 
 /* ========================================================================== */
-export const textfieldStyle = {
-  marginLeft: `20px`,
-  width: `85%`,
-}
-const FlatButtonStyle = {
-  width: '85%',
-  margin: `auto`,
-  marginTop: '10px',
-  marginBottom: '10px',
-}
-const DividerStyle = {
-  marginTop: '10px',
-  marginBottom: '10px',
-}
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
+
 const chipStyle = {
   margin: 4,
 }
@@ -179,36 +161,36 @@ class ExhibitionContainer extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <Container>
+      <Fragment>
         <TextField
           id="exhibitionTitle"
           type="text"
+          fullWidth
           value={this.state.exhibitionTitle}
           label="Title*"
           onChange={this.handleTextFieldChange}
-          style={textfieldStyle}
         />
 
         <TextField
           id="exhibitionDescription"
           type="text"
+          fullWidth
           value={this.state.exhibitionDescription}
           label="Description*"
           multiline
           rows={2}
           rowsMax={4}
           onChange={this.handleTextFieldChange}
-          style={textfieldStyle}
         />
 
         <TextField
           id="exhibitionNewTag"
           type="text"
+          fullWidth
           value={this.state.exhibitionNewTag}
           label="Tags (Press ENTER to add)"
           onChange={this.handleTextFieldChange}
           onKeyUp={this.handleKeyUp}
-          style={textfieldStyle}
         />
 
         <ChipWrapper>
@@ -223,38 +205,30 @@ class ExhibitionContainer extends Component {
           ))}
         </ChipWrapper>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
-          style={{
-            ...FlatButtonStyle,
-            backgroundColor: this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''
-              ? colors.LIGHTGREY
-              : colors.BLACK
-          }}
-          onClick={this.handleSaveExhibition}
-        >
-          SAVE
-        </Button>
+        <FieldBox>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
+            onClick={this.handleSaveExhibition}
+          >
+            SAVE
+          </Button>
+        </FieldBox>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
-          style={{
-            ...FlatButtonStyle,
-            backgroundColor: this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''
-              ? colors.LIGHTGREY
-              : colors.BLACK
-          }}
-          onClick={this.handleSaveExhibition}
-        >
-          PUBLISH
-        </Button>
-
-        <Divider style={DividerStyle} />
-      </Container>
+        <FieldBox>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
+            onClick={this.handleSaveExhibition}
+          >
+            PUBLISH
+          </Button>
+        </FieldBox>
+      </Fragment>
     )
   }
 }

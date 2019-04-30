@@ -1,22 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import FileSaver from 'file-saver'
 import Blob from 'blob'
 import { map } from 'lodash'
 import { Button } from '@material-ui/core'
 
-/* ========================================================================== */
-const FlatButtonStyle = {
-  width: '85%',
-  margin: `auto`,
-}
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
 /* ========================================================================== */
 /* EXPORT META BUTTON */
 /* ========================================================================== */
@@ -54,16 +43,14 @@ class ExportMetaButton extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <Container>
-        <Button
-          variant="contained"
-          color="secondary"
-          style={FlatButtonStyle}
-          onClick={this.handleExportSoundscapeMeta}
-        >
-          METADATA
-        </Button>
-      </Container>
+      <Button
+        variant="contained"
+        color="primary"
+        fullWidth
+        onClick={this.handleExportSoundscapeMeta}
+      >
+        METADATA
+      </Button>
     )
   }
 }

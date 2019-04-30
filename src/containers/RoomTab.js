@@ -4,6 +4,8 @@ import RoomShapeDropDownMenu from 'src/components/RoomShapeDropDownMenu'
 import RoomSizeTextFields from 'src/components/RoomSizeTextFields'
 import ImageUploader from 'src/components/ImageUploader'
 import ResetPositionButton from 'src/components/ResetPositionButton'
+import { FieldGroup, PanelContents } from 'src/styles/elements'
+
 /* ========================================================================== */
 
 /* ========================================================================== */
@@ -13,12 +15,20 @@ class RoomTab extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <React.Fragment>
-        <RoomShapeDropDownMenu />
-        <RoomSizeTextFields />
-        <ImageUploader />
-        <ResetPositionButton />
-      </React.Fragment>
+      <PanelContents>
+        <FieldGroup>
+          <RoomShapeDropDownMenu />
+        </FieldGroup>
+        <FieldGroup>
+          <RoomSizeTextFields />
+        </FieldGroup>
+        <FieldGroup>
+          <ImageUploader />
+        </FieldGroup>
+        <FieldGroup>
+          <ResetPositionButton />
+        </FieldGroup>
+      </PanelContents>
     )
   }
 }

@@ -2,13 +2,14 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { values } from 'lodash'
-import { FormControlLabel, FormGroup, Switch } from '@material-ui/core'
+import { FormGroup, Switch } from '@material-ui/core'
 
 import { SpatializationMode } from 'src/constants.js'
 import {
   setHighPerformanceMode,
   setHighQualityMode,
 } from 'src/actions/listener.actions.js'
+import { SwitchControlLabel } from 'src/styles/elements.js'
 
 /* ========================================================================== */
 /* SPATIALIZATION MODE TOGGLE */
@@ -25,11 +26,12 @@ class SpatializationModeToggle extends PureComponent {
   render() {
     return (
       <FormGroup row>
-        <FormControlLabel
+        <SwitchControlLabel
           label="Performance Mode"
           labelPlacement="start"
           control={
             <Switch
+              color="primary"
               onChange={this.toggleSpatializationMode}
               checked={
                 this.props.spatializationMode ===

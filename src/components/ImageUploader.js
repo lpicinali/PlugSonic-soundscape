@@ -1,23 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Button } from '@material-ui/core'
 
 import { H2 } from 'src/styles/elements'
 import { Dropzone, ActionIcon } from 'src/components/ImageUploader.style'
 import { setRoomImage } from 'src/actions/room.actions'
 
-/* ========================================================================== */
-const FlatButtonStyle = {
-  width: '85%',
-  margin: `auto`,
-}
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
 /* ========================================================================== */
 /* IMAGE UPLOADER */
 /* ========================================================================== */
@@ -109,7 +98,7 @@ class ImageUploader extends Component {
 
   render() {
     return (
-      <Container>
+      <Fragment>
         <H2>ROOM FLOORPLAN</H2>
         <Dropzone
           accept="image/*"
@@ -129,12 +118,12 @@ class ImageUploader extends Component {
         <Button
           variant="contained"
           color="primary"
-          style={FlatButtonStyle}
+          fullWidth
           onClick={this.resetImage}
         >
           RESET IMAGE
         </Button>
-      </Container>
+      </Fragment>
     )
   }
 }

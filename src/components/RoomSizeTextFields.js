@@ -6,7 +6,7 @@ import { values, toNumber, isNaN } from 'lodash'
 import { FormControl, FormHelperText, TextField } from '@material-ui/core'
 import { RoomShape } from 'src/constants.js'
 import { setRoomSize } from 'src/actions/room.actions.js'
-import { H2 } from 'src/styles/elements.js'
+import { FieldBox, H2, PaddedFormControl } from 'src/styles/elements.js'
 
 /* ========================================================================== */
 const minSize = 3
@@ -201,7 +201,7 @@ class RoomSizeTextFields extends Component {
       <React.Fragment>
         <H2>ROOM SIZE</H2>
 
-        <FormControl error={this.state.errorTextW !== ''}>
+        <PaddedFormControl fullWidth error={this.state.errorTextW !== ''}>
           <TextField
             id="width"
             type="text"
@@ -213,9 +213,9 @@ class RoomSizeTextFields extends Component {
           {this.state.errorTextW !== '' && (
             <FormHelperText>this.state.errorTextW</FormHelperText>
           )}
-        </FormControl>
+        </PaddedFormControl>
 
-        <FormControl error={this.state.errorTextD !== ''}>
+        <PaddedFormControl fullWidth error={this.state.errorTextD !== ''}>
           <TextField
             id="depth"
             type="text"
@@ -227,9 +227,9 @@ class RoomSizeTextFields extends Component {
           {this.state.errorTextD !== '' && (
             <FormHelperText>this.state.errorTextD</FormHelperText>
           )}
-        </FormControl>
+        </PaddedFormControl>
 
-        <FormControl error={this.state.errorTextH !== ''}>
+        <PaddedFormControl fullWidth error={this.state.errorTextH !== ''}>
           <TextField
             id="height"
             type="text"
@@ -241,7 +241,7 @@ class RoomSizeTextFields extends Component {
           {this.state.errorTextH !== '' && (
             <FormHelperText>this.state.errorTextH</FormHelperText>
           )}
-        </FormControl>
+        </PaddedFormControl>
       </React.Fragment>
     )
   }

@@ -8,11 +8,11 @@ import { circumferenceToRadius, radiusToCircumference } from 'src/utils.js'
 
 import Slider from '@material-ui/lab/Slider'
 import { setHeadRadius } from 'src/actions/listener.actions'
-/* ========================================================================== */
+
 const Container = styled.div`
-  margin: auto;
-  width: 85%;
+  padding-bottom: 12px;
 `
+
 /* ========================================================================== */
 /* HEAD CIRCUMFERENCE SLIDER */
 /* ========================================================================== */

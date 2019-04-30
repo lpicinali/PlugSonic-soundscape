@@ -2,28 +2,14 @@ import { connect } from 'react-redux'
 import FileReaderInput from 'react-file-reader-input'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import styled from 'styled-components'
-
 import { Button } from '@material-ui/core'
 
-import * as colors from 'src/styles/colors'
 import { PlaybackState } from 'src/constants'
 import { setPlaybackState } from 'src/actions/controls.actions'
 import { importSources } from 'src/actions/sources.actions'
 import { importListener } from 'src/actions/listener.actions'
 import { importRoom } from 'src/actions/room.actions'
 
-/* ========================================================================== */
-const FlatButtonStyle = {
-  width: '85%',
-  margin: `auto`,
-}
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
 /* ========================================================================== */
 /* IMPORT BUTTON */
 /* ========================================================================== */
@@ -46,18 +32,16 @@ class ImportButton extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <Container>
-        <Button variant="contained" color="secondary" style={FlatButtonStyle}>
-          <FileReaderInput
-            type="file"
-            accept=".json"
-            as="binary"
-            onChange={this.handleImportSoundscape}
-          >
-            METADATA/META+ASSETS
-          </FileReaderInput>
-        </Button>
-      </Container>
+      <Button variant="contained" color="primary" fullWidth>
+        <FileReaderInput
+          type="file"
+          accept=".json"
+          as="binary"
+          onChange={this.handleImportSoundscape}
+        >
+          METADATA/META+ASSETS
+        </FileReaderInput>
+      </Button>
     )
   }
 }

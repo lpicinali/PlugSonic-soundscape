@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { map } from 'lodash'
 import {
   Button,
-  FormControl,
   FormHelperText,
   TextField,
 } from '@material-ui/core'
@@ -15,15 +13,7 @@ import { fetchAudioBufferRaw } from 'src/utils.js'
 import { addSource } from 'src/actions/sources.actions.js'
 import { storeSourceAudioBuffer } from 'src/audio/engine.js'
 import { Dropzone, ActionIcon } from 'src/components/SourceUploader.style.js'
-
-/* ========================================================================== */
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 24px;
-`
+import { PaddedFormControl, PanelContents } from 'src/styles/elements.js'
 
 /* ========================================================================== */
 /* SOURCE UPLOADER */
@@ -138,7 +128,7 @@ class SourceUploader extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <Container>
+      <PanelContents>
         <Dropzone
           accept="audio/mp3, audio/mpeg"
           onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
@@ -157,8 +147,9 @@ class SourceUploader extends Component {
           </div>
         </Dropzone>
 
-        <FormControl error={this.state.errorTextField !== ''}>
+        <PaddedFormControl fullWidth error={this.state.errorTextField !== ''}>
           <TextField
+            fullWidth
             id="name"
             type="text"
             value={this.state.name}
@@ -168,17 +159,18 @@ class SourceUploader extends Component {
           {this.state.errorTextField !== '' && (
             <FormHelperText>{this.state.errorTextField}</FormHelperText>
           )}
-        </FormControl>
+        </PaddedFormControl>
 
         <Button
           variant="contained"
-          color="secondary"
+          color="primary"
+          fullWidth
           disabled={this.state.name === '' || this.state.errorTextField !== ''}
           onClick={this.handleAddSource}
         >
           ADD SOURCE
         </Button>
-      </Container>
+      </PanelContents>
     )
   }
 }
