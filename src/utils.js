@@ -1,5 +1,6 @@
 import bufferToArrayBuffer from 'buffer-to-arraybuffer'
 import got from 'got'
+import { round } from 'lodash'
 
 import context from 'src/audio/context.js'
 import decode from 'src/audio/decode.js'
@@ -80,4 +81,19 @@ export function createSubscriptionSource(subscribe) {
   }
 
   return callbackSource
+}
+
+export function decibelsToGain(value) {
+  return Math.exp(value / 8.6858)
+}
+
+export function gainToDecibels(value) {
+  return 20 * (0.43429 * Math.log(value))
+}
+
+export function forceDecimals(value, precision) {
+  const roundedValue = round(value, precision)
+  return String(roundedValue).length === 1
+    ? `${roundedValue}.00`
+    : String(roundedValue)
 }
