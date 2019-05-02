@@ -1,18 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Autosuggest from 'react-autosuggest'
-import styled from 'styled-components'
 import { map } from 'lodash'
-
-import TextField from 'material-ui/TextField'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
-import MenuItem from 'material-ui/MenuItem'
-import FlatButton from 'material-ui/FlatButton'
-import Paper from 'material-ui/Paper'
-import Divider from 'material-ui/Divider'
-import DropDownMenu from 'material-ui/DropDownMenu'
+import { Button, Divider, MenuItem, Paper, TextField } from '@material-ui/core'
 
 import { SourceOrigin } from 'src/constants.js'
 import {
@@ -22,45 +15,8 @@ import {
   httpGetAsync,
 } from 'src/pluggy.js'
 import { addSource } from 'src/actions/sources.actions.js'
-import * as colors from 'src/styles/colors.js'
-import {H2} from 'src/styles/elements'
+import { FieldBox, FieldGroup, FullWidthSelect, H2, PanelContents } from 'src/styles/elements'
 
-/* ========================================================================== */
-export const textFieldStyle = {
-  marginLeft: `20px`,
-  width: `85%`,
-}
-const underlineStyle = {
-  borderColor: `colors.BLACK`,
-}
-const underlineFocusStyle = {
-  borderColor: `colors.BLACK`,
-}
-const FlatButtonStyle = {
-  width: '85%',
-  margin: `auto`,
-  marginTop: '10px',
-  marginBottom: '10px',
-  textColor: `${colors.WHITE}`,
-}
-const DividerStyle = {
-  marginTop: '10px',
-  marginBottom: '10px',
-}
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
-const DropDownMenuStyle = {
-  width: '100%'
-}
-const IconStyle = {
-  fill: colors.BLACK
-}
-const UnderlineStyle = {
-  borderTop: `solid 1px ${colors.BLACK}`,
-}
 /* ========================================================================== */
 
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
@@ -92,9 +48,6 @@ const renderInputComponent = inputProps => {
   return (
     <TextField
       id="search"
-      style={textFieldStyle}
-      underlineFocusStyle={underlineFocusStyle}
-      underlineStyle={underlineStyle}
       inputprops={{
         inputRef: node => {
           ref(node)
@@ -204,15 +157,15 @@ class SearchAssetContainer extends Component {
     })
   }
 
-  handleSearchDropDownChange = (event, index, value) => {
+  handleSearchDropDownChange = (event) => {
     this.setState({
-      myAssets: value
+      myAssets: event.target.value
     })
   }
 
-  handleOrderByDropDownChange = (event, index, value) => {
+  handleOrderByDropDownChange = (event) => {
     this.setState({
-      orderBy: value
+      orderBy: event.target.value
     })
   }
 
@@ -221,78 +174,81 @@ class SearchAssetContainer extends Component {
     const searchResults = this.state.assets.map(asset => {
       if (asset.type === 'audio') {
         return (
-          <FlatButton
-            key={asset._id}
-            label={asset.title}
-            onClick={() => {
-              this.handleClickSearchResult(asset._id)
-            }}
-            style={FlatButtonStyle}
-            backgroundColor={`${colors.BLACK}`}
-            secondary
-          />
+          <FieldBox key={asset._id}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => this.handleClickSearchResult(asset._id)}
+            >
+              {asset.title}
+            </Button>
+          </FieldBox>
         )
       }
       return <div key={asset._id} />
     })
 
     return (
-      <Container>
-        <Autosuggest
-          renderInputComponent={renderInputComponent}
-          suggestions={this.state.suggestions}
-          onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-          getSuggestionValue={getSuggestionValue}
-          renderSuggestion={renderSuggestion}
-          inputProps={{
-            placeholder: 'Search asset...',
-            value: this.state.searchTextFieldValue,
-            onChange: this.onChangeSearchTextField,
-            type: 'search',
-          }}
-          renderSuggestionsContainer={options => (
-            <Paper {...options.containerProps}>{options.children}</Paper>
-          )}
-          focusInputOnSuggestionClick={false}
-        />
+      <Fragment>
+        <PanelContents>
+          <FieldGroup>
+            <FieldBox>
+              <Autosuggest
+                renderInputComponent={renderInputComponent}
+                suggestions={this.state.suggestions}
+                onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+                getSuggestionValue={getSuggestionValue}
+                renderSuggestion={renderSuggestion}
+                inputProps={{
+                  placeholder: 'Search asset...',
+                  value: this.state.searchTextFieldValue,
+                  onChange: this.onChangeSearchTextField,
+                  type: 'search',
+                  fullWidth: true,
+                }}
+                renderSuggestionsContainer={options => (
+                  <Paper {...options.containerProps}>{options.children}</Paper>
+                )}
+                focusInputOnSuggestionClick={false}
+              />
+            </FieldBox>
 
-        <DropDownMenu
-          style={DropDownMenuStyle}
-          iconStyle={IconStyle}
-          underlineStyle={UnderlineStyle}
-          value={this.state.myAssets}
-          onChange={this.handleSearchDropDownChange}>
-          <MenuItem value={false} primaryText="All Pluggy" />
-          <MenuItem value primaryText="My Assets" />
-        </DropDownMenu>
+            <FieldBox>
+              <FullWidthSelect value={this.state.myAssets} onChange={this.handleSearchDropDownChange}>
+                <MenuItem value={false}>All Pluggy</MenuItem>
+                <MenuItem value>My Assets</MenuItem>
+              </FullWidthSelect>
+            </FieldBox>
+          </FieldGroup>
 
-        <br/>
-        <H2>ORDER BY</H2>
-        <DropDownMenu
-          style={DropDownMenuStyle}
-          iconStyle={IconStyle}
-          underlineStyle={UnderlineStyle}
-          value={this.state.orderBy}
-          onChange={this.handleOrderByDropDownChange}>
-          <MenuItem value="trending" primaryText="Trending" />
-          <MenuItem value="recent" primaryText="Recent" />
-          <MenuItem value="title" primaryText="Title" />
-        </DropDownMenu>
+          <H2>ORDER BY</H2>
 
-        <FlatButton
-          style={FlatButtonStyle}
-          backgroundColor={`${colors.BLACK}`}
-          onClick={this.handleSearchAssets}
-          secondary
-        >
-          SEARCH
-        </FlatButton>
+          <FieldBox>
+            <FullWidthSelect value={this.state.orderBy} onChange={this.handleOrderByDropDownChange}>
+              <MenuItem value="trending">Trending</MenuItem>
+              <MenuItem value="recent">Recent</MenuItem>
+              <MenuItem value="title">Title</MenuItem>
+            </FullWidthSelect>
+          </FieldBox>
 
-        <Divider style={DividerStyle} />
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={this.handleSearchAssets}
+          >
+            SEARCH
+          </Button>
+        </PanelContents>
 
-        {this.state.assets.length > 0 && searchResults}
-      </Container>
+        <Divider />
+
+        <PanelContents>
+          {this.state.assets.length > 0 && searchResults}
+        </PanelContents>
+      </Fragment>
     )
   }
 }

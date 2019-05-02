@@ -6,29 +6,29 @@ import styled from 'styled-components'
 import { H3 } from 'src/styles/elements.js'
 import { circumferenceToRadius, radiusToCircumference } from 'src/utils.js'
 
-import Slider from 'material-ui/Slider'
-import { setHighPerformanceMode, setHighQualityMode, setHeadRadius } from 'src/actions/listener.actions'
-/* ========================================================================== */
+import Slider from '@material-ui/lab/Slider'
+import { setHeadRadius } from 'src/actions/listener.actions'
+
 const Container = styled.div`
-  margin: auto;
-  width: 85%
+  padding-bottom: 12px;
 `
+
 /* ========================================================================== */
 /* HEAD CIRCUMFERENCE SLIDER */
 /* ========================================================================== */
 class HeadCircumferenceSlider extends PureComponent {
-
   handleChange = (event, value) => {
     event.preventDefault()
     this.props.onChangeHeadRadius(circumferenceToRadius(value))
   }
 
   render() {
-
     return (
       <Container>
         <H3>
-          {`HEAD CIRCUMFERENCE: ${Math.round(100 * radiusToCircumference(this.props.headRadius))} cm`}
+          {`HEAD CIRCUMFERENCE: ${Math.round(
+            100 * radiusToCircumference(this.props.headRadius)
+          )} cm`}
         </H3>
         <Slider
           value={radiusToCircumference(this.props.headRadius)}
@@ -56,4 +56,7 @@ const mapDispatchToProps = dispatch => ({
   onChangeHeadRadius: radius => dispatch(setHeadRadius(radius)),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(HeadCircumferenceSlider)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HeadCircumferenceSlider)

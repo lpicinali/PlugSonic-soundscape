@@ -1,26 +1,12 @@
-import React, { Component } from 'react'
-import { connect } from "react-redux"
+import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { fetchAudioBufferRaw } from 'src/utils'
+import { Button } from '@material-ui/core'
 
-import * as colors from 'src/styles/colors'
-import {H2} from 'src/styles/elements'
-import {Dropzone, ActionIcon} from 'src/components/ImageUploader.style'
-import FlatButton from "material-ui/FlatButton"
+import { H2 } from 'src/styles/elements'
+import { Dropzone, ActionIcon } from 'src/components/ImageUploader.style'
+import { setRoomImage } from 'src/actions/room.actions'
 
-import {setRoomImage} from 'src/actions/room.actions'
-/* ========================================================================== */
-const FlatButtonStyle = {
-  width: '85%',
-  margin: `auto`,
-  textColor: `${colors.WHITE}`,
-}
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
 /* ========================================================================== */
 /* IMAGE UPLOADER */
 /* ========================================================================== */
@@ -31,14 +17,14 @@ class ImageUploader extends Component {
     type: '',
     preview: '',
     raw: '',
-    error: ''
+    error: '',
   }
 
   handleOnDrop = (accepted, rejected) => {
     if (accepted.length === 0) {
       this.setState({
         ...this.state,
-        error: 'Unsupported file format)'
+        error: 'Unsupported file format)',
       })
     } else if (accepted.length === 1) {
       const reader = new FileReader()
@@ -46,8 +32,22 @@ class ImageUploader extends Component {
 
       reader.readAsDataURL(accepted[0])
 
-      reader.onabort = () => {this.setState({...this.state, filename: '', size: '', error: 'File reading was aborted'})}
-      reader.onerror = () => {this.setState({...this.state, filename: '', size: '', error: 'File reading has failed'})}
+      reader.onabort = () => {
+        this.setState({
+          ...this.state,
+          filename: '',
+          size: '',
+          error: 'File reading was aborted',
+        })
+      }
+      reader.onerror = () => {
+        this.setState({
+          ...this.state,
+          filename: '',
+          size: '',
+          error: 'File reading has failed',
+        })
+      }
       reader.onload = () => {
         this.setState({
           ...this.state,
@@ -56,7 +56,7 @@ class ImageUploader extends Component {
           type: accepted[0].type,
           preview: accepted[0].preview,
           raw: reader.result,
-          error: ''
+          error: '',
         })
         this.props.onRoomImageChange({
           filename: this.state.name,
@@ -67,45 +67,65 @@ class ImageUploader extends Component {
         })
       }
     } else {
-      this.setState({...this.state, filename: '', size: '', error: 'Please load only one file'})
+      this.setState({
+        ...this.state,
+        filename: '',
+        size: '',
+        error: 'Please load only one file',
+      })
     }
   }
 
   resetImage = () => {
-    this.setState({...this.state, filename: '', size: '', type: '', preview: '', raw: '', error: ''})
-    this.props.onRoomImageChange({filename: '', size: '', type: '', preview: '', raw: '', error: ''})
+    this.setState({
+      ...this.state,
+      filename: '',
+      size: '',
+      type: '',
+      preview: '',
+      raw: '',
+      error: '',
+    })
+    this.props.onRoomImageChange({
+      filename: '',
+      size: '',
+      type: '',
+      preview: '',
+      raw: '',
+      error: '',
+    })
   }
 
   render() {
     return (
-      <Container>
+      <Fragment>
         <H2>ROOM FLOORPLAN</H2>
         <Dropzone
           accept="image/*"
           onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
         >
-          <ActionIcon/>
+          <ActionIcon />
           <div>
-            {this.state.filename === '' ? (
-                'Drop an image file here (or click) to load it.'
-            ) : (
-                `${this.state.filename} - ${this.state.size} bytes`
-            )
-            }
+            {this.state.filename === ''
+              ? 'Drop an image file here (or click) to load it.'
+              : `${this.state.filename} - ${this.state.size} bytes`}
           </div>
           <div style={{ height: `12px`, marginBottom: `10px` }}>
             {this.state.error === '' ? '' : `${this.state.error}`}
           </div>
         </Dropzone>
 
-        <FlatButton style={FlatButtonStyle} backgroundColor={`${colors.BLACK}`} onClick={this.resetImage} secondary>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={this.resetImage}
+        >
           RESET IMAGE
-        </FlatButton>
-
-      </Container>
+        </Button>
+      </Fragment>
     )
   }
-
 }
 
 ImageUploader.propTypes = {
@@ -116,4 +136,7 @@ const mapDispatchToProps = dispatch => ({
   onRoomImageChange: image => dispatch(setRoomImage(image)),
 })
 
-export default connect(null,mapDispatchToProps)(ImageUploader)
+export default connect(
+  null,
+  mapDispatchToProps
+)(ImageUploader)

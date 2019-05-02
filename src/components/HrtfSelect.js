@@ -1,21 +1,17 @@
 /* global parseInt */
-import React, { PureComponent } from 'react'
+import React, { Fragment, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 import { values } from 'lodash'
-import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem'
+import { MenuItem } from '@material-ui/core'
 
 import {
   setHrtfFilename,
   setHighPerformanceMode,
   setHighQualityMode
 } from 'src/actions/listener.actions.js'
-import * as colors from 'src/styles/colors.js'
-import { H3 } from 'src/styles/elements'
+import { FieldGroup, FullWidthSelect, H3 } from 'src/styles/elements.js'
 import { SpatializationMode } from 'src/constants'
-
 
 const hrtfFunctions = [
   'IRC1008',
@@ -42,23 +38,6 @@ function getHrtfFromFilename(url) {
   }
 }
 
-const Container = styled.div`
-  width: 85%
-  margin: auto;
-`
-
-const DropDownMenuStyle = {
-  width: '100%',
-}
-
-const IconStyle = {
-  fill: colors.BLACK,
-}
-
-const UnderlineStyle = {
-  borderTop: `solid 1px ${colors.BLACK}`,
-}
-
 /**
  * Hrtf Select
  */
@@ -73,6 +52,8 @@ class HrtfSelect extends PureComponent {
       [key]: newValue,
     }
 
+    console.log('handleChange', { key, newValue })
+
     onChange(getHrtfFilename(newHrtf.fn, newHrtf.len))
 
     this.props.spatializationMode === SpatializationMode.HighQuality ?
@@ -82,46 +63,40 @@ class HrtfSelect extends PureComponent {
   }
 
   render() {
-    const { value, onChange } = this.props
+    const { value } = this.props
 
     const { fn, len } = getHrtfFromFilename(value)
 
     return (
-      <Container>
-        <H3>HRTF function</H3>
-        <DropDownMenu
-          style={DropDownMenuStyle}
-          iconStyle={IconStyle}
-          underlineStyle={UnderlineStyle}
-          value={fn}
-          onChange={(evt, index, value) => this.handleChange('fn', value)}
-        >
-          {hrtfFunctions.map(hrtfFunction => (
-            <MenuItem
-              key={hrtfFunction}
-              value={hrtfFunction}
-              primaryText={hrtfFunction}
-            />
-          ))}
-        </DropDownMenu>
+      <Fragment>
+        <FieldGroup>
+          <H3>HRTF function</H3>
+          <FullWidthSelect
+            value={fn}
+            onChange={(evt) => this.handleChange('fn', evt.target.value)}
+          >
+            {hrtfFunctions.map(hrtfFunction => (
+              <MenuItem key={hrtfFunction} value={hrtfFunction}>
+                {hrtfFunction}
+              </MenuItem>
+            ))}
+          </FullWidthSelect>
+        </FieldGroup>
 
-        <H3>HRTF sample length</H3>
-        <DropDownMenu
-          style={DropDownMenuStyle}
-          iconStyle={IconStyle}
-          underlineStyle={UnderlineStyle}
-          value={len}
-          onChange={(evt, index, value) => this.handleChange('len', value)}
-        >
-          {hrtfLengths.map(hrtfLength => (
-            <MenuItem
-              key={hrtfLength}
-              value={hrtfLength}
-              primaryText={`${hrtfLength} samples`}
-            />
-          ))}
-        </DropDownMenu>
-      </Container>
+        <FieldGroup>
+          <H3>HRTF sample length</H3>
+          <FullWidthSelect
+            value={len}
+            onChange={(evt) => this.handleChange('len', evt.target.value)}
+          >
+            {hrtfLengths.map(hrtfLength => (
+              <MenuItem key={hrtfLength} value={hrtfLength}>
+                {`${hrtfLength} samples`}
+              </MenuItem>
+            ))}
+          </FullWidthSelect>
+        </FieldGroup>
+      </Fragment>
     )
   }
 }

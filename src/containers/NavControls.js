@@ -1,17 +1,16 @@
-import React, { Component} from "react"
-import { connect } from "react-redux"
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { values } from 'lodash'
 import * as colors from 'src/styles/colors'
 
-import FlatButton from "material-ui/FlatButton"
-import PlayIcon from "material-ui/svg-icons/av/play-arrow"
-import StopIcon from "material-ui/svg-icons/av/stop"
-import RecordIcon from "material-ui/svg-icons/av/fiber-manual-record"
-import SettingsIcon from "material-ui/svg-icons/action/settings"
-import ArrowIcon from "material-ui/svg-icons/navigation/chevron-right"
-import ArrowsIcon from "material-ui/svg-icons/av/games"
+import { IconButton } from '@material-ui/core'
+import PlayIcon from '@material-ui/icons/PlayArrow'
+import StopIcon from '@material-ui/icons/Stop'
+import RecordIcon from '@material-ui/icons/FiberManualRecord'
+import SettingsIcon from '@material-ui/icons/Settings'
+import ArrowIcon from '@material-ui/icons/ChevronRight'
+import ArrowsIcon from '@material-ui/icons/Games'
 
 import { PlaybackState } from 'src/constants.js'
 import {
@@ -31,67 +30,65 @@ const SettingsButtonStyle = {
   minWidth: '48px',
   minHeight: '48px',
   padding: '0px 0px',
-  marginLeft: 'auto'
+  marginLeft: 'auto',
 }
 /* ========================================================================== */
 /* NAV CONTROLS */
 /* ========================================================================== */
 class NavControls extends Component {
-
   toggleSettings = () => {
-    this.props.showSettingsDrawer ? this.props.onHideSettingsDrawer() : this.props.onShowSettingsDrawer()
+    this.props.showSettingsDrawer
+      ? this.props.onHideSettingsDrawer()
+      : this.props.onShowSettingsDrawer()
   }
 
   toggleArrows = () => {
-    this.props.showArrowsDrawer ? this.props.onHideArrowsDrawer() : this.props.onShowArrowsDrawer()
+    this.props.showArrowsDrawer
+      ? this.props.onHideArrowsDrawer()
+      : this.props.onShowArrowsDrawer()
   }
 
   /* ------------------------------------------------------------------------ */
   render() {
-    const DrawerIcon = this.props.showSettingsDrawer ?
-      <ArrowIcon color={colors.WHITE}/> : <SettingsIcon color={colors.WHITE}/>
-
-    const PlayButtonIcon =
-      (this.props.playbackState === PlaybackState.PLAY || this.props.playbackState === PlaybackState.RECORD) ?
-      <PlayIcon color={colors.RED}/> : <PlayIcon color={colors.WHITE}/>
-
-    const RecordButtonIcon = this.props.playbackState === PlaybackState.RECORD ?
-      <RecordIcon color={colors.RED}/> : <RecordIcon color={colors.WHITE}/>
+    const DrawerIcon = this.props.showSettingsDrawer ? (
+      <ArrowIcon color="secondary" />
+    ) : (
+      <SettingsIcon color="secondary" />
+    )
 
     return (
       <React.Fragment>
-        <FlatButton
-          icon={PlayButtonIcon}
+        <IconButton
           style={FlatButtonStyle}
           disabled={this.props.playbackState === PlaybackState.PLAY}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.PLAY)}
-        />
+        >
+          <PlayIcon color={this.props.playbackState === PlaybackState.PLAY ? 'error' : 'secondary'} />
+        </IconButton>
 
-        <FlatButton
-          icon={<StopIcon color={colors.WHITE}/>}
+        <IconButton
           style={FlatButtonStyle}
           disabled={this.props.playbackState === PlaybackState.STOP}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.STOP)}
-        />
+        >
+          <StopIcon color="secondary" />
+        </IconButton>
 
-        <FlatButton
-          icon={RecordButtonIcon}
+        <IconButton
           style={FlatButtonStyle}
           disabled={this.props.playbackState === PlaybackState.RECORD}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.RECORD)}
-        />
+        >
+          <RecordIcon color={this.props.playbackState === PlaybackState.RECORD ? 'error' : 'secondary'} />
+        </IconButton>
 
-        <FlatButton
-          icon={<ArrowsIcon color={colors.WHITE}/>}
-          style={FlatButtonStyle}
-          onClick={this.toggleArrows}
-        />
+        <IconButton style={FlatButtonStyle} onClick={this.toggleArrows}>
+          <ArrowsIcon color="secondary" />
+        </IconButton>
 
-        <FlatButton
-          icon={DrawerIcon}
-          style={SettingsButtonStyle}
-          onClick={this.toggleSettings}
-        />
+        <IconButton style={SettingsButtonStyle} onClick={this.toggleSettings}>
+          {DrawerIcon}
+        </IconButton>
       </React.Fragment>
     )
   }
@@ -127,4 +124,7 @@ const mapDispatchToProps = dispatch => ({
   onHideArrowsDrawer: () => dispatch(hideArrowsDrawer()),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(NavControls)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NavControls)

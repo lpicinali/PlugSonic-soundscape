@@ -1,20 +1,29 @@
 import React, { PureComponent } from 'react'
 import { Provider } from 'react-redux'
-import store from 'src/store.js'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from "material-ui/styles/getMuiTheme"
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
+import store from 'src/store.js'
 import App from 'src/containers/App.js'
 import { GlobalStyle } from 'src/containers/ContextualApp.style'
 import * as colors from 'src/styles/colors'
 
-const muiTheme = getMuiTheme({
+const theme = createMuiTheme({
   palette: {
-    primary1Color: colors.BLACK,
-    accent1Color: colors.WHITE,
-    accent2Color: colors.LIGHTGREY,
-    textColor: colors.BLACK,
-    alternateTextColor: colors.WHITE,
+    primary: {
+      main: colors.BLACK,
+    },
+    secondary: {
+      main: colors.WHITE,
+    },
+    error: {
+      main: colors.RED,
+    },
+    // accent2Color: colors.LIGHTGREY,
+    // textColor: colors.BLACK,
+    // alternateTextColor: colors.WHITE,
+  },
+  typography: {
+    useNextVariants: true,
   },
 })
 
@@ -23,10 +32,10 @@ class ContextualApp extends PureComponent {
   render() {
     return (
       <Provider store={store}>
-        <MuiThemeProvider muiTheme={muiTheme}>
+        <MuiThemeProvider theme={theme}>
           <React.Fragment>
-            <GlobalStyle/>
-            <App/>
+            <GlobalStyle />
+            <App />
           </React.Fragment>
         </MuiThemeProvider>
       </Provider>

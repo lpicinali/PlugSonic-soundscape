@@ -1,45 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { map } from 'lodash'
-
-import FlatButton from 'material-ui/FlatButton'
-import TextField from 'material-ui/TextField'
+import {
+  Button,
+  FormHelperText,
+  TextField,
+} from '@material-ui/core'
 
 import { SourceOrigin } from 'src/constants.js'
 import { fetchAudioBufferRaw } from 'src/utils.js'
 import { addSource } from 'src/actions/sources.actions.js'
 import { storeSourceAudioBuffer } from 'src/audio/engine.js'
 import { Dropzone, ActionIcon } from 'src/components/SourceUploader.style.js'
-import * as colors from 'src/styles/colors.js'
-import { H2 } from 'src/styles/elements.js'
+import { PaddedFormControl, PanelContents } from 'src/styles/elements.js'
 
-/* ========================================================================== */
-
-const FlatButtonStyle = {
-  width: '85%',
-  margin: `auto`,
-  textColor: `${colors.WHITE}`,
-}
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
-export const textfieldStyle = {
-  marginLeft: `20px`,
-  width: `85%`,
-}
-export const errorStyle = {
-  textColor: `colors.BLACK`,
-}
-const underlineStyle = {
-  borderColor: `colors.BLACK`,
-}
-const underlineFocusStyle = {
-  borderColor: `colors.BLACK`,
-}
 /* ========================================================================== */
 /* SOURCE UPLOADER */
 /* ========================================================================== */
@@ -153,7 +128,7 @@ class SourceUploader extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <Container>
+      <PanelContents>
         <Dropzone
           accept="audio/mp3, audio/mpeg"
           onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
@@ -172,32 +147,30 @@ class SourceUploader extends Component {
           </div>
         </Dropzone>
 
-        <TextField
-          id="name"
-          type="text"
-          value={this.state.name}
-          errorText={this.state.errorTextField}
-          floatingLabelFixed
-          // floatingLabelFocusStyle={tfFloatingLabelFocusStyle}
-          // floatingLabelStyle={tfFloatingLabelStyle}
-          floatingLabelText="Name"
-          onChange={this.handleTextFieldChange}
-          // inputStyle={tfInputStyle}
-          style={textfieldStyle}
-          underlineFocusStyle={underlineFocusStyle}
-          underlineStyle={underlineStyle}
-        />
+        <PaddedFormControl fullWidth error={this.state.errorTextField !== ''}>
+          <TextField
+            fullWidth
+            id="name"
+            type="text"
+            value={this.state.name}
+            label="Name"
+            onChange={this.handleTextFieldChange}
+          />
+          {this.state.errorTextField !== '' && (
+            <FormHelperText>{this.state.errorTextField}</FormHelperText>
+          )}
+        </PaddedFormControl>
 
-        <FlatButton
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
           disabled={this.state.name === '' || this.state.errorTextField !== ''}
-          style={FlatButtonStyle}
-          backgroundColor={`${colors.BLACK}`}
           onClick={this.handleAddSource}
-          secondary
         >
           ADD SOURCE
-        </FlatButton>
-      </Container>
+        </Button>
+      </PanelContents>
     )
   }
 }

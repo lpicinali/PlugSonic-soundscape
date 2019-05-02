@@ -1,21 +1,26 @@
-import React, { PureComponent } from 'react'
+import React, { Fragment, PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import {
   Button,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormGroup,
+  ListItem,
+  ListItemText,
+  MenuItem,
+  Select,
+  Switch,
 } from '@material-ui/core'
-import { ListItem } from 'material-ui/List'
-import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem'
-import Slider from 'material-ui/Slider'
-import Toggle from 'material-ui/Toggle'
+import Slider from '@material-ui/lab/Slider'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import { PlaybackTiming, ReachAction } from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
@@ -32,20 +37,18 @@ import {
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
-import * as colors from 'src/styles/colors.js'
-import { H3 } from 'src/styles/elements.js'
-/* ========================================================================== */
-const toggleStyle = {
-  margin: `auto`,
-  marginTop: `20px`,
-  width: `85%`,
-}
+import {
+  FieldBox,
+  FieldGroup,
+  Label,
+  PanelContents,
+  H3,
+  SliderBox,
+  SwitchControlLabel,
+  SwitchBox,
+} from 'src/styles/elements.js'
 
-const toggleLabelStyle = {
-  fontSize: `14px`,
-  textTransform: `uppercase`,
-  letterSpacing: `1px`,
-}
+/* ========================================================================== */
 
 const SliderValue = styled.span`
   float: right;
@@ -64,6 +67,7 @@ function getRelativeDecibelsVolume(gain, minDecibels = -60) {
  */
 class SourcePanel extends PureComponent {
   state = {
+    isOpen: false,
     isPromptingDelete: false,
   }
 
@@ -111,46 +115,49 @@ class SourcePanel extends PureComponent {
       onSourceReachFadeDurationChange,
       onSourceTimingChange,
     } = this.props
-    const { isPromptingDelete } = this.state
+    const { isOpen, isPromptingDelete } = this.state
 
     const nestedItems = []
 
     nestedItems.push(
-      <ListItem
-        key={`${sourceObject.name}-onofftoggle`}
-        primaryText="ON/OFF"
-        rightToggle={
-          <Toggle
-            toggled={sourceObject.selected}
-            onToggle={(event, isEnabled) =>
-              onSourceOnOff(sourceObject.name, isEnabled)
-            }
-          />
-        }
-      />
+      <FormGroup row key={`${sourceObject.name}-onofftoggle`}>
+        <SwitchControlLabel
+          label="ON/OFF"
+          labelPlacement="start"
+          control={
+            <Switch
+              color="primary"
+              checked={sourceObject.selected}
+              onChange={(evt, isSelected) => onSourceOnOff(sourceObject.name, isSelected)}
+            />
+          }
+        />
+      </FormGroup>
     )
 
     nestedItems.push(
-      <ListItem key={`${sourceObject.name}-volume`}>
+      <FieldGroup key={`${sourceObject.name}-volume`}>
         <div>
           <SliderValue>{forceDecimals(getRelativeDecibelsVolume(sourceObject.volume, -60), 2)}</SliderValue>
           <H3>Volume</H3>
         </div>
-        <Slider
-          min={-60}
-          max={0}
-          value={gainToDecibels(sourceObject.volume)}
-          onChange={(event, value) => this.handleSourceVolume(decibelsToGain(value))}
-        />
-      </ListItem>
+        <SliderBox>
+          <Slider
+            min={-60}
+            max={0}
+            value={gainToDecibels(sourceObject.volume)}
+            onChange={(event, value) => this.handleSourceVolume(decibelsToGain(value))}
+          />
+        </SliderBox>
+      </FieldGroup>
     )
 
     nestedItems.push(
-      <ListItem key={`${sourceObject.name}-position`}>
+      <FieldGroup key={`${sourceObject.name}-position`}>
         <H3>Position</H3>
 
         <div>
-          <label>X</label>
+          <Label>X</Label>
           <SliderValue>
             {parseFloat(
               Math.round(-sourceObject.position.y * 100) / 100
@@ -158,16 +165,18 @@ class SourcePanel extends PureComponent {
             m
           </SliderValue>
         </div>
-        <Slider
-          min={-roomSize.width / 2}
-          max={roomSize.width / 2}
-          step={0.01}
-          value={-sourceObject.position.y}
-          onChange={(event, value) => this.handleSourceMove('y', -value)}
-        />
+        <SliderBox>
+          <Slider
+            min={-roomSize.width / 2}
+            max={roomSize.width / 2}
+            step={0.01}
+            value={-sourceObject.position.y}
+            onChange={(event, value) => this.handleSourceMove('y', -value)}
+          />
+        </SliderBox>
 
         <div>
-          <label>Y</label>
+          <Label>Y</Label>
           <SliderValue>
             {parseFloat(
               Math.round(sourceObject.position.x * 100) / 100
@@ -175,16 +184,18 @@ class SourcePanel extends PureComponent {
             m
           </SliderValue>
         </div>
-        <Slider
-          min={-roomSize.depth / 2}
-          max={roomSize.depth / 2}
-          step={0.01}
-          value={sourceObject.position.x}
-          onChange={(event, value) => this.handleSourceMove('x', value)}
-        />
+        <SliderBox>
+          <Slider
+            min={-roomSize.depth / 2}
+            max={roomSize.depth / 2}
+            step={0.01}
+            value={sourceObject.position.x}
+            onChange={(event, value) => this.handleSourceMove('x', value)}
+          />
+        </SliderBox>
 
         <div>
-          <label>Z</label>
+          <Label>Z</Label>
           <SliderValue>
             {parseFloat(
               Math.round(sourceObject.position.z * 100) / 100
@@ -192,130 +203,140 @@ class SourcePanel extends PureComponent {
             m
           </SliderValue>
         </div>
-        <Slider
-          min={0}
-          max={roomSize.height / 2}
-          step={0.01}
-          value={sourceObject.position.z}
-          onChange={(event, value) => this.handleSourceMove('z', value)}
-        />
-      </ListItem>
-    )
-
-    nestedItems.push(
-      <ListItem key="loop">
-        <H3>Loop</H3>
-
-        <Toggle
-          toggled={sourceObject.loop}
-          onToggle={(event, isEnabled) =>
-            onSourceLoopChange(sourceObject.name, isEnabled)
-          }
-        />
-      </ListItem>
-    )
-
-    nestedItems.push(
-      <ListItem key="reach">
-        <H3>Reach</H3>
-
-        <Toggle
-          toggled={sourceObject.reach.isEnabled}
-          onToggle={(event, isEnabled) =>
-            onSourceReachEnabledChange(sourceObject.name, isEnabled)
-          }
-        />
-
-        <div>
-          <label>Radius</label>
-          <SliderValue>{sourceObject.reach.radius} m</SliderValue>
-        </div>
-        <Slider
-          min={0}
-          max={Math.max(roomSize.width, roomSize.height) / 2}
-          step={0.1}
-          value={sourceObject.reach.radius}
-          disabled={sourceObject.reach.isEnabled === false}
-          onChange={(event, value) =>
-            onSourceReachRadiusChange(sourceObject.name, value)
-          }
-        />
-
-        <label>Reach behaviour</label>
-        <DropDownMenu
-          style={{ width: '100%' }}
-          iconStyle={{ fill: colors.BLACK }}
-          underlineStyle={{ borderTop: `solid 1px ${colors.BLACK}` }}
-          value={sourceObject.reach.action}
-          onChange={(event, index, value) =>
-            onSourceReachActionChange(sourceObject.name, value)
-          }
-        >
-          <MenuItem
-            value={ReachAction.TOGGLE_VOLUME}
-            primaryText="Fade in and out"
+        <SliderBox>
+          <Slider
+            min={0}
+            max={roomSize.height / 2}
+            step={0.01}
+            value={sourceObject.position.z}
+            onChange={(event, value) => this.handleSourceMove('z', value)}
           />
-          <MenuItem
-            value={ReachAction.TOGGLE_PLAYBACK}
-            primaryText="Start when entering"
-          />
-        </DropDownMenu>
-
-        <div>
-          <label>Fade duration</label>
-          <SliderValue>{sourceObject.reach.fadeDuration / 1000} s</SliderValue>
-        </div>
-        <Slider
-          min={0}
-          max={20}
-          step={0.1}
-          value={sourceObject.reach.fadeDuration / 1000}
-          disabled={sourceObject.reach.isEnabled === false}
-          onChange={(event, value) =>
-            onSourceReachFadeDurationChange(sourceObject.name, value * 1000)
-          }
-        />
-      </ListItem>
+        </SliderBox>
+      </FieldGroup>
     )
 
     nestedItems.push(
-      <ListItem key="timings">
+      <FieldGroup key="loop">
+        <SwitchBox>
+          <H3>Loop</H3>
+          <Switch
+            color="primary"
+            checked={sourceObject.loop}
+            onChange={(event, isEnabled) =>
+              onSourceLoopChange(sourceObject.name, isEnabled)
+            }
+          />
+        </SwitchBox>
+      </FieldGroup>
+    )
+
+    nestedItems.push(
+      <FieldGroup key="reach">
+        <SwitchBox>
+          <H3>Reach</H3>
+          <Switch
+            color="primary"
+            checked={sourceObject.reach.isEnabled}
+            onChange={(event, isEnabled) =>
+              onSourceReachEnabledChange(sourceObject.name, isEnabled)
+            }
+          />
+        </SwitchBox>
+
+        <FieldBox>
+          <div>
+            <Label>Radius</Label>
+            <SliderValue>{sourceObject.reach.radius} m</SliderValue>
+          </div>
+          <SliderBox>
+            <Slider
+              min={0}
+              max={Math.max(roomSize.width, roomSize.height) / 2}
+              step={0.1}
+              value={sourceObject.reach.radius}
+              disabled={sourceObject.reach.isEnabled === false}
+              onChange={(event, value) =>
+                onSourceReachRadiusChange(sourceObject.name, value)
+              }
+            />
+          </SliderBox>
+        </FieldBox>
+
+        <FieldBox>
+          <Label>Reach behaviour</Label>
+          <Select
+            style={{ width: '100%' }}
+            value={sourceObject.reach.action}
+            onChange={(evt) =>
+              onSourceReachActionChange(sourceObject.name, evt.target.value)
+            }
+          >
+            <MenuItem value={ReachAction.TOGGLE_VOLUME}>Fade in and out</MenuItem>
+            <MenuItem value={ReachAction.TOGGLE_PLAYBACK}>Start when entering</MenuItem>
+          </Select>
+        </FieldBox>
+
+        <FieldBox>
+          <div>
+            <Label>Fade duration</Label>
+            <SliderValue>{sourceObject.reach.fadeDuration / 1000} s</SliderValue>
+          </div>
+          <SliderBox>
+            <Slider
+              min={0}
+              max={20}
+              step={0.1}
+              value={sourceObject.reach.fadeDuration / 1000}
+              disabled={sourceObject.reach.isEnabled === false}
+              onChange={(event, value) =>
+                onSourceReachFadeDurationChange(sourceObject.name, value * 1000)
+              }
+            />
+          </SliderBox>
+        </FieldBox>
+      </FieldGroup>
+    )
+
+    nestedItems.push(
+      <FieldGroup key="timings">
         <H3>Timings</H3>
 
         <p>Play this source after:</p>
 
-        <DropDownMenu
+        <Select
           style={{ width: '100%' }}
-          iconStyle={{ fill: colors.BLACK }}
-          underlineStyle={{ borderTop: `solid 1px ${colors.BLACK}` }}
-          value={sourceObject.timings[PlaybackTiming.PLAY_AFTER]}
-          onChange={(event, index, value) =>
+          displayEmpty
+          value={sourceObject.timings[PlaybackTiming.PLAY_AFTER] || ''}
+          onChange={(evt) =>
             onSourceTimingChange(
               sourceObject.name,
               PlaybackTiming.PLAY_AFTER,
-              value
+              evt.target.value === '' ? null : evt.target.value
             )
           }
         >
+          <MenuItem value=""><em>None</em></MenuItem>
+
           {sources
             .filter(source => source.name !== sourceObject.name)
             .map(source => (
               <MenuItem
                 key={source.name}
                 value={source.name}
-                primaryText={source.name}
                 disabled={source.loop === true}
-              />
+              >
+                {source.name}
+              </MenuItem>
             ))}
-        </DropDownMenu>
-      </ListItem>
+        </Select>
+      </FieldGroup>
     )
 
     nestedItems.push(
-      <ListItem key={`${sourceObject.name}-delete`}>
+      <FieldGroup key={`${sourceObject.name}-delete`}>
         <Button
           variant="contained"
-          color="secondary"
+          color="primary"
           onClick={this.handleSourceDelete}
         >
           Delete
@@ -335,7 +356,6 @@ class SourcePanel extends PureComponent {
 
           <DialogActions>
             <Button
-              color="secondary"
               onClick={() => this.handleSourceDeletionResponse(false)}
             >
               No
@@ -350,16 +370,22 @@ class SourcePanel extends PureComponent {
             </Button>
           </DialogActions>
         </Dialog>
-      </ListItem>
+      </FieldGroup>
     )
 
     return (
-      <ListItem
-        key={sourceObject.name}
-        primaryText={sourceObject.name}
-        primaryTogglesNestedList
-        nestedItems={nestedItems}
-      />
+      <Fragment>
+        <ListItem button onClick={() => this.setState({ isOpen: !isOpen })}>
+          <ListItemText primary={sourceObject.name} />
+          {isOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+
+        <Collapse in={isOpen}>
+          <PanelContents>
+            {nestedItems}
+          </PanelContents>
+        </Collapse>
+      </Fragment>
     )
   }
 }
