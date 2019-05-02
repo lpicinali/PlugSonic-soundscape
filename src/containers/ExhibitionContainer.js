@@ -25,7 +25,6 @@ const chipStyle = {
 const ChipWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-left: 20px;
 `
 /* ========================================================================== */
 
@@ -197,11 +196,10 @@ class ExhibitionContainer extends Component {
           {this.state.exhibitionTags.map(tag => (
             <Chip
               key={tag.key}
-              onRequestDelete={() => this.handleRequestDelete(tag.key)}
+              label={tag.label}
+              onDelete={() => this.handleRequestDelete(tag.key)}
               style={chipStyle}
-            >
-              {tag.label}
-            </Chip>
+            />
           ))}
         </ChipWrapper>
 

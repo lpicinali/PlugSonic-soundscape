@@ -31,6 +31,7 @@ const SettingsDrawer = styled.div`
   flex-shrink: 1;
   flex-grow: 1;
   overflow-y: scroll;
+  overflow-x: hidden;
   background: ${colors.WHITE};
   transition: width 0.5s;
   border: 1px solid ${colors.BLACK};
