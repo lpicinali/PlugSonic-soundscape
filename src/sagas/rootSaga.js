@@ -21,7 +21,6 @@ import {
   recordStart,
   recordStop,
   setSourceLoop,
-  // setMasterVolume,
   setSourceVolume,
   destroySourceAudioChain,
   storeSourceAudioBuffer,
