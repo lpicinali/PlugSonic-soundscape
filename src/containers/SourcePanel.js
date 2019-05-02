@@ -24,6 +24,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import { PlaybackTiming, ReachAction } from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
+import { decibelsToGain, forceDecimals, gainToDecibels } from 'src/utils.js'
 import {
   deleteSources,
   setSourceLoop,
@@ -53,6 +54,10 @@ const SliderValue = styled.span`
   float: right;
   text-transform: none;
 `
+
+function getRelativeDecibelsVolume(gain, minDecibels = -60) {
+  return 1 - (gainToDecibels(gain) / minDecibels)
+}
 
 /**
  * Source Panel
@@ -133,15 +138,15 @@ class SourcePanel extends PureComponent {
     nestedItems.push(
       <FieldGroup key={`${sourceObject.name}-volume`}>
         <div>
-          <SliderValue>{sourceObject.volume}</SliderValue>
+          <SliderValue>{forceDecimals(getRelativeDecibelsVolume(sourceObject.volume, -60), 2)}</SliderValue>
           <H3>Volume</H3>
         </div>
         <SliderBox>
           <Slider
-            min={0}
-            max={1}
-            value={sourceObject.volume}
-            onChange={(event, value) => this.handleSourceVolume(value)}
+            min={-60}
+            max={0}
+            value={gainToDecibels(sourceObject.volume)}
+            onChange={(event, value) => this.handleSourceVolume(decibelsToGain(value))}
           />
         </SliderBox>
       </FieldGroup>
