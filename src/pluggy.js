@@ -91,17 +91,16 @@ export let sessionToken = Pluggy.getToken()
 
 
 function getApiCallback(responseText) {
-  const response = JSON.parse(responseText)
   console.log('API CALLBACK')
-  console.log(response)
+  console.log(responseText)
 }
 
 function getApiErrorCallback(responseText) {
     console.log('API ERROR CALLBACK')
     console.log(responseText)
 }
-httpGetSync("develop.pluggy.eu", getApiCallback, getApiErrorCallback, sessionToken)
-httpGetSync("beta.pluggy.eu", getApiCallback, getApiErrorCallback, sessionToken)
+httpGetSync("https://develop.pluggy.eu/api/v1", getApiCallback, getApiErrorCallback, sessionToken)
+httpGetSync("https://beta.pluggy.eu/api/v1", getApiCallback, getApiErrorCallback, sessionToken)
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
