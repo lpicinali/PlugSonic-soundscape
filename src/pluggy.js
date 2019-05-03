@@ -85,7 +85,7 @@ console.log(hostname)
 console.log("ancestor origins")
 console.log(location.ancestorOrigins)
 console.log("parent")
-console.log(window.parent.location)
+console.log(window.top)
 
 
 export let API
