@@ -3,7 +3,16 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { map } from 'lodash'
-import { Button, Chip, TextField } from '@material-ui/core'
+import {
+  Button,
+  Chip,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core'
 
 import {
   API,
@@ -38,6 +47,11 @@ class ExhibitionContainer extends Component {
     exhibitionNewTag: '',
     exhibitionTags: exhibitionTags,
     exhibitionId: exhibitionId,
+    isSaveDialogOpen: false,
+    saveDialogText: '',
+    isPublishCompleted: false,
+    publishDialogText: '',
+    isPublished: false,
   }
 
   createExhibition = () => {
@@ -99,6 +113,17 @@ class ExhibitionContainer extends Component {
   updateExhibitionCallback = responseText => {
     const updatedExhibition = JSON.parse(responseText)
     console.log(updatedExhibition)
+    if (updatedExhibition.success) {
+      this.setState({
+        isSaveDialogOpen: true,
+        saveDialogText: 'Save Exhibition Successfull'
+      })
+    } else {
+      this.setState({
+        isSaveDialogOpen: true,
+        saveDialogText: 'Save Exhibition Unsuccessfull. Try Again.'
+      })
+    }
   }
 
   handleSaveExhibition = () => {
@@ -213,6 +238,26 @@ class ExhibitionContainer extends Component {
           >
             SAVE
           </Button>
+
+          <Dialog
+            open={this.state.isSaveDialogOpen}
+          >
+            <DialogTitle>Save Exhibition</DialogTitle>
+
+            <DialogContent>
+              <DialogContentText>
+                {this.state.saveDialogText}
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+              <Button
+                onClick={() => this.setState({ isSaveDialogOpen: false })}
+              >
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
         </FieldBox>
 
         <FieldBox>
