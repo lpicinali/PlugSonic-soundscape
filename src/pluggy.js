@@ -77,22 +77,15 @@ export function httpPutAsync(url, callback, body, token, type) {
 }
 
 // ========================== SET API ================================== //
-console.log("location")
-console.log(window.location)
 const hostname = window.location.hostname
-console.log("hostname")
-console.log(hostname)
-console.log("ancestor origins")
-console.log(location.ancestorOrigins)
-console.log("parent")
-console.log(window.top)
-
 let url = (window.location !== window.parent.location)
             ? document.referrer
             : document.location.href
 console.log("URL")
 console.log(url)
 
+console.log("parent.location")
+console.log(window.parent.location)
 
 export let API
 // eslint-disable-next-line
