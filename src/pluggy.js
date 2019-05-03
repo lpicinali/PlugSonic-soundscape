@@ -84,16 +84,29 @@ console.log("hostname")
 console.log(hostname)
 console.log("ancestor origins")
 console.log(location.ancestorOrigins)
+
 export let API
-export let sessionToken
+// eslint-disable-next-line
+export let sessionToken = Pluggy.getToken()
+
+
+function getApiCallback(responseText) {
+  const response = JSON.parse(responseText)
+  console.log('API CALLBACK')
+  console.log(response)
+}
+
+function getApiErrorCallback(responseText) {
+    console.log('API ERROR CALLBACK')
+    console.log(responseText)
+}
+httpGetSync("develop.pluggy.eu", getApiCallback, getApiErrorCallback, sessionToken)
+httpGetSync("beta.pluggy.eu", getApiCallback, getApiErrorCallback, sessionToken)
+
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
-  // eslint-disable-next-line
-  sessionToken = Pluggy.getToken()
 } else if (hostname === "beta.pluggy.eu") {
   API = "https://beta.pluggy.eu/api/v1"
-  // eslint-disable-next-line
-  sessionToken = Pluggy.getToken()
 }
 console.log("API url")
 console.log(API)
