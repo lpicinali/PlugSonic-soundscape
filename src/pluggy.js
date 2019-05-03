@@ -78,6 +78,8 @@ export function httpPutAsync(url, callback, body, token, type) {
 
 // ========================== SET API ================================== //
 const hostname = window.location.hostname
+console.log("hostname")
+console.log(hostname)
 export let API
 export let sessionToken
 if (hostname === "develop.pluggy.eu") {
@@ -89,6 +91,8 @@ if (hostname === "develop.pluggy.eu") {
   // eslint-disable-next-line
   sessionToken = Pluggy.getToken()
 }
+console.log("API url")
+console.log(API)
 
 // =================== RETRIEVE EXHIBITION ============================= //
 export let userId = ''
