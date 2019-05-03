@@ -137,7 +137,7 @@ class ExhibitionContainer extends Component {
   handlePublishExhibition = () => {
     // exhibition object
     const exhibition = {
-      public: true,
+      public: !this.state.isPublished,
     }
 
     httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.publishExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
@@ -149,12 +149,12 @@ class ExhibitionContainer extends Component {
     if (publishExhibition.success) {
       this.setState({
         isPublishDialogOpen: true,
-        publishDialogText: 'Publish Exhibition Successfull'
+        publishDialogText: this.state.isPublished ? 'Publish Exhibition Successfull':'Unpublish Exhibition Successfull'
       })
     } else {
       this.setState({
         isPublishDialogOpen: true,
-        publishDialogText: 'Publish Exhibition Unsuccessfull. Try Again.'
+        publishDialogText: this.state.isPublished ? 'Publish Exhibition Unsuccessfull. Try Again.':'Unpublish Exhibition Unuccessfull. Try Again'
       })
     }
   }
@@ -279,7 +279,7 @@ class ExhibitionContainer extends Component {
             disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
             onClick={this.handlePublishExhibition}
           >
-            PUBLISH
+            {this.state.isPublished ? 'PUBLISH':'UNPUBLISH'}
           </Button>
 
           <Dialog
