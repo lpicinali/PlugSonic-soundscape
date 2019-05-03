@@ -84,23 +84,26 @@ console.log("hostname")
 console.log(hostname)
 console.log("ancestor origins")
 console.log(location.ancestorOrigins)
+console.log("parent")
+console.log(window.parent.location)
+
 
 export let API
 // eslint-disable-next-line
 export let sessionToken = Pluggy.getToken()
 
 
-function getApiCallback(responseText) {
-  console.log('API CALLBACK')
-  console.log(responseText)
-}
-
-function getApiErrorCallback(responseText) {
-    console.log('API ERROR CALLBACK')
-    console.log(responseText)
-}
-httpGetSync("https://develop.pluggy.eu/api/v1", getApiCallback, getApiErrorCallback, sessionToken)
-httpGetSync("https://beta.pluggy.eu/api/v1", getApiCallback, getApiErrorCallback, sessionToken)
+// function getApiCallback(responseText) {
+//   console.log('API CALLBACK')
+//   console.log(responseText)
+// }
+//
+// function getApiErrorCallback(responseText) {
+//     console.log('API ERROR CALLBACK')
+//     console.log(responseText)
+// }
+// httpGetSync("https://develop.pluggy.eu/api/v1", getApiCallback, getApiErrorCallback, sessionToken)
+// httpGetSync("https://beta.pluggy.eu/api/v1", getApiCallback, getApiErrorCallback, sessionToken)
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
