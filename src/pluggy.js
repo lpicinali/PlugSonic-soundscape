@@ -77,6 +77,9 @@ export function httpPutAsync(url, callback, body, token, type) {
 }
 
 // ========================== SET API ================================== //
+const location = window.location
+console.log("location")
+console.log(location)
 const hostname = window.location.hostname
 console.log("hostname")
 console.log(hostname)
