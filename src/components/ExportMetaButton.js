@@ -1,25 +1,34 @@
-import React, { Component } from 'react'
+import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import FileSaver from 'file-saver'
 import Blob from 'blob'
 import { map } from 'lodash'
-import { Button } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core'
 
 /* ========================================================================== */
 /* EXPORT META BUTTON */
 /* ========================================================================== */
 class ExportMetaButton extends Component {
-  handleExportSoundscapeMeta = () => {
-    try {
-      const isFileSaverSupported = !!new Blob()
-    } catch (e) {
-      alert('The File APIs are not fully supported in this browser.')
-    }
+  state = {
+    isExportDialogOpen: false,
+  }
 
-    // const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
+  handleExportMetaResponse = (confirm) => {
+    if (confirm) {
+      try {
+        const isFileSaverSupported = !!new Blob()
+      } catch (e) {
+        console.log('The File APIs are not fully supported in this browser.')
+      }
 
-    // if (res === true) {
       const soundscape = {
         sources: this.props.sources,
         listener: this.props.listener,
@@ -35,22 +44,54 @@ class ExportMetaButton extends Component {
       const json = JSON.stringify(clone, null, 2)
 
       const blob = new File([json], { type: 'application/json' })
-      alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
       FileSaver.saveAs(blob, 'soundscape_meta.json')
-    // }
+    }
+
+    this.setState({isExportDialogOpen: false})
   }
 
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        onClick={this.handleExportSoundscapeMeta}
-      >
-        METADATA
-      </Button>
+      <Fragment>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={() => this.setState({isExportDialogOpen: true})}
+        >
+          METADATA
+        </Button>
+
+        <Dialog
+          open={this.state.isExportDialogOpen}
+          onClose={() => this.handleExportMetaResponse(false)}
+        >
+          <DialogTitle>Export Soundscape Metadata</DialogTitle>
+
+          <DialogContent>
+            <DialogContentText>
+              This action may require some time. Please wait for the soundscape to be ready for export. Press OK to continue...
+            </DialogContentText>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              onClick={() => this.handleExportMetaResponse(false)}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleExportMetaResponse(true)}
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Fragment>
     )
   }
 }

@@ -322,12 +322,7 @@ const mapStateToProps = state => ({
   sources: state.sources.sources,
 })
 
-const mapDispatchToProps = dispatch => ({
-  // onAddSource: (filename, name, url, assetId, mediaId) =>
-  //   dispatch(addSourceRemote(filename, name, url, assetId, mediaId)),
-})
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(ExhibitionContainer)
