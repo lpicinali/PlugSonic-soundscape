@@ -76,49 +76,42 @@ export function httpPutAsync(url, callback, body, token, type) {
   xmlHttp.send(body);
 }
 
-
-// eslint-disable-next-line
-export const API = 'https://develop.pluggy.eu/api/v1'
-
-/*
-  Use this within the social platform
-*/
-export const sessionToken = Pluggy.getToken()
-/*
-  Use this out of the social platform
-*/
-// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTUzMzk0OTYsImV4cCI6MTU1NTQyNTg5Nn0.Ja7hREiNtm9bLEudTETvkSZsr8emnL8iMK7R57wAgxc'
+// ========================== SET API ================================== //
+const hostname = window.location.hostname
+export let API
+export let sessionToken
+if (hostname === "develop.pluggy.eu") {
+  API = "https://develop.pluggy.eu/api/v1"
+  // eslint-disable-next-line
+  sessionToken = Pluggy.getToken()
+} else if (hostname === "beta.pluggy.eu") {
+  API = "https://beta.pluggy.eu/api/v1"
+  // eslint-disable-next-line
+  sessionToken = Pluggy.getToken()
+}
 
 // =================== RETRIEVE EXHIBITION ============================= //
-/*
-  Use this within the social platform
-*/
-export const exhibitionUrl = window.location.href
-export const exhibitionQuery = window.location.search.substring(1)
-export const exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
-/*
-  Use this out of the social platform
-*/
-// export const exhibitionId = '5cb49878d8f521a966ed2b1d'
+export let userId = ''
+export let exhibitionTitle = ''
+export let exhibitionDescription = ''
+export let exhibitionTags = []
+export let exhibitionMetadata = []
 
-let ownerId = ''
-let title = ''
-let description = ''
-let tags = []
-let metadata = []
+export let exhibitionQuery
+export let exhibitionId
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
   console.log('RETRIEVE EXHIBITION RESPONSE')
   console.log(response)
   if (response.success) {
-    ownerId = response.data.owner._id
-    title = response.data.title
-    description = response.data.description
-    tags = response.data.tags.map((tag,index) => (
+    userId = response.data.owner._id
+    exhibitionTitle = response.data.title
+    exhibitionDescription = response.data.description
+    exhibitionTags = response.data.tags.map((tag,index) => (
       {key: index, label: tag}
     ))
-    metadata = response.data.metadata
+    exhibitionMetadata = response.data.metadata
   }
 }
 
@@ -127,21 +120,9 @@ function getExhibitionErrorCallback(responseText) {
     console.log(responseText)
 }
 
-/*
-  comment to test in local
-*/
-httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 
-export const userId = ownerId
-export const exhibitionTitle = title
-export const exhibitionDescription = description
-export const exhibitionTags = tags
-export const exhibitionMetadata = metadata
-
-// console.log('EXHIBITION:')
-// console.log(`Id: ${exhibitionId}`)
-// console.log(`Title: ${exhibitionTitle}`)
-// console.log(`Description: ${exhibitionDescription}`)
-// console.log(`Tags: ${exhibitionTags}`)
-// console.log(`Metadata:`)
-// console.log(exhibitionMetadata)
+if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
+  exhibitionQuery = window.location.search.substring(1)
+  exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+  httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+}
