@@ -83,6 +83,9 @@ console.log(location)
 const hostname = window.location.hostname
 console.log("hostname")
 console.log(hostname)
+console.log("ancestor origins")
+console.log(location.ancestorOrigins)
+const hostname = window.location.hostname
 export let API
 export let sessionToken
 if (hostname === "develop.pluggy.eu") {
