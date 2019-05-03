@@ -81,8 +81,6 @@ const url = new URL((window.location !== window.parent.location)
             ? document.referrer
             : document.location.href)
 const hostname = url.hostname
-console.log("hostname")
-console.log(hostname)
 
 export let API
 // eslint-disable-next-line
@@ -93,8 +91,6 @@ if (hostname === "develop.pluggy.eu") {
 } else if (hostname === "beta.pluggy.eu") {
   API = "https://beta.pluggy.eu/api/v1"
 }
-console.log("API url")
-console.log(API)
 
 // =================== RETRIEVE EXHIBITION ============================= //
 export let userId = ''
