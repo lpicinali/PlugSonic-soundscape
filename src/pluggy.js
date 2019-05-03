@@ -77,32 +77,16 @@ export function httpPutAsync(url, callback, body, token, type) {
 }
 
 // ========================== SET API ================================== //
-const hostname = window.location.hostname
-let url = (window.location !== window.parent.location)
+const url = new URL((window.location !== window.parent.location)
             ? document.referrer
-            : document.location.href
-console.log("URL")
-console.log(url)
-
-console.log("parent.location")
-console.log(window.parent.location)
+            : document.location.href)
+const hostname = url.hostname
+console.log("hostname")
+console.log(hostname)
 
 export let API
 // eslint-disable-next-line
 export let sessionToken = Pluggy.getToken()
-
-
-// function getApiCallback(responseText) {
-//   console.log('API CALLBACK')
-//   console.log(responseText)
-// }
-//
-// function getApiErrorCallback(responseText) {
-//     console.log('API ERROR CALLBACK')
-//     console.log(responseText)
-// }
-// httpGetSync("https://develop.pluggy.eu/api/v1", getApiCallback, getApiErrorCallback, sessionToken)
-// httpGetSync("https://beta.pluggy.eu/api/v1", getApiCallback, getApiErrorCallback, sessionToken)
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
