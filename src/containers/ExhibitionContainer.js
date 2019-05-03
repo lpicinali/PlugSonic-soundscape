@@ -49,7 +49,7 @@ class ExhibitionContainer extends Component {
     exhibitionId: exhibitionId,
     isSaveDialogOpen: false,
     saveDialogText: '',
-    isPublishCompleted: false,
+    isPublishDialogOpen: false,
     publishDialogText: '',
     isPublished: false,
   }
@@ -144,8 +144,19 @@ class ExhibitionContainer extends Component {
   }
 
   publishExhibitionCallback = (responseText) => {
-    const publishedExhibition = JSON.parse(responseText)
-    console.log(publishedExhibition)
+    const publishExhibition = JSON.parse(responseText)
+    console.log(publishExhibition)
+    if (publishExhibition.success) {
+      this.setState({
+        isPublishDialogOpen: true,
+        publishDialogText: 'Publish Exhibition Successfull'
+      })
+    } else {
+      this.setState({
+        isPublishDialogOpen: true,
+        publishDialogText: 'Publish Exhibition Unsuccessfull. Try Again.'
+      })
+    }
   }
 
   handleTextFieldChange = (event) => {
@@ -266,10 +277,30 @@ class ExhibitionContainer extends Component {
             color="primary"
             fullWidth
             disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
-            onClick={this.handleSaveExhibition}
+            onClick={this.handlePublishExhibition}
           >
             PUBLISH
           </Button>
+
+          <Dialog
+            open={this.state.isPublishDialogOpen}
+          >
+            <DialogTitle>Publish Exhibition</DialogTitle>
+
+            <DialogContent>
+              <DialogContentText>
+                {this.state.publishDialogText}
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+              <Button
+                onClick={() => this.setState({ isPublishDialogOpen: false })}
+              >
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
         </FieldBox>
       </Fragment>
     )
