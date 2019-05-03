@@ -87,6 +87,12 @@ console.log(location.ancestorOrigins)
 console.log("parent")
 console.log(window.top)
 
+let url = (window.location !== window.parent.location)
+            ? document.referrer
+            : document.location.href
+console.log("URL")
+console.log(url)
+
 
 export let API
 // eslint-disable-next-line
