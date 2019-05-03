@@ -149,14 +149,15 @@ class ExhibitionContainer extends Component {
     if (publishExhibition.success) {
       this.setState({
         isPublishDialogOpen: true,
-        publishDialogText: this.state.isPublished ? 'Publish Exhibition Successfull':'Unpublish Exhibition Successfull'
+        publishDialogText: this.state.isPublished ? 'Unpublish Exhibition Successfull':'Publish Exhibition Successfull'
       })
     } else {
       this.setState({
         isPublishDialogOpen: true,
-        publishDialogText: this.state.isPublished ? 'Publish Exhibition Unsuccessfull. Try Again.':'Unpublish Exhibition Unuccessfull. Try Again'
+        publishDialogText: this.state.isPublished ? 'Unpublish Exhibition Unsuccessfull. Try Again.':'Publish Exhibition Unuccessfull. Try Again'
       })
     }
+    this.setState({isPublished: !this.state.isPublished})
   }
 
   handleTextFieldChange = (event) => {
@@ -279,7 +280,7 @@ class ExhibitionContainer extends Component {
             disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
             onClick={this.handlePublishExhibition}
           >
-            {this.state.isPublished ? 'PUBLISH':'UNPUBLISH'}
+            {this.state.isPublished ? 'UNPUBLISH':'PUBLISH'}
           </Button>
 
           <Dialog

@@ -84,13 +84,15 @@ const hostname = url.hostname
 
 export let API
 // eslint-disable-next-line
-export let sessionToken = Pluggy.getToken()
+export const sessionToken = Pluggy.getToken()
+// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTY4OTcxMTAsImV4cCI6MTU1Njk4MzUxMH0.6EygfOC2TBvD33-pf0MNze_gbHsCfTerSTd_XRbDtag'
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
 } else if (hostname === "beta.pluggy.eu") {
   API = "https://beta.pluggy.eu/api/v1"
 }
+// API = "https://develop.pluggy.eu/api/v1"
 
 // =================== RETRIEVE EXHIBITION ============================= //
 export let userId = ''
@@ -122,9 +124,9 @@ function getExhibitionErrorCallback(responseText) {
     console.log(responseText)
 }
 
-
 if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
   exhibitionQuery = window.location.search.substring(1)
   exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+  // exhibitionId = '5ccc5dd7641ea60d81f5be85'
   httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 }
