@@ -200,6 +200,23 @@ function* applyLoopChanges() {
 }
 
 /* ======================================================================== */
+// SPATIALISED
+/* ======================================================================== */
+function* applySpatialisedChanges() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_SOURCE_SPATIALISED)
+
+    const source = yield select(state => state.sources.sources[payload.source])
+    const playbackState = yield select(state => state.controls.playbackState)
+
+    if (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD) {
+      yield call(stopSource, source)
+      yield call(playSource, source)
+    }
+  }
+}
+
+/* ======================================================================== */
 // SOURCE POSITION
 /* ======================================================================== */
 function* applySourcePosition() {
@@ -273,9 +290,10 @@ function* handleSourcesReach() {
 
     const [listener, sources, playbackState] = yield all([
       select(state => state.listener),
-      select(state =>
-        Object.values(state.sources.sources).filter(x => x.spatialised === true)
-      ),
+      // select(state =>
+      //   Object.values(state.sources.sources).filter(x => x.spatialised === true)
+      // ),
+      select(state => Object.values(state.sources.sources)),
       select(state => state.controls.playbackState),
     ])
 
@@ -461,6 +479,7 @@ export default function* rootSaga() {
     // applyMasterVolume(),
     applySourceVolume(),
     applyLoopChanges(),
+    applySpatialisedChanges(),
     handleSourcesReach(),
     handlePlaybackTimings(),
     applyPerformanceMode(),

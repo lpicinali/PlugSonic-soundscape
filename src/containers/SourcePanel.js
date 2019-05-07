@@ -28,6 +28,7 @@ import { decibelsToGain, forceDecimals, gainToDecibels } from 'src/utils.js'
 import {
   deleteSources,
   setSourceLoop,
+  setSourceSpatialised,
   setSourcePosition,
   setSourceReachEnabled,
   setSourceReachAction,
@@ -109,6 +110,7 @@ class SourcePanel extends PureComponent {
       sourceObject,
       onSourceOnOff,
       onSourceLoopChange,
+      onSourceSpatialisationChange,
       onSourceReachEnabledChange,
       onSourceReachActionChange,
       onSourceReachRadiusChange,
@@ -224,6 +226,21 @@ class SourcePanel extends PureComponent {
             checked={sourceObject.loop}
             onChange={(event, isEnabled) =>
               onSourceLoopChange(sourceObject.name, isEnabled)
+            }
+          />
+        </SwitchBox>
+      </FieldGroup>
+    )
+
+    nestedItems.push(
+      <FieldGroup key="spatialisation">
+        <SwitchBox>
+          <H3>Spatialisation</H3>
+          <Switch
+            color="primary"
+            checked={sourceObject.spatialised}
+            onChange={(event, isEnabled) =>
+              onSourceSpatialisationChange(sourceObject.name, isEnabled)
             }
           />
         </SwitchBox>
@@ -401,6 +418,7 @@ SourcePanel.propTypes = {
   onSourceOnOff: PropTypes.func.isRequired,
   onSourceVolumeChange: PropTypes.func.isRequired,
   onSourceLoopChange: PropTypes.func.isRequired,
+  onSourceSpatialisationChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
   onSourceReachEnabledChange: PropTypes.func.isRequired,
   onSourceReachActionChange: PropTypes.func.isRequired,
@@ -420,6 +438,7 @@ const mapDispatchToProps = dispatch => ({
   onSourceVolumeChange: (name, volume) =>
     dispatch(setSourceVolume(name, volume)),
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
+  onSourceSpatialisationChange: (name, spatialised) => dispatch(setSourceSpatialised(name, spatialised)),
   onSourcePositionChange: (name, position) =>
     dispatch(setSourcePosition(name, position)),
   onSourceReachEnabledChange: (name, isEnabled) =>

@@ -27,6 +27,9 @@ export default function(state = initialState, { type, payload }) {
     case 'SET_SOURCE_LOOP':
       return set(['sources', payload.source, 'loop'], payload.loop, state)
 
+    case 'SET_SOURCE_SPATIALISED':
+      return set(['sources', payload.source, 'spatialised'], payload.spatialised, state)
+
     case 'SET_SOURCE_POSITION':
       return set(
         ['sources', payload.source, 'position'],

@@ -110,14 +110,18 @@ export const destroySourceAudioChain = source => {
  *
  * Previously: addSource()
  */
-export const spatializeSource = source => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.addSource(source)
-    sourceVolumes[source.name].connect(
-      spatializer.sources[source.name].processor
-    )
-    spatializer.sources[source.name].processor.connect(masterVolume)
-  })
+export const spatializeSource = (source, spatialised) => {
+  if (spatialised) {
+    getBinauralSpatializer().then(spatializer => {
+      spatializer.addSource(source)
+      sourceVolumes[source.name].connect(
+        spatializer.sources[source.name].processor
+      )
+      spatializer.sources[source.name].processor.connect(masterVolume)
+    })
+  } else {
+    sourceVolumes[source.name].connect(masterVolume)
+  }
 }
 
 export const despatializeSource = source => {
@@ -183,9 +187,7 @@ export const playSource = source => {
   }
 
   createSourceAudioChain(source)
-  if (source.spatialised === true) {
-    spatializeSource(source)
-  }
+  spatializeSource(source, source.spatialised)
 
   sourceNodes[source.name].start(0)
 }
