@@ -68,10 +68,10 @@ export const addSource = ({
   loop,
   selected,
   spatialised,
-  volume
+  volume,
 }) => ({
   type: ActionType.ADD_SOURCE,
-  payload: { 
+  payload: {
     filename,
     name,
     origin,
@@ -83,7 +83,7 @@ export const addSource = ({
     loop,
     selected,
     spatialised,
-    volume
+    volume,
   },
 })
 
@@ -95,4 +95,23 @@ export const deleteSources = sources => ({
 export const importSources = sources => ({
   type: ActionType.IMPORT_SOURCES,
   payload: { sources },
+})
+
+/**
+ * Source gameplay states
+ */
+
+export const setSourceIsPlaying = (name, isPlaying) => ({
+  type: ActionType.SET_SOURCE_IS_PLAYING,
+  payload: { name, isPlaying },
+})
+
+export const setSourceTimingStatus = (name, status) => ({
+  type: ActionType.SET_SOURCE_TIMING_STATUS,
+  payload: { name, status },
+})
+
+export const setSourceIsWithinReach = (name, isWithinReach) => ({
+  type: ActionType.SET_SOURCE_IS_WITHIN_REACH,
+  payload: { name, isWithinReach },
 })

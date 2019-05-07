@@ -14,6 +14,7 @@ const sourceAudioBuffers = {}
 
 const sourceNodes = {}
 const sourceVolumes = {}
+const sourcePlaybackStates = {}
 
 // Master volume
 const masterVolume = context.createGain()
@@ -30,21 +31,22 @@ export const recordStart = () => {
   console.log('Recorder initialised.')
   // eslint-disable-next-line
   recorder && recorder.record()
-  console.log('Recording...');
+  console.log('Recording...')
 }
 /* ======================================================================== */
 // RECORD STOP
 /* ======================================================================== */
 export const recordStop = () => {
   // eslint-disable-next-line
-  recorder && recorder.stop();
+  recorder && recorder.stop()
   console.log('Stopped recording.')
-  const type = "audio/wav"
+  const type = 'audio/wav'
   // eslint-disable-next-line
-  recorder && recorder.exportWAV(blob => {
-    FileSaver.saveAs(blob, 'record.wav')
-  },type)
-  recorder.clear();
+  recorder &&
+    recorder.exportWAV(blob => {
+      FileSaver.saveAs(blob, 'record.wav')
+    }, type)
+  recorder.clear()
 }
 
 /**
@@ -81,7 +83,7 @@ export const createSourceAudioChain = source => {
   node.addEventListener('ended', () => notifySourceEnded(source))
 
   const volume = context.createGain()
-  setVolume(volume.gain, source.volume)
+  setVolume(volume.gain, 0.00001, 0)
   node.connect(volume)
 
   sourceNodes[source.name] = node
@@ -136,11 +138,11 @@ export const despatializeSource = source => {
 /* ======================================================================== */
 // SOURCE VOLUME
 /* ======================================================================== */
-const setVolume = (gainNode, volume, fadeDuration = 10) => {
+const setVolume = (gainNode, volume, fadeDuration = 0) => {
   // This makes fades act sort of naturally when you change
   // volume again within the duration
   gainNode.cancelScheduledValues(context.currentTime)
-  gainNode.setValueAtTime(gainNode.value, context.currentTime)
+  // gainNode.setValueAtTime(gainNode.value, context.currentTime)
 
   // Ramping in the Web Audio API does not allow end values
   // of 0, so we need to make sure to have a tiny little
@@ -151,7 +153,7 @@ const setVolume = (gainNode, volume, fadeDuration = 10) => {
   )
 }
 
-export const setSourceVolume = (name, volume, fadeDuration = 10) => {
+export const setSourceVolume = (name, volume, fadeDuration = 0) => {
   if (sourceVolumes[name]) {
     setVolume(sourceVolumes[name].gain, volume, fadeDuration)
   }
@@ -161,7 +163,8 @@ export const setSourceVolume = (name, volume, fadeDuration = 10) => {
  * Stops a source's audio
  */
 export const stopSource = source => {
-  if (sourceNodes[source.name]) {
+  if (sourceNodes[source.name] && sourcePlaybackStates[source.name] === true) {
+    sourcePlaybackStates[source.name] = false
     sourceNodes[source.name].stop()
   }
 }
@@ -169,9 +172,13 @@ export const stopSource = source => {
 /**
  * Plays a source's audio
  */
-export const playSource = source => {
+export const playSource = (source, volume, fadeDuration) => {
   if (context.state !== 'running') {
     context.resume()
+  }
+
+  if (sourcePlaybackStates[source.name] === true) {
+    return
   }
 
   if (sourceNodes[source.name]) {
@@ -187,7 +194,17 @@ export const playSource = source => {
     spatializeSource(source)
   }
 
+  if (volume !== undefined) {
+    setVolume(sourceVolumes[source.name].gain, volume, fadeDuration)
+  }
+
   sourceNodes[source.name].start(0)
+
+  sourcePlaybackStates[source.name] = true
+}
+
+export const isSourcePlaying = name => {
+  return sourcePlaybackStates[name]
 }
 
 /* ======================================================================== */

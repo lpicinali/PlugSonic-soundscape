@@ -6,18 +6,23 @@ import {
   PlaybackTiming,
   ReachAction,
   SourceOrigin,
+  TimingStatus,
 } from 'src/constants.js'
 import { createSubscriptionSource, fetchAudioBuffer } from 'src/utils.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import {
   addSource,
   deleteSources,
+  setSourceIsPlaying,
+  setSourceIsWithinReach,
   setSourceTiming,
+  setSourceTimingStatus,
 } from 'src/actions/sources.actions.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
   playSource,
   stopSource,
+  isSourcePlaying,
   recordStart,
   recordStop,
   setSourceLoop,
@@ -35,6 +40,33 @@ function isWithinReach(listener, source) {
   return distance <= source.reach.radius
 }
 
+function getSourceFadeDuration(source) {
+  return source.reach.isEnabled &&
+    source.reach.action === ReachAction.TOGGLE_VOLUME
+    ? source.reach.fadeDuration
+    : 0
+}
+
+function* updateSourceStateAtPlaybackState(source, playbackState) {
+  if (
+    playbackState === PlaybackState.PLAY ||
+    playbackState === PlaybackState.RECORD
+  ) {
+    if (source.timings[PlaybackTiming.PLAY_AFTER] === null) {
+      yield put(setSourceIsPlaying(source.name, true))
+    } else {
+      yield put(setSourceTimingStatus(source.name, TimingStatus.CUED))
+    }
+  } else {
+    const timingStatus =
+      source.timings[PlaybackTiming.PLAY_AFTER] === null
+        ? TimingStatus.INDEPENDENT
+        : TimingStatus.CUED
+    yield put(setSourceTimingStatus(source.name, timingStatus))
+    yield put(setSourceIsPlaying(source.name, false))
+  }
+}
+
 /* ======================================================================== */
 // PLAY/STOP
 /* ======================================================================== */
@@ -46,16 +78,7 @@ function* applyPlayStop() {
 
     // eslint-disable-next-line
     for (const source of Object.values(sources)) {
-      if (payload.state === PlaybackState.PLAY || payload.state === PlaybackState.RECORD) {
-        if (
-          source.selected === true &&
-          source.timings[PlaybackTiming.PLAY_AFTER] === null
-        ) {
-          yield call(playSource, source)
-        }
-      } else {
-        yield call(stopSource, source)
-      }
+      yield call(updateSourceStateAtPlaybackState, source, payload.state)
     }
   }
 }
@@ -64,17 +87,19 @@ function* applyPlayStop() {
 // RECORD
 /* ======================================================================== */
 function* applyRecordStartStop() {
-  while(true) {
+  while (true) {
     const prevState = yield select(state => state.controls.playbackState)
     const { payload } = yield take(ActionType.SET_PLAYBACK_STATE)
     if (payload.state === PlaybackState.RECORD) {
       yield call(recordStart)
-    } else if (payload.state === PlaybackState.STOP && prevState === PlaybackState.RECORD) {
+    } else if (
+      payload.state === PlaybackState.STOP &&
+      prevState === PlaybackState.RECORD
+    ) {
       yield call(recordStop)
     }
   }
 }
-
 
 /* ======================================================================== */
 // ADD SOURCE
@@ -90,7 +115,11 @@ function* manageAddSource() {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
     }
 
-    if (source.selected === true && (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD)) {
+    if (
+      source.selected === true &&
+      (playbackState === PlaybackState.PLAY ||
+        playbackState === PlaybackState.RECORD)
+    ) {
       yield call(playSource, source)
     }
   }
@@ -113,17 +142,7 @@ function* applySourceOnOff() {
     const source = yield select(state => state.sources.sources[payload.name])
     const playbackState = yield select(state => state.controls.playbackState)
 
-    if (source.selected === false) {
-      yield call(stopSource, source)
-    } else if (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD) {
-      const listener = yield select(state => state.listener)
-      const isReached =
-        source.reach.isEnabled === false || isWithinReach(listener, source)
-
-      if (isReached === true) {
-        yield call(playSource, source)
-      }
-    }
+    yield call(updateSourceStateAtPlaybackState, source, playbackState)
   }
 }
 
@@ -191,7 +210,10 @@ function* applyLoopChanges() {
 
     yield call(setSourceLoop, source.name, payload.loop)
 
-    if (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD) {
+    if (
+      playbackState === PlaybackState.PLAY ||
+      playbackState === PlaybackState.RECORD
+    ) {
       yield call(stopSource, source)
       yield call(playSource, source)
     }
@@ -251,78 +273,101 @@ function* applySourceVolume() {
   }
 }
 
-function* handleSourcesReach() {
+function* updateSourcesReachedState() {
   while (true) {
-    const prevState = yield select(state => state)
-
-    const { type, payload } = yield take([
+    yield take([
       ActionType.SET_LISTENER_POSITION,
+      ActionType.ADD_SOURCE,
       ActionType.SET_SOURCE_POSITION,
-      ActionType.SET_SOURCE_REACH_ENABLED,
       ActionType.SET_SOURCE_REACH_RADIUS,
-      ActionType.SET_PLAYBACK_STATE,
-      ActionType.SOURCE_ONOFF,
     ])
 
-    // This applies reach to newly activated sources, but does nothing
-    // when deactivated.
-    if (type === ActionType.SOURCE_ONOFF && payload.selected === false) {
-      continue
-    }
-
-    const [listener, sources, playbackState] = yield all([
+    const [listener, sources] = yield all([
       select(state => state.listener),
-      select(state =>
-        Object.values(state.sources.sources).filter(x => x.spatialised === true)
-      ),
-      select(state => state.controls.playbackState),
+      select(state => Object.values(state.sources.sources)),
     ])
 
     // eslint-disable-next-line
     for (const source of sources) {
-      if (source.reach.action === ReachAction.TOGGLE_VOLUME) {
-        // Toggle volume
-        const volume =
-          source.reach.isEnabled === false ||
-          isWithinReach(listener, source) === true
-            ? source.volume
-            : 0
-        yield call(
-          setSourceVolume,
-          source.name,
-          volume,
-          source.reach.fadeDuration
-        )
-      } else if (
-        source.reach.action === ReachAction.TOGGLE_PLAYBACK &&
-        source.selected === true &&
-        (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD)
+      const isSourceReached = isWithinReach(listener, source)
+      if (isSourceReached !== source.gameplay.isWithinReach) {
+        yield put(setSourceIsWithinReach(source.name, isSourceReached))
+      }
+    }
+  }
+}
+
+function* applySourcePlaybackState() {
+  while (true) {
+    const { payload } = yield take([
+      ActionType.SET_SOURCE_IS_PLAYING,
+      ActionType.SET_SOURCE_REACH_ENABLED,
+      ActionType.SET_SOURCE_IS_WITHIN_REACH,
+    ])
+
+    const name = payload.name || payload.source
+    const source = yield select(state => state.sources.sources[name])
+
+    const sourceFadeDuration = getSourceFadeDuration(source)
+
+    if (
+      source.selected === true &&
+      source.gameplay.isPlaying === true &&
+      (source.reach.isEnabled === false ||
+        source.gameplay.isWithinReach === true)
+    ) {
+      // Enter/leave reach area
+      if (
+        source.reach.isEnabled === true &&
+        source.gameplay.isWithinReach === true
       ) {
-        // Toggle playback
-        const isReached =
-          source.reach.isEnabled === false || isWithinReach(listener, source)
+        if (source.reach.action === ReachAction.TOGGLE_VOLUME) {
+          const isSourceNodePlaying = yield call(isSourcePlaying, source.name)
 
-        const prevSource = Object.values(prevState.sources.sources).find(
-          x => x.name === source.name
-        )
-        const wasReached =
-          prevSource !== undefined &&
-          (prevSource.reach.isEnabled === false ||
-            isWithinReach(prevState.listener, prevSource))
-
-        // Stop the source if the listener exited the reach area
-        if (wasReached === true && isReached === false) {
-          yield call(stopSource, source)
+          if (isSourceNodePlaying === true) {
+            // Fade in
+            yield call(
+              setSourceVolume,
+              source.name,
+              source.volume,
+              sourceFadeDuration
+            )
+          } else {
+            // Play and fade in
+            yield call(playSource, source, source.volume, sourceFadeDuration)
+          }
+        } else {
+          // Play
+          yield call(playSource, source, source.volume, 0)
         }
+      }
+      // Reach was disabled
+      else if (source.reach.isEnabled === false) {
+        yield call(setSourceVolume, source.name, source.volume, 0)
+      }
+      // Play the source
+      else {
+        yield call(playSource, source, source.volume, 0)
+      }
+    }
 
-        // Play the source if the listener entered the reach area
-        if (
-          wasReached === false &&
-          isReached === true &&
-          source.timings[PlaybackTiming.PLAY_AFTER] === null
-        ) {
-          yield call(playSource, source)
+    if (
+      source.selected === false ||
+      source.gameplay.isPlaying === false ||
+      (source.reach.isEnabled === true &&
+        source.gameplay.isWithinReach === false)
+    ) {
+      if (source.selected === true && source.gameplay.isPlaying === true) {
+        if (source.reach.action === ReachAction.TOGGLE_VOLUME) {
+          // Fade out
+          yield call(setSourceVolume, source.name, 0, sourceFadeDuration)
+        } else {
+          // Stop source
+          yield call(stopSource, source.name)
         }
+      } else {
+        // Stop source
+        yield call(stopSource, source)
       }
     }
   }
@@ -331,7 +376,7 @@ function* handleSourcesReach() {
 /* ======================================================================== */
 // SOURCE TIMINGS
 /* ======================================================================== */
-function* handlePlaybackTimings() {
+function* updateSourcesTimingStatus() {
   const callbackSource = yield call(
     createSubscriptionSource,
     subscribeToSourceEnd
@@ -340,36 +385,16 @@ function* handlePlaybackTimings() {
   while (true) {
     const { source } = yield call(callbackSource.nextMessage)
 
-    const [dependants, listener] = yield all([
-      select(state =>
-        Object.values(state.sources.sources).filter(
-          x => x.timings[PlaybackTiming.PLAY_AFTER] === source.name
-        )
-      ),
-      select(state => state.listener),
-    ])
+    const dependants = yield select(state =>
+      Object.values(state.sources.sources).filter(
+        x => x.timings[PlaybackTiming.PLAY_AFTER] === source.name
+      )
+    )
 
     // eslint-disable-next-line
     for (const dependant of dependants) {
-      // NOTE: Duplication warning on this stuff
-      const isReached =
-        dependant.reach.isEnabled === false ||
-        isWithinReach(listener, dependant) === true
-
-      if (
-        isReached === true ||
-        dependant.reach.action === ReachAction.TOGGLE_VOLUME
-      ) {
-        yield call(playSource, dependant)
-
-        if (dependant.reach.action === ReachAction.TOGGLE_VOLUME) {
-          yield call(
-            setSourceVolume,
-            dependant.name,
-            isReached ? dependant.volume : 0,
-            dependant.reach.fadeDuration
-          )
-        }
+      if (source.gameplay.timingStatus === TimingStatus.CUED) {
+        yield put(setSourceTimingStatus(dependant.name, TimingStatus.ADMITTED))
       }
     }
   }
@@ -460,8 +485,9 @@ export default function* rootSaga() {
     // applyMasterVolume(),
     applySourceVolume(),
     applyLoopChanges(),
-    handleSourcesReach(),
-    handlePlaybackTimings(),
+    updateSourcesReachedState(),
+    applySourcePlaybackState(),
+    updateSourcesTimingStatus(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),

@@ -5,7 +5,7 @@
 */ /* ---------------------------------------------- */
 import { omit, set } from 'lodash/fp'
 
-import { PlaybackTiming, ReachAction } from 'src/constants.js'
+import { PlaybackTiming, ReachAction, TimingStatus } from 'src/constants.js'
 import { ADEtoXYZ } from 'src/utils.js'
 
 const initialState = {
@@ -80,7 +80,8 @@ export default function(state = initialState, { type, payload }) {
         hidden: false,
         platform_asset_id: payload.assetId || null,
         platform_media_id: payload.mediaId || null,
-        position: payload.position || ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
+        position:
+          payload.position || ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
         // raw: payload.raw,
         reach: payload.reach || {
           isEnabled: true,
@@ -96,6 +97,11 @@ export default function(state = initialState, { type, payload }) {
         spatialised: true,
         url: payload.url || null,
         volume: payload.volume || 1.0,
+        gameplay: {
+          isPlaying: false,
+          timingStatus: TimingStatus.INDEPENDENT,
+          isWithinReach: false,
+        },
       }
 
       azimuthIndex += 1
@@ -113,6 +119,28 @@ export default function(state = initialState, { type, payload }) {
       })
       return { ...state, sources: newSources }
     }
+
+    // GAMEPLAY STATE
+    case 'SET_SOURCE_IS_PLAYING':
+      return set(
+        ['sources', payload.name, 'gameplay', 'isPlaying'],
+        payload.isPlaying,
+        state
+      )
+
+    case 'SET_SOURCE_TIMING_STATUS':
+      return set(
+        ['sources', payload.name, 'gameplay', 'timingStatus'],
+        payload.status,
+        state
+      )
+
+    case 'SET_SOURCE_IS_WITHIN_REACH':
+      return set(
+        ['sources', payload.name, 'gameplay', 'isWithinReach'],
+        payload.isWithinReach,
+        state
+      )
 
     default:
       return state

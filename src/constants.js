@@ -45,6 +45,11 @@ export const ActionType = {
   ADD_SOURCE: 'ADD_SOURCE',
   DELETE_SOURCES: 'DELETE_SOURCES',
   IMPORT_SOURCES: 'IMPORT_SOURCES',
+
+  // SOURCE GAMEPLAY STATE
+  SET_SOURCE_IS_PLAYING: 'SET_SOURCE_IS_PLAYING',
+  SET_SOURCE_TIMING_STATUS: 'SET_SOURCE_TIMING_STATUS',
+  SET_SOURCE_IS_WITHIN_REACH: 'SET_SOURCE_IS_WITHIN_REACH',
 }
 
 export const Ear = {
@@ -81,4 +86,10 @@ export const SourceOrigin = {
 export const SpatializationMode = {
   HighQuality: 'HighQuality',
   HighPerformance: 'HighPerformance',
+}
+
+export const TimingStatus = {
+  INDEPENDENT: 'INDEPENDENT',
+  CUED: 'CUED',
+  ADMITTED: 'ADMITTED',
 }
