@@ -323,7 +323,6 @@ class SourcePanel extends PureComponent {
               <MenuItem
                 key={source.name}
                 value={source.name}
-                disabled={source.loop === true}
               >
                 {source.name}
               </MenuItem>
