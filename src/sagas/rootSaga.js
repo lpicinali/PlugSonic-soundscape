@@ -212,8 +212,12 @@ function* applyLoopChanges() {
     const source = yield select(state => state.sources.sources[payload.source])
     const playbackState = yield select(state => state.controls.playbackState)
 
-    yield call(setSourceLoop, source.name, payload.loop)
-
+    // Each time a source's node is played, its effect chain gets
+    // reinitialized, so simply re-playing it will create a node
+    // with looping enabled.
+    //
+    // (Changing the node's loop property while playing is not
+    // possible.)
     if (
       playbackState === PlaybackState.PLAY ||
       playbackState === PlaybackState.RECORD
