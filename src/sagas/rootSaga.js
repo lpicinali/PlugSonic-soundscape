@@ -411,6 +411,13 @@ function* updateSourcesTimingStatus() {
   while (true) {
     const { source } = yield call(callbackSource.nextMessage)
 
+    // If a non-looping source ended, update its playing state
+    // and stop the audio node
+    if (source.loop === false) {
+      yield call(stopSource, source)
+      yield put(setSourceIsPlaying(source.name, false))
+    }
+
     const playbackState = yield select(state => state.controls.playbackState)
     const dependants = yield select(state =>
       Object.values(state.sources.sources).filter(
