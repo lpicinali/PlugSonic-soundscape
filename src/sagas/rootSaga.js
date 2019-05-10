@@ -366,22 +366,20 @@ function* applySourceReachChangesAffectingPlayback() {
       continue
     }
 
+    const playbackState = yield select(state => state.controls.playbackState)
+    if (playbackState === PlaybackState.STOP) {
+      continue
+    }
+
     if (type === ActionType.SET_SOURCE_REACH_ENABLED) {
-      if (
-        source.reach.isEnabled === true &&
-        source.gameplay.isWithinReach === false
-      ) {
-        yield call(stopSource, source)
-      } else {
-        yield call(requestPlaySource, source)
-      }
+      const isReached =
+        source.reach.isEnabled === false ||
+        source.gameplay.isWithinReach === true
+      yield put(setSourceIsPlaying(source.name, isReached))
     } else if (type === ActionType.SET_SOURCE_IS_WITHIN_REACH) {
       if (source.reach.isEnabled === true) {
-        if (source.gameplay.isWithinReach === true) {
-          yield call(requestPlaySource, source)
-        } else {
-          yield call(stopSource, source)
-        }
+        const isReached = source.gameplay.isWithinReach === true
+        yield put(setSourceIsPlaying(source.name, isReached))
       }
     }
   }
