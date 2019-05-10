@@ -94,13 +94,13 @@ export const createSourceAudioChain = source => {
   reachGain.connect(muteGain)
   muteGain.connect(masterVolume)
 
+  reachGain.gain.value = getSourceReachGain(source)
+  muteGain.gain.value = source.selected === true ? 1 : 0
+
   sourceNodes[source.name] = node
   sourceVolumes[source.name] = volume
   sourceReachGains[source.name] = reachGain
   sourceMuteGains[source.name] = muteGain
-
-  setSourceReachGain(source.name, getSourceReachGain(source))
-  setSourceMuted(source.name, source.selected === false)
 }
 
 /**
