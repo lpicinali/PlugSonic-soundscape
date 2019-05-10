@@ -38,6 +38,7 @@ const SourceReach = styled.div`
   height: ${props => props.radiusSize * 2}px;
   background: rgba(255, 255, 0, 0.2);
   border-radius: 50%;
+  pointer-events: none;
 `
 
 const SourceBody = styled.div`
