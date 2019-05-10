@@ -4,6 +4,7 @@ import { clamp } from 'lodash'
 import FileSaver from 'file-saver'
 import Recorder from 'recorderjs'
 
+import { getSourceReachGain } from 'src/utils.js'
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import toolkit from 'src/audio/toolkit.js'
@@ -14,6 +15,8 @@ const sourceAudioBuffers = {}
 
 const sourceNodes = {}
 const sourceVolumes = {}
+const sourceReachGains = {}
+const sourceMuteGains = {}
 const sourcePlaybackStates = {}
 
 // Master volume
@@ -83,11 +86,21 @@ export const createSourceAudioChain = source => {
   node.addEventListener('ended', () => notifySourceEnded(source))
 
   const volume = context.createGain()
-  setVolume(volume.gain, 0.00001, 0)
+  const reachGain = context.createGain()
+  const muteGain = context.createGain()
+
   node.connect(volume)
+  volume.connect(reachGain)
+  reachGain.connect(muteGain)
+  muteGain.connect(masterVolume)
 
   sourceNodes[source.name] = node
   sourceVolumes[source.name] = volume
+  sourceReachGains[source.name] = reachGain
+  sourceMuteGains[source.name] = muteGain
+
+  setSourceReachGain(source.name, getSourceReachGain(source))
+  setSourceMuted(source.name, source.selected === false)
 }
 
 /**
@@ -101,9 +114,13 @@ export const destroySourceAudioChain = source => {
   if (sourceNodes[name]) {
     sourceNodes[name].disconnect()
     sourceVolumes[name].disconnect()
+    sourceReachGains[name].disconnect()
+    sourceMuteGains[name].disconnect()
 
     sourceNodes[name] = null
     sourceVolumes[name] = null
+    sourceReachGains[name] = null
+    sourceMuteGains[name] = null
   }
 }
 
@@ -115,7 +132,9 @@ export const destroySourceAudioChain = source => {
 export const spatializeSource = source => {
   getBinauralSpatializer().then(spatializer => {
     spatializer.addSource(source)
-    sourceVolumes[source.name].connect(
+
+    sourceMuteGains[source.name].disconnect()
+    sourceMuteGains[source.name].connect(
       spatializer.sources[source.name].processor
     )
     spatializer.sources[source.name].processor.connect(masterVolume)
@@ -123,9 +142,12 @@ export const spatializeSource = source => {
 }
 
 export const despatializeSource = source => {
-  getBinauralSpatializer().then(spatializer =>
+  getBinauralSpatializer().then(spatializer => {
     spatializer.deleteSources([source.name])
-  )
+
+    sourceMuteGains[source.name].disconnect()
+    sourceMuteGains[source.name].connect(masterVolume)
+  })
 }
 
 /* ======================================================================== */
@@ -138,6 +160,10 @@ export const despatializeSource = source => {
 /* ======================================================================== */
 // SOURCE VOLUME
 /* ======================================================================== */
+
+/**
+ * Ramps a gain node to a volume over a certain duration.
+ */
 const setVolume = (gainNode, volume, fadeDuration = 0) => {
   // This makes fades act sort of naturally when you change
   // volume again within the duration
@@ -153,9 +179,30 @@ const setVolume = (gainNode, volume, fadeDuration = 0) => {
   )
 }
 
+/**
+ * Sets a source's volume
+ */
 export const setSourceVolume = (name, volume, fadeDuration = 0) => {
   if (sourceVolumes[name]) {
     setVolume(sourceVolumes[name].gain, volume, fadeDuration)
+  }
+}
+
+/**
+ * Sets a source's reach gain
+ */
+export const setSourceReachGain = (name, gain, fadeDuration = 0) => {
+  if (sourceReachGains[name]) {
+    setVolume(sourceReachGains[name].gain, gain, fadeDuration)
+  }
+}
+
+/**
+ * Mutes or unmutes a source
+ */
+export const setSourceMuted = (name, isMuted) => {
+  if (sourceMuteGains[name]) {
+    setVolume(sourceMuteGains[name].gain, isMuted ? 0.00001 : 1, 300)
   }
 }
 

@@ -96,4 +96,18 @@ export function forceDecimals(value, precision) {
   return String(roundedValue).length === 1
     ? `${roundedValue}.00`
     : String(roundedValue)
+
+/**
+ * Returns 1 if the source should be audible with regards to its
+ * reach properties, 0 if not.
+ */
+export function getSourceReachGain(source) {
+  if (
+    source.reach.isEnabled === false ||
+    source.gameplay.isWithinReach === true
+  ) {
+    return 1
+  }
+
+  return 0
 }
