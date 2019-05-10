@@ -93,9 +93,13 @@ export function gainToDecibels(value) {
 
 export function forceDecimals(value, precision) {
   const roundedValue = round(value, precision)
-  return String(roundedValue).length === 1
-    ? `${roundedValue}.00`
-    : String(roundedValue)
+  const [integer, fraction] = String(roundedValue).split('.')
+
+  if (fraction === undefined) {
+    return `${integer}.${'0'.repeat(precision)}`
+  }
+
+  return `${integer}.${fraction.padEnd(precision, '0')}`
 }
 
 /**

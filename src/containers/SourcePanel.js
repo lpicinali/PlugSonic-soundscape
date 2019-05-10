@@ -246,7 +246,9 @@ class SourcePanel extends PureComponent {
         <FieldBox>
           <div>
             <Label>Radius</Label>
-            <SliderValue>{sourceObject.reach.radius} m</SliderValue>
+            <SliderValue>
+              {forceDecimals(sourceObject.reach.radius, 2)} m
+            </SliderValue>
           </div>
           <SliderBox>
             <Slider
@@ -267,19 +269,25 @@ class SourcePanel extends PureComponent {
           <Select
             style={{ width: '100%' }}
             value={sourceObject.reach.action}
-            onChange={(evt) =>
+            onChange={evt =>
               onSourceReachActionChange(sourceObject.name, evt.target.value)
             }
           >
-            <MenuItem value={ReachAction.TOGGLE_VOLUME}>Fade in and out</MenuItem>
-            <MenuItem value={ReachAction.TOGGLE_PLAYBACK}>Start when entering</MenuItem>
+            <MenuItem value={ReachAction.TOGGLE_VOLUME}>
+              Fade in and out
+            </MenuItem>
+            <MenuItem value={ReachAction.TOGGLE_PLAYBACK}>
+              Start when entering
+            </MenuItem>
           </Select>
         </FieldBox>
 
         <FieldBox>
           <div>
             <Label>Fade duration</Label>
-            <SliderValue>{sourceObject.reach.fadeDuration / 1000} s</SliderValue>
+            <SliderValue>
+              {forceDecimals(sourceObject.reach.fadeDuration / 1000, 2)} s
+            </SliderValue>
           </div>
           <SliderBox>
             <Slider
