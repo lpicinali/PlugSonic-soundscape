@@ -17,6 +17,7 @@
   "rules": {
     "import/extensions": 0,
     "import/prefer-default-export": 0,
+    "import/no-mutable-exports": 0,
     "no-alert": 0,
     "no-console": 0,
     "no-lonely-if": 0,
