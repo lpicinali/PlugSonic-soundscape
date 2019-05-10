@@ -409,16 +409,22 @@ function* updateSourcesTimingStatus() {
   while (true) {
     const { source } = yield call(callbackSource.nextMessage)
 
+    const playbackState = yield select(state => state.controls.playbackState)
     const dependants = yield select(state =>
       Object.values(state.sources.sources).filter(
         x => x.timings[PlaybackTiming.PLAY_AFTER] === source.name
       )
     )
 
-    // eslint-disable-next-line
-    for (const dependant of dependants) {
-      if (source.gameplay.timingStatus === TimingStatus.CUED) {
-        yield put(setSourceTimingStatus(dependant.name, TimingStatus.ADMITTED))
+    if (playbackState !== PlaybackState.STOP) {
+      // eslint-disable-next-line
+      for (const dependant of dependants) {
+        if (dependant.gameplay.timingStatus === TimingStatus.CUED) {
+          yield put(setSourceIsPlaying(dependant.name, true))
+          yield put(
+            setSourceTimingStatus(dependant.name, TimingStatus.ADMITTED)
+          )
+        }
       }
     }
   }
