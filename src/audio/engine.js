@@ -170,7 +170,7 @@ const setVolume = (gainNode, volume, fadeDuration = 0) => {
   // This makes fades act sort of naturally when you change
   // volume again within the duration
   gainNode.cancelScheduledValues(context.currentTime)
-  // gainNode.setValueAtTime(gainNode.value, context.currentTime)
+  gainNode.setValueAtTime(gainNode.value, context.currentTime)
 
   // Ramping in the Web Audio API does not allow end values
   // of 0, so we need to make sure to have a tiny little
