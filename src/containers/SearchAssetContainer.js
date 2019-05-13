@@ -5,9 +5,21 @@ import Autosuggest from 'react-autosuggest'
 import { map } from 'lodash'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
-import { Button, Divider, MenuItem, Paper, TextField } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  MenuItem,
+  Paper,
+  TextField
+} from '@material-ui/core'
 
-import { SourceOrigin } from 'src/constants.js'
+import { SourceOrigin } from 'src/constants'
+import { fetchAudioBuffer } from 'src/utils'
 import {
   API,
   userId,
@@ -70,6 +82,8 @@ class SearchAssetContainer extends Component {
     assets: [],
     orderBy: 'title',
     myAssets: false,
+    clickedAssetId: '',
+    isPromptingAddStereo: false,
   }
 
   onChangeSearchTextField = (event, { newValue }) => {
@@ -92,28 +106,57 @@ class SearchAssetContainer extends Component {
     const asset = this.state.assets.find(ast => ast._id === id)
 
     const media = asset.mediaContent[0]
-    const sourceFilename = media.filename
-    const sourceName = asset.title
     const assetId = asset._id
     const mediaId = media._id
     const sourceUrl = `${API}/assets/${assetId}/media/${mediaId}`
 
-    console.log('Adding...')
-    console.log(sourceName)
-    console.log(sourceFilename)
-    console.log(sourceUrl)
+    this.setState({ clickedAssetId: assetId })
 
-    this.props.onAddSource(
-      sourceFilename,
-      sourceName,
-      sourceUrl,
-      assetId,
-      mediaId
-    )
+    /* ------------------------------------- */
+    fetchAudioBuffer(sourceUrl)
+      .then(audioBuffer => {
+        if ( audioBuffer.numberOfChannels === 2 ) {
+          this.setState({ isPromptingAddStereo: true })
+        } else if (audioBuffer.numberOfChannels === 1) {
+          this.handleAddSourceResponse(true)
+        }
+      })
+      .catch(err => console.error(err))
+      /* ------------------------------------- */
+  }
+
+  handleAddSourceResponse = (shouldAdd) => {
+    if (shouldAdd) {
+      const asset = this.state.assets.find(ast => ast._id === this.state.clickedAssetId)
+
+      const media = asset.mediaContent[0]
+      const sourceFilename = media.filename
+      const sourceName = asset.title
+      const assetId = asset._id
+      const mediaId = media._id
+      const sourceUrl = `${API}/assets/${assetId}/media/${mediaId}`
+
+      console.log('Adding...')
+      console.log(sourceName)
+      console.log(sourceFilename)
+      console.log(sourceUrl)
+
+      this.props.onAddSource(
+        sourceFilename,
+        sourceName,
+        sourceUrl,
+        assetId,
+        mediaId
+      )
+
+      this.setState({
+        ...this.state,
+        assets: [],
+      })
+    }
 
     this.setState({
-      ...this.state,
-      assets: [],
+      isPromptingAddStereo: false,
     })
   }
 
@@ -151,6 +194,8 @@ class SearchAssetContainer extends Component {
 
   searchAssetCallback = responseText => {
     const response = JSON.parse(responseText)
+    console.log("Assets")
+    console.log(response)
     this.setState({
       ...this.state,
       assets: response.data.result,
@@ -248,6 +293,36 @@ class SearchAssetContainer extends Component {
         <PanelContents>
           {this.state.assets.length > 0 && searchResults}
         </PanelContents>
+
+        <Dialog
+          open={this.state.isPromptingAddStereo}
+          onClose={() => this.handleAddSourceResponse(false)}
+        >
+          <DialogTitle>Just to make sure</DialogTitle>
+
+          <DialogContent>
+            <DialogContentText>
+              The original file is stereo. Soundscape rendering engine uses mono files. Inside Soundscape the file will be converted to mono (adding left and right channels).
+              The original file will not be modified. Do you want to proceed?
+            </DialogContentText>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              onClick={() => this.handleAddSourceResponse(false)}
+            >
+              No
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleAddSourceResponse(true)}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Fragment>
     )
   }
