@@ -21,6 +21,11 @@ export const setSourceLoop = (source, loop) => ({
   payload: { source, loop },
 })
 
+export const setSourceSpatialised = (source, spatialised) => ({
+  type: ActionType.SET_SOURCE_SPATIALISED,
+  payload: { source, spatialised },
+})
+
 export const setSourcePosition = (source, position) => ({
   type: ActionType.SET_SOURCE_POSITION,
   payload: { source, position },

@@ -28,7 +28,6 @@ import {
   stopSource,
   recordStart,
   recordStop,
-  setSourceLoop,
   setSourceVolume,
   setSourceReachGain,
   setSourceMuted,
@@ -226,6 +225,23 @@ function* applyLoopChanges() {
       playbackState === PlaybackState.PLAY ||
       playbackState === PlaybackState.RECORD
     ) {
+      yield call(stopSource, source)
+      yield call(playSource, source)
+    }
+  }
+}
+
+/* ======================================================================== */
+// SPATIALISED
+/* ======================================================================== */
+function* applySpatialisedChanges() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_SOURCE_SPATIALISED)
+
+    const source = yield select(state => state.sources.sources[payload.source])
+    const playbackState = yield select(state => state.controls.playbackState)
+
+    if (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD) {
       yield call(stopSource, source)
       yield call(playSource, source)
     }
@@ -554,6 +570,7 @@ export default function* rootSaga() {
     applySourceReachChangesAffectingPlayback(),
     applySourcePlaybackState(),
     updateSourcesTimingStatus(),
+    applySpatialisedChanges(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),

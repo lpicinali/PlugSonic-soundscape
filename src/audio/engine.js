@@ -131,16 +131,21 @@ export const destroySourceAudioChain = source => {
  *
  * Previously: addSource()
  */
-export const spatializeSource = source => {
-  getBinauralSpatializer().then(spatializer => {
-    spatializer.addSource(source)
+export const spatializeSource = (source, spatialised) => {
+  if (spatialised) {
+    getBinauralSpatializer().then(spatializer => {
+      spatializer.addSource(source)
 
+      sourceMuteGains[source.name].disconnect()
+      sourceMuteGains[source.name].connect(
+        spatializer.sources[source.name].processor
+      )
+      spatializer.sources[source.name].processor.connect(masterVolume)
+    })
+  } else {
     sourceMuteGains[source.name].disconnect()
-    sourceMuteGains[source.name].connect(
-      spatializer.sources[source.name].processor
-    )
-    spatializer.sources[source.name].processor.connect(masterVolume)
-  })
+    sourceMuteGains[source.name].connect(masterVolume)
+  }
 }
 
 export const despatializeSource = source => {
@@ -239,9 +244,7 @@ export const playSource = (source, volume, fadeDuration) => {
   }
 
   createSourceAudioChain(source)
-  if (source.spatialised === true) {
-    spatializeSource(source)
-  }
+  spatializeSource(source, source.spatialised)
 
   if (volume !== undefined) {
     setVolume(sourceVolumes[source.name].gain, volume, fadeDuration)
