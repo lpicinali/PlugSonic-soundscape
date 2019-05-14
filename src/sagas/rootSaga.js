@@ -310,6 +310,31 @@ function* updateSourcesReachedState() {
 }
 
 /**
+ * Makes sure to play sources that changes from toggling playback to
+ * toggling volume, as the volume togglers should constantly be playing
+ * (if not waiting for a playback timing).
+ */
+function* manageReachActionChanges() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_SOURCE_REACH_ACTION)
+    console.log({ payload })
+
+    const source = yield select(state => state.sources.sources[payload.source])
+    const playbackState = yield select(state => state.controls.playbackState)
+
+    console.log('manage', { source, playbackState })
+
+    if (
+      playbackState !== PlaybackState.STOP &&
+      source.reach.action === ReachAction.TOGGLE_VOLUME &&
+      source.gameplay.timingStatus !== TimingStatus.CUED
+    ) {
+      yield put(setSourceIsPlaying(source.name, true))
+    }
+  }
+}
+
+/**
  * Applies reach state changes that affects a source's (reach gain) volume.
  */
 function* applySourceReachChangesAffectingVolume() {
@@ -524,6 +549,7 @@ export default function* rootSaga() {
     applySourceVolume(),
     applyLoopChanges(),
     updateSourcesReachedState(),
+    manageReachActionChanges(),
     applySourceReachChangesAffectingVolume(),
     applySourceReachChangesAffectingPlayback(),
     applySourcePlaybackState(),
