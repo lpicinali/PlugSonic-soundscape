@@ -8,7 +8,11 @@ import {
   SourceOrigin,
   TimingStatus,
 } from 'src/constants.js'
-import { createSubscriptionSource, fetchAudioBuffer } from 'src/utils.js'
+import {
+  createSubscriptionSource,
+  fetchAudioBuffer,
+  getSourceReachGain,
+} from 'src/utils.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import {
   addSource,
@@ -324,12 +328,7 @@ function* applySourceReachChangesAffectingVolume() {
 
     // Toggling reach doesn't trigger fades, only mute/unmute
     if (type === ActionType.SET_SOURCE_REACH_ENABLED) {
-      const reachGain =
-        source.reach.isEnabled === true &&
-        source.gameplay.isWithinReach === false
-          ? 0
-          : 1
-
+      const reachGain = getSourceReachGain(source)
       yield call(setSourceReachGain, source.name, reachGain, 0)
     }
     // Reach changes

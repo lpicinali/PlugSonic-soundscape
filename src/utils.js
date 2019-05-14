@@ -114,5 +114,8 @@ export function getSourceReachGain(source) {
     return 1
   }
 
-  return 0
+  // What is this, you ask. Well, it seems that if an AudioParam
+  // has its value set to 0 via node.param.value = 0, then ramping
+  // the param's value won't do anything.
+  return 0.00001
 }
