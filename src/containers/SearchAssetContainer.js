@@ -298,12 +298,13 @@ class SearchAssetContainer extends Component {
           open={this.state.isPromptingAddStereo}
           onClose={() => this.handleAddSourceResponse(false)}
         >
-          <DialogTitle>Just to make sure</DialogTitle>
+          <DialogTitle>Reminder</DialogTitle>
 
           <DialogContent>
             <DialogContentText>
-              The original file is stereo. Soundscape rendering engine uses mono files. Inside Soundscape the file will be converted to mono (adding left and right channels).
-              The original file will not be modified. Do you want to proceed?
+              You are importing a stereo file.
+              Please be aware that, when spatialised, the audio engine will sum left and right channels into mono before rendering.
+              Do you want to proceed?
             </DialogContentText>
           </DialogContent>
 
