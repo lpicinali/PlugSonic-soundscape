@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { values, toNumber, isNaN } from 'lodash'
 
-import { FormControl, FormHelperText, TextField } from '@material-ui/core'
+import { FormHelperText, TextField } from '@material-ui/core'
 import { RoomShape } from 'src/constants.js'
 import { setRoomSize } from 'src/actions/room.actions.js'
-import { FieldBox, H2, PaddedFormControl } from 'src/styles/elements.js'
+import { H2, PaddedFormControl } from 'src/styles/elements.js'
 
 /* ========================================================================== */
 const minSize = 3

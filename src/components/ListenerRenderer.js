@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import * as colors from 'src/styles/colors'
+// import * as colors from 'src/styles/colors'
 import styled from 'styled-components'
 import { clamp, values } from 'lodash'
 
@@ -17,10 +17,12 @@ const Listener = styled.div`
   left: 50%;
   z-index: 20;
   transform: translate3d(-50%, -50%, 0) rotate(${props => -props.rotation}rad);
-  border-radius: 50%;
+  background-image: url("assets/img/head_icon.png");
+  background-size: cover;
+  ${'' /* border-radius: 50%;
   border: 2px solid transparent;
   border-top-color: ${colors.DARKBLUE};
-  background: ${colors.LIGHTBLUE};
+  background: ${colors.LIGHTBLUE}; */}
 `
 /* ========================================================================== */
 /* LISTENER RENDERER */

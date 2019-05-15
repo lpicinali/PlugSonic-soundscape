@@ -126,8 +126,8 @@ class ScaledSoundscape extends Component {
           </div> */}
 
           <ListenerRenderer
-            iconWidth={sourceSize}
-            iconHeight={sourceSize}
+            iconWidth={sourceSize*2}
+            iconHeight={sourceSize*2}
             containerSize={{width: viewportWidth, height: viewportHeight}}
             containerRect={{top: viewportTop, bottom: viewportBottom, left: viewportLeft, right: viewportRight}}
           />

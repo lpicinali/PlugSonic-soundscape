@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { StyledArrowButton } from 'src/components/ArrowButton.style'
-import { PlayIcon } from 'src/resources/icons/icons.js'
+import { PlayIcon } from 'src/resources/icons.js'
 /**
  * ArrowButton
  */
