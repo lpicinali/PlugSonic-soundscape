@@ -17,63 +17,6 @@ let azimuthIndex = Object.keys(initialState.sources).length
 
 export default function(state = initialState, { type, payload }) {
   switch (type) {
-    case 'SOURCE_ONOFF':
-      return set(['sources', payload.name, 'selected'], payload.selected, state)
-
-    case 'SET_EDITING_SOURCE': {
-      return set('editing', payload.target, state)
-    }
-
-    case 'SET_SOURCE_LOOP':
-      return set(['sources', payload.source, 'loop'], payload.loop, state)
-
-    case 'SET_SOURCE_SPATIALISED':
-      return set(['sources', payload.source, 'spatialised'], payload.spatialised, state)
-
-    case 'SET_SOURCE_POSITION':
-      return set(
-        ['sources', payload.source, 'position'],
-        payload.position,
-        state
-      )
-
-    case 'SET_SOURCE_REACH_ENABLED':
-      return set(
-        ['sources', payload.source, 'reach', 'isEnabled'],
-        payload.isEnabled,
-        state
-      )
-
-    case 'SET_SOURCE_REACH_ACTION':
-      return set(
-        ['sources', payload.source, 'reach', 'action'],
-        payload.action,
-        state
-      )
-
-    case 'SET_SOURCE_REACH_RADIUS':
-      return set(
-        ['sources', payload.source, 'reach', 'radius'],
-        payload.radius,
-        state
-      )
-
-    case 'SET_SOURCE_REACH_FADE_DURATION':
-      return set(
-        ['sources', payload.source, 'reach', 'fadeDuration'],
-        payload.fadeDuration,
-        state
-      )
-
-    case 'SET_SOURCE_TIMING':
-      return set(
-        ['sources', payload.source, 'timings', payload.timing],
-        payload.target,
-        state
-      )
-
-    case 'SET_SOURCE_VOLUME':
-      return set(['sources', payload.source, 'volume'], payload.volume, state)
 
     case 'ADD_SOURCE': {
       const newSource = {
@@ -122,6 +65,67 @@ export default function(state = initialState, { type, payload }) {
       })
       return { ...state, sources: newSources }
     }
+
+    case 'SET_EDITING_SOURCE': {
+      return set('editing', payload.target, state)
+    }
+
+    case 'SET_SOURCE_HIDDEN':
+      return set(['sources', payload.source, 'hidden'], payload.hidden, state)
+
+    case 'SET_SOURCE_LOOP':
+      return set(['sources', payload.source, 'loop'], payload.loop, state)
+
+    case 'SOURCE_ONOFF':
+      return set(['sources', payload.name, 'selected'], payload.selected, state)
+
+    case 'SET_SOURCE_POSITION':
+      return set(
+        ['sources', payload.source, 'position'],
+        payload.position,
+        state
+      )
+
+    case 'SET_SOURCE_REACH_ACTION':
+      return set(
+        ['sources', payload.source, 'reach', 'action'],
+        payload.action,
+        state
+      )
+
+    case 'SET_SOURCE_REACH_ENABLED':
+      return set(
+        ['sources', payload.source, 'reach', 'isEnabled'],
+        payload.isEnabled,
+        state
+      )
+
+    case 'SET_SOURCE_REACH_FADE_DURATION':
+      return set(
+        ['sources', payload.source, 'reach', 'fadeDuration'],
+        payload.fadeDuration,
+        state
+      )
+
+    case 'SET_SOURCE_REACH_RADIUS':
+      return set(
+        ['sources', payload.source, 'reach', 'radius'],
+        payload.radius,
+        state
+      )
+
+    case 'SET_SOURCE_SPATIALISED':
+      return set(['sources', payload.source, 'spatialised'], payload.spatialised, state)
+
+    case 'SET_SOURCE_TIMING':
+      return set(
+        ['sources', payload.source, 'timings', payload.timing],
+        payload.target,
+        state
+      )
+
+    case 'SET_SOURCE_VOLUME':
+      return set(['sources', payload.source, 'volume'], payload.volume, state)
 
     // GAMEPLAY STATE
     case 'SET_SOURCE_IS_PLAYING':

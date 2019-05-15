@@ -27,13 +27,14 @@ import * as CustomPropTypes from 'src/prop-types.js'
 import { decibelsToGain, forceDecimals, gainToDecibels } from 'src/utils.js'
 import {
   deleteSources,
+  setSourceHidden,
   setSourceLoop,
-  setSourceSpatialised,
   setSourcePosition,
-  setSourceReachEnabled,
   setSourceReachAction,
-  setSourceReachRadius,
+  setSourceReachEnabled,
   setSourceReachFadeDuration,
+  setSourceReachRadius,
+  setSourceSpatialised,
   setSourceTiming,
   setSourceVolume,
   sourceOnOff,
@@ -41,12 +42,12 @@ import {
 import {
   FieldBox,
   FieldGroup,
+  H3,
   Label,
   PanelContents,
-  H3,
   SliderBox,
-  SwitchControlLabel,
   SwitchBox,
+  SwitchControlLabel,
 } from 'src/styles/elements.js'
 
 /* ========================================================================== */
@@ -108,13 +109,14 @@ class SourcePanel extends PureComponent {
       roomSize,
       sources,
       sourceObject,
-      onSourceOnOff,
+      onSourceHiddenChange,
       onSourceLoopChange,
-      onSourceSpatialisationChange,
-      onSourceReachEnabledChange,
+      onSourceOnOff,
       onSourceReachActionChange,
-      onSourceReachRadiusChange,
+      onSourceReachEnabledChange,
       onSourceReachFadeDurationChange,
+      onSourceReachRadiusChange,
+      onSourceSpatialisationChange,
       onSourceTimingChange,
     } = this.props
     const { isOpen, isPromptingDelete } = this.state
@@ -357,6 +359,21 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
+      <FieldGroup key="hidden">
+        <SwitchBox>
+          <H3>Hidden</H3>
+          <Switch
+            color="primary"
+            checked={sourceObject.hidden}
+            onChange={(event, isEnabled) =>
+              onSourceHiddenChange(sourceObject.name, isEnabled)
+            }
+          />
+        </SwitchBox>
+      </FieldGroup>
+    )
+
+    nestedItems.push(
       <FieldGroup key={`${sourceObject.name}-delete`}>
         <Button
           variant="contained"
@@ -422,17 +439,18 @@ SourcePanel.propTypes = {
   }).isRequired,
   sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
   sourceObject: CustomPropTypes.source.isRequired,
-  onSourceOnOff: PropTypes.func.isRequired,
-  onSourceVolumeChange: PropTypes.func.isRequired,
-  onSourceLoopChange: PropTypes.func.isRequired,
-  onSourceSpatialisationChange: PropTypes.func.isRequired,
-  onSourcePositionChange: PropTypes.func.isRequired,
-  onSourceReachEnabledChange: PropTypes.func.isRequired,
-  onSourceReachActionChange: PropTypes.func.isRequired,
-  onSourceReachRadiusChange: PropTypes.func.isRequired,
-  onSourceReachFadeDurationChange: PropTypes.func.isRequired,
-  onSourceTimingChange: PropTypes.func.isRequired,
   onSourceDelete: PropTypes.func.isRequired,
+  onSourceHiddenChange: PropTypes.func.isRequired,
+  onSourceLoopChange: PropTypes.func.isRequired,
+  onSourceOnOff: PropTypes.func.isRequired,
+  onSourcePositionChange: PropTypes.func.isRequired,
+  onSourceReachActionChange: PropTypes.func.isRequired,
+  onSourceReachEnabledChange: PropTypes.func.isRequired,
+  onSourceReachFadeDurationChange: PropTypes.func.isRequired,
+  onSourceReachRadiusChange: PropTypes.func.isRequired,
+  onSourceSpatialisationChange: PropTypes.func.isRequired,
+  onSourceTimingChange: PropTypes.func.isRequired,
+  onSourceVolumeChange: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -441,24 +459,26 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onSourceOnOff: (name, selected) => dispatch(sourceOnOff(name, selected)),
-  onSourceVolumeChange: (name, volume) =>
-    dispatch(setSourceVolume(name, volume)),
+  onSourceDelete: name => dispatch(deleteSources([name])),
+  onSourceHiddenChange: (name, hidden) => dispatch(setSourceHidden(name, hidden)),
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
-  onSourceSpatialisationChange: (name, spatialised) => dispatch(setSourceSpatialised(name, spatialised)),
+  onSourceOnOff: (name, selected) => dispatch(sourceOnOff(name, selected)),
   onSourcePositionChange: (name, position) =>
     dispatch(setSourcePosition(name, position)),
-  onSourceReachEnabledChange: (name, isEnabled) =>
-    dispatch(setSourceReachEnabled(name, isEnabled)),
   onSourceReachActionChange: (name, action) =>
     dispatch(setSourceReachAction(name, action)),
-  onSourceReachRadiusChange: (name, radius) =>
-    dispatch(setSourceReachRadius(name, radius)),
+  onSourceReachEnabledChange: (name, isEnabled) =>
+    dispatch(setSourceReachEnabled(name, isEnabled)),
   onSourceReachFadeDurationChange: (name, fadeDuration) =>
     dispatch(setSourceReachFadeDuration(name, fadeDuration)),
+  onSourceReachRadiusChange: (name, radius) =>
+    dispatch(setSourceReachRadius(name, radius)),
+  onSourceSpatialisationChange: (name, spatialised) =>
+    dispatch(setSourceSpatialised(name, spatialised)),
   onSourceTimingChange: (name, timing, target) =>
     dispatch(setSourceTiming(name, timing, target)),
-  onSourceDelete: name => dispatch(deleteSources([name])),
+  onSourceVolumeChange: (name, volume) =>
+    dispatch(setSourceVolume(name, volume)),
 })
 
 export default connect(
