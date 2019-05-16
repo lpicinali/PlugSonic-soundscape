@@ -245,6 +245,7 @@ SourceRenderer.propTypes = {
     right: PropTypes.number.isRequired,
   }).isRequired,
   setSourcePosition: PropTypes.func.isRequired,
+  onSelectSource: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
