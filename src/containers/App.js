@@ -12,8 +12,20 @@ import { importListener } from 'src/actions/listener.actions'
 import { importRoom } from 'src/actions/room.actions'
 import { exhibitionMetadata } from 'src/pluggy'
 
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core'
+
 class App extends Component {
 
+  state = {
+    isDisclaimerOpen: true
+  }
   componentDidMount() {
     if (exhibitionMetadata.length !== 0){
       this.props.onImportSources(exhibitionMetadata.sources)
@@ -25,6 +37,28 @@ class App extends Component {
   render() {
     return (
       <AppContainer>
+        <Dialog
+          open={this.state.isDisclaimerOpen}
+        >
+          <DialogTitle>Disclaimer</DialogTitle>
+
+          <DialogContent>
+            <DialogContentText>
+              This app might produce audio of very loud levels. It is up to you to make sure you take caution and keep your headphones&apos; volume low and so on and so forth.
+            </DialogContentText>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.setState({ isDisclaimerOpen: false })}
+            >
+              Understood
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Nav>
           <NavControls />
         </Nav>
