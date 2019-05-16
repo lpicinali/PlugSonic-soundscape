@@ -10,17 +10,16 @@ import { ADEtoXYZ } from 'src/utils.js'
 
 const initialState = {
   sources: {},
-  // editing: null,
 }
 
 let azimuthIndex = Object.keys(initialState.sources).length
 
 export default function(state = initialState, { type, payload }) {
   switch (type) {
-
     case 'ADD_SOURCE': {
       const newSource = {
         name: payload.name,
+        enabled: true,
         filename: payload.filename,
         origin: payload.origin,
         hidden: false,
@@ -39,7 +38,7 @@ export default function(state = initialState, { type, payload }) {
           [PlaybackTiming.PLAY_AFTER]: null,
         },
         loop: true,
-        selected: true,
+        selected: false,
         spatialised: true,
         url: payload.url || null,
         volume: payload.volume || 1.0,
@@ -66,18 +65,21 @@ export default function(state = initialState, { type, payload }) {
       return { ...state, sources: newSources }
     }
 
-    case 'SET_EDITING_SOURCE': {
-      return set('editing', payload.target, state)
-    }
+    case 'SOURCE_ONOFF':
+      return set(['sources', payload.name, 'enabled'], payload.enabled, state)
+
+    case 'SET_SOURCE_SELECTED':
+      return set(
+        ['sources', payload.source, 'selected'],
+        payload.selected,
+        state
+      )
 
     case 'SET_SOURCE_HIDDEN':
       return set(['sources', payload.source, 'hidden'], payload.hidden, state)
 
     case 'SET_SOURCE_LOOP':
       return set(['sources', payload.source, 'loop'], payload.loop, state)
-
-    case 'SOURCE_ONOFF':
-      return set(['sources', payload.name, 'selected'], payload.selected, state)
 
     case 'SET_SOURCE_POSITION':
       return set(

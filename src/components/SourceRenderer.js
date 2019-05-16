@@ -2,12 +2,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { clamp, values } from 'lodash'
 
 import { RoomShape } from 'src/constants'
 import * as CustomPropTypes from 'src/prop-types.js'
-import { setSourcePosition } from 'src/actions/sources.actions'
+import {
+  setSourceSelected,
+  setSourcePosition,
+} from 'src/actions/sources.actions'
+import * as colors from 'src/styles/colors.js'
 
 /**
  * Returns a CSS transform scale value for a given z.
@@ -48,9 +52,37 @@ const SourceBody = styled.div`
   transform: translate3d(-50%, -50%, 0);
   width: ${props => props.radiusSize * 2}px;
   height: ${props => props.radiusSize * 2}px;
-  background: ${props => (props.isSelected ? 'black' : 'transparent')};
+  background: ${props => (props.isEnabled ? 'black' : 'transparent')};
   border-radius: 50%;
-  border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
+  border: 2px solid transparent;
+
+  ${props =>
+    props.isEnabled
+      ? css`
+          background: ${colors.BLACK};
+          border: 2px solid transparent;
+        `
+      : css`
+          background: transparent;
+          border-color: ${colors.GRAY};
+        `}
+
+  ${props =>
+    props.isSelected &&
+    css`
+      background: ${colors.DARKBLUE};
+    `}
+`
+
+const SourceLabel = styled.div`
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate3d(-50%, -20px, 0);
+  padding: 4px 8px;
+  background: ${props => (props.isActive ? colors.DARKBLUE : colors.BLACK)};
+  color: ${colors.WHITESMOKE};
+  font-size: 12px;
 `
 
 /* ========================================================================== */
@@ -58,8 +90,26 @@ const SourceBody = styled.div`
 /* ========================================================================== */
 class SourceRenderer extends Component {
   state = {
+    isHovering: false,
     isDragging: false,
     // keys: {},
+  }
+
+  handleSourceMouseOver = () => {
+    this.setState({
+      isHovering: true,
+    })
+  }
+
+  handleSourceMouseOut = () => {
+    this.setState({
+      isHovering: false,
+    })
+  }
+
+  handleSourceClick = () => {
+    const { source, onSelectSource } = this.props
+    onSelectSource(source.name, true)
   }
 
   handleSourceMouseDown = () => {
@@ -143,7 +193,7 @@ class SourceRenderer extends Component {
       roomHeight,
       roomDepth,
     } = this.props
-    const { isDragging } = this.state
+    const { isHovering, isDragging } = this.state
 
     return (
       <Source
@@ -158,12 +208,19 @@ class SourceRenderer extends Component {
         {source.reach.isEnabled && <SourceReach radiusSize={reachRadiusSize} />}
         <SourceBody
           radiusSize={size / 2}
+          isEnabled={source.enabled}
           isSelected={source.selected}
+          onMouseOver={this.handleSourceMouseOver}
+          onMouseOut={this.handleSourceMouseOut}
+          onClick={this.handleSourceClick}
           onMouseDown={this.handleSourceMouseDown}
           style={{
             cursor: `${isDragging ? `grabbing` : `grab`}`,
           }}
         />
+        {(source.selected || isHovering) && (
+          <SourceLabel isActive={source.selected}>{source.name}</SourceLabel>
+        )}
       </Source>
     )
   }
@@ -200,6 +257,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setSourcePosition: (source, position) =>
     dispatch(setSourcePosition(source, position)),
+  onSelectSource: (source, selected) =>
+    dispatch(setSourceSelected(source, selected)),
 })
 
 export default connect(

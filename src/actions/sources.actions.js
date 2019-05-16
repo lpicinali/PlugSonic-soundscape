@@ -9,6 +9,7 @@ import { ActionType } from 'src/constants.js'
 export const addSource = ({
   filename,
   name,
+  enabled,
   origin,
   url,
   assetId,
@@ -25,6 +26,7 @@ export const addSource = ({
   payload: {
     filename,
     name,
+    enabled,
     origin,
     url,
     assetId,
@@ -49,9 +51,9 @@ export const importSources = sources => ({
   payload: { sources },
 })
 
-export const setEditingSource = source => ({
-  type: ActionType.SET_EDITING_SOURCE,
-  payload: { source },
+export const setSourceSelected = (source, selected) => ({
+  type: ActionType.SET_SOURCE_SELECTED,
+  payload: { source, selected },
 })
 
 export const setSourceHidden = (source, hidden) => ({

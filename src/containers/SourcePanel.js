@@ -131,8 +131,8 @@ class SourcePanel extends PureComponent {
           control={
             <Switch
               color="primary"
-              checked={sourceObject.selected}
-              onChange={(evt, isSelected) => onSourceOnOff(sourceObject.name, isSelected)}
+              checked={sourceObject.enabled}
+              onChange={(evt, isEnabled) => onSourceOnOff(sourceObject.name, isEnabled)}
             />
           }
         />
@@ -459,10 +459,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  onSourceOnOff: (name, enabled) => dispatch(sourceOnOff(name, enabled)),
   onSourceDelete: name => dispatch(deleteSources([name])),
   onSourceHiddenChange: (name, hidden) => dispatch(setSourceHidden(name, hidden)),
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
-  onSourceOnOff: (name, selected) => dispatch(sourceOnOff(name, selected)),
   onSourcePositionChange: (name, position) =>
     dispatch(setSourcePosition(name, position)),
   onSourceReachActionChange: (name, action) =>

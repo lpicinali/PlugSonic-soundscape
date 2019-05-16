@@ -17,6 +17,7 @@ import { setListenerPosition } from 'src/actions/listener.actions.js'
 import {
   addSource,
   deleteSources,
+  setSourceSelected,
   setSourceIsPlaying,
   setSourceIsWithinReach,
   setSourceTiming,
@@ -149,7 +150,7 @@ function* applySourceOnOff() {
     const { payload } = yield take(ActionType.SOURCE_ONOFF)
 
     const source = yield select(state => state.sources.sources[payload.name])
-    yield call(setSourceMuted, source.name, source.selected === false)
+    yield call(setSourceMuted, source.name, source.enabled === false)
   }
 }
 
@@ -479,6 +480,21 @@ function* updateSourcesTimingStatus() {
   }
 }
 
+function* allowOnlyOneSourceToBeSelected() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_SOURCE_SELECTED)
+
+    const prevSelectedSource = yield select(state =>
+      Object.values(state.sources.sources).find(
+        x => x.selected === true && x.name !== payload.source
+      )
+    )
+    if (prevSelectedSource !== undefined) {
+      yield put(setSourceSelected(prevSelectedSource.name, false))
+    }
+  }
+}
+
 /* ======================================================================== */
 // HEAD RADIUS
 /* ======================================================================== */
@@ -571,6 +587,7 @@ export default function* rootSaga() {
     applySourcePlaybackState(),
     updateSourcesTimingStatus(),
     applySpatialisedChanges(),
+    allowOnlyOneSourceToBeSelected(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),
