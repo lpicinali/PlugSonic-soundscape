@@ -78,7 +78,7 @@ const SourceLabel = styled.div`
   position: absolute;
   bottom: 100%;
   left: 50%;
-  transform: translate3d(-50%, -20px, 0);
+  transform: translate3d(-50%, -16px, 0);
   padding: 4px 8px;
   background: ${props => (props.isActive ? colors.DARKBLUE : colors.BLACK)};
   color: ${colors.WHITESMOKE};
