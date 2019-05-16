@@ -92,6 +92,7 @@ class SourceRenderer extends Component {
   state = {
     isHovering: false,
     isDragging: false,
+    hasDragged: false,
     // keys: {},
   }
 
@@ -105,11 +106,6 @@ class SourceRenderer extends Component {
     this.setState({
       isHovering: false,
     })
-  }
-
-  handleSourceClick = () => {
-    const { source, onSelectSource } = this.props
-    onSelectSource(source.name, true)
   }
 
   handleSourceMouseDown = () => {
@@ -170,17 +166,30 @@ class SourceRenderer extends Component {
         y: newY,
         z: source.position.z,
       })
+
+      this.setState({ hasDragged: true })
     }
   }
 
   handleSourceMouseUp = () => {
+    const { source, onSelectSource } = this.props
+    const { isDragging, hasDragged } = this.state
+
     window.removeEventListener('mousemove', this.handleSourceMouseDrag)
     window.removeEventListener('mouseup', this.handleSourceMouseUp)
 
-    this.setState(() => ({
-      ...this.state,
-      isDragging: false,
-    }))
+    // Click -> toggle selected
+    if (hasDragged === false) {
+      onSelectSource(source.name, !source.selected)
+    }
+
+    // End of drag
+    if (isDragging === true) {
+      this.setState(() => ({
+        isDragging: false,
+        hasDragged: false,
+      }))
+    }
   }
 
   /* ------------------------------------------------------------------------ */
@@ -212,7 +221,6 @@ class SourceRenderer extends Component {
           isSelected={source.selected}
           onMouseOver={this.handleSourceMouseOver}
           onMouseOut={this.handleSourceMouseOut}
-          onClick={this.handleSourceClick}
           onMouseDown={this.handleSourceMouseDown}
           style={{
             cursor: `${isDragging ? `grabbing` : `grab`}`,

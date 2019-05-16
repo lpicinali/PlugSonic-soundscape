@@ -484,13 +484,15 @@ function* allowOnlyOneSourceToBeSelected() {
   while (true) {
     const { payload } = yield take(ActionType.SET_SOURCE_SELECTED)
 
-    const prevSelectedSource = yield select(state =>
-      Object.values(state.sources.sources).find(
-        x => x.selected === true && x.name !== payload.source
+    if (payload.selected === true) {
+      const prevSelectedSource = yield select(state =>
+        Object.values(state.sources.sources).find(
+          x => x.selected === true && x.name !== payload.source
+        )
       )
-    )
-    if (prevSelectedSource !== undefined) {
-      yield put(setSourceSelected(prevSelectedSource.name, false))
+      if (prevSelectedSource !== undefined) {
+        yield put(setSourceSelected(prevSelectedSource.name, false))
+      }
     }
   }
 }
