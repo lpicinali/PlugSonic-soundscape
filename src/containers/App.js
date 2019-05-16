@@ -44,7 +44,9 @@ class App extends Component {
 
           <DialogContent>
             <DialogContentText>
-              This app might produce audio of very loud levels. It is up to you to make sure you take caution and keep your headphones&apos; volume low and so on and so forth.
+              WARNING: This application might result in very loud audio levels,
+              which can cause damage to your hearing, especially if you are wearing headphones.
+              Please ensure you take caution and keep your headphones volume low.
             </DialogContentText>
           </DialogContent>
 
