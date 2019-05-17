@@ -66,9 +66,9 @@ export const setSourceLoop = (source, loop) => ({
   payload: { source, loop },
 })
 
-export const sourceOnOff = (name, selected) => ({
+export const sourceOnOff = (name, enabled) => ({
   type: ActionType.SOURCE_ONOFF,
-  payload: { name, selected },
+  payload: { name, enabled },
 })
 
 export const setSourcePosition = (source, position) => ({

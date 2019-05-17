@@ -64,7 +64,7 @@ const SourceBody = styled.div`
         `
       : css`
           background: transparent;
-          border-color: ${colors.GRAY};
+          border-color: ${colors.GREY};
         `}
 
   ${props =>
