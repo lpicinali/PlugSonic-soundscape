@@ -60,10 +60,18 @@ class NavControls extends Component {
       <React.Fragment>
         <IconButton
           style={FlatButtonStyle}
-          disabled={this.props.playbackState === PlaybackState.PLAY}
+          disabled={
+            this.props.playbackState === PlaybackState.PLAY ||
+            this.props.playbackState === PlaybackState.RECORD
+          }
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.PLAY)}
         >
-          <PlayIcon color={this.props.playbackState === PlaybackState.PLAY ? 'error' : 'secondary'} />
+          <PlayIcon color={
+            (this.props.playbackState === PlaybackState.PLAY ||
+            this.props.playbackState === PlaybackState.RECORD)
+              ? 'error' 
+              : 'secondary'}
+          />
         </IconButton>
 
         <IconButton
