@@ -163,10 +163,7 @@ class SourcePanel extends PureComponent {
         <div>
           <Label>X</Label>
           <SliderValue>
-            {parseFloat(
-              Math.round(-sourceObject.position.y * 100) / 100
-            ).toFixed(2)}{' '}
-            m
+            {forceDecimals(-sourceObject.position.y, 2)} m
           </SliderValue>
         </div>
         <SliderBox>
@@ -182,10 +179,7 @@ class SourcePanel extends PureComponent {
         <div>
           <Label>Y</Label>
           <SliderValue>
-            {parseFloat(
-              Math.round(sourceObject.position.x * 100) / 100
-            ).toFixed(2)}{' '}
-            m
+            {forceDecimals(sourceObject.position.x, 2)} m
           </SliderValue>
         </div>
         <SliderBox>
@@ -201,10 +195,7 @@ class SourcePanel extends PureComponent {
         <div>
           <Label>Z</Label>
           <SliderValue>
-            {parseFloat(
-              Math.round(sourceObject.position.z * 100) / 100
-            ).toFixed(2)}{' '}
-            m
+            {forceDecimals(sourceObject.position.z, 2)} m
           </SliderValue>
         </div>
         <SliderBox>
