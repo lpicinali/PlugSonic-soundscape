@@ -211,7 +211,7 @@ class RoomSizeTextFields extends Component {
             onChange={this.handleTextFieldChange}
           />
           {this.state.errorTextW !== '' && (
-            <FormHelperText>this.state.errorTextW</FormHelperText>
+            <FormHelperText>{this.state.errorTextW}</FormHelperText>
           )}
         </PaddedFormControl>
 
@@ -225,7 +225,7 @@ class RoomSizeTextFields extends Component {
             onChange={this.handleTextFieldChange}
           />
           {this.state.errorTextD !== '' && (
-            <FormHelperText>this.state.errorTextD</FormHelperText>
+            <FormHelperText>{this.state.errorTextD}</FormHelperText>
           )}
         </PaddedFormControl>
 
@@ -239,7 +239,7 @@ class RoomSizeTextFields extends Component {
             onChange={this.handleTextFieldChange}
           />
           {this.state.errorTextH !== '' && (
-            <FormHelperText>this.state.errorTextH</FormHelperText>
+            <FormHelperText>{this.state.errorTextH}</FormHelperText>
           )}
         </PaddedFormControl>
       </React.Fragment>
