@@ -243,7 +243,10 @@ function* applySpatialisedChanges() {
     const source = yield select(state => state.sources.sources[payload.source])
     const playbackState = yield select(state => state.controls.playbackState)
 
-    if (playbackState === PlaybackState.PLAY || playbackState === PlaybackState.RECORD) {
+    if (
+      playbackState === PlaybackState.PLAY ||
+      playbackState === PlaybackState.RECORD
+    ) {
       yield call(stopSource, source)
       yield call(playSource, source)
     }
