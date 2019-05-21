@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import { clamp, values } from 'lodash'
 
-import { RoomShape } from 'src/constants'
+import { DEFAULT_Z_POSITION, RoomShape } from 'src/constants'
 import * as CustomPropTypes from 'src/prop-types.js'
 import {
   setSourceSelected,
@@ -19,7 +19,16 @@ import * as colors from 'src/styles/colors.js'
  * This function assumes z >= 0
  */
 function getScaleForZ(z, roomHeight) {
-  return 1 + z / roomHeight
+  if (z < DEFAULT_Z_POSITION) {
+    // 0 <= z < default z --> scale 0.5 to 1
+    return 0.5 + 0.5 * (z / DEFAULT_Z_POSITION)
+  }
+  if (DEFAULT_Z_POSITION <= z) {
+    // default z <= z <= room height --> scale 1 to 2
+    return 1 + (z - DEFAULT_Z_POSITION) / (roomHeight - DEFAULT_Z_POSITION)
+  }
+
+  return 1
 }
 
 /* ========================================================================== */
@@ -29,8 +38,7 @@ const Source = styled.div`
   top: 50%;
   left: 50%;
   z-index: 10;
-  transform: translate3d(-50%, -50%, 0)
-    scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
+  transform: translate3d(-50%, -50%, 0);
 `
 
 const SourceReach = styled.div`
@@ -49,7 +57,8 @@ const SourceBody = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0)
+    scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
   width: ${props => props.radiusSize * 2}px;
   height: ${props => props.radiusSize * 2}px;
   background: ${props => (props.isEnabled ? 'black' : 'transparent')};
@@ -207,8 +216,6 @@ class SourceRenderer extends Component {
     return (
       <Source
         key={name}
-        roomHeight={roomHeight}
-        position={source.position}
         style={{
           top: `${50 + (100 * -1 * source.position.x) / roomDepth}%`,
           left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
@@ -217,6 +224,8 @@ class SourceRenderer extends Component {
         {source.reach.isEnabled && <SourceReach radiusSize={reachRadiusSize} />}
         <SourceBody
           radiusSize={size / 2}
+          position={source.position}
+          roomHeight={roomHeight}
           isEnabled={source.enabled}
           isSelected={source.selected}
           onMouseOver={this.handleSourceMouseOver}
