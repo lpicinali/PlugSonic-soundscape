@@ -52,10 +52,10 @@ function isWithinReach(listener, source) {
 function* requestPlaySource(source) {
   const shouldPlay =
     source.gameplay.isPlaying === true &&
-    ((source.reach.isEnabled === true &&
+    ((source.reach.enabled === true &&
       source.gameplay.isWithinReach === true) ||
       source.reach.action === ReachAction.TOGGLE_VOLUME ||
-      source.reach.isEnabled === false)
+      source.reach.enabled === false)
 
   if (shouldPlay === true) {
     yield call(playSource, source)
@@ -377,7 +377,7 @@ function* applySourceReachChangesAffectingVolume() {
     else if (type === ActionType.SET_SOURCE_IS_WITHIN_REACH) {
       // Entering and leaving the reach area only triggers fades
       // when reach is enabled
-      if (source.reach.isEnabled === true) {
+      if (source.reach.enabled === true) {
         const reachGain = source.gameplay.isWithinReach ? 1 : 0
         yield call(
           setSourceReachGain,
@@ -414,11 +414,11 @@ function* applySourceReachChangesAffectingPlayback() {
 
     if (type === ActionType.SET_SOURCE_REACH_ENABLED) {
       const isReached =
-        source.reach.isEnabled === false ||
+        source.reach.enabled === false ||
         source.gameplay.isWithinReach === true
       yield put(setSourceIsPlaying(source.name, isReached))
     } else if (type === ActionType.SET_SOURCE_IS_WITHIN_REACH) {
-      if (source.reach.isEnabled === true) {
+      if (source.reach.enabled === true) {
         const isReached = source.gameplay.isWithinReach === true
         yield put(setSourceIsPlaying(source.name, isReached))
       }
@@ -529,22 +529,6 @@ function* applyQualityMode() {
     spatializer.setQualityMode()
   }
 }
-
-// function* applyDirectionalityEnabled() {
-//   while (true) {
-//     const { payload } = yield take(ActionType.SET_DIRECTIONALITY_ENABLED)
-//     engine.setDirectionalityEnabled(payload.isEnabled)
-//   }
-// }
-
-// function* applyDirectionalityAttenuation() {
-//   while (true) {
-//     const { payload } = yield take(ActionType.SET_DIRECTIONALITY_VALUE)
-//     const attenuation = payload.value * 30
-//     engine.setDirectionalityAttenuation(Ear.LEFT, attenuation)
-//     engine.setDirectionalityAttenuation(Ear.RIGHT, attenuation)
-//   }
-// }
 
 /* ======================================================================== */
 // HRTF

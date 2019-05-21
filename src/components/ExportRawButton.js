@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import FileSaver from 'file-saver'
-import Blob from 'blob'
 import { map } from 'lodash'
 import got from 'got'
 import { Button } from '@material-ui/core'
@@ -12,13 +11,26 @@ import { Button } from '@material-ui/core'
 /* ========================================================================== */
 class ExportMetaButton extends Component {
   handleExportSoundscapeRaw = () => {
-    try {
-      const isFileSaverSupported = !!new Blob()
-    } catch (e) {
-      alert('The File APIs are not fully supported in this browser.')
-    }
-
     // const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
+
+    const listener = this.props.listener
+    const room = this.props.room
+    const sources = map(this.props.sources, source => ({
+        enabled:            source.enabled,
+        filename:           source.filename,
+        hidden:             source.hidden,
+        loop:               source.loop,
+        name:               source.name,
+        platform_asset_id:  source.platform_asset_id,
+        platform_media_id:  source.platform_media_id,
+        position:           source.position,
+        raw:                source.raw,
+        reach:              source.reach,
+        spatialised:        source.spatialised,
+        timings:            source.timings,
+        url:                source.url,
+        volume:             source.volume,
+      }))
 
     // if (res === true) {
       const soundscape = {
@@ -31,7 +43,14 @@ class ExportMetaButton extends Component {
       clone.sources = map(clone.sources, source => {
         if (source.url !== null) {
           return got(source.url, { encoding: null }).then(response => {
+            console.log('RESPONSE')
+            console.log(response)
             source.raw = Array.from(response.body)
+            console.log('ARRAY')
+            console.log(source.raw)
+            const uInt = Uint8Array.from(response.body)
+            console.log('UINT')
+            console.log(uInt)
           })
         }
         return source

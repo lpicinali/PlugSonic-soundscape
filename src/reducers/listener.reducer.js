@@ -1,17 +1,15 @@
 import { ActionType, SpatializationMode } from 'src/constants.js'
 
 const initialState = {
+  headRadius: 0.0875,
+  hrtfFilename: '3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf',
   position: {
     x: 0,
     y: 0,
-    z: 0,
+    z: 1.7,
     rotZAxis: 0,
   },
   spatializationMode: SpatializationMode.HighQuality,
-  headRadius: 0.0875,
-  // isDirectionalityEnabled: true,
-  // directionalityValue: 0,
-  hrtfFilename: '3DTI_HRTF_IRC1032_256s_44100Hz.3dti-hrtf',
 }
 
 export default function(state = initialState, { type, payload }) {

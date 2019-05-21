@@ -9,7 +9,8 @@ import {
 } from '@material-ui/core'
 
 import { SourceOrigin } from 'src/constants.js'
-import { fetchAudioBufferRaw } from 'src/utils.js'
+import { fetchAudioBufferRaw, fetchAudioBufferFromArrayBuffer } from 'src/utils.js'
+import bufferToArrayBuffer from 'buffer-to-arraybuffer'
 import { addSource } from 'src/actions/sources.actions.js'
 import { storeSourceAudioBuffer } from 'src/audio/engine.js'
 import { Dropzone, ActionIcon } from 'src/components/SourceUploader.style.js'
@@ -71,34 +72,58 @@ class SourceUploader extends Component {
         })
       }
       reader.onload = () => {
-        const view = new Uint8Array(reader.result)
-        const array = Array.from(view)
+        const viewReader = new Uint8Array(reader.result)
+        const array = Array.from(viewReader)
+        console.log('VIEW READER')
+        console.log(viewReader)
 
-        fetchAudioBufferRaw(array)
+        fetchAudioBufferFromArrayBuffer(reader.result)
           .then(audioBuffer => {
-            if (audioBuffer.numberOfChannels > 2) {
-              this.setState({
-                ...this.state,
-                filename: accepted[0].name,
-                size: accepted[0].size,
-                errorFile: 'Error with file format (Number of Channels > 2)',
-              })
-            } else {
-              if ( audioBuffer.numberOfChannels === 2 ) {
-                alert(`You are about to import a stereo file.\n This will be converted to mono (Left and Right channels will be summed)\nPress OK to continue...`)
-              }
-              this.setState({
-                ...this.state,
-                audioBuffer,
-                raw: array,
-                file: accepted[0],
-                filename: accepted[0].name,
-                size: accepted[0].size,
-                errorFile: '',
-              })
-            }
+            console.log('AUDIO BUFFER')
+            console.log(audioBuffer)
+
+            const left = audioBuffer.getChannelData(0)
+            const ui8 = new Uint8Array(left.buffer)
+            const f32 = new Float32Array(ui8.buffer)
+            console.log('Float32')
+            console.log(left)
+            console.log('Uint8')
+            console.log(ui8)
+            console.log('And Back')
+            console.log(f32)
+
+
           })
-          .catch(err => console.error(err))
+
+        // fetchAudioBufferRaw(array)
+        //   .then(audioBuffer => {
+        //     if (audioBuffer.numberOfChannels > 2) {
+        //       this.setState({
+        //         ...this.state,
+        //         filename: accepted[0].name,
+        //         size: accepted[0].size,
+        //         errorFile: 'Error with file format (Number of Channels > 2)',
+        //       })
+        //     } else {
+        //       if ( audioBuffer.numberOfChannels === 2 ) {
+        //         alert(`You are about to import a stereo file.\n This will be converted to mono (Left and Right channels will be summed)\nPress OK to continue...`)
+        //       }
+        //       this.setState({
+        //         ...this.state,
+        //         audioBuffer,
+        //         raw: array,
+        //         file: accepted[0],
+        //         filename: accepted[0].name,
+        //         size: accepted[0].size,
+        //         errorFile: '',
+        //       })
+        //       console.log('AudioBuffer')
+        //       console.log(this.state.audioBuffer.getChannelData(0))
+        //       // console.log('Raw')
+        //       // console.log(this.state.raw)
+        //     }
+        //   })
+        //   .catch(err => console.error(err))
       }
     } else {
       this.setState({...this.state, filename: '', size: '', errorFile: 'Please load only one file'})
@@ -107,7 +132,7 @@ class SourceUploader extends Component {
 
   handleAddSource = () => {
     const { onAddSource } = this.props
-    const { name, filename, audioBuffer } = this.state
+    const { name, filename, audioBuffer, raw } = this.state
 
     storeSourceAudioBuffer(name, audioBuffer)
 
@@ -189,8 +214,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onAddSource: (filename, name) =>
-    dispatch(addSource({ filename, name, origin: SourceOrigin.LOCAL })),
+  onAddSource: (filename, name, raw) =>
+    dispatch(addSource({ filename, name, raw, origin: SourceOrigin.LOCAL })),
 })
 
 export default connect(

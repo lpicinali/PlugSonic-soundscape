@@ -68,7 +68,7 @@ export const PlaybackState = {
 }
 
 export const PlaybackTiming = {
-  PLAY_AFTER: 'PLAY_AFTER',
+  PLAY_AFTER: 'playAfter',
 }
 
 export const ReachAction = {
@@ -87,8 +87,8 @@ export const SourceOrigin = {
 }
 
 export const SpatializationMode = {
-  HighQuality: 'HighQuality',
-  HighPerformance: 'HighPerformance',
+  HighQuality: 'HIGH_QUALITY',
+  HighPerformance: 'PERFORMANCE',
 }
 
 export const TimingStatus = {

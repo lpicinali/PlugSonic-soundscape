@@ -52,7 +52,7 @@ const SourceBody = styled.div`
   transform: translate3d(-50%, -50%, 0);
   width: ${props => props.radiusSize * 2}px;
   height: ${props => props.radiusSize * 2}px;
-  background: ${props => (props.isEnabled ? 'black' : 'transparent')};
+  background: ${props => (props.enabled ? 'black' : 'transparent')};
   border-radius: 50%;
   border: 2px solid transparent;
 
@@ -214,7 +214,7 @@ class SourceRenderer extends Component {
           left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
         }}
       >
-        {source.reach.isEnabled && <SourceReach radiusSize={reachRadiusSize} />}
+        {source.reach.enabled && <SourceReach radiusSize={reachRadiusSize} />}
         <SourceBody
           radiusSize={size / 2}
           isEnabled={source.enabled}

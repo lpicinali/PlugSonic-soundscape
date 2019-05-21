@@ -40,6 +40,7 @@ export function fetchAudioBuffer(url) {
 function ArrayBufferCycle(array) {
   const ab = new ArrayBuffer(array.length)
   const view = new Uint8Array(ab)
+  // const view = new Float32Array(ab)
   for (let i = 0; i < array.length; ++i) {
     view[i] = array[i]
   }
@@ -48,6 +49,10 @@ function ArrayBufferCycle(array) {
 
 export function fetchAudioBufferRaw(rawArray) {
   const arrayBuffer = ArrayBufferCycle(rawArray)
+  return decode(arrayBuffer, context)
+}
+
+export function fetchAudioBufferFromArrayBuffer(arrayBuffer) {
   return decode(arrayBuffer, context)
 }
 
@@ -108,7 +113,7 @@ export function forceDecimals(value, precision) {
  */
 export function getSourceReachGain(source) {
   if (
-    source.reach.isEnabled === false ||
+    source.reach.enabled === false ||
     source.gameplay.isWithinReach === true
   ) {
     return 1

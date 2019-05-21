@@ -21,6 +21,7 @@ export const addSource = ({
   selected,
   spatialised,
   volume,
+  raw
 }) => ({
   type: ActionType.ADD_SOURCE,
   payload: {
@@ -38,6 +39,7 @@ export const addSource = ({
     selected,
     spatialised,
     volume,
+    raw
   },
 })
 
@@ -81,9 +83,9 @@ export const setSourceReachAction = (source, action) => ({
   payload: { source, action },
 })
 
-export const setSourceReachEnabled = (source, isEnabled) => ({
+export const setSourceReachEnabled = (source, enabled) => ({
   type: ActionType.SET_SOURCE_REACH_ENABLED,
-  payload: { source, isEnabled },
+  payload: { source, enabled },
 })
 
 export const setSourceReachFadeDuration = (source, fadeDuration) => ({
