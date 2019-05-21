@@ -1,10 +1,10 @@
-import { ActionType, SpatializationMode } from 'src/constants.js'
+import { ActionType, DEFAULT_Z_POSITION, SpatializationMode } from 'src/constants.js'
 
 const initialState = {
   position: {
     x: 0,
     y: 0,
-    z: 0,
+    z: DEFAULT_Z_POSITION,
     rotZAxis: 0,
   },
   spatializationMode: SpatializationMode.HighQuality,

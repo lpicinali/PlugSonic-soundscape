@@ -290,12 +290,16 @@ function* clampSourceZWhenChangingRoomSize() {
 // LISTENER POSITION
 /* ======================================================================== */
 function* applyListenerPosition() {
+  // Apply initial listener position
+  const spatializer = yield call(getBinauralSpatializer)
+  const listenerPosition = yield select(state => state.listener.position)
+  yield call(spatializer.setListenerPosition, listenerPosition)
+
   while (true) {
     const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
     const { x, y, z, rotZAxis } = payload.position
 
-    const spatializer = yield call(getBinauralSpatializer)
-    spatializer.setListenerPosition({ x, y, z, rotZAxis })
+    yield call(spatializer.setListenerPosition, { x, y, z, rotZAxis })
   }
 }
 

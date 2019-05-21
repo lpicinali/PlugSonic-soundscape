@@ -5,7 +5,7 @@
 */ /* ---------------------------------------------- */
 import { omit, set } from 'lodash/fp'
 
-import { PlaybackTiming, ReachAction, TimingStatus } from 'src/constants.js'
+import { DEFAULT_Z_POSITION, PlaybackTiming, ReachAction, TimingStatus } from 'src/constants.js'
 import { ADEtoXYZ } from 'src/utils.js'
 
 const initialState = {
@@ -17,6 +17,11 @@ let azimuthIndex = Object.keys(initialState.sources).length
 export default function(state = initialState, { type, payload }) {
   switch (type) {
     case 'ADD_SOURCE': {
+      const defaultPosition = {
+        ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
+        z: DEFAULT_Z_POSITION,
+      }
+
       const newSource = {
         name: payload.name,
         enabled: true,
@@ -25,8 +30,7 @@ export default function(state = initialState, { type, payload }) {
         hidden: false,
         platform_asset_id: payload.assetId || null,
         platform_media_id: payload.mediaId || null,
-        position:
-          payload.position || ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
+        position: payload.position || defaultPosition,
         // raw: payload.raw,
         reach: payload.reach || {
           isEnabled: true,

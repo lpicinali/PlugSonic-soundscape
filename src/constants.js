@@ -55,6 +55,8 @@ export const ActionType = {
   SET_SOURCE_TIMING_STATUS: 'SET_SOURCE_TIMING_STATUS',
 }
 
+export const DEFAULT_Z_POSITION = 1.7
+
 export const Ear = {
   LEFT: 'LEFT',
   RIGHT: 'RIGHT',
