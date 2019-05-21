@@ -22,6 +22,7 @@ import {
   setSourceIsWithinReach,
   setSourceTiming,
   setSourceTimingStatus,
+  setSourcePosition,
 } from 'src/actions/sources.actions.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
 import {
@@ -260,6 +261,25 @@ function* applySourcePosition() {
 
     const spatializer = yield call(getBinauralSpatializer)
     spatializer.setSourcePosition(name, { x, y, z })
+  }
+}
+
+function* clampSourceZWhenChangingRoomSize() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_ROOM_SIZE)
+
+    const { height } = payload.size
+    const offBoundsSources = yield select(state =>
+      Object.values(state.sources.sources).filter(x => x.position.z > height)
+    )
+    for (let i = 0; i < offBoundsSources.length; i++) {
+      const source = offBoundsSources[i]
+      const clampedPosition = {
+        ...source.position,
+        z: height,
+      }
+      yield put(setSourcePosition(source.name, clampedPosition))
+    }
   }
 }
 
@@ -596,6 +616,7 @@ export default function* rootSaga() {
     // applyDirectionalityEnabled(),
     // applyDirectionalityAttenuation(),
     applySourcePosition(),
+    clampSourceZWhenChangingRoomSize(),
     applyListenerPosition(),
     initDefaultHrtf(),
     applyHrtfs(),

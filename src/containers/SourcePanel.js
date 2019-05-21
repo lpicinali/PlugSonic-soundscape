@@ -201,7 +201,7 @@ class SourcePanel extends PureComponent {
         <SliderBox>
           <Slider
             min={0}
-            max={roomSize.height / 2}
+            max={roomSize.height}
             step={0.01}
             value={sourceObject.position.z}
             onChange={(event, value) => this.handleSourceMove('z', value)}

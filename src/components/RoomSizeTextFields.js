@@ -17,11 +17,15 @@ const maxSize = 100
 /* ROOM SIZE TEXT FIELDS */
 /* ========================================================================== */
 class RoomSizeTextFields extends Component {
-  state = {
-    size: { width: 30, depth: 20, height: 4  },
-    errorTextW: '',
-    errorTextD: '',
-    errorTextH: '',
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      size: { ...props.roomSize },
+      errorTextW: '',
+      errorTextD: '',
+      errorTextH: '',
+    }
   }
 
   handleTextFieldChange = event => {
