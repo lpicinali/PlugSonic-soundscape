@@ -26,11 +26,12 @@ class ExportMetaButton extends Component {
       platform_asset_id:  source.platform_asset_id,
       platform_media_id:  source.platform_media_id,
       position:           source.position,
-      raw:                source.origin === SourceOrigin.REMOTE ?
-                            got(source.url, { encoding: null }).then(response => {
-                              source.raw = Array.from(response.body)
-                            })
-                          : getSourceRawData(source.name),
+      raw:                got(source.url, { encoding: null }).then(response => {
+                            source.raw = Array.from(response.body)
+                          }),
+                          // source.origin === SourceOrigin.REMOTE ?
+
+                          // : getSourceRawData(source.name),
       reach:              source.reach,
       spatialised:        source.spatialised,
       timings:            source.timings,
