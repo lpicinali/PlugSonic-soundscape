@@ -45,22 +45,17 @@ class ExportMetaButton extends Component {
 
     for (let i = 0; i < soundscape.sources.length; i++) {
       if (soundscape.sources[i].url !== null) {
-        console.log(soundscape.sources[i])
-        console.log(soundscape.sources[i].url)
-        httpGetAsync(soundscape.sources[i].url, this.getAntaniCallback, sessionToken)
+        got(soundscape.sources[i].url, { encoding: null }).then(response => {
+          console.log(response)
+          soundscape.sources[i].raw = Array.from(response.body)
+        })
       }
     }
 
-    // const json = JSON.stringify(soundscape)
-    // const file = new File([json], { type: 'application/json' })
-    // FileSaver.saveAs(file, 'soundscape_whole.json')
+    const json = JSON.stringify(soundscape)
+    const file = new File([json], { type: 'application/json' })
+    FileSaver.saveAs(file, 'soundscape_whole.json')
   }
-
-  getAntaniCallback = responseText => {
-    console.log(responseText)
-  }
-
-
 
   /* ------------------------------------------------------------------------ */
   render() {
