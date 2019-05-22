@@ -118,12 +118,16 @@ function* applyRecordStartStop() {
 function* manageAddSource() {
   while (true) {
     const { payload } = yield take(ActionType.ADD_SOURCE)
+    console.log('manageAddSource - payload')
+    console.log(payload)
 
     const source = yield select(state => state.sources.sources[payload.name])
     const playbackState = yield select(state => state.controls.playbackState)
 
     if (source.origin === SourceOrigin.REMOTE) {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
+    } else {
+      yield spawn(fetchAndStoreRawData(source.name, payload.raw))
     }
 
     if (
@@ -139,6 +143,12 @@ function fetchAndStoreSourceAudio(name, url) {
   return function*() {
     const audioBuffer = yield call(fetchAudioBuffer, url)
     yield call(storeSourceAudioBuffer, name, audioBuffer)
+  }
+}
+
+function fetchAndStoreRawData(name, rawData) {
+  return function*() {
+
   }
 }
 
@@ -171,7 +181,11 @@ function* manageImportSources() {
 
     // Add the new ones
     for (let i = 0; i < sources.length; i++) {
-      yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
+      if (sources[i].raw === null ) {
+        yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
+      } else {
+        yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
+      }
     }
   }
 }

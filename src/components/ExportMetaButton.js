@@ -34,8 +34,8 @@ class ExportMetaButton extends Component {
 
     const soundscape = {
       listener: listener,
-      room: room,
-      sources: sources,
+      room:     room,
+      sources:  sources,
     }
 
     const json = JSON.stringify(soundscape, null, 2)

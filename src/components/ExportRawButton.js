@@ -6,65 +6,52 @@ import { map } from 'lodash'
 import got from 'got'
 import { Button } from '@material-ui/core'
 
+import { getSourceRawData } from 'src/audio/engine'
+import { SourceOrigin } from 'src/constants.js'
+
 /* ========================================================================== */
 /* EXPORT RAW BUTTON */
 /* ========================================================================== */
 class ExportMetaButton extends Component {
   handleExportSoundscapeRaw = () => {
-    // const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
 
     const listener = this.props.listener
     const room = this.props.room
     const sources = map(this.props.sources, source => ({
-        enabled:            source.enabled,
-        filename:           source.filename,
-        hidden:             source.hidden,
-        loop:               source.loop,
-        name:               source.name,
-        platform_asset_id:  source.platform_asset_id,
-        platform_media_id:  source.platform_media_id,
-        position:           source.position,
-        raw:                source.raw,
-        reach:              source.reach,
-        spatialised:        source.spatialised,
-        timings:            source.timings,
-        url:                source.url,
-        volume:             source.volume,
-      }))
+      enabled:            source.enabled,
+      filename:           source.filename,
+      hidden:             source.hidden,
+      loop:               source.loop,
+      name:               source.name,
+      platform_asset_id:  source.platform_asset_id,
+      platform_media_id:  source.platform_media_id,
+      position:           source.position,
+      raw:                source.origin === SourceOrigin.REMOTE ?
+                            got(source.url, { encoding: null }).then(response => {
+                              source.raw = Array.from(response.body)
+                            })
+                          : getSourceRawData(source.name),
+      reach:              source.reach,
+      spatialised:        source.spatialised,
+      timings:            source.timings,
+      url:                source.url,
+      volume:             source.volume,
+    }))
 
-    // if (res === true) {
-      const soundscape = {
-        sources: this.props.sources,
-        listener: this.props.listener,
-        room: this.props.room,
+    const soundscape = {
+      listener: listener,
+      room:     room,
+      sources:  sources,
+    }
+
+    Promise.all(soundscape.sources).then(responses => {
+      const json = JSON.stringify(soundscape)
+      const file = new File([json], { type: 'application/json' })
+      FileSaver.saveAs(file, 'soundscape_whole.json')
+      if (responses) {
+        alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
       }
-      const clone = JSON.parse(JSON.stringify(soundscape))
-
-      clone.sources = map(clone.sources, source => {
-        if (source.url !== null) {
-          return got(source.url, { encoding: null }).then(response => {
-            console.log('RESPONSE')
-            console.log(response)
-            source.raw = Array.from(response.body)
-            console.log('ARRAY')
-            console.log(source.raw)
-            const uInt = Uint8Array.from(response.body)
-            console.log('UINT')
-            console.log(uInt)
-          })
-        }
-        return source
-      })
-
-      Promise.all(clone.sources).then(responses => {
-        const json = JSON.stringify(clone)
-        const file = new File([json], { type: 'application/json' })
-        FileSaver.saveAs(file, 'soundscape_whole.json')
-        if (responses) {
-          alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
-        }
-      })
-    // }
+    })
   }
 
   /* ------------------------------------------------------------------------ */

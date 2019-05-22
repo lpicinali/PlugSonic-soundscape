@@ -29,11 +29,11 @@ export default function(state = initialState, { type, payload }) {
         loop: true,
         name: payload.name,
         origin: payload.origin,
-        platform_asset_id: payload.assetId || null,
-        platform_media_id: payload.mediaId || null,
+        platform_asset_id: payload.platform_asset_id || null,
+        platform_media_id: payload.platform_media_id || null,
         position:
           payload.position || ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
-        raw: payload.raw || null,
+        raw: null,
         reach: payload.reach || {
           action: ReachAction.TOGGLE_VOLUME,
           enabled: true,
@@ -58,11 +58,12 @@ export default function(state = initialState, { type, payload }) {
       return set('sources', omit(payload.sources, state.sources), state)
 
     case 'IMPORT_SOURCES': {
-      const newSources = {}
-      payload.sources.forEach(source => {
-        newSources[source.name] = source
-      })
-      return { ...state, sources: newSources }
+      // const newSources = {}
+      // payload.sources.forEach(source => {
+      //   newSources[source.name] = source
+      // })
+      // return { ...state, sources: newSources }
+      return state
     }
 
     case 'SOURCE_ONOFF':
