@@ -7,14 +7,15 @@ import got from 'got'
 import { Button } from '@material-ui/core'
 
 import { getSourceRawData } from 'src/audio/engine'
-import { SourceOrigin } from 'src/constants.js'
+import { SourceOrigin } from 'src/constants'
+import { API, httpGetSync, sessionToken, httpGetAsync } from 'src/pluggy.js'
 
 /* ========================================================================== */
 /* EXPORT RAW BUTTON */
 /* ========================================================================== */
 class ExportMetaButton extends Component {
-  handleExportSoundscapeRaw = () => {
 
+  handleExportSoundscapeRaw = () => {
     const listener = this.props.listener
     const room = this.props.room
     const sources = map(this.props.sources, source => ({
@@ -26,12 +27,9 @@ class ExportMetaButton extends Component {
       platform_asset_id:  source.platform_asset_id,
       platform_media_id:  source.platform_media_id,
       position:           source.position,
-      raw:                got(source.url, { encoding: null }).then(response => {
-                            source.raw = Array.from(response.body)
-                          }),
-                          // source.origin === SourceOrigin.REMOTE ?
-
-                          // : getSourceRawData(source.name),
+      raw:                source.origin === SourceOrigin.LOCAL ?
+                            getSourceRawData(source.name)
+                            : null,
       reach:              source.reach,
       spatialised:        source.spatialised,
       timings:            source.timings,
@@ -45,15 +43,24 @@ class ExportMetaButton extends Component {
       sources:  sources,
     }
 
-    Promise.all(soundscape.sources).then(responses => {
-      const json = JSON.stringify(soundscape)
-      const file = new File([json], { type: 'application/json' })
-      FileSaver.saveAs(file, 'soundscape_whole.json')
-      if (responses) {
-        alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
+    for (let i = 0; i < soundscape.sources.length; i++) {
+      if (soundscape.sources[i].url !== null) {
+        console.log(soundscape.sources[i])
+        console.log(soundscape.sources[i].url)
+        httpGetAsync(soundscape.sources[i].url, this.getAntaniCallback, sessionToken)
       }
-    })
+    }
+
+    // const json = JSON.stringify(soundscape)
+    // const file = new File([json], { type: 'application/json' })
+    // FileSaver.saveAs(file, 'soundscape_whole.json')
   }
+
+  getAntaniCallback = responseText => {
+    console.log(responseText)
+  }
+
+
 
   /* ------------------------------------------------------------------------ */
   render() {
