@@ -13,6 +13,7 @@ import toolkit from 'src/audio/toolkit.js'
 window.toolkit = toolkit || { nope: false }
 
 const sourceAudioBuffers = {}
+const sourceRawData = {}
 
 const sourceNodes = {}
 const sourceVolumes = {}
@@ -59,6 +60,15 @@ export const recordStop = () => {
 export const storeSourceAudioBuffer = (name, audioBuffer) => {
   sourceAudioBuffers[name] = audioBuffer
 }
+
+/**
+ * Stores a source's raw data for future reference
+ */
+export const storeSourceRawData = (name, rawData) => {
+  sourceRawData[name] = rawData
+}
+
+export const getSourceRawData = name => sourceRawData[name]
 
 /**
  * Creates a buffer source node with a given audio buffer.
