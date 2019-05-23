@@ -246,7 +246,7 @@ class SourcePanel extends PureComponent {
           <H3>Reach</H3>
           <Switch
             color="primary"
-            checked={sourceObject.reach.isEnabled}
+            checked={sourceObject.reach.enabled}
             onChange={(event, isEnabled) =>
               onSourceReachEnabledChange(sourceObject.name, isEnabled)
             }
@@ -266,7 +266,7 @@ class SourcePanel extends PureComponent {
               max={Math.max(roomSize.width, roomSize.height) / 2}
               step={0.1}
               value={sourceObject.reach.radius}
-              disabled={sourceObject.reach.isEnabled === false}
+              disabled={sourceObject.reach.enabled === false}
               onChange={(event, value) =>
                 onSourceReachRadiusChange(sourceObject.name, value)
               }
@@ -305,7 +305,7 @@ class SourcePanel extends PureComponent {
               max={20}
               step={0.1}
               value={sourceObject.reach.fadeDuration / 1000}
-              disabled={sourceObject.reach.isEnabled === false}
+              disabled={sourceObject.reach.enabled === false}
               onChange={(event, value) =>
                 onSourceReachFadeDurationChange(sourceObject.name, value * 1000)
               }

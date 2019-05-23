@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
-import { Divider, List } from '@material-ui/core'
+import { List } from '@material-ui/core'
 
 import SourcePanel from 'src/containers/SourcePanel.js'
 
