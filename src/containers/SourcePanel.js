@@ -102,13 +102,15 @@ class SourcePanel extends PureComponent {
       focusedItem === sourceObject.name
     ) {
       this.setState({ isOpen: true }, () => {
-        setTimeout(() => {
-          this.$item.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest',
-          })
-        }, 100)
+        if (this.$item.scrollIntoView) {
+          setTimeout(() => {
+            this.$item.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest',
+            })
+          }, 100)
+        }
       })
     }
   }
