@@ -10,6 +10,7 @@ import * as CustomPropTypes from 'src/prop-types.js'
 import {
   setSourceSelected,
   setSourcePosition,
+  focusSourcePanelItem,
 } from 'src/actions/sources.actions'
 import * as colors from 'src/styles/colors.js'
 
@@ -181,7 +182,7 @@ class SourceRenderer extends Component {
   }
 
   handleSourceMouseUp = () => {
-    const { source, onSelectSource } = this.props
+    const { source, onSelectSource, onClickSource } = this.props
     const { isDragging, hasDragged } = this.state
 
     window.removeEventListener('mousemove', this.handleSourceMouseDrag)
@@ -190,6 +191,7 @@ class SourceRenderer extends Component {
     // Click -> toggle selected
     if (hasDragged === false) {
       onSelectSource(source.name, !source.selected)
+      onClickSource(source.name)
     }
 
     // End of drag
@@ -263,6 +265,7 @@ SourceRenderer.propTypes = {
   }).isRequired,
   setSourcePosition: PropTypes.func.isRequired,
   onSelectSource: PropTypes.func.isRequired,
+  onClickSource: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -277,6 +280,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setSourcePosition(source, position)),
   onSelectSource: (source, selected) =>
     dispatch(setSourceSelected(source, selected)),
+  onClickSource: (source) => dispatch(focusSourcePanelItem(source)),
 })
 
 export default connect(

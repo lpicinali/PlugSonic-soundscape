@@ -92,6 +92,27 @@ class SourcePanel extends PureComponent {
     isPromptingDelete: false,
   }
 
+  $item = null
+
+  componentDidUpdate = (prevProps) => {
+    const { focusedItem, sourceObject } = this.props
+
+    if (
+      prevProps.focusedItem !== focusedItem &&
+      focusedItem === sourceObject.name
+    ) {
+      this.setState({ isOpen: true }, () => {
+        setTimeout(() => {
+          this.$item.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest',
+          })
+        }, 100)
+      })
+    }
+  }
+
   handleSourceVolume = volume => {
     this.props.onSourceVolumeChange(this.props.sourceObject.name, volume)
   }
@@ -426,6 +447,8 @@ class SourcePanel extends PureComponent {
 
     return (
       <Fragment>
+        <div ref={$el => this.$item = $el} />
+
         <SourceListItem
           button
           onClick={() => this.setState({ isOpen: !isOpen })}
@@ -452,6 +475,7 @@ SourcePanel.propTypes = {
   }).isRequired,
   sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
   sourceObject: CustomPropTypes.source.isRequired,
+  focusedItem: PropTypes.string,
   onSourceDelete: PropTypes.func.isRequired,
   onSourceHiddenChange: PropTypes.func.isRequired,
   onSourceLoopChange: PropTypes.func.isRequired,
