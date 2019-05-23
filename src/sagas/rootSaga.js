@@ -121,15 +121,16 @@ function* applyRecordStartStop() {
 function* manageAddSource() {
   while (true) {
     const { payload } = yield take(ActionType.ADD_SOURCE)
-    console.log('manageAddSource - payload')
-    console.log(payload)
 
     const source = yield select(state => state.sources.sources[payload.name])
     const playbackState = yield select(state => state.controls.playbackState)
 
     if (source.origin === SourceOrigin.REMOTE) {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
-    } else if (source.origin === SourceOrigin.LOCAL && getSourceRawData(source.name) === undefined) {
+    } else if (
+        source.origin === SourceOrigin.LOCAL &&
+        getSourceRawData(source.name) === undefined
+      ) {
       yield spawn(fetchAndStoreRawData(source.name, payload.raw))
     } else {
       console.log('rootSaga -> manageAddSource: source uploaded from local, bypass fecth audio buffer')
@@ -190,7 +191,10 @@ function* manageImportSources() {
     for (let i = 0; i < sources.length; i++) {
       if (sources[i].raw !== null ) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
-      } else if ( sources[i].raw === null && sources[i].url !== null) {
+      } else if (
+        sources[i].raw === null &&
+        sources[i].url !== null
+        ) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
       } else {
         console.log('rootSaga -> manageImportSources: json not valid')

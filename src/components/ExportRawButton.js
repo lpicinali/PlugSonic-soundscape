@@ -13,6 +13,7 @@ import { getSourceRawData } from 'src/audio/engine'
 class ExportMetaButton extends Component {
 
   handleExportSoundscapeRaw = () => {
+
     const listener = this.props.listener
     const room = this.props.room
     const sources = map(this.props.sources, source => ({
@@ -38,23 +39,26 @@ class ExportMetaButton extends Component {
       sources:  sources,
     }
 
-    const promises = map(soundscape.sources, (source, index) => {
-      if ( source.url !== null ) {
-        return got(source.url, { encoding: null })
-          .then(response => {
-            soundscape.sources[index].raw = Array.from(response.body)
-          })
+    const promises = map(
+      soundscape.sources,
+      (source, index) => {
+        if ( source.url !== null ) {
+          return got(source.url, { encoding: null })
+            .then(response => {
+              soundscape.sources[index].raw = Array.from(response.body)
+            })
+        }
+        soundscape.sources[index].raw = getSourceRawData(source.name)
+        return source
       }
+    )
 
-      soundscape.sources[index].raw = getSourceRawData(source.name)
-      return source
-    })
-
-    Promise.all(promises).then(() => {
-      const json = JSON.stringify(soundscape)
-      const file = new File([json], { type: 'application/json' })
-      FileSaver.saveAs(file, 'soundscape_whole.json')
-    })
+    Promise.all(promises)
+      .then(() => {
+        const json = JSON.stringify(soundscape)
+        const file = new File([json], { type: 'application/json' })
+        FileSaver.saveAs(file, 'soundscape_whole.json')
+      })
   }
 
   /* ------------------------------------------------------------------------ */

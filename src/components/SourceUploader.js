@@ -39,44 +39,16 @@ class SourceUploader extends Component {
         errorTextField: `Already in use`,
       })
     } else {
-      this.setState({ ...this.state, name: val, errorTextField: '' })
+      this.setState({
+        ...this.state,
+        name: val,
+        errorTextField: ''
+      })
     }
   }
 
   handleOnDrop = (accepted) => {
-      const reader = new FileReader()
-      reader.readAsArrayBuffer(accepted[0])
-      reader.onload = () => {
-        const viewReader = new Uint8Array(reader.result)
-        const array = Array.from(viewReader)
-        fetchAudioBufferRaw(array)
-          .then(audioBuffer => {
-            if (audioBuffer.numberOfChannels > 2) {
-              this.setState({
-                ...this.state,
-                filename: accepted[0].name,
-                size: accepted[0].size,
-                errorFile: 'Error with file format (Number of Channels > 2)',
-              })
-            } else {
-              this.setState({
-                ...this.state,
-                audioBuffer,
-                raw: array,
-                file: accepted[0],
-                filename: accepted[0].name,
-                size: accepted[0].size,
-                errorFile: '',
-              })
-            }
-          })
-          .catch(err => console.error(err))
-      }
-  }
-
-  handleOnDrop = (accepted) => {
     if (accepted.length === 0) {
-      console.log('Unsupported')
       this.setState({
         errorFile: 'Unsupported file format'
       })
@@ -93,6 +65,7 @@ class SourceUploader extends Component {
           errorFile: 'File reading was aborted',
         })
       }
+
       reader.onerror = () => {
         this.setState({
           ...this.state,
@@ -103,8 +76,9 @@ class SourceUploader extends Component {
       }
 
       reader.onload = () => {
-        const viewReader = new Uint8Array(reader.result)
-        const array = Array.from(viewReader)
+        const view = new Uint8Array(reader.result)
+        const array = Array.from(view)
+
         fetchAudioBufferRaw(array)
           .then(audioBuffer => {
             if (audioBuffer.numberOfChannels > 2) {
@@ -129,17 +103,21 @@ class SourceUploader extends Component {
           .catch(err => console.error(err))
       }
     } else {
-      this.setState({...this.state, filename: '', size: '', errorFile: 'Please load only one file'})
+      this.setState({
+        ...this.state,
+        filename: '',
+        size: '',
+        errorFile: 'Please load only one file'
+      })
     }
   }
 
   handleAddSource = () => {
     const { onAddSource } = this.props
-    const { name, filename, audioBuffer } = this.state
+    const { name, filename, audioBuffer, raw } = this.state
 
-    console.log(getSourceRawData(name))
     storeSourceAudioBuffer(name, audioBuffer)
-    storeSourceRawData(name, this.state.raw)
+    storeSourceRawData(name, raw)
 
     onAddSource(filename.replace(/\s/g, '').toLowerCase(), name)
 

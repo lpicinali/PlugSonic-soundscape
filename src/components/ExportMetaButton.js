@@ -11,7 +11,6 @@ import { Button } from '@material-ui/core'
 class ExportMetaButton extends Component {
 
   handleExportSoundscapeMeta = () => {
-    // const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
 
     const listener = this.props.listener
     const room = this.props.room
