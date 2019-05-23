@@ -6,6 +6,11 @@
 
 import { ActionType } from 'src/constants.js'
 
+export const importListener = listener => ({
+  type: ActionType.IMPORT_LISTENER,
+  payload: { listener },
+})
+
 export const setListenerPosition = position => ({
   type: ActionType.SET_LISTENER_POSITION,
   payload: { position },
@@ -22,11 +27,6 @@ export const setHighPerformanceMode = () => ({
 
 export const setHighQualityMode = () => ({
   type: ActionType.SET_HIGH_QUALITY_MODE,
-})
-
-export const importListener = listener => ({
-  type: ActionType.IMPORT_LISTENER,
-  payload: { listener },
 })
 
 export const setHrtfFilename = filename => ({

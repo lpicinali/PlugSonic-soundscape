@@ -32,47 +32,93 @@ class RoomSizeTextFields extends Component {
     const val = event.target.value
     // ROUND
     if (this.props.roomShape === RoomShape.ROUND) {
-      // Empty string
-      if (val.length === 0) {
-        const newSize = { width: '', depth: '' }
-        this.setState({
-          ...this.state,
-          size: newSize,
-          errorTextW: `Invalid: ${minSize} < W < ${maxSize}`,
-          errorTextD: '',
-        })
-      }
-      // Number
-      else if (!isNaN(toNumber(val))) {
-        if (val >= minSize && val <= maxSize) {
-          const newSize = { width: toNumber(val), depth: toNumber(val) }
-          this.setState({
-            ...this.state,
-            size: newSize,
-            errorTextW: '',
-            errorTextD: '',
-          })
-          this.props.onRoomSizeChange(newSize)
-        } else {
-          const newSize = { width: toNumber(val), depth: toNumber(val) }
+      // WIDTH or DEPTH
+      if (
+        event.target.id === 'width' ||
+        event.target.id === 'depth'
+      ) {
+        // Empty string
+        if (val.length === 0) {
+          const newSize = { ...this.state.size, width: '', depth: '' }
           this.setState({
             ...this.state,
             size: newSize,
             errorTextW: `Invalid: ${minSize} < W < ${maxSize}`,
-            errorTextD: '',
+            errorTextD: `Invalid: ${minSize} < D < ${maxSize}`,
+          })
+        }
+        // Number
+        else if (!isNaN(toNumber(val))) {
+          if (val >= minSize && val <= maxSize) {
+            const newSize = { ...this.state.size, width: toNumber(val), depth: toNumber(val) }
+            this.setState({
+              ...this.state,
+              size: newSize,
+              errorTextW: '',
+              errorTextD: '',
+            })
+            this.props.onRoomSizeChange(newSize)
+          } else {
+            const newSize = { ...this.state.size, width: toNumber(val), depth: toNumber(val) }
+            this.setState({
+              ...this.state,
+              size: newSize,
+              errorTextW: `Invalid: ${minSize} < W < ${maxSize}`,
+              errorTextD: `Invalid: ${minSize} < D < ${maxSize}`,
+            })
+          }
+        }
+        // Not a Number
+        else {
+          const newSize = { ...this.state.size, width: val }
+          this.setState({
+            ...this.state,
+            size: newSize,
+            errorTextW: 'Invalid: NaN',
+            errorTextD: 'Invalid: NaN',
           })
         }
       }
-      // Not a Number
-      else {
-        const newSize = { ...this.state.size, width: val }
-        this.setState({
-          ...this.state,
-          size: newSize,
-          errorTextW: 'Invalid: NaN',
-          errorTextD: '',
-        })
-      }
+        // DEPTH
+        else {
+          // Empty string
+          if (val.length === 0) {
+            const newSize = { ...this.state.size, height: '' }
+            this.setState({
+              ...this.state,
+              size: newSize,
+              errorTextH: `Invalid: ${minSize} < H < ${maxSize}`,
+            })
+          }
+          // Number
+          else if (!isNaN(toNumber(val))) {
+            if (val >= minSize && val <= maxSize) {
+              const newSize = { ...this.state.size, height: toNumber(val) }
+              this.setState({
+                ...this.state,
+                size: newSize,
+                errorTextH: '',
+              })
+              this.props.onRoomSizeChange(newSize)
+            } else {
+              const newSize = { ...this.state.size, height: toNumber(val) }
+              this.setState({
+                ...this.state,
+                size: newSize,
+                errorTextH: `Invalid: ${minSize} < H < ${maxSize}`,
+              })
+            }
+          }
+          // Not a Number
+          else {
+            const newSize = { ...this.state.size, height: val }
+            this.setState({
+              ...this.state,
+              size: newSize,
+              errorTextH: 'Invalid: NaN',
+            })
+          }
+        }
     }
     // RECTANGULAR
     else {

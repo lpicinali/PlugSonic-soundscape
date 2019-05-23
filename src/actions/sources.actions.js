@@ -53,11 +53,6 @@ export const importSources = sources => ({
   payload: { sources },
 })
 
-export const setSourceSelected = (source, selected) => ({
-  type: ActionType.SET_SOURCE_SELECTED,
-  payload: { source, selected },
-})
-
 export const setSourceHidden = (source, hidden) => ({
   type: ActionType.SET_SOURCE_HIDDEN,
   payload: { source, hidden },
@@ -98,6 +93,11 @@ export const setSourceReachRadius = (source, radius) => ({
   payload: { source, radius },
 })
 
+export const setSourceSelected = (source, selected) => ({
+  type: ActionType.SET_SOURCE_SELECTED,
+  payload: { source, selected },
+})
+
 export const setSourceSpatialised = (source, spatialised) => ({
   type: ActionType.SET_SOURCE_SPATIALISED,
   payload: { source, spatialised },
@@ -116,7 +116,6 @@ export const setSourceVolume = (source, volume) => ({
 /**
  * Source gameplay states
  */
-
 export const setSourceIsPlaying = (name, isPlaying) => ({
   type: ActionType.SET_SOURCE_IS_PLAYING,
   payload: { name, isPlaying },

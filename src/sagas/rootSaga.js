@@ -347,6 +347,9 @@ function* applyImportListener() {
 //   }
 // }
 
+/* ======================================================================== */
+// SOURCE VOLUME
+/* ======================================================================== */
 function* applySourceVolume() {
   while (true) {
     const {
@@ -356,6 +359,9 @@ function* applySourceVolume() {
   }
 }
 
+/* ======================================================================== */
+// SOURCE REACH STATE
+/* ======================================================================== */
 function* updateSourcesReachedState() {
   while (true) {
     yield take([

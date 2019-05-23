@@ -29,30 +29,8 @@ masterVolume.connect(context.destination)
 let recorder
 
 /* ======================================================================== */
-// RECORD START
+// STORE SOURCES
 /* ======================================================================== */
-export const recordStart = () => {
-  recorder = new Recorder(masterVolume)
-  console.log('Recorder initialised.')
-  // eslint-disable-next-line
-  recorder && recorder.record()
-  console.log('Recording...')
-}
-/* ======================================================================== */
-// RECORD STOP
-/* ======================================================================== */
-export const recordStop = () => {
-  // eslint-disable-next-line
-  recorder && recorder.stop()
-  console.log('Stopped recording.')
-  const type = 'audio/wav'
-  // eslint-disable-next-line
-  recorder &&
-    recorder.exportWAV(blob => {
-      FileSaver.saveAs(blob, 'record.wav')
-    }, type)
-  recorder.clear()
-}
 
 /**
  * Stores a source's audio buffer for future reference
@@ -68,18 +46,14 @@ export const storeSourceRawData = (name, rawData) => {
   sourceRawData[name] = rawData
 }
 
+/**
+ * Returns source's raw data
+ */
 export const getSourceRawData = (name) => sourceRawData[name]
 
-/**
- * Creates a buffer source node with a given audio buffer.
- *
- * Previously: createNode()
- */
-export const createSourceAudioNode = audioBuffer => {
-  const node = context.createBufferSource()
-  node.buffer = audioBuffer
-  return node
-}
+/* ======================================================================== */
+// AUDIO CHAIN
+/* ======================================================================== */
 
 /**
  * Creates and connects audio and effect nodes for a source
@@ -136,8 +110,27 @@ export const destroySourceAudioChain = source => {
   }
 }
 
+/* ======================================================================== */
+// AUDIO NODE
+/* ======================================================================== */
+
 /**
- * Sets a source up to be spatialized.
+ * Creates a buffer source node with a given audio buffer.
+ *
+ * Previously: createNode()
+ */
+export const createSourceAudioNode = audioBuffer => {
+  const node = context.createBufferSource()
+  node.buffer = audioBuffer
+  return node
+}
+
+/* ======================================================================== */
+// SOURCE
+/* ======================================================================== */
+
+/**
+ * Sets a source up to be spatialized or not.
  *
  * Previously: addSource()
  */
@@ -158,6 +151,10 @@ export const spatializeSource = (source, spatialised) => {
   }
 }
 
+/**
+ * Disables a source's spatialisation.
+ *
+ */
 export const despatializeSource = source => {
   getBinauralSpatializer().then(spatializer => {
     spatializer.deleteSources([source.name])
@@ -167,16 +164,14 @@ export const despatializeSource = source => {
   })
 }
 
-/* ======================================================================== */
-// MASTER VOLUME
-/* ======================================================================== */
-// export const setMasterVolume = newVolume => {
-//   masterVolume.gain.value = newVolume
-// }
-
-/* ======================================================================== */
-// SOURCE VOLUME
-/* ======================================================================== */
+/**
+ * Sets a source's volume
+ */
+export const setSourceVolume = (name, volume, fadeDuration = 0) => {
+  if (sourceVolumes[name]) {
+    setVolume(sourceVolumes[name].gain, volume, fadeDuration)
+  }
+}
 
 /**
  * Ramps a gain node to a volume over a certain duration.
@@ -194,15 +189,6 @@ const setVolume = (gainNode, volume, fadeDuration = 0) => {
     clamp(volume, 0.00001, Infinity),
     context.currentTime + Math.max(0.01, fadeDuration / 1000)
   )
-}
-
-/**
- * Sets a source's volume
- */
-export const setSourceVolume = (name, volume, fadeDuration = 0) => {
-  if (sourceVolumes[name]) {
-    setVolume(sourceVolumes[name].gain, volume, fadeDuration)
-  }
 }
 
 /**
@@ -265,13 +251,16 @@ export const playSource = (source, volume, fadeDuration) => {
   sourcePlaybackStates[source.name] = true
 }
 
+/**
+ * Returns a source's playback state
+ */
 export const isSourcePlaying = name => {
   return sourcePlaybackStates[name]
 }
 
-/* ======================================================================== */
-// LOOP NODES
-/* ======================================================================== */
+/**
+ * Enables/Disabled a source's looping
+ */
 export const setSourceLoop = (name, loop) => {
   if (sourceNodes[name]) {
     sourceNodes[name].loop = loop
@@ -290,3 +279,34 @@ export const subscribeToSourceEnd = listener => {
 const notifySourceEnded = source => {
   listeners.forEach(listener => listener({ source }))
 }
+
+/* ======================================================================== */
+// RECORD
+/* ======================================================================== */
+export const recordStart = () => {
+  recorder = new Recorder(masterVolume)
+  console.log('Recorder initialised.')
+  // eslint-disable-next-line
+  recorder && recorder.record()
+  console.log('Recording...')
+}
+
+export const recordStop = () => {
+  // eslint-disable-next-line
+  recorder && recorder.stop()
+  console.log('Stopped recording.')
+  const type = 'audio/wav'
+  // eslint-disable-next-line
+  recorder &&
+    recorder.exportWAV(blob => {
+      FileSaver.saveAs(blob, 'record.wav')
+    }, type)
+  recorder.clear()
+}
+
+/* ======================================================================== */
+// MASTER VOLUME
+/* ======================================================================== */
+// export const setMasterVolume = newVolume => {
+//   masterVolume.gain.value = newVolume
+// }
