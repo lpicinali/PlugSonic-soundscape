@@ -11,12 +11,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   FormGroup,
   ListItem,
   ListItemText,
   MenuItem,
   Select,
   Switch,
+  withStyles,
 } from '@material-ui/core'
 import Slider from '@material-ui/lab/Slider'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -55,6 +57,23 @@ import {
 const SliderValue = styled.span`
   float: right;
   text-transform: none;
+`
+
+const SourceListItem = withStyles({
+  root: {
+    paddingLeft: 24,
+  },
+})(ListItem)
+
+const SourceListItemText = withStyles({
+  primary: {
+    fontSize: 16,
+  },
+})(ListItemText)
+
+const SourceControlsContent = styled(PanelContents)`
+  padding-top: 8px;
+  border-top: 1px solid #eee;
 `
 
 function getRelativeDecibelsVolume(gain, minDecibels = -60) {
@@ -211,7 +230,7 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <FieldGroup key="loop">
+      <div key="loop">
         <SwitchBox>
           <H3>Loop</H3>
           <Switch
@@ -222,11 +241,11 @@ class SourcePanel extends PureComponent {
             }
           />
         </SwitchBox>
-      </FieldGroup>
+      </div>
     )
 
     nestedItems.push(
-      <FieldGroup key="spatialisation">
+      <div key="spatialisation">
         <SwitchBox>
           <H3>Spatialisation</H3>
           <Switch
@@ -237,7 +256,7 @@ class SourcePanel extends PureComponent {
             }
           />
         </SwitchBox>
-      </FieldGroup>
+      </div>
     )
 
     nestedItems.push(
@@ -407,16 +426,19 @@ class SourcePanel extends PureComponent {
 
     return (
       <Fragment>
-        <ListItem button onClick={() => this.setState({ isOpen: !isOpen })}>
-          <ListItemText primary={sourceObject.name} />
+        <SourceListItem
+          button
+          onClick={() => this.setState({ isOpen: !isOpen })}
+        >
+          <SourceListItemText primary={sourceObject.name} />
           {isOpen ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
+        </SourceListItem>
 
         <Collapse in={isOpen}>
-          <PanelContents>
-            {nestedItems}
-          </PanelContents>
+          <SourceControlsContent>{nestedItems}</SourceControlsContent>
         </Collapse>
+
+        <Divider />
       </Fragment>
     )
   }
