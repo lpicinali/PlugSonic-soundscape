@@ -63,7 +63,7 @@ export default function(state = initialState, { type, payload }) {
       //   newSources[source.name] = source
       // })
       // return { ...state, sources: newSources }
-      return state
+      return { ...state }
     }
 
     case 'SOURCE_ONOFF':

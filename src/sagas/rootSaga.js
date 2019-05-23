@@ -11,6 +11,7 @@ import {
 import {
   createSubscriptionSource,
   fetchAudioBuffer,
+  fetchAudioBufferRaw,
   getSourceReachGain,
 } from 'src/utils.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
@@ -34,6 +35,8 @@ import {
   setSourceMuted,
   destroySourceAudioChain,
   storeSourceAudioBuffer,
+  storeSourceRawData,
+  getSourceRawData,
   subscribeToSourceEnd,
 } from 'src/audio/engine.js'
 
@@ -126,8 +129,10 @@ function* manageAddSource() {
 
     if (source.origin === SourceOrigin.REMOTE) {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
-    } else {
+    } else if (source.origin === SourceOrigin.LOCAL && getSourceRawData(source.name) === undefined) {
       yield spawn(fetchAndStoreRawData(source.name, payload.raw))
+    } else {
+      console.log('rootSaga -> manageAddSource: source uploaded from local, bypass fecth audio buffer')
     }
 
     if (
@@ -148,7 +153,9 @@ function fetchAndStoreSourceAudio(name, url) {
 
 function fetchAndStoreRawData(name, rawData) {
   return function*() {
-
+    const audioBuffer = yield call(fetchAudioBufferRaw, rawData)
+    yield call(storeSourceAudioBuffer, name, audioBuffer)
+    yield call(storeSourceRawData, name, rawData)
   }
 }
 
@@ -181,10 +188,12 @@ function* manageImportSources() {
 
     // Add the new ones
     for (let i = 0; i < sources.length; i++) {
-      if (sources[i].raw === null ) {
+      if (sources[i].raw !== null ) {
+        yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
+      } else if ( sources[i].raw === null && sources[i].url !== null) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
       } else {
-        yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
+        console.log('rootSaga -> manageImportSources: json not valid')
       }
     }
   }

@@ -65,10 +65,17 @@ export const storeSourceAudioBuffer = (name, audioBuffer) => {
  * Stores a source's raw data for future reference
  */
 export const storeSourceRawData = (name, rawData) => {
+  // console.log('Store Raw Data')
+  // console.log(name)
+  // console.log(rawData)
   sourceRawData[name] = rawData
 }
 
-export const getSourceRawData = name => sourceRawData[name]
+export const getSourceRawData = name => {
+  // console.log('Get Raw Data')
+  // console.log(sourceRawData[name])
+  return sourceRawData[name]
+}
 
 /**
  * Creates a buffer source node with a given audio buffer.
