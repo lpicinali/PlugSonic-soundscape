@@ -52,9 +52,23 @@ class ExportMetaButton extends Component {
       }
     }
 
-    const json = JSON.stringify(soundscape)
-    const file = new File([json], { type: 'application/json' })
-    FileSaver.saveAs(file, 'soundscape_whole.json')
+    Promise.all(soundscape.sources).then(responses => {
+      console.log('PROMISE.ALL')
+      console.log(soundscape.sources)
+      console.log('RESPONSES')
+      console.log(responses)
+      if (responses) {
+        soundscape.sources = responses
+        const json = JSON.stringify(soundscape, null, 2)
+        console.log('JSON')
+        console.log(json)
+      }
+      // const file = new File([json], { type: 'application/json' })
+      // FileSaver.saveAs(file, 'soundscape_whole.json')
+      // if (responses) {
+      //   // alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
+      // }
+    })
   }
 
   /* ------------------------------------------------------------------------ */
