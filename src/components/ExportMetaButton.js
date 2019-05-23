@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import FileSaver from 'file-saver'
-import Blob from 'blob'
 import { map } from 'lodash'
 import { Button } from '@material-ui/core'
 
@@ -10,34 +9,37 @@ import { Button } from '@material-ui/core'
 /* EXPORT META BUTTON */
 /* ========================================================================== */
 class ExportMetaButton extends Component {
+
   handleExportSoundscapeMeta = () => {
-    try {
-      const isFileSaverSupported = !!new Blob()
-    } catch (e) {
-      alert('The File APIs are not fully supported in this browser.')
+
+    const listener = this.props.listener
+    const room = this.props.room
+    const sources = map(this.props.sources, source => ({
+        enabled:            source.enabled,
+        filename:           source.filename,
+        hidden:             source.hidden,
+        loop:               source.loop,
+        name:               source.name,
+        platform_asset_id:  source.platform_asset_id,
+        platform_media_id:  source.platform_media_id,
+        position:           source.position,
+        raw:                null,
+        reach:              source.reach,
+        spatialised:        source.spatialised,
+        timings:            source.timings,
+        url:                source.url,
+        volume:             source.volume,
+      }))
+
+    const soundscape = {
+      listener: listener,
+      room:     room,
+      sources:  sources,
     }
 
-    // const res = confirm(`This action may require some time.\nPlease wait for the soundscape to be ready for export.\nPress OK to continue...`)
-
-    // if (res === true) {
-      const soundscape = {
-        sources: this.props.sources,
-        listener: this.props.listener,
-        room: this.props.room,
-      }
-
-      const clone = JSON.parse(JSON.stringify(soundscape))
-      clone.sources = map(clone.sources, source => {
-        source.raw = null
-        return source
-      })
-
-      const json = JSON.stringify(clone, null, 2)
-
-      const blob = new File([json], { type: 'application/json' })
-      alert(`Soundscape ready for export.\nPress OK to choose the location and save file...`)
-      FileSaver.saveAs(blob, 'soundscape_meta.json')
-    // }
+    const json = JSON.stringify(soundscape, null, 2)
+    const blob = new File([json], { type: 'application/json' })
+    FileSaver.saveAs(blob, 'soundscape_meta.json')
   }
 
   /* ------------------------------------------------------------------------ */

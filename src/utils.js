@@ -31,13 +31,12 @@ export function ADEtoXYZ(azimuth, distance, elevation) {
 }
 
 export function fetchAudioBuffer(url) {
-  // console.log('fetchAudioBuffer')
   return got(url, { encoding: null })
     .then(response => bufferToArrayBuffer(response.body))
     .then(arrayBuffer => decode(arrayBuffer, context))
 }
 
-function ArrayBufferCycle(array) {
+export function ArrayBufferCycle(array) {
   const ab = new ArrayBuffer(array.length)
   const view = new Uint8Array(ab)
   for (let i = 0; i < array.length; ++i) {
@@ -48,6 +47,10 @@ function ArrayBufferCycle(array) {
 
 export function fetchAudioBufferRaw(rawArray) {
   const arrayBuffer = ArrayBufferCycle(rawArray)
+  return decode(arrayBuffer, context)
+}
+
+export function fetchAudioBufferFromArrayBuffer(arrayBuffer) {
   return decode(arrayBuffer, context)
 }
 
@@ -108,7 +111,7 @@ export function forceDecimals(value, precision) {
  */
 export function getSourceReachGain(source) {
   if (
-    source.reach.isEnabled === false ||
+    source.reach.enabled === false ||
     source.gameplay.isWithinReach === true
   ) {
     return 1

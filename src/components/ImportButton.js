@@ -21,7 +21,7 @@ class ImportButton extends Component {
       results.forEach(result => {
         const [e, file] = result
         const soundscape = JSON.parse(e.target.result)
-        this.props.onSetPlaybackState(PlaybackState.PAUSE)
+        this.props.onSetPlaybackState(PlaybackState.STOP)
         this.props.onImportSources(soundscape.sources)
         this.props.onImportListener(soundscape.listener)
         this.props.onImportRoom(soundscape.room)

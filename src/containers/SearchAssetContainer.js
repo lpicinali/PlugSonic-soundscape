@@ -339,14 +339,14 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onAddSource: (filename, name, url, assetId, mediaId) =>
+  onAddSource: (filename, name, url, platform_asset_id, platform_media_id) =>
     dispatch(
       addSource({
         filename,
         name,
         url,
-        assetId,
-        mediaId,
+        platform_asset_id,
+        platform_media_id,
         origin: SourceOrigin.REMOTE,
       })
     ),

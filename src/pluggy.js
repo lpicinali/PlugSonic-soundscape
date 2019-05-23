@@ -85,7 +85,7 @@ const hostname = url.hostname
 export let API
 // eslint-disable-next-line
 export const sessionToken = Pluggy.getToken()
-// export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTc3NDMwNzIsImV4cCI6MTU1NzgyOTQ3Mn0.6Mb1QrH6MIZXUO2DFSr04jvOt2Zt1IX2hmLeZirHd6Y"
+// export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTg1MzE2MDksImV4cCI6MTU1ODYxODAwOX0.ntxwZnqZCJJUotlxFnmvTDfrwMp2uHVgwCnBx1Woe2w"
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"

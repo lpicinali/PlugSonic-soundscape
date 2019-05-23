@@ -12,10 +12,10 @@ import { setRoomImage } from 'src/actions/room.actions'
 /* ========================================================================== */
 class ImageUploader extends Component {
   state = {
-    filename: '',
-    size: '',
-    type: '',
-    preview: '',
+    // filename: '',
+    // size: '',
+    // type: '',
+    // preview: '',
     raw: '',
     error: '',
   }
@@ -35,42 +35,42 @@ class ImageUploader extends Component {
       reader.onabort = () => {
         this.setState({
           ...this.state,
-          filename: '',
-          size: '',
+          // filename: '',
+          // size: '',
           error: 'File reading was aborted',
         })
       }
       reader.onerror = () => {
         this.setState({
           ...this.state,
-          filename: '',
-          size: '',
+          // filename: '',
+          // size: '',
           error: 'File reading has failed',
         })
       }
       reader.onload = () => {
         this.setState({
           ...this.state,
-          filename: accepted[0].name,
-          size: accepted[0].size,
-          type: accepted[0].type,
-          preview: accepted[0].preview,
+          // filename: accepted[0].name,
+          // size: accepted[0].size,
+          // type: accepted[0].type,
+          // preview: accepted[0].preview,
           raw: reader.result,
           error: '',
         })
         this.props.onRoomImageChange({
-          filename: this.state.name,
-          size: this.state.size,
-          type: this.state.type,
-          preview: this.state.preview,
+          // filename: this.state.name,
+          // size: this.state.size,
+          // type: this.state.type,
+          // preview: this.state.preview,
           raw: this.state.raw,
         })
       }
     } else {
       this.setState({
         ...this.state,
-        filename: '',
-        size: '',
+        // filename: '',
+        // size: '',
         error: 'Please load only one file',
       })
     }
@@ -79,18 +79,18 @@ class ImageUploader extends Component {
   resetImage = () => {
     this.setState({
       ...this.state,
-      filename: '',
-      size: '',
-      type: '',
-      preview: '',
+      // filename: '',
+      // size: '',
+      // type: '',
+      // preview: '',
       raw: '',
       error: '',
     })
     this.props.onRoomImageChange({
-      filename: '',
-      size: '',
-      type: '',
-      preview: '',
+      // filename: '',
+      // size: '',
+      // type: '',
+      // preview: '',
       raw: '',
       error: '',
     })
@@ -106,9 +106,10 @@ class ImageUploader extends Component {
         >
           <ActionIcon />
           <div>
-            {this.state.filename === ''
+            {/* {this.state.filename === ''
               ? 'Drop an image file here (or click) to load it.'
-              : `${this.state.filename} - ${this.state.size} bytes`}
+            : `${this.state.filename} - ${this.state.size} bytes`} */}
+            {'Drop an image file here (or click) to load it.'}
           </div>
           <div style={{ height: `12px`, marginBottom: `10px` }}>
             {this.state.error === '' ? '' : `${this.state.error}`}

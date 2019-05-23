@@ -11,7 +11,7 @@ import {
 import { SourceOrigin } from 'src/constants.js'
 import { fetchAudioBufferRaw } from 'src/utils.js'
 import { addSource } from 'src/actions/sources.actions.js'
-import { storeSourceAudioBuffer } from 'src/audio/engine.js'
+import { storeSourceAudioBuffer, storeSourceRawData, getSourceRawData } from 'src/audio/engine.js'
 import { Dropzone, ActionIcon } from 'src/components/SourceUploader.style.js'
 import { PaddedFormControl, PanelContents } from 'src/styles/elements.js'
 
@@ -39,13 +39,16 @@ class SourceUploader extends Component {
         errorTextField: `Already in use`,
       })
     } else {
-      this.setState({ ...this.state, name: val, errorTextField: '' })
+      this.setState({
+        ...this.state,
+        name: val,
+        errorTextField: ''
+      })
     }
   }
 
-  handleOnDrop = (accepted, rejected) => {
+  handleOnDrop = (accepted) => {
     if (accepted.length === 0) {
-      console.log('Unsupported')
       this.setState({
         errorFile: 'Unsupported file format'
       })
@@ -62,6 +65,7 @@ class SourceUploader extends Component {
           errorFile: 'File reading was aborted',
         })
       }
+
       reader.onerror = () => {
         this.setState({
           ...this.state,
@@ -70,6 +74,7 @@ class SourceUploader extends Component {
           errorFile: 'File reading has failed',
         })
       }
+
       reader.onload = () => {
         const view = new Uint8Array(reader.result)
         const array = Array.from(view)
@@ -84,9 +89,6 @@ class SourceUploader extends Component {
                 errorFile: 'Error with file format (Number of Channels > 2)',
               })
             } else {
-              if ( audioBuffer.numberOfChannels === 2 ) {
-                alert(`You are about to import a stereo file.\n This will be converted to mono (Left and Right channels will be summed)\nPress OK to continue...`)
-              }
               this.setState({
                 ...this.state,
                 audioBuffer,
@@ -101,15 +103,21 @@ class SourceUploader extends Component {
           .catch(err => console.error(err))
       }
     } else {
-      this.setState({...this.state, filename: '', size: '', errorFile: 'Please load only one file'})
+      this.setState({
+        ...this.state,
+        filename: '',
+        size: '',
+        errorFile: 'Please load only one file'
+      })
     }
   }
 
   handleAddSource = () => {
     const { onAddSource } = this.props
-    const { name, filename, audioBuffer } = this.state
+    const { name, filename, audioBuffer, raw } = this.state
 
     storeSourceAudioBuffer(name, audioBuffer)
+    storeSourceRawData(name, raw)
 
     onAddSource(filename.replace(/\s/g, '').toLowerCase(), name)
 
@@ -189,7 +197,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onAddSource: (filename, name) =>
+  onAddSource: (filename, name ) =>
     dispatch(addSource({ filename, name, origin: SourceOrigin.LOCAL })),
 })
 

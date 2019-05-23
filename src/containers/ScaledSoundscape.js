@@ -36,25 +36,6 @@ const SoundscapeRoom = styled.div`
   background-size: cover;
   border-radius: ${props => props.roomShape === RoomShape.ROUND ? '9999px' : '5px'};
 `
-// const Listener = styled.div`
-//   position: absolute;
-//   top: 50%;
-//   left: 50%;
-//   transform: translate3d(-50%, -50%, 0) rotate(${props => props.rotation}deg);
-//   border-radius: 50%;
-//   border: 2px solid transparent;
-//   border-top-color: ${colors.DARKBLUE};
-//   background: ${colors.LIGHTBLUE};
-// `
-// const Source = styled.div`
-//   position: absolute;
-//   top: 50%;
-//   left: 50%;
-//   transform: translate3d(-50%, -50%, 0);
-//   border-radius: 50%;
-//   background: ${props => (props.isSelected ? 'black' : 'transparent')};
-//   border: 2px solid ${props => (props.isSelected ? 'transparent' : 'gray')};
-// `
 /* ========================================================================== */
 /* SOUNDSCAPE INTERFACE
 /* ========================================================================== */
@@ -191,7 +172,7 @@ ScaledSoundscape.defaultProps = {
 const mapStateToProps = state => ({
   roomWidth: state.room.size.width,
   roomDepth: state.room.size.depth,
-  roomImage: state.room.image.raw,
+  roomImage: state.room.backgroundImage.raw,
   roomShape: state.room.shape,
   listenerPosition: state.listener.position,
   listenerRotation: state.listener.position.rotZAxis,

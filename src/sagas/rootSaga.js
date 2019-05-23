@@ -11,6 +11,7 @@ import {
 import {
   createSubscriptionSource,
   fetchAudioBuffer,
+  fetchAudioBufferRaw,
   getSourceReachGain,
 } from 'src/utils.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
@@ -35,6 +36,8 @@ import {
   setSourceMuted,
   destroySourceAudioChain,
   storeSourceAudioBuffer,
+  storeSourceRawData,
+  getSourceRawData,
   subscribeToSourceEnd,
 } from 'src/audio/engine.js'
 
@@ -53,10 +56,10 @@ function isWithinReach(listener, source) {
 function* requestPlaySource(source) {
   const shouldPlay =
     source.gameplay.isPlaying === true &&
-    ((source.reach.isEnabled === true &&
+    ((source.reach.enabled === true &&
       source.gameplay.isWithinReach === true) ||
       source.reach.action === ReachAction.TOGGLE_VOLUME ||
-      source.reach.isEnabled === false)
+      source.reach.enabled === false)
 
   if (shouldPlay === true) {
     yield call(playSource, source)
@@ -125,6 +128,13 @@ function* manageAddSource() {
 
     if (source.origin === SourceOrigin.REMOTE) {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
+    } else if (
+        source.origin === SourceOrigin.LOCAL &&
+        getSourceRawData(source.name) === undefined
+      ) {
+      yield spawn(fetchAndStoreRawData(source.name, payload.raw))
+    } else {
+      console.log('rootSaga -> manageAddSource: source uploaded from local, bypass fecth audio buffer')
     }
 
     if (
@@ -140,6 +150,14 @@ function fetchAndStoreSourceAudio(name, url) {
   return function*() {
     const audioBuffer = yield call(fetchAudioBuffer, url)
     yield call(storeSourceAudioBuffer, name, audioBuffer)
+  }
+}
+
+function fetchAndStoreRawData(name, rawData) {
+  return function*() {
+    const audioBuffer = yield call(fetchAudioBufferRaw, rawData)
+    yield call(storeSourceAudioBuffer, name, audioBuffer)
+    yield call(storeSourceRawData, name, rawData)
   }
 }
 
@@ -172,7 +190,16 @@ function* manageImportSources() {
 
     // Add the new ones
     for (let i = 0; i < sources.length; i++) {
-      yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
+      if (sources[i].raw !== null ) {
+        yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
+      } else if (
+        sources[i].raw === null &&
+        sources[i].url !== null
+        ) {
+        yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
+      } else {
+        console.log('rootSaga -> manageImportSources: json not valid')
+      }
     }
   }
 }
@@ -404,7 +431,7 @@ function* applySourceReachChangesAffectingVolume() {
     else if (type === ActionType.SET_SOURCE_IS_WITHIN_REACH) {
       // Entering and leaving the reach area only triggers fades
       // when reach is enabled
-      if (source.reach.isEnabled === true) {
+      if (source.reach.enabled === true) {
         const reachGain = source.gameplay.isWithinReach ? 1 : 0
         yield call(
           setSourceReachGain,
@@ -441,11 +468,11 @@ function* applySourceReachChangesAffectingPlayback() {
 
     if (type === ActionType.SET_SOURCE_REACH_ENABLED) {
       const isReached =
-        source.reach.isEnabled === false ||
+        source.reach.enabled === false ||
         source.gameplay.isWithinReach === true
       yield put(setSourceIsPlaying(source.name, isReached))
     } else if (type === ActionType.SET_SOURCE_IS_WITHIN_REACH) {
-      if (source.reach.isEnabled === true) {
+      if (source.reach.enabled === true) {
         const isReached = source.gameplay.isWithinReach === true
         yield put(setSourceIsPlaying(source.name, isReached))
       }
@@ -556,22 +583,6 @@ function* applyQualityMode() {
     spatializer.setQualityMode()
   }
 }
-
-// function* applyDirectionalityEnabled() {
-//   while (true) {
-//     const { payload } = yield take(ActionType.SET_DIRECTIONALITY_ENABLED)
-//     engine.setDirectionalityEnabled(payload.isEnabled)
-//   }
-// }
-
-// function* applyDirectionalityAttenuation() {
-//   while (true) {
-//     const { payload } = yield take(ActionType.SET_DIRECTIONALITY_VALUE)
-//     const attenuation = payload.value * 30
-//     engine.setDirectionalityAttenuation(Ear.LEFT, attenuation)
-//     engine.setDirectionalityAttenuation(Ear.RIGHT, attenuation)
-//   }
-// }
 
 /* ======================================================================== */
 // HRTF

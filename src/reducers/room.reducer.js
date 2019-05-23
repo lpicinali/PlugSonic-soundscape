@@ -5,15 +5,15 @@
 import { ActionType, RoomShape } from 'src/constants.js'
 
 const initialState = {
-  shape: RoomShape.RECTANGULAR,
-  size: { width: 30, depth: 20, height: 4  },
-  image: {
-    filename: '',
-    size: '',
-    type: '',
-    preview: '',
+  backgroundImage: {
+    // filename: '',
+    // size: '',
+    // type: '',
+    // preview: '',
     raw: '',
-    }
+  },
+  shape: RoomShape.RECTANGULAR,
+  size: { width: 30, depth: 20, height: 4 },
 }
 
 export default function(state = initialState, { type, payload }) {
@@ -26,12 +26,12 @@ export default function(state = initialState, { type, payload }) {
     return { ...state, size: newSize }
   }
   if (type === ActionType.SET_ROOM_IMAGE) {
-    const newImage = Object.assign({}, state.image)
+    const newImage = Object.assign({}, state.backgroundImage)
     Object.assign(newImage, payload.image)
-    return { ...state, image: newImage }
+    return { ...state, backgroundImage: newImage }
   }
   if (type === ActionType.IMPORT_ROOM) {
-    return { ...state, shape: payload.room.shape, size: payload.room.size, image: payload.room.image }
+    return { ...state, shape: payload.room.shape, size: payload.room.size, backgroundImage: payload.room.backgroundImage }
   }
   return state
 }

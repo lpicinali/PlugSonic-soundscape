@@ -23,34 +23,34 @@ export default function(state = initialState, { type, payload }) {
       }
 
       const newSource = {
-        name: payload.name,
         enabled: true,
         filename: payload.filename,
-        origin: payload.origin,
-        hidden: false,
-        platform_asset_id: payload.assetId || null,
-        platform_media_id: payload.mediaId || null,
-        position: payload.position || defaultPosition,
-        // raw: payload.raw,
-        reach: payload.reach || {
-          isEnabled: true,
-          action: ReachAction.TOGGLE_VOLUME,
-          radius: 3,
-          fadeDuration: 1000,
-        },
-        timings: {
-          [PlaybackTiming.PLAY_AFTER]: null,
-        },
-        loop: true,
-        selected: false,
-        spatialised: true,
-        url: payload.url || null,
-        volume: payload.volume || 1.0,
         gameplay: {
           isPlaying: false,
           timingStatus: TimingStatus.INDEPENDENT,
           isWithinReach: false,
         },
+        hidden: false,
+        loop: true,
+        name: payload.name,
+        origin: payload.origin,
+        platform_asset_id: payload.platform_asset_id || null,
+        platform_media_id: payload.platform_media_id || null,
+        position: payload.position || defaultPosition,
+        raw: null,
+        reach: payload.reach || {
+          action: ReachAction.TOGGLE_VOLUME,
+          enabled: true,
+          fadeDuration: 1000,
+          radius: 3,
+        },
+        spatialised: true,
+        timings: {
+          [PlaybackTiming.PLAY_AFTER]: null,
+        },
+        url: payload.url || null,
+        volume: payload.volume || 1.0,
+        selected: false,
       }
 
       azimuthIndex += 1
@@ -62,11 +62,12 @@ export default function(state = initialState, { type, payload }) {
       return set('sources', omit(payload.sources, state.sources), state)
 
     case 'IMPORT_SOURCES': {
-      const newSources = {}
-      payload.sources.forEach(source => {
-        newSources[source.name] = source
-      })
-      return { ...state, sources: newSources }
+      // const newSources = {}
+      // payload.sources.forEach(source => {
+      //   newSources[source.name] = source
+      // })
+      // return { ...state, sources: newSources }
+      return { ...state }
     }
 
     case 'SOURCE_ONOFF':
@@ -101,8 +102,8 @@ export default function(state = initialState, { type, payload }) {
 
     case 'SET_SOURCE_REACH_ENABLED':
       return set(
-        ['sources', payload.source, 'reach', 'isEnabled'],
-        payload.isEnabled,
+        ['sources', payload.source, 'reach', 'enabled'],
+        payload.enabled,
         state
       )
 
