@@ -27,9 +27,10 @@ class ExportMetaButton extends Component {
       platform_asset_id:  source.platform_asset_id,
       platform_media_id:  source.platform_media_id,
       position:           source.position,
-      raw:                source.origin === SourceOrigin.LOCAL ?
-                            getSourceRawData(source.name)
-                            : null,
+      raw:                null,
+                          // source.origin === SourceOrigin.LOCAL ?
+                            // getSourceRawData(source.name)
+                          // null,
       reach:              source.reach,
       spatialised:        source.spatialised,
       timings:            source.timings,
@@ -43,11 +44,12 @@ class ExportMetaButton extends Component {
       sources:  sources,
     }
 
+    // const promises = []
+
     for (let i = 0; i < soundscape.sources.length; i++) {
       if (soundscape.sources[i].url !== null) {
         got(soundscape.sources[i].url, { encoding: null }).then(response => {
-          console.log(response)
-          soundscape.sources[i].raw = Array.from(response.body)
+            soundscape.sources[i].raw = Array.from(response.body)
         })
       }
     }
@@ -57,6 +59,8 @@ class ExportMetaButton extends Component {
       console.log(soundscape.sources)
       console.log('RESPONSES')
       console.log(responses)
+      console.log('SOUNDSCAPE')
+      console.log(soundscape)
       if (responses) {
         soundscape.sources = responses
         const json = JSON.stringify(soundscape, null, 2)
