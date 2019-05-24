@@ -26,7 +26,12 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import { PlaybackTiming, ReachAction } from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
-import { decibelsToGain, forceDecimals, gainToDecibels } from 'src/utils.js'
+import {
+  decibelsToGain,
+  forceDecimals,
+  gainToDecibels,
+  sourceMayUseTimings,
+} from 'src/utils.js'
 import {
   deleteSources,
   setSourceHidden,
@@ -360,7 +365,7 @@ class SourcePanel extends PureComponent {
     nestedItems.push(
       <FieldGroup
         key="timings"
-        disabled={sourceObject.reach.action !== ReachAction.TOGGLE_PLAYBACK}
+        disabled={sourceMayUseTimings(sourceObject) === false}
       >
         <H3>Timings</H3>
 
@@ -386,7 +391,7 @@ class SourcePanel extends PureComponent {
               <MenuItem
                 key={source.name}
                 value={source.name}
-                disabled={source.reach.action !== ReachAction.TOGGLE_PLAYBACK}
+                disabled={sourceMayUseTimings(source) === false}
               >
                 {source.name}
               </MenuItem>

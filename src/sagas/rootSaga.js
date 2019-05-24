@@ -13,6 +13,7 @@ import {
   fetchAudioBuffer,
   fetchAudioBufferRaw,
   getSourceReachGain,
+  sourceMayUseTimings,
 } from 'src/utils.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import {
@@ -505,24 +506,29 @@ function* applySourcePlaybackState() {
 /* ======================================================================== */
 
 /**
- * Since a source may only be set to play after a source that has
- * the TOGGLE_PLAYBACK reach action, we need to reset it when that
- * source changes to TOGGLE_VOLUME.
+ * A source may be timed, either as a dependant or a target, when it
+ * has a TOGGLE_PLAYBACK reach action or when its interaction area
+ * is disabled. When any of these two properties change, we need to
+ * reset timings concerning that source if it is no longer eligible
+ * for timings.
  */
 function* conditionallyResetTimings() {
   while (true) {
-    const { payload } = yield take(ActionType.SET_SOURCE_REACH_ACTION)
+    const { payload } = yield take([
+      ActionType.SET_SOURCE_REACH_ENABLED,
+      ActionType.SET_SOURCE_REACH_ACTION,
+    ])
 
-    if (payload.action === ReachAction.TOGGLE_VOLUME) {
+    const source = yield select(state => state.sources.sources[payload.source])
+
+    if (sourceMayUseTimings(source) === false) {
       // Reset the source's own timing target
-      yield put(
-        setSourceTiming(payload.source, PlaybackTiming.PLAY_AFTER, null)
-      )
+      yield put(setSourceTiming(source.name, PlaybackTiming.PLAY_AFTER, null))
 
       // Reset dependants
       const dependants = yield select(state =>
         Object.values(state.sources.sources).filter(
-          x => x.timings[PlaybackTiming.PLAY_AFTER] === payload.source
+          x => x.timings[PlaybackTiming.PLAY_AFTER] === source.name
         )
       )
       // eslint-disable-next-line
