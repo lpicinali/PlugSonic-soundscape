@@ -449,7 +449,7 @@ class SourcePanel extends PureComponent {
 
     return (
       <Fragment>
-        <div ref={$el => this.$item = $el} />
+        <div ref={$el => (this.$item = $el)} />
 
         <SourceListItem
           button
@@ -492,9 +492,14 @@ SourcePanel.propTypes = {
   onSourceVolumeChange: PropTypes.func.isRequired,
 }
 
+SourcePanel.defaultProps = {
+  focusedItem: null,
+}
+
 const mapStateToProps = state => ({
   roomSize: state.room.size,
   sources: Object.values(state.sources.sources),
+  focusedItem: state.sources.focusedItem,
 })
 
 const mapDispatchToProps = dispatch => ({
