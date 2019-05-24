@@ -326,6 +326,7 @@ class SourcePanel extends PureComponent {
           <Select
             style={{ width: '100%' }}
             value={sourceObject.reach.action}
+            disabled={sourceObject.reach.enabled === false}
             onChange={evt =>
               onSourceReachActionChange(sourceObject.name, evt.target.value)
             }
