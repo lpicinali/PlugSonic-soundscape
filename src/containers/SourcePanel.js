@@ -358,7 +358,10 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <FieldGroup key="timings">
+      <FieldGroup
+        key="timings"
+        disabled={sourceObject.reach.action !== ReachAction.TOGGLE_PLAYBACK}
+      >
         <H3>Timings</H3>
 
         <p>Play this source after:</p>
@@ -383,6 +386,7 @@ class SourcePanel extends PureComponent {
               <MenuItem
                 key={source.name}
                 value={source.name}
+                disabled={source.reach.action !== ReachAction.TOGGLE_PLAYBACK}
               >
                 {source.name}
               </MenuItem>

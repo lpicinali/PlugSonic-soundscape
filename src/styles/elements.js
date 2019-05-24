@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { FormControl, FormControlLabel, Input, Select, Switch, withStyles } from '@material-ui/core'
 
 import * as colors from 'src/styles/colors.js'
@@ -49,6 +49,11 @@ export const FullWidthSelect = props => <Select {...props} input={<Input fullWid
 
 export const FieldGroup = styled.div`
   margin-bottom: 24px;
+
+  ${props => props.disabled && css`
+    opacity: 0.4;
+    pointer-events: none;
+  `}
 `
 
 export const FieldBox = styled.div`

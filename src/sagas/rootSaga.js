@@ -503,6 +503,38 @@ function* applySourcePlaybackState() {
 /* ======================================================================== */
 // SOURCE TIMINGS
 /* ======================================================================== */
+
+/**
+ * Since a source may only be set to play after a source that has
+ * the TOGGLE_PLAYBACK reach action, we need to reset it when that
+ * source changes to TOGGLE_VOLUME.
+ */
+function* conditionallyResetTimings() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_SOURCE_REACH_ACTION)
+
+    if (payload.action === ReachAction.TOGGLE_VOLUME) {
+      // Reset the source's own timing target
+      yield put(
+        setSourceTiming(payload.source, PlaybackTiming.PLAY_AFTER, null)
+      )
+
+      // Reset dependants
+      const dependants = yield select(state =>
+        Object.values(state.sources.sources).filter(
+          x => x.timings[PlaybackTiming.PLAY_AFTER] === payload.source
+        )
+      )
+      // eslint-disable-next-line
+      for (const dependant of dependants) {
+        yield put(
+          setSourceTiming(dependant.name, PlaybackTiming.PLAY_AFTER, null)
+        )
+      }
+    }
+  }
+}
+
 function* updateSourcesTimingStatus() {
   const callbackSource = yield call(
     createSubscriptionSource,
@@ -631,6 +663,7 @@ export default function* rootSaga() {
     applySourceReachChangesAffectingVolume(),
     applySourceReachChangesAffectingPlayback(),
     applySourcePlaybackState(),
+    conditionallyResetTimings(),
     updateSourcesTimingStatus(),
     applySpatialisedChanges(),
     allowOnlyOneSourceToBeSelected(),
