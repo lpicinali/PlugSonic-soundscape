@@ -80,6 +80,7 @@ export const createSourceAudioChain = source => {
   reachGain.connect(muteGain)
   muteGain.connect(masterVolume)
 
+  volume.gain.value = clamp(source.volume, 0.00001, Infinity)
   reachGain.gain.value = getSourceReachGain(source)
   muteGain.gain.value = source.enabled === true ? 1 : 0.00001
 
