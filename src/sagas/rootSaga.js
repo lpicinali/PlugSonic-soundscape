@@ -395,12 +395,9 @@ function* updateSourcesReachedState() {
 function* manageReachActionChanges() {
   while (true) {
     const { payload } = yield take(ActionType.SET_SOURCE_REACH_ACTION)
-    console.log({ payload })
 
     const source = yield select(state => state.sources.sources[payload.source])
     const playbackState = yield select(state => state.controls.playbackState)
-
-    console.log('manage', { source, playbackState })
 
     if (
       playbackState !== PlaybackState.STOP &&
@@ -463,13 +460,13 @@ function* applySourceReachChangesAffectingPlayback() {
 
     const name = payload.name || payload.source
     const source = yield select(state => state.sources.sources[name])
-
-    if (source.reach.action !== ReachAction.TOGGLE_PLAYBACK) {
-      continue
-    }
-
     const playbackState = yield select(state => state.controls.playbackState)
-    if (playbackState === PlaybackState.STOP) {
+
+    if (
+      source.reach.action !== ReachAction.TOGGLE_PLAYBACK ||
+      source.gameplay.timingStatus === TimingStatus.CUED ||
+      playbackState === PlaybackState.STOP
+    ) {
       continue
     }
 
@@ -522,9 +519,6 @@ function* conditionallyResetTimings() {
     const source = yield select(state => state.sources.sources[payload.source])
 
     if (sourceMayUseTimings(source) === false) {
-      // Reset the source's own timing target
-      yield put(setSourceTiming(source.name, PlaybackTiming.PLAY_AFTER, null))
-
       // Reset dependants
       const dependants = yield select(state =>
         Object.values(state.sources.sources).filter(
@@ -536,6 +530,25 @@ function* conditionallyResetTimings() {
         yield put(
           setSourceTiming(dependant.name, PlaybackTiming.PLAY_AFTER, null)
         )
+        yield put(
+          setSourceTimingStatus(dependant.name, TimingStatus.INDEPENDENT)
+        )
+      }
+
+      // Reset the source's own timing target
+      yield put(setSourceTiming(source.name, PlaybackTiming.PLAY_AFTER, null))
+      yield put(setSourceTimingStatus(source.name, TimingStatus.INDEPENDENT))
+
+      // Start looping source if it has TOGGLE_VOLUME
+      //
+      // NOTE: This is duplicated from manageReachActionChanges()
+      const playbackState = yield select(state => state.controls.playbackState)
+      if (
+        playbackState !== PlaybackState.STOP &&
+        source.reach.action === ReachAction.TOGGLE_VOLUME &&
+        source.gameplay.timingStatus !== TimingStatus.CUED
+      ) {
+        yield put(setSourceIsPlaying(source.name, true))
       }
     }
   }
