@@ -129,7 +129,7 @@ export function getSourceReachGain(source) {
  */
 export function sourceMayUseTimings(source) {
   return (
-    source.reach.isEnabled === false ||
+    source.reach.enabled === false ||
     source.reach.action === ReachAction.TOGGLE_PLAYBACK
   )
 }
