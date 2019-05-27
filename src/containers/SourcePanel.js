@@ -370,7 +370,7 @@ class SourcePanel extends PureComponent {
       >
         <H3>Timings</H3>
 
-        <p>Play this source after:</p>
+        <p>Play this source only after the start of:</p>
 
         <Select
           style={{ width: '100%' }}
