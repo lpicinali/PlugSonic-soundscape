@@ -610,6 +610,16 @@ function* allowOnlyOneSourceToBeSelected() {
   }
 }
 
+function* resetFocusedSourceItemWhenLeavingSourceTab() {
+  while (true) {
+    const { payload } = yield take(ActionType.SELECT_TAB)
+
+    if (payload.tabIndex !== 2) {
+      yield put(focusSourcePanelItem(null))
+    }
+  }
+}
+
 function* manageNavigationToSourceMenu() {
   while (true) {
     const { payload } = yield take(ActionType.NAVIGATE_TO_SOURCE_IN_MENU)
@@ -700,6 +710,7 @@ export default function* rootSaga() {
     updateSourcesTimingStatus(),
     applySpatialisedChanges(),
     allowOnlyOneSourceToBeSelected(),
+    resetFocusedSourceItemWhenLeavingSourceTab(),
     manageNavigationToSourceMenu(),
     applyPerformanceMode(),
     applyQualityMode(),
