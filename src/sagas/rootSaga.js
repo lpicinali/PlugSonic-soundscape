@@ -15,10 +15,12 @@ import {
   getSourceReachGain,
   sourceMayUseTimings,
 } from 'src/utils.js'
+import { selectTab } from 'src/actions/navigation.actions.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import {
   addSource,
   deleteSources,
+  focusSourcePanelItem,
   setSourceSelected,
   setSourceIsPlaying,
   setSourceIsWithinReach,
@@ -608,6 +610,18 @@ function* allowOnlyOneSourceToBeSelected() {
   }
 }
 
+function* manageNavigationToSourceMenu() {
+  while (true) {
+    const { payload } = yield take(ActionType.NAVIGATE_TO_SOURCE_IN_MENU)
+
+    // Select the Sources tab
+    yield put(selectTab(2))
+
+    // Open the source item
+    yield put(focusSourcePanelItem(payload.source))
+  }
+}
+
 /* ======================================================================== */
 // HEAD RADIUS
 /* ======================================================================== */
@@ -686,6 +700,7 @@ export default function* rootSaga() {
     updateSourcesTimingStatus(),
     applySpatialisedChanges(),
     allowOnlyOneSourceToBeSelected(),
+    manageNavigationToSourceMenu(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),

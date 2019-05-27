@@ -5,10 +5,12 @@ import controlsReducer from 'src/reducers/controls.reducer'
 import sourcesReducer from 'src/reducers/sources.reducer'
 import listenerReducer from 'src/reducers/listener.reducer'
 import roomReducer from 'src/reducers/room.reducer'
+import navigationReducer from 'src/reducers/navigation.reducer'
 
 export default combineReducers({
   // alerts: alertsReducer,
   controls: controlsReducer,
+  navigation: navigationReducer,
   listener: listenerReducer,
   room: roomReducer,
   sources: sourcesReducer,

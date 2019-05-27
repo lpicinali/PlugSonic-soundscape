@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 import { Tabs, Tab } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
@@ -9,6 +11,7 @@ import Room from '@material-ui/icons/AspectRatio'
 import Listener from '@material-ui/icons/Hearing'
 import Exhibition from '@material-ui/icons/Save'
 
+import { selectTab } from 'src/actions/navigation.actions.js'
 import AddSourceTab from 'src/containers/AddSourceTab'
 import SearchTab from 'src/containers/SearchTab'
 import RoomTab from 'src/containers/RoomTab'
@@ -38,20 +41,21 @@ const NarrowTab = withStyles({
 /* TABS */
 /* ========================================================================== */
 class TabsContainer extends Component {
-  state = {
-    value: 5,
+  static propTypes = {
+    currentTabIndex: PropTypes.number.isRequired,
+    onSelectTab: PropTypes.func.isRequired,
   }
 
   handleChange = (event, value) => {
-    this.setState({ ...this.state, value })
+    this.props.onSelectTab(value)
   }
 
   render() {
-    const { value } = this.state
+    const { currentTabIndex } = this.props
 
     return (
       <div>
-        <BlackTabs value={value} onChange={this.handleChange}>
+        <BlackTabs value={currentTabIndex} onChange={this.handleChange}>
           <NarrowTab icon={<Add color="secondary" />} />
           <NarrowTab icon={<Search color="secondary" />} />
           <NarrowTab icon={<Sources color="secondary" />} />
@@ -60,15 +64,22 @@ class TabsContainer extends Component {
           <NarrowTab icon={<Exhibition color="secondary" />} />
         </BlackTabs>
 
-        {value === 0 && <AddSourceTab />}
-        {value === 1 && <SearchTab />}
-        {value === 2 && <SourcesTab />}
-        {value === 3 && <RoomTab />}
-        {value === 4 && <ListenerTab />}
-        {value === 5 && <ExhibitionTab />}
+        {currentTabIndex === 0 && <AddSourceTab />}
+        {currentTabIndex === 1 && <SearchTab />}
+        {currentTabIndex === 2 && <SourcesTab />}
+        {currentTabIndex === 3 && <RoomTab />}
+        {currentTabIndex === 4 && <ListenerTab />}
+        {currentTabIndex === 5 && <ExhibitionTab />}
       </div>
     )
   }
 }
 
-export default TabsContainer
+export default connect(
+  state => ({
+    currentTabIndex: state.navigation.currentTabIndex,
+  }),
+  dispatch => ({
+    onSelectTab: tabIndex => dispatch(selectTab(tabIndex)),
+  })
+)(TabsContainer)

@@ -7,10 +7,10 @@ import { clamp, values } from 'lodash'
 
 import { DEFAULT_Z_POSITION, RoomShape } from 'src/constants'
 import * as CustomPropTypes from 'src/prop-types.js'
+import { navigateToSourceInMenu } from 'src/actions/navigation.actions.js'
 import {
   setSourceSelected,
   setSourcePosition,
-  focusSourcePanelItem,
 } from 'src/actions/sources.actions'
 import * as colors from 'src/styles/colors.js'
 
@@ -280,7 +280,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setSourcePosition(source, position)),
   onSelectSource: (source, selected) =>
     dispatch(setSourceSelected(source, selected)),
-  onClickSource: (source) => dispatch(focusSourcePanelItem(source)),
+  onClickSource: source => dispatch(navigateToSourceInMenu(source)),
 })
 
 export default connect(
