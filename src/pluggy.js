@@ -95,6 +95,9 @@ if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
 }
 
+console.log('API SETTING:')
+console.log(API)
+
 // =================== RETRIEVE EXHIBITION ============================= //
 export let userId = ''
 export let exhibitionTitle = ''
