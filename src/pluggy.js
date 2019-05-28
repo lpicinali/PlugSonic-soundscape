@@ -112,6 +112,8 @@ export let exhibitionId
 
 if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
   exhibitionQuery = window.location.search.substring(1)
+  console.log('EXHIBITION QUERY')
+  console.log(exhibitionQuery)
   exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
   console.log('EXHIBITION ID')
   console.log(exhibitionId)
