@@ -136,5 +136,7 @@ function getExhibitionErrorCallback(responseText) {
 if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
   exhibitionQuery = window.location.search.substring(1)
   exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+  console.log('EXHIBITION ID')
+  console.log(exhibitionId)
   httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 }
