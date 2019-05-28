@@ -7,7 +7,6 @@ import Recorder from 'recorderjs'
 import { getSourceReachGain } from 'src/utils.js'
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
-import onloop from 'src/audio/onloop.js'
 import toolkit from 'src/audio/toolkit.js'
 
 window.toolkit = toolkit || { nope: false }
@@ -66,10 +65,8 @@ export const createSourceAudioChain = source => {
   }
 
   const audioBuffer = sourceAudioBuffers[source.name]
-  let node = createSourceAudioNode(audioBuffer)
+  const node = createSourceAudioNode(audioBuffer)
   node.loop = source.loop
-  node.addEventListener('ended', () => notifySourceEnded(source))
-  node = onloop(node, () => notifySourceEnded(source))
 
   const volume = context.createGain()
   const reachGain = context.createGain()
@@ -249,6 +246,8 @@ export const playSource = (source, volume, fadeDuration) => {
 
   sourceNodes[source.name].start(0)
 
+  notifySourceStarted(source)
+
   sourcePlaybackStates[source.name] = true
 }
 
@@ -273,11 +272,11 @@ export const setSourceLoop = (name, loop) => {
 /* ======================================================================== */
 const listeners = []
 
-export const subscribeToSourceEnd = listener => {
+export const subscribeToSourceStart = listener => {
   listeners.push(listener)
 }
 
-const notifySourceEnded = source => {
+const notifySourceStarted = source => {
   listeners.forEach(listener => listener({ source }))
 }
 

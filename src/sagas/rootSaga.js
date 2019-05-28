@@ -41,7 +41,7 @@ import {
   storeSourceAudioBuffer,
   storeSourceRawData,
   getSourceRawData,
-  subscribeToSourceEnd,
+  subscribeToSourceStart,
 } from 'src/audio/engine.js'
 
 function isWithinReach(listener, source) {
@@ -559,7 +559,7 @@ function* conditionallyResetTimings() {
 function* updateSourcesTimingStatus() {
   const callbackSource = yield call(
     createSubscriptionSource,
-    subscribeToSourceEnd
+    subscribeToSourceStart
   )
 
   while (true) {
