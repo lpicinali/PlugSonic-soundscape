@@ -81,6 +81,8 @@ const url = new URL((window.location !== window.parent.location)
             ? document.referrer
             : document.location.href)
 const hostname = url.hostname
+console.log('HOSTNAME')
+console.log(hostname)
 
 export let API
 // eslint-disable-next-line
@@ -108,6 +110,14 @@ export let exhibitionMetadata = []
 export let exhibitionQuery
 export let exhibitionId
 
+if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
+  exhibitionQuery = window.location.search.substring(1)
+  exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+  console.log('EXHIBITION ID')
+  console.log(exhibitionId)
+  httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+}
+
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
   console.log('RETRIEVE EXHIBITION RESPONSE')
@@ -130,13 +140,4 @@ function getExhibitionCallback(responseText) {
 function getExhibitionErrorCallback(responseText) {
     console.log('ERROR CALLBACK')
     console.log(responseText)
-}
-
-
-if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
-  exhibitionQuery = window.location.search.substring(1)
-  exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
-  console.log('EXHIBITION ID')
-  console.log(exhibitionId)
-  httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 }
