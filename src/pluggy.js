@@ -117,6 +117,10 @@ function getExhibitionCallback(responseText) {
       {key: index, label: tag}
     ))
     exhibitionMetadata = response.data.metadata
+    console.log('RETRIEVE SUCCESSFUL')
+    console.log(exhibitionMetadata)
+  } else {
+    console.log('RETRIEVE FAILED')
   }
 }
 
