@@ -11,12 +11,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   FormGroup,
   ListItem,
   ListItemText,
   MenuItem,
   Select,
   Switch,
+  withStyles,
 } from '@material-ui/core'
 import Slider from '@material-ui/lab/Slider'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -24,7 +26,12 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import { PlaybackTiming, ReachAction } from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
-import { decibelsToGain, forceDecimals, gainToDecibels } from 'src/utils.js'
+import {
+  decibelsToGain,
+  forceDecimals,
+  gainToDecibels,
+  sourceMayUseTimings,
+} from 'src/utils.js'
 import {
   deleteSources,
   setSourceHidden,
@@ -57,6 +64,23 @@ const SliderValue = styled.span`
   text-transform: none;
 `
 
+const SourceListItem = withStyles({
+  root: {
+    paddingLeft: 24,
+  },
+})(ListItem)
+
+const SourceListItemText = withStyles({
+  primary: {
+    fontSize: 16,
+  },
+})(ListItemText)
+
+const SourceControlsContent = styled(PanelContents)`
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+`
+
 function getRelativeDecibelsVolume(gain, minDecibels = -60) {
   return 1 - (gainToDecibels(gain) / minDecibels)
 }
@@ -71,6 +95,29 @@ class SourcePanel extends PureComponent {
   state = {
     isOpen: false,
     isPromptingDelete: false,
+  }
+
+  $item = null
+
+  componentDidUpdate = (prevProps) => {
+    const { focusedItem, sourceObject } = this.props
+
+    if (
+      prevProps.focusedItem !== focusedItem &&
+      focusedItem === sourceObject.name
+    ) {
+      this.setState({ isOpen: true }, () => {
+        if (this.$item.scrollIntoView) {
+          setTimeout(() => {
+            this.$item.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest',
+            })
+          }, 100)
+        }
+      })
+    }
   }
 
   handleSourceVolume = volume => {
@@ -211,7 +258,7 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <FieldGroup key="loop">
+      <div key="loop">
         <SwitchBox>
           <H3>Loop</H3>
           <Switch
@@ -222,11 +269,11 @@ class SourcePanel extends PureComponent {
             }
           />
         </SwitchBox>
-      </FieldGroup>
+      </div>
     )
 
     nestedItems.push(
-      <FieldGroup key="spatialisation">
+      <div key="spatialisation">
         <SwitchBox>
           <H3>Spatialisation</H3>
           <Switch
@@ -237,7 +284,7 @@ class SourcePanel extends PureComponent {
             }
           />
         </SwitchBox>
-      </FieldGroup>
+      </div>
     )
 
     nestedItems.push(
@@ -279,6 +326,7 @@ class SourcePanel extends PureComponent {
           <Select
             style={{ width: '100%' }}
             value={sourceObject.reach.action}
+            disabled={sourceObject.reach.enabled === false}
             onChange={evt =>
               onSourceReachActionChange(sourceObject.name, evt.target.value)
             }
@@ -316,10 +364,13 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <FieldGroup key="timings">
+      <FieldGroup
+        key="timings"
+        disabled={sourceMayUseTimings(sourceObject) === false}
+      >
         <H3>Timings</H3>
 
-        <p>Play this source after:</p>
+        <p>Play this source only after the start of:</p>
 
         <Select
           style={{ width: '100%' }}
@@ -341,6 +392,7 @@ class SourcePanel extends PureComponent {
               <MenuItem
                 key={source.name}
                 value={source.name}
+                disabled={sourceMayUseTimings(source) === false}
               >
                 {source.name}
               </MenuItem>
@@ -407,16 +459,21 @@ class SourcePanel extends PureComponent {
 
     return (
       <Fragment>
-        <ListItem button onClick={() => this.setState({ isOpen: !isOpen })}>
-          <ListItemText primary={sourceObject.name} />
+        <div ref={$el => (this.$item = $el)} />
+
+        <SourceListItem
+          button
+          onClick={() => this.setState({ isOpen: !isOpen })}
+        >
+          <SourceListItemText primary={sourceObject.name} />
           {isOpen ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
+        </SourceListItem>
 
         <Collapse in={isOpen}>
-          <PanelContents>
-            {nestedItems}
-          </PanelContents>
+          <SourceControlsContent>{nestedItems}</SourceControlsContent>
         </Collapse>
+
+        <Divider />
       </Fragment>
     )
   }
@@ -430,6 +487,7 @@ SourcePanel.propTypes = {
   }).isRequired,
   sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
   sourceObject: CustomPropTypes.source.isRequired,
+  focusedItem: PropTypes.string,
   onSourceDelete: PropTypes.func.isRequired,
   onSourceHiddenChange: PropTypes.func.isRequired,
   onSourceLoopChange: PropTypes.func.isRequired,
@@ -444,9 +502,14 @@ SourcePanel.propTypes = {
   onSourceVolumeChange: PropTypes.func.isRequired,
 }
 
+SourcePanel.defaultProps = {
+  focusedItem: null,
+}
+
 const mapStateToProps = state => ({
   roomSize: state.room.size,
   sources: Object.values(state.sources.sources),
+  focusedItem: state.sources.focusedItem,
 })
 
 const mapDispatchToProps = dispatch => ({

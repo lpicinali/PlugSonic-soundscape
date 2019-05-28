@@ -10,6 +10,7 @@ import { ADEtoXYZ } from 'src/utils.js'
 
 const initialState = {
   sources: {},
+  focusedItem: null,
 }
 
 let azimuthIndex = Object.keys(initialState.sources).length
@@ -170,6 +171,11 @@ export default function(state = initialState, { type, payload }) {
       payload.isWithinReach,
       state
     )
+  }
+
+  // MISC
+  if (type === ActionType.FOCUS_SOURCE_PANEL_ITEM) {
+    return set('focusedItem', payload.name, state)
   }
 
   return state

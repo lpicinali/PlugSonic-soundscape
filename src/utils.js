@@ -2,6 +2,7 @@ import bufferToArrayBuffer from 'buffer-to-arraybuffer'
 import got from 'got'
 import { round } from 'lodash'
 
+import { ReachAction } from 'src/constants.js'
 import context from 'src/audio/context.js'
 import decode from 'src/audio/decode.js'
 
@@ -121,4 +122,14 @@ export function getSourceReachGain(source) {
   // has its value set to 0 via node.param.value = 0, then ramping
   // the param's value won't do anything.
   return 0.00001
+}
+
+/**
+ * Returns whether a source may specify playback timings
+ */
+export function sourceMayUseTimings(source) {
+  return (
+    source.reach.enabled === false ||
+    source.reach.action === ReachAction.TOGGLE_PLAYBACK
+  )
 }

@@ -13,11 +13,14 @@ import {
   fetchAudioBuffer,
   fetchAudioBufferRaw,
   getSourceReachGain,
+  sourceMayUseTimings,
 } from 'src/utils.js'
+import { selectTab } from 'src/actions/navigation.actions.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
 import {
   addSource,
   deleteSources,
+  focusSourcePanelItem,
   setSourceSelected,
   setSourceIsPlaying,
   setSourceIsWithinReach,
@@ -38,7 +41,7 @@ import {
   storeSourceAudioBuffer,
   storeSourceRawData,
   getSourceRawData,
-  subscribeToSourceEnd,
+  subscribeToSourceStart,
 } from 'src/audio/engine.js'
 
 function isWithinReach(listener, source) {
@@ -394,12 +397,9 @@ function* updateSourcesReachedState() {
 function* manageReachActionChanges() {
   while (true) {
     const { payload } = yield take(ActionType.SET_SOURCE_REACH_ACTION)
-    console.log({ payload })
 
     const source = yield select(state => state.sources.sources[payload.source])
     const playbackState = yield select(state => state.controls.playbackState)
-
-    console.log('manage', { source, playbackState })
 
     if (
       playbackState !== PlaybackState.STOP &&
@@ -462,13 +462,13 @@ function* applySourceReachChangesAffectingPlayback() {
 
     const name = payload.name || payload.source
     const source = yield select(state => state.sources.sources[name])
-
-    if (source.reach.action !== ReachAction.TOGGLE_PLAYBACK) {
-      continue
-    }
-
     const playbackState = yield select(state => state.controls.playbackState)
-    if (playbackState === PlaybackState.STOP) {
+
+    if (
+      source.reach.action !== ReachAction.TOGGLE_PLAYBACK ||
+      source.gameplay.timingStatus === TimingStatus.CUED ||
+      playbackState === PlaybackState.STOP
+    ) {
       continue
     }
 
@@ -503,10 +503,63 @@ function* applySourcePlaybackState() {
 /* ======================================================================== */
 // SOURCE TIMINGS
 /* ======================================================================== */
+
+/**
+ * A source may be timed, either as a dependant or a target, when it
+ * has a TOGGLE_PLAYBACK reach action or when its interaction area
+ * is disabled. When any of these two properties change, we need to
+ * reset timings concerning that source if it is no longer eligible
+ * for timings.
+ */
+function* conditionallyResetTimings() {
+  while (true) {
+    const { payload } = yield take([
+      ActionType.SET_SOURCE_REACH_ENABLED,
+      ActionType.SET_SOURCE_REACH_ACTION,
+    ])
+
+    const source = yield select(state => state.sources.sources[payload.source])
+
+    if (sourceMayUseTimings(source) === false) {
+      // Reset dependants
+      const dependants = yield select(state =>
+        Object.values(state.sources.sources).filter(
+          x => x.timings[PlaybackTiming.PLAY_AFTER] === source.name
+        )
+      )
+      // eslint-disable-next-line
+      for (const dependant of dependants) {
+        yield put(
+          setSourceTiming(dependant.name, PlaybackTiming.PLAY_AFTER, null)
+        )
+        yield put(
+          setSourceTimingStatus(dependant.name, TimingStatus.INDEPENDENT)
+        )
+      }
+
+      // Reset the source's own timing target
+      yield put(setSourceTiming(source.name, PlaybackTiming.PLAY_AFTER, null))
+      yield put(setSourceTimingStatus(source.name, TimingStatus.INDEPENDENT))
+
+      // Start looping source if it has TOGGLE_VOLUME
+      //
+      // NOTE: This is duplicated from manageReachActionChanges()
+      const playbackState = yield select(state => state.controls.playbackState)
+      if (
+        playbackState !== PlaybackState.STOP &&
+        source.reach.action === ReachAction.TOGGLE_VOLUME &&
+        source.gameplay.timingStatus !== TimingStatus.CUED
+      ) {
+        yield put(setSourceIsPlaying(source.name, true))
+      }
+    }
+  }
+}
+
 function* updateSourcesTimingStatus() {
   const callbackSource = yield call(
     createSubscriptionSource,
-    subscribeToSourceEnd
+    subscribeToSourceStart
   )
 
   while (true) {
@@ -554,6 +607,28 @@ function* allowOnlyOneSourceToBeSelected() {
         yield put(setSourceSelected(prevSelectedSource.name, false))
       }
     }
+  }
+}
+
+function* resetFocusedSourceItemWhenLeavingSourceTab() {
+  while (true) {
+    const { payload } = yield take(ActionType.SELECT_TAB)
+
+    if (payload.tabIndex !== 2) {
+      yield put(focusSourcePanelItem(null))
+    }
+  }
+}
+
+function* manageNavigationToSourceMenu() {
+  while (true) {
+    const { payload } = yield take(ActionType.NAVIGATE_TO_SOURCE_IN_MENU)
+
+    // Select the Sources tab
+    yield put(selectTab(2))
+
+    // Open the source item
+    yield put(focusSourcePanelItem(payload.source))
   }
 }
 
@@ -631,9 +706,12 @@ export default function* rootSaga() {
     applySourceReachChangesAffectingVolume(),
     applySourceReachChangesAffectingPlayback(),
     applySourcePlaybackState(),
+    conditionallyResetTimings(),
     updateSourcesTimingStatus(),
     applySpatialisedChanges(),
     allowOnlyOneSourceToBeSelected(),
+    resetFocusedSourceItemWhenLeavingSourceTab(),
+    manageNavigationToSourceMenu(),
     applyPerformanceMode(),
     applyQualityMode(),
     applyHeadRadius(),

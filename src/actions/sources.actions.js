@@ -130,3 +130,10 @@ export const setSourceIsWithinReach = (name, isWithinReach) => ({
   type: ActionType.SET_SOURCE_IS_WITHIN_REACH,
   payload: { name, isWithinReach },
 })
+
+// Misc
+
+export const focusSourcePanelItem = (name) => ({
+  type: ActionType.FOCUS_SOURCE_PANEL_ITEM,
+  payload: { name },
+})
