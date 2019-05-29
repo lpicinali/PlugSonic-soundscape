@@ -3,7 +3,16 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { map } from 'lodash'
-import { Button, Chip, TextField } from '@material-ui/core'
+import {
+  Button,
+  Chip,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core'
 
 import {
   API,
@@ -38,6 +47,11 @@ class ExhibitionContainer extends Component {
     exhibitionNewTag: '',
     exhibitionTags: exhibitionTags,
     exhibitionId: exhibitionId,
+    isSaveDialogOpen: false,
+    saveDialogText: '',
+    isPublishDialogOpen: false,
+    publishDialogText: '',
+    isPublished: false,
   }
 
   createExhibition = () => {
@@ -99,6 +113,17 @@ class ExhibitionContainer extends Component {
   updateExhibitionCallback = responseText => {
     const updatedExhibition = JSON.parse(responseText)
     console.log(updatedExhibition)
+    if (updatedExhibition.success) {
+      this.setState({
+        isSaveDialogOpen: true,
+        saveDialogText: 'Save Exhibition Successfull'
+      })
+    } else {
+      this.setState({
+        isSaveDialogOpen: true,
+        saveDialogText: 'Save Exhibition Unsuccessfull. Try Again.'
+      })
+    }
   }
 
   handleSaveExhibition = () => {
@@ -112,15 +137,27 @@ class ExhibitionContainer extends Component {
   handlePublishExhibition = () => {
     // exhibition object
     const exhibition = {
-      public: true,
+      public: !this.state.isPublished,
     }
 
     httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.publishExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
   }
 
   publishExhibitionCallback = (responseText) => {
-    const publishedExhibition = JSON.parse(responseText)
-    console.log(publishedExhibition)
+    const publishExhibition = JSON.parse(responseText)
+    console.log(publishExhibition)
+    if (publishExhibition.success) {
+      this.setState({
+        isPublishDialogOpen: true,
+        publishDialogText: this.state.isPublished ? 'Unpublish Exhibition Successfull':'Publish Exhibition Successfull'
+      })
+    } else {
+      this.setState({
+        isPublishDialogOpen: true,
+        publishDialogText: this.state.isPublished ? 'Unpublish Exhibition Unsuccessfull. Try Again.':'Publish Exhibition Unuccessfull. Try Again'
+      })
+    }
+    this.setState({isPublished: !this.state.isPublished})
   }
 
   handleTextFieldChange = (event) => {
@@ -213,6 +250,26 @@ class ExhibitionContainer extends Component {
           >
             SAVE
           </Button>
+
+          <Dialog
+            open={this.state.isSaveDialogOpen}
+          >
+            <DialogTitle>Save Exhibition</DialogTitle>
+
+            <DialogContent>
+              <DialogContentText>
+                {this.state.saveDialogText}
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+              <Button
+                onClick={() => this.setState({ isSaveDialogOpen: false })}
+              >
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
         </FieldBox>
 
         <FieldBox>
@@ -221,10 +278,30 @@ class ExhibitionContainer extends Component {
             color="primary"
             fullWidth
             disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
-            onClick={this.handleSaveExhibition}
+            onClick={this.handlePublishExhibition}
           >
-            PUBLISH
+            {this.state.isPublished ? 'UNPUBLISH':'PUBLISH'}
           </Button>
+
+          <Dialog
+            open={this.state.isPublishDialogOpen}
+          >
+            <DialogTitle>Publish Exhibition</DialogTitle>
+
+            <DialogContent>
+              <DialogContentText>
+                {this.state.publishDialogText}
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+              <Button
+                onClick={() => this.setState({ isPublishDialogOpen: false })}
+              >
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
         </FieldBox>
       </Fragment>
     )
@@ -245,12 +322,7 @@ const mapStateToProps = state => ({
   sources: state.sources.sources,
 })
 
-const mapDispatchToProps = dispatch => ({
-  // onAddSource: (filename, name, url, assetId, mediaId) =>
-  //   dispatch(addSourceRemote(filename, name, url, assetId, mediaId)),
-})
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(ExhibitionContainer)

@@ -86,7 +86,7 @@ console.log(hostname)
 
 export let API
 // eslint-disable-next-line
-export const sessionToken = Pluggy.getToken()
+// export const sessionToken = Pluggy.getToken()
 // export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTg1MzE2MDksImV4cCI6MTU1ODYxODAwOX0.ntxwZnqZCJJUotlxFnmvTDfrwMp2uHVgwCnBx1Woe2w"
 
 if (hostname === "develop.pluggy.eu") {
@@ -142,4 +142,11 @@ function getExhibitionCallback(responseText) {
 function getExhibitionErrorCallback(responseText) {
     console.log('ERROR CALLBACK')
     console.log(responseText)
+}
+
+if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
+  exhibitionQuery = window.location.search.substring(1)
+  exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+  // exhibitionId = '5ccc5dd7641ea60d81f5be85'
+  httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 }
