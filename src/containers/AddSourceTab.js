@@ -1,6 +1,6 @@
 import React, { Component} from "react"
 
-import { SourceUploader } from 'src/components/SourceUploader'
+import SourceUploader from 'src/components/SourceUploader'
 
 /* ========================================================================== */
 
