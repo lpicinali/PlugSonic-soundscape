@@ -57,19 +57,19 @@ class TabsContainer extends Component {
       <div>
         <BlackTabs value={currentTabIndex} onChange={this.handleChange}>
           {/* <NarrowTab icon={<Add color="secondary" />} /> */}
-          <NarrowTab icon={<Search color="secondary" />} />
-          <NarrowTab icon={<Sources color="secondary" />} />
-          <NarrowTab icon={<Room color="secondary" />} />
+          {/* <NarrowTab icon={<Search color="secondary" />} /> */}
+          {/* <NarrowTab icon={<Sources color="secondary" />} /> */}
+          {/* <NarrowTab icon={<Room color="secondary" />} /> */}
           <NarrowTab icon={<Listener color="secondary" />} />
           <NarrowTab icon={<Exhibition color="secondary" />} />
         </BlackTabs>
 
         {/* {currentTabIndex === 0 && <AddSourceTab />} */}
-        {currentTabIndex === 0 && <SearchTab />}
-        {currentTabIndex === 1 && <SourcesTab />}
-        {currentTabIndex === 2 && <RoomTab />}
-        {currentTabIndex === 3 && <ListenerTab />}
-        {currentTabIndex === 4 && <ExhibitionTab />}
+        {/* {currentTabIndex === 0 && <SearchTab />} */}
+        {/* {currentTabIndex === 1 && <SourcesTab />} */}
+        {/* {currentTabIndex === 2 && <RoomTab />} */}
+        {currentTabIndex === 0 && <ListenerTab />}
+        {currentTabIndex === 1 && <ExhibitionTab />}
       </div>
     )
   }
