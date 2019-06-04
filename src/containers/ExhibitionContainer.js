@@ -221,7 +221,7 @@ class ExhibitionContainer extends Component {
           disabled
         />
 
-        <TextField
+        {/* <TextField
           id="exhibitionNewTag"
           type="text"
           fullWidth
@@ -230,14 +230,14 @@ class ExhibitionContainer extends Component {
           onChange={this.handleTextFieldChange}
           onKeyUp={this.handleKeyUp}
           disabled
-        />
+        /> */}
 
         <ChipWrapper>
           {this.state.exhibitionTags.map(tag => (
             <Chip
               key={tag.key}
               label={tag.label}
-              onDelete={() => this.handleRequestDelete(tag.key)}
+              // onDelete={() => this.handleRequestDelete(tag.key)}
               style={chipStyle}
             />
           ))}
