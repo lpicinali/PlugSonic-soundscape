@@ -31,7 +31,7 @@ export default function(state = initialState, { type, payload }) {
         timingStatus: TimingStatus.INDEPENDENT,
         isWithinReach: false,
       },
-      hidden: false,
+      hidden: payload.hidden || false,
       loop: true,
       name: payload.name,
       origin: payload.origin,
