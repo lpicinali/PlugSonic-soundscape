@@ -205,6 +205,7 @@ class ExhibitionContainer extends Component {
           value={this.state.exhibitionTitle}
           label="Title*"
           onChange={this.handleTextFieldChange}
+          disabled
         />
 
         <TextField
@@ -217,6 +218,7 @@ class ExhibitionContainer extends Component {
           rows={2}
           rowsMax={4}
           onChange={this.handleTextFieldChange}
+          disabled
         />
 
         <TextField
@@ -227,6 +229,7 @@ class ExhibitionContainer extends Component {
           label="Tags (Press ENTER to add)"
           onChange={this.handleTextFieldChange}
           onKeyUp={this.handleKeyUp}
+          disabled
         />
 
         <ChipWrapper>
@@ -240,7 +243,8 @@ class ExhibitionContainer extends Component {
           ))}
         </ChipWrapper>
 
-        <FieldBox>
+        {/* SAVE EXHIBITION */}
+        {/* <FieldBox>
           <Button
             variant="contained"
             color="primary"
@@ -257,24 +261,25 @@ class ExhibitionContainer extends Component {
             <DialogTitle>Save Exhibition</DialogTitle>
 
             <DialogContent>
-              <DialogContentText>
-                {this.state.saveDialogText}
-              </DialogContentText>
+          <DialogContentText>
+          {this.state.saveDialogText}
+          </DialogContentText>
             </DialogContent>
 
             <DialogActions>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => this.setState({ isSaveDialogOpen: false })}
-              >
-                OK
-              </Button>
+          <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.setState({ isSaveDialogOpen: false })}
+          >
+          OK
+          </Button>
             </DialogActions>
           </Dialog>
-        </FieldBox>
+        </FieldBox> */}
 
-        <FieldBox>
+        {/* PUBLISH */}
+        {/* <FieldBox>
           <Button
             variant="contained"
             color="primary"
@@ -291,22 +296,22 @@ class ExhibitionContainer extends Component {
             <DialogTitle>Publish Exhibition</DialogTitle>
 
             <DialogContent>
-              <DialogContentText>
-                {this.state.publishDialogText}
-              </DialogContentText>
+          <DialogContentText>
+          {this.state.publishDialogText}
+          </DialogContentText>
             </DialogContent>
 
             <DialogActions>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => this.setState({ isPublishDialogOpen: false })}
-              >
-                OK
-              </Button>
+          <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.setState({ isPublishDialogOpen: false })}
+          >
+          OK
+          </Button>
             </DialogActions>
           </Dialog>
-        </FieldBox>
+        </FieldBox> */}
       </Fragment>
     )
   }

@@ -1,11 +1,16 @@
 import React, { Component} from 'react'
-import { Divider } from '@material-ui/core'
+// import { Divider } from '@material-ui/core'
 
 import ExhibitionContainer from 'src/containers/ExhibitionContainer'
-import ImportButton from 'src/components/ImportButton'
-import ExportMetaButton from 'src/components/ExportMetaButton'
-import ExportRawButton from 'src/components/ExportRawButton'
-import { FieldBox, FieldGroup, H2, PanelContents } from 'src/styles/elements'
+// import ImportButton from 'src/components/ImportButton'
+// import ExportMetaButton from 'src/components/ExportMetaButton'
+// import ExportRawButton from 'src/components/ExportRawButton'
+import {
+  // FieldBox,
+  // FieldGroup,
+  // H2,
+  PanelContents
+} from 'src/styles/elements'
 
 /* ========================================================================== */
 /* EXHIBITION TAB */
@@ -20,9 +25,9 @@ class ExhibitionTab extends Component {
           <ExhibitionContainer/>
         </PanelContents>
 
-        <Divider />
+        {/* <Divider /> */}
 
-        <PanelContents>
+        {/* <PanelContents>
           <FieldGroup>
             <H2>IMPORT</H2>
             <ImportButton/>
@@ -31,15 +36,14 @@ class ExhibitionTab extends Component {
           <FieldGroup>
             <H2>EXPORT</H2>
             <FieldBox>
-              <ExportMetaButton/>
+          <ExportMetaButton/>
             </FieldBox>
             <FieldBox>
-              <ExportRawButton/>
+          <ExportRawButton/>
             </FieldBox>
           </FieldGroup>
-        </PanelContents>
+        </PanelContents> */}
       </React.Fragment>
-
     )
   }
 }
