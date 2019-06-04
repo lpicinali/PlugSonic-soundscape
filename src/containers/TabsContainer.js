@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { Tabs, Tab } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-// import Add from '@material-ui/icons/Add'
+import Add from '@material-ui/icons/Add'
 import Search from '@material-ui/icons/Search'
 import Sources from '@material-ui/icons/QueueMusic'
 import Room from '@material-ui/icons/AspectRatio'
@@ -12,7 +12,7 @@ import Listener from '@material-ui/icons/Hearing'
 import Exhibition from '@material-ui/icons/Save'
 
 import { selectTab } from 'src/actions/navigation.actions.js'
-// import AddSourceTab from 'src/containers/AddSourceTab'
+import AddSourceTab from 'src/containers/AddSourceTab'
 import SearchTab from 'src/containers/SearchTab'
 import RoomTab from 'src/containers/RoomTab'
 import SourcesTab from 'src/containers/SourcesTab'
@@ -56,7 +56,7 @@ class TabsContainer extends Component {
     return (
       <div>
         <BlackTabs value={currentTabIndex} onChange={this.handleChange}>
-          {/* <NarrowTab icon={<Add color="secondary" />} /> */}
+          <NarrowTab icon={<Add color="secondary" />} />
           <NarrowTab icon={<Search color="secondary" />} />
           <NarrowTab icon={<Sources color="secondary" />} />
           <NarrowTab icon={<Room color="secondary" />} />
@@ -64,12 +64,12 @@ class TabsContainer extends Component {
           <NarrowTab icon={<Exhibition color="secondary" />} />
         </BlackTabs>
 
-        {/* {currentTabIndex === 0 && <AddSourceTab />} */}
-        {currentTabIndex === 0 && <SearchTab />}
-        {currentTabIndex === 1 && <SourcesTab />}
-        {currentTabIndex === 2 && <RoomTab />}
-        {currentTabIndex === 3 && <ListenerTab />}
-        {currentTabIndex === 4 && <ExhibitionTab />}
+        {currentTabIndex === 0 && <AddSourceTab />}
+        {currentTabIndex === 1 && <SearchTab />}
+        {currentTabIndex === 2 && <SourcesTab />}
+        {currentTabIndex === 3 && <RoomTab />}
+        {currentTabIndex === 4 && <ListenerTab />}
+        {currentTabIndex === 5 && <ExhibitionTab />}
       </div>
     )
   }
