@@ -122,7 +122,7 @@ class SourceRenderer extends Component {
     this.setState({
       isDragging: true,
     })
-    window.addEventListener('mousemove', this.handleSourceMouseDrag)
+    // window.addEventListener('mousemove', this.handleSourceMouseDrag)
     window.addEventListener('mouseup', this.handleSourceMouseUp)
   }
 
@@ -185,7 +185,7 @@ class SourceRenderer extends Component {
     const { source, onSelectSource, onClickSource } = this.props
     const { isDragging, hasDragged } = this.state
 
-    window.removeEventListener('mousemove', this.handleSourceMouseDrag)
+    // window.removeEventListener('mousemove', this.handleSourceMouseDrag)
     window.removeEventListener('mouseup', this.handleSourceMouseUp)
 
     // Click -> toggle selected
