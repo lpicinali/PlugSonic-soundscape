@@ -113,19 +113,8 @@ class ScaledSoundscape extends Component {
             containerRect={{top: viewportTop, bottom: viewportBottom, left: viewportLeft, right: viewportRight}}
           />
 
-          {/* {sources.map(source => (
-            <Source
-              key={source.name}
-              isSelected={source.selected === true}
-              style={{
-            width: sourceSize,
-            height: sourceSize,
-            top: `${50 + (100 * -1 * source.position.x) / roomDepth}%`,
-            left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
-              }}
-            />
-          ))} */}
           {sources.map(source => (
+            source.hidden &&
             <SourceRenderer
               key={source.name}
               source={source}
