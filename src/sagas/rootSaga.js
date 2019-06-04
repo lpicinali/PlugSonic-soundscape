@@ -665,7 +665,7 @@ function* manageNavigationToSourceMenu() {
     const { payload } = yield take(ActionType.NAVIGATE_TO_SOURCE_IN_MENU)
 
     // Select the Sources tab
-    yield put(selectTab(2))
+    yield put(selectTab(1))
 
     // Open the source item
     yield put(focusSourcePanelItem(payload.source))
