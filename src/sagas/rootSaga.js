@@ -17,6 +17,7 @@ import {
 } from 'src/utils.js'
 import { selectTab } from 'src/actions/navigation.actions.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
+// import { importSoundscapeCompleted } from 'src/actions/dialogs.actions.js'
 import {
   addSource,
   deleteSources,
@@ -129,6 +130,10 @@ function* manageAddSource() {
     const source = yield select(state => state.sources.sources[payload.name])
     const playbackState = yield select(state => state.controls.playbackState)
 
+    console.log('rootSaga -> manageAddSource')
+    console.log('Adding...')
+    console.log(source)
+
     if (source.origin === SourceOrigin.REMOTE) {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
     } else if (
@@ -139,6 +144,10 @@ function* manageAddSource() {
     } else {
       console.log('rootSaga -> manageAddSource: source uploaded from local, bypass fecth audio buffer')
     }
+
+    console.log('rootSaga -> manageAddSource')
+    console.log('Added')
+    console.log(source)
 
     if (
       playbackState === PlaybackState.PLAY ||
@@ -179,6 +188,8 @@ function* applySourceOnOff() {
 /* ======================================================================== */
 // IMPORT SOURCES
 /* ======================================================================== */
+// let importCounter = 0
+
 function* manageImportSources() {
   while (true) {
     const {
@@ -192,7 +203,10 @@ function* manageImportSources() {
     yield put(deleteSources(currentSources.map(x => x.name)))
 
     // Add the new ones
+    // resetCounter()
+
     for (let i = 0; i < sources.length; i++) {
+      // incrementCounter()
       if (sources[i].raw !== null ) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
       } else if (
@@ -206,6 +220,32 @@ function* manageImportSources() {
     }
   }
 }
+
+// export function incrementCounter() {
+//   importCounter += 1
+//   console.log('rootSaga -> incrementCounter')
+//   console.log(`importCounter = ${importCounter}`)
+// }
+//
+// export function decrementCounter() {
+//   importCounter -= 1
+//   console.log('rootSaga -> decrementCounter')
+//   console.log(`importCounter = ${importCounter}`)
+//   checkImportCompleted()
+// }
+//
+// function resetCounter() {
+//   importCounter = 0
+// }
+//
+// function checkImportCompleted(){
+//   console.log('rootSaga -> checkImportCompleted')
+//   if (importCounter === 0) {
+//     console.log('rootSaga -> before put')
+//     importSoundscapeCompleted(true)
+//     console.log('IMPORT COMPLETED!!!')
+//   }
+// }
 
 /* ======================================================================== */
 // DELETE SOURCES

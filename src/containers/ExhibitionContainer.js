@@ -264,6 +264,8 @@ class ExhibitionContainer extends Component {
 
             <DialogActions>
               <Button
+                variant="contained"
+                color="primary"
                 onClick={() => this.setState({ isSaveDialogOpen: false })}
               >
                 OK
@@ -296,6 +298,8 @@ class ExhibitionContainer extends Component {
 
             <DialogActions>
               <Button
+                variant="contained"
+                color="primary"
                 onClick={() => this.setState({ isPublishDialogOpen: false })}
               >
                 OK

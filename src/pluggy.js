@@ -86,8 +86,8 @@ console.log(hostname)
 
 export let API
 // eslint-disable-next-line
-// export const sessionToken = Pluggy.getToken()
-// export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJiZWhhbGZPZlVzZXJJZCI6IjVjNDFiYmVlNjI3YTRlZDk4ZmUzNGMyYSIsIm1lbWJlck9mR3JvdXBzIjpbXSwidXNlcm5hbWUiOiJNYXJjbyBDb211bml0YSIsInJvbGVzIjpbIk1lbWJlciIsIkRldmVsb3BlciJdLCJpYXQiOjE1NTg1MzE2MDksImV4cCI6MTU1ODYxODAwOX0.ntxwZnqZCJJUotlxFnmvTDfrwMp2uHVgwCnBx1Woe2w"
+export const sessionToken = Pluggy.getToken()
+// export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU1OTYzNzE1OSwiZXhwIjoxNTU5NzIzNTU5fQ.Rv-tEfVA7u6vEopJqi5cs-fRU4SOmY6YjbEET5HQyl4"
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
@@ -120,6 +120,13 @@ if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
   httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 }
 
+// if (hostname === "localhost") {
+//   exhibitionId = '5ced59255c7b4a36a9660447'
+//   console.log('EXHIBITION ID')
+//   console.log(exhibitionId)
+//   httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+// }
+
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
   console.log('RETRIEVE EXHIBITION RESPONSE')
@@ -142,11 +149,4 @@ function getExhibitionCallback(responseText) {
 function getExhibitionErrorCallback(responseText) {
     console.log('ERROR CALLBACK')
     console.log(responseText)
-}
-
-if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
-  exhibitionQuery = window.location.search.substring(1)
-  exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
-  // exhibitionId = '5ccc5dd7641ea60d81f5be85'
-  httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 }

@@ -11,7 +11,7 @@ import {
 import { SourceOrigin } from 'src/constants.js'
 import { fetchAudioBufferRaw } from 'src/utils.js'
 import { addSource } from 'src/actions/sources.actions.js'
-import { storeSourceAudioBuffer, storeSourceRawData, getSourceRawData } from 'src/audio/engine.js'
+import { storeSourceAudioBuffer, storeSourceRawData } from 'src/audio/engine.js'
 import { Dropzone, ActionIcon } from 'src/components/SourceUploader.style.js'
 import { PaddedFormControl, PanelContents } from 'src/styles/elements.js'
 
