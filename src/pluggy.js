@@ -111,7 +111,6 @@ export const exhibition = {
   // isPublished: false,
 }
 
-export let ownerId = ''
 export let exhibitionTags = []
 export let exhibitionMetadata = []
 
@@ -138,7 +137,6 @@ function getExhibitionCallback(responseText) {
   console.log(response)
   if (response.success) {
     exhibition.ownerId = response.data.owner._id
-    ownerId = response.data.owner._id
 
     exhibition.title = response.data.title
 
