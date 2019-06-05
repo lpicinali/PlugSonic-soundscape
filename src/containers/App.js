@@ -13,14 +13,14 @@ import { importListener } from 'src/actions/listener.actions.js'
 import { importRoom } from 'src/actions/room.actions.js'
 import { importSources } from 'src/actions/sources.actions.js'
 
-// import {
-//   Button,
-//   Dialog,
-//   DialogActions,
-//   DialogContent,
-//   DialogContentText,
-//   DialogTitle,
-// } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core'
 
 class App extends Component {
 
@@ -49,30 +49,30 @@ class App extends Component {
   render() {
     return (
       <AppContainer>
-        {/* <Dialog
+        <Dialog
           open={this.state.isDisclaimerOpen}
-          >
+        >
           <DialogTitle>Disclaimer</DialogTitle>
 
           <DialogContent>
             <DialogContentText>
-          WARNING: This application might result in very loud audio levels,
-          which can cause damage to your hearing, especially if you are wearing headphones.
-          Please ensure you take caution and keep your headphones volume low.
+              WARNING: This application might result in very loud audio levels,
+              which can cause damage to your hearing, especially if you are wearing headphones.
+              Please ensure you take caution and keep your headphones volume low.
             </DialogContentText>
           </DialogContent>
 
           <DialogActions>
             <Button
-          variant="contained"
-          color="primary"
-          onClick={() => this.setState({ isDisclaimerOpen: false })}
+              variant="contained"
+              color="primary"
+              onClick={() => this.setState({ isDisclaimerOpen: false })}
             >
-          Understood
+              Understood
             </Button>
           </DialogActions>
-          </Dialog>
-        */}
+        </Dialog>
+        
         <Nav>
           <NavControls />
         </Nav>
