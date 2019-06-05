@@ -28,7 +28,10 @@ class App extends Component {
     isDisclaimerOpen: true
   }
   componentDidMount() {
-    if ( exhibition !== {} ) {
+    if (
+      Object.keys(exhibition).length !== 0 &&
+      exhibition.constructor === Object
+    ) {
       this.props.onImportExhibition(
         exhibition.description,
         exhibition.id,

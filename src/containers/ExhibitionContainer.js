@@ -15,10 +15,14 @@ import {
 } from '@material-ui/core'
 
 import {
+  setTitle,
+  setDescription,
+} from 'src/actions/exhibition.actions.js'
+import {
   API,
   exhibitionId,
-  exhibitionTitle,
-  exhibitionDescription,
+  // exhibitionTitle,
+  // exhibitionDescription,
   exhibitionTags,
   httpPostAsync,
   httpPutAsync,
@@ -42,8 +46,8 @@ const ChipWrapper = styled.div`
 /* ========================================================================== */
 class ExhibitionContainer extends Component {
   state = {
-    exhibitionTitle: exhibitionTitle,
-    exhibitionDescription: exhibitionDescription,
+    // exhibitionTitle: exhibitionTitle,
+    // exhibitionDescription: exhibitionDescription,
     exhibitionNewTag: '',
     exhibitionTags: exhibitionTags,
     exhibitionId: exhibitionId,
@@ -65,9 +69,9 @@ class ExhibitionContainer extends Component {
     console.log(soundscape)
     // exhibition object
     const exhibition = {
-      title: this.state.exhibitionTitle,
+      title: this.props.exhibition.title,
       public: false,
-      description: this.state.exhibitionDescription,
+      description: this.props.exhibition.description,
       metadata: soundscape,
       tags: this.state.exhibitionTags.map(tag => tag.label),
       type: 'soundscape',
@@ -99,9 +103,9 @@ class ExhibitionContainer extends Component {
 
     // exhibition object
     const exhibition = {
-      title: this.state.exhibitionTitle,
+      title: this.props.exhibition.title,
       public: this.state.exhibitionPublic,
-      description: this.state.exhibitionDescription,
+      description: this.props.exhibition.description,
       metadata: soundscape,
       tags: this.state.exhibitionTags.map(tag => tag.label),
       type: 'soundscape',
@@ -164,9 +168,9 @@ class ExhibitionContainer extends Component {
     const id = event.target.id
     const val = event.target.value
     if (id === 'exhibitionTitle') {
-      this.setState({ ...this.state, exhibitionTitle: val })
+      this.props.onSetTitle(val)
     } else if (id === 'exhibitionDescription') {
-      this.setState({ ...this.state, exhibitionDescription: val })
+      this.props.onSetDescription(val)
     } else if (id === 'exhibitionNewTag') {
       this.setState({ ...this.state, exhibitionNewTag: val })
     }
@@ -202,7 +206,7 @@ class ExhibitionContainer extends Component {
           id="exhibitionTitle"
           type="text"
           fullWidth
-          value={this.state.exhibitionTitle}
+          value={this.props.exhibition.title}
           label="Title*"
           onChange={this.handleTextFieldChange}
         />
@@ -211,7 +215,7 @@ class ExhibitionContainer extends Component {
           id="exhibitionDescription"
           type="text"
           fullWidth
-          value={this.state.exhibitionDescription}
+          value={this.props.exhibition.description}
           label="Description*"
           multiline
           rows={2}
@@ -245,7 +249,7 @@ class ExhibitionContainer extends Component {
             variant="contained"
             color="primary"
             fullWidth
-            disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
+            disabled={this.props.exhibition.title === '' || this.props.exhibition.description === ''}
             onClick={this.handleSaveExhibition}
           >
             SAVE
@@ -279,7 +283,7 @@ class ExhibitionContainer extends Component {
             variant="contained"
             color="primary"
             fullWidth
-            disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
+            disabled={this.props.exhibition.title === '' || this.props.exhibition.description === ''}
             onClick={this.handlePublishExhibition}
           >
             {this.state.isPublished ? 'UNPUBLISH':'PUBLISH'}
@@ -313,20 +317,27 @@ class ExhibitionContainer extends Component {
 }
 
 ExhibitionContainer.propTypes = {
-  // sources: PropTypes.object.isRequired,
-  // onAddSource: PropTypes.func.isRequired,
+  exhibition: PropTypes.object.isRequired,
   listener: PropTypes.object.isRequired,
   room: PropTypes.object.isRequired,
   sources: PropTypes.object.isRequired,
+  onSetDescription: PropTypes.func.isRequired,
+  onSetTitle: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
+  exhibition: state.exhibition,
   listener: state.listener,
   room: state.room,
   sources: state.sources.sources,
 })
 
+const mapDispatchToProps = dispatch => ({
+  onSetDescription: description => dispatch(setDescription(description)),
+  onSetTitle: title => dispatch(setTitle(title)),
+})
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(ExhibitionContainer)
