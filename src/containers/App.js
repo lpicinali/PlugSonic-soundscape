@@ -7,19 +7,20 @@ import { AppContainer, Nav } from 'src/containers/App.style'
 import NavControls from 'src/containers/NavControls'
 import SoundscapeInterface from 'src/containers/SoundscapeInterface'
 
-import { importSources } from 'src/actions/sources.actions'
-import { importListener } from 'src/actions/listener.actions'
-import { importRoom } from 'src/actions/room.actions'
-import { exhibitionMetadata } from 'src/pluggy'
+import { exhibition } from 'src/pluggy'
+import { importExhibition } from 'src/actions/exhibition.actions.js'
+import { importListener } from 'src/actions/listener.actions.js'
+import { importRoom } from 'src/actions/room.actions.js'
+import { importSources } from 'src/actions/sources.actions.js'
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@material-ui/core'
+// import {
+//   Button,
+//   Dialog,
+//   DialogActions,
+//   DialogContent,
+//   DialogContentText,
+//   DialogTitle,
+// } from '@material-ui/core'
 
 class App extends Component {
 
@@ -27,10 +28,18 @@ class App extends Component {
     isDisclaimerOpen: true
   }
   componentDidMount() {
-    if (exhibitionMetadata.length !== 0){
-      this.props.onImportSources(exhibitionMetadata.sources)
-      this.props.onImportListener(exhibitionMetadata.listener)
-      this.props.onImportRoom(exhibitionMetadata.room)
+    if ( exhibition !== {} ) {
+      this.props.onImportExhibition(
+        exhibition.description,
+        exhibition.id,
+        exhibition.ownerId,
+        exhibition.tags,
+        exhibition.title,
+        exhibition.isPublished,
+      )
+      this.props.onImportListener(exhibition.metadata.listener)
+      this.props.onImportRoom(exhibition.metadata.room)
+      this.props.onImportSources(exhibition.metadata.sources)
     }
   }
 
@@ -74,15 +83,18 @@ class App extends Component {
 }
 
 App.propTypes = {
-  onImportSources: PropTypes.func.isRequired,
+  onImportExhibition: PropTypes.func.isRequired,
   onImportListener: PropTypes.func.isRequired,
   onImportRoom: PropTypes.func.isRequired,
+  onImportSources: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = dispatch => ({
-  onImportSources: sources => dispatch(importSources(sources)),
   onImportListener: listener => dispatch(importListener(listener)),
   onImportRoom: room => dispatch(importRoom(room)),
+  onImportSources: sources => dispatch(importSources(sources)),
+  onImportExhibition: (description, id, ownerId, tags, title, isPublished) =>
+    dispatch(importExhibition(description, id, ownerId, tags, title, isPublished))
 })
 
 export default connect(null, mapDispatchToProps)(App)

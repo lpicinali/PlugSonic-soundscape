@@ -22,7 +22,7 @@ import { SourceOrigin } from 'src/constants'
 import { fetchAudioBuffer } from 'src/utils'
 import {
   API,
-  userId,
+  ownerId,
   httpHintAsync,
   httpGetAsync,
 } from 'src/pluggy.js'
@@ -173,7 +173,7 @@ class SearchAssetContainer extends Component {
     let query = `${API}/search?q=${this.state.searchTextFieldValue}&type=audio&limit=1000`
 
     if (this.state.myAssets) {
-      query = `${query}&user=${userId}`
+      query = `${query}&user=${ownerId}`
     }
 
     query=`${query}&sort=${this.state.orderBy}`
