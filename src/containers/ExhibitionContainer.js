@@ -15,11 +15,13 @@ import {
 } from '@material-ui/core'
 
 import {
+  setDescription,
+  setPublished,
+  setTags,
+  setTitle,
+} from 'src/actions/exhibition.actions.js'
+import {
   API,
-  exhibitionId,
-  exhibitionTitle,
-  exhibitionDescription,
-  exhibitionTags,
   httpPostAsync,
   httpPutAsync,
   sessionToken,
@@ -42,34 +44,29 @@ const ChipWrapper = styled.div`
 /* ========================================================================== */
 class ExhibitionContainer extends Component {
   state = {
-    exhibitionTitle: exhibitionTitle,
-    exhibitionDescription: exhibitionDescription,
     exhibitionNewTag: '',
-    exhibitionTags: exhibitionTags,
-    exhibitionId: exhibitionId,
     isSaveDialogOpen: false,
     saveDialogText: '',
     isPublishDialogOpen: false,
     publishDialogText: '',
-    isPublished: false,
   }
 
   createExhibition = () => {
     // soundscape object
     const soundscape = {
-      sources: this.props.sources,
       listener: this.props.listener,
       room: this.props.room,
+      sources: this.props.sources,
     }
     console.log('CREATE')
     console.log(soundscape)
     // exhibition object
     const exhibition = {
-      title: this.state.exhibitionTitle,
-      public: false,
-      description: this.state.exhibitionDescription,
+      description: this.props.exhibition.description,
       metadata: soundscape,
-      tags: this.state.exhibitionTags.map(tag => tag.label),
+      public: false,
+      tags: this.props.exhibition.tags.map(tag => tag.label),
+      title: this.props.exhibition.title,
       type: 'soundscape',
     }
     httpPostAsync(
@@ -84,30 +81,30 @@ class ExhibitionContainer extends Component {
   createExhibitionCallback = responseText => {
     const createdExhibition = JSON.parse(responseText)
     console.log(createdExhibition)
-    this.state.exhibitionId = createdExhibition.data._id
+    this.props.exhibition.id = createdExhibition.data._id
   }
 
   updateExhibition = () => {
     // soundscape object
     const soundscape = {
-      sources: this.props.sources,
       listener: this.props.listener,
       room: this.props.room,
+      sources: this.props.sources,
     }
 
     soundscape.sources = map(soundscape.sources, source => source)
 
     // exhibition object
     const exhibition = {
-      title: this.state.exhibitionTitle,
-      public: this.state.exhibitionPublic,
-      description: this.state.exhibitionDescription,
+      description: this.props.exhibition.description,
       metadata: soundscape,
-      tags: this.state.exhibitionTags.map(tag => tag.label),
+      public: this.state.exhibitionPublic,
+      tags: this.props.exhibition.tags.map(tag => tag.label),
+      title: this.props.exhibition.title,
       type: 'soundscape',
     }
 
-    httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.updateExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
+    httpPutAsync(`${API}/exhibitions/${this.props.exhibition.id}`, this.updateExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
   }
 
   updateExhibitionCallback = responseText => {
@@ -127,7 +124,7 @@ class ExhibitionContainer extends Component {
   }
 
   handleSaveExhibition = () => {
-    if (this.state.exhibitionId) {
+    if (this.props.exhibition.id) {
       this.updateExhibition()
     } else {
       this.createExhibition()
@@ -137,10 +134,10 @@ class ExhibitionContainer extends Component {
   handlePublishExhibition = () => {
     // exhibition object
     const exhibition = {
-      public: !this.state.isPublished,
+      public: !this.props.exhibition.isPublished,
     }
 
-    httpPutAsync(`${API}/exhibitions/${this.state.exhibitionId}`, this.publishExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
+    httpPutAsync(`${API}/exhibitions/${this.props.exhibition.id}`, this.publishExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
   }
 
   publishExhibitionCallback = (responseText) => {
@@ -149,24 +146,25 @@ class ExhibitionContainer extends Component {
     if (publishExhibition.success) {
       this.setState({
         isPublishDialogOpen: true,
-        publishDialogText: this.state.isPublished ? 'Unpublish Exhibition Successfull':'Publish Exhibition Successfull'
+        publishDialogText: this.props.exhibition.isPublished ? 'Unpublish Exhibition Successfull':'Publish Exhibition Successfull'
       })
+      this.props.onSetPublished(publishExhibition.data.public)
     } else {
       this.setState({
         isPublishDialogOpen: true,
-        publishDialogText: this.state.isPublished ? 'Unpublish Exhibition Unsuccessfull. Try Again.':'Publish Exhibition Unuccessfull. Try Again'
+        publishDialogText: this.props.exhibition.isPublished ? 'Unpublish Exhibition Unsuccessfull. Try Again.':'Publish Exhibition Unuccessfull. Try Again'
       })
+      this.props.onSetPublished(publishExhibition.data.public)
     }
-    this.setState({isPublished: !this.state.isPublished})
   }
 
   handleTextFieldChange = (event) => {
     const id = event.target.id
     const val = event.target.value
     if (id === 'exhibitionTitle') {
-      this.setState({ ...this.state, exhibitionTitle: val })
+      this.props.onSetTitle(val)
     } else if (id === 'exhibitionDescription') {
-      this.setState({ ...this.state, exhibitionDescription: val })
+      this.props.onSetDescription(val)
     } else if (id === 'exhibitionNewTag') {
       this.setState({ ...this.state, exhibitionNewTag: val })
     }
@@ -175,23 +173,23 @@ class ExhibitionContainer extends Component {
   handleKeyUp = e => {
     if (e.keyCode === 13) {
       e.preventDefault()
-      const tags = this.state.exhibitionTags
+      const tags = this.props.exhibition.tags
       const newTagKey = tags.length
       const newTagLabel = e.target.value
       tags.push({ key: newTagKey, label: newTagLabel })
       this.setState({
         ...this.state,
         exhibitionNewTag: '',
-        exhibitionTags: tags,
       })
+      this.props.onSetTags(tags)
     }
   }
 
   handleRequestDelete = key => {
-    const tags = this.state.exhibitionTags
+    const tags = this.props.exhibition.tags
     const tagToDelete = tags.map(tag => tag.key).indexOf(key)
     tags.splice(tagToDelete, 1)
-    this.setState({ ...this.state, exhibitionTags: tags })
+    this.props.onSetTags(tags)
   }
 
   /* ------------------------------------------------------------------------ */
@@ -202,7 +200,7 @@ class ExhibitionContainer extends Component {
           id="exhibitionTitle"
           type="text"
           fullWidth
-          value={this.state.exhibitionTitle}
+          value={this.props.exhibition.title}
           label="Title*"
           onChange={this.handleTextFieldChange}
           disabled
@@ -212,7 +210,7 @@ class ExhibitionContainer extends Component {
           id="exhibitionDescription"
           type="text"
           fullWidth
-          value={this.state.exhibitionDescription}
+          value={this.props.exhibition.description}
           label="Description*"
           multiline
           rows={2}
@@ -233,7 +231,7 @@ class ExhibitionContainer extends Component {
         /> */}
 
         <ChipWrapper>
-          {this.state.exhibitionTags.map(tag => (
+          {this.props.exhibition.tags.map(tag => (
             <Chip
               key={tag.key}
               label={tag.label}
@@ -249,7 +247,7 @@ class ExhibitionContainer extends Component {
             variant="contained"
             color="primary"
             fullWidth
-            disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
+            disabled={this.props.exhibition.title === '' || this.props.exhibition.description === ''}
             onClick={this.handleSaveExhibition}
           >
             SAVE
@@ -284,10 +282,10 @@ class ExhibitionContainer extends Component {
             variant="contained"
             color="primary"
             fullWidth
-            disabled={this.state.exhibitionTitle === '' || this.state.exhibitionDescription === ''}
+            disabled={this.props.exhibition.title === '' || this.props.exhibition.description === ''}
             onClick={this.handlePublishExhibition}
           >
-            {this.state.isPublished ? 'UNPUBLISH':'PUBLISH'}
+            {this.props.exhibition.isPublished ? 'UNPUBLISH':'PUBLISH'}
           </Button>
 
           <Dialog
@@ -318,20 +316,31 @@ class ExhibitionContainer extends Component {
 }
 
 ExhibitionContainer.propTypes = {
-  // sources: PropTypes.object.isRequired,
-  // onAddSource: PropTypes.func.isRequired,
+  exhibition: PropTypes.object.isRequired,
   listener: PropTypes.object.isRequired,
   room: PropTypes.object.isRequired,
   sources: PropTypes.object.isRequired,
+  onSetDescription: PropTypes.func.isRequired,
+  onSetPublished: PropTypes.func.isRequired,
+  onSetTags: PropTypes.func.isRequired,
+  onSetTitle: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
+  exhibition: state.exhibition,
   listener: state.listener,
   room: state.room,
   sources: state.sources.sources,
 })
 
+const mapDispatchToProps = dispatch => ({
+  onSetDescription: description => dispatch(setDescription(description)),
+  onSetPublished: isPublished => dispatch(setPublished(isPublished)),
+  onSetTags: tags => dispatch(setTags(tags)),
+  onSetTitle: title => dispatch(setTitle(title)),
+})
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(ExhibitionContainer)

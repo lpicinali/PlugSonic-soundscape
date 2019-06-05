@@ -81,13 +81,13 @@ const url = new URL((window.location !== window.parent.location)
             ? document.referrer
             : document.location.href)
 const hostname = url.hostname
-console.log('HOSTNAME')
-console.log(hostname)
+// console.log('HOSTNAME')
+// console.log(hostname)
 
 export let API
 // eslint-disable-next-line
 export const sessionToken = Pluggy.getToken()
-// export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU1OTYzNzE1OSwiZXhwIjoxNTU5NzIzNTU5fQ.Rv-tEfVA7u6vEopJqi5cs-fRU4SOmY6YjbEET5HQyl4"
+// export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU1OTcyODEwNiwiZXhwIjoxNTU5ODE0NTA2fQ.Dnd7q7gJ0LKbAF9lY2XvylVQiTKOxOZN_2yeEN_wr1U"
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
@@ -101,46 +101,49 @@ console.log('API SETTING:')
 console.log(API)
 
 // =================== RETRIEVE EXHIBITION ============================= //
-export let userId = ''
-export let exhibitionTitle = ''
-export let exhibitionDescription = ''
-export let exhibitionTags = []
-export let exhibitionMetadata = []
-
-export let exhibitionQuery
-export let exhibitionId
+export const exhibition = {
+  // description: '',
+  // id: '',
+  // metadata: {},
+  // ownerId: '',
+  // tags: [],
+  // title: '',
+  // isPublished: false,
+}
 
 if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
-  exhibitionQuery = window.location.search.substring(1)
-  console.log('EXHIBITION QUERY')
-  console.log(exhibitionQuery)
-  exhibitionId = getQueryVariable(exhibitionQuery,'exhibitionId')
+  const exhibitionQuery = window.location.search.substring(1)
+  // console.log('EXHIBITION QUERY')
+  // console.log(exhibitionQuery)
+  exhibition.id = getQueryVariable(exhibitionQuery,'exhibitionId')
   console.log('EXHIBITION ID')
-  console.log(exhibitionId)
-  httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+  console.log(exhibition.id)
+  httpGetSync(`${API}/exhibitions/${exhibition.id}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 }
 
 // if (hostname === "localhost") {
-//   exhibitionId = '5ced59255c7b4a36a9660447'
+//   exhibition.id = "5cf63b3f96dc6b8929652f27"
 //   console.log('EXHIBITION ID')
-//   console.log(exhibitionId)
-//   httpGetSync(`${API}/exhibitions/${exhibitionId}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+//   console.log(exhibition.id)
+//   httpGetSync(`${API}/exhibitions/${exhibition.id}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 // }
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
-  console.log('RETRIEVE EXHIBITION RESPONSE')
-  console.log(response)
+  // console.log('RETRIEVE EXHIBITION RESPONSE')
+  // console.log(response)
   if (response.success) {
-    userId = response.data.owner._id
-    exhibitionTitle = response.data.title
-    exhibitionDescription = response.data.description
-    exhibitionTags = response.data.tags.map((tag,index) => (
+    exhibition.description = response.data.description
+    exhibition.isPublished = response.data.public
+    exhibition.metadata = response.data.metadata
+    exhibition.ownerId = response.data.owner._id
+    exhibition.tags = response.data.tags.map((tag,index) => (
       {key: index, label: tag}
     ))
-    exhibitionMetadata = response.data.metadata
+    exhibition.title = response.data.title
+
     console.log('RETRIEVE SUCCESSFUL')
-    console.log(exhibitionMetadata)
+    console.log(exhibition)
   } else {
     console.log('RETRIEVE FAILED')
   }
