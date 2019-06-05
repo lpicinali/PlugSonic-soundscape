@@ -111,7 +111,6 @@ export const exhibition = {
   // isPublished: false,
 }
 
-export let exhibitionTags = []
 export let exhibitionMetadata = []
 
 if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
@@ -136,21 +135,14 @@ function getExhibitionCallback(responseText) {
   console.log('RETRIEVE EXHIBITION RESPONSE')
   console.log(response)
   if (response.success) {
-    exhibition.ownerId = response.data.owner._id
-
-    exhibition.title = response.data.title
-
     exhibition.description = response.data.description
-
+    exhibition.isPublished = response.data.public
+    exhibition.metadata = response.data.metadata
+    exhibition.ownerId = response.data.owner._id
     exhibition.tags = response.data.tags.map((tag,index) => (
       {key: index, label: tag}
     ))
-    exhibitionTags = response.data.tags.map((tag,index) => (
-      {key: index, label: tag}
-    ))
-
-    exhibition.metadata = response.data.metadata
-    exhibitionMetadata = response.data.metadata
+    exhibition.title = response.data.title
 
     console.log('RETRIEVE SUCCESSFUL')
     console.log(exhibition)
