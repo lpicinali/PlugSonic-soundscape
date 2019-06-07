@@ -32,17 +32,36 @@ class App extends Component {
       Object.keys(exhibition).length !== 0 &&
       exhibition.constructor === Object
     ) {
-      this.props.onImportExhibition(
-        exhibition.description,
-        exhibition.id,
-        exhibition.ownerId,
-        exhibition.tags,
-        exhibition.title,
-        exhibition.isPublished,
-      )
-      this.props.onImportListener(exhibition.metadata.listener)
-      this.props.onImportRoom(exhibition.metadata.room)
-      this.props.onImportSources(exhibition.metadata.sources)
+
+      if (
+        exhibition.description &&
+        exhibition.id &&
+        exhibition.ownerId &&
+        exhibition.tags &&
+        exhibition.title &&
+        (exhibition.isPublished === true || exhibition.isPublished === false)
+      ) {
+        this.props.onImportExhibition(
+          exhibition.description,
+          exhibition.id,
+          exhibition.ownerId,
+          exhibition.tags,
+          exhibition.title,
+          exhibition.isPublished,
+        )
+      }
+
+      if (exhibition.metadata.listener){
+        this.props.onImportListener(exhibition.metadata.listener)
+      }
+
+      if (exhibition.metadata.room){
+        this.props.onImportRoom(exhibition.metadata.room)
+      }
+
+      if (exhibition.metadata.sources){
+        this.props.onImportSources(exhibition.metadata.sources)
+      }
     }
   }
 
@@ -72,7 +91,7 @@ class App extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-        
+
         <Nav>
           <NavControls />
         </Nav>
