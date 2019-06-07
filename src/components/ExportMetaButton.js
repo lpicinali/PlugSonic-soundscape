@@ -49,7 +49,7 @@ class ExportMetaButton extends Component {
 
       const json = JSON.stringify(soundscape, null, 2)
       const blob = new File([json], { type: 'application/json' })
-      FileSaver.saveAs(blob, 'soundscape_meta.json')
+      FileSaver.saveAs(blob, 'soundscape_meta.soundscape')
     }
 
     this.setState({isExportDialogOpen: false})
