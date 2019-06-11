@@ -213,7 +213,7 @@ class ExhibitionContainer extends Component {
           label="Description*"
           multiline
           rows={2}
-          rowsMax={4}
+          rowsMax={8}
           onChange={this.handleTextFieldChange}
         />
 
