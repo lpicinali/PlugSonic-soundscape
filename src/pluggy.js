@@ -86,8 +86,8 @@ const hostname = url.hostname
 
 export let API
 // eslint-disable-next-line
-export const sessionToken = Pluggy.getToken()
-// export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU1OTcyODEwNiwiZXhwIjoxNTU5ODE0NTA2fQ.Dnd7q7gJ0LKbAF9lY2XvylVQiTKOxOZN_2yeEN_wr1U"
+// export const sessionToken = Pluggy.getToken()
+export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MDI2MDIxNiwiZXhwIjoxNTYwMzQ2NjE2fQ.c47ZWvXfwUF2vtAY5sXzi1KjQ3JRxbwBkb5gDj0TtNc"
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
@@ -121,12 +121,12 @@ if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
   httpGetSync(`${API}/exhibitions/${exhibition.id}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
 }
 
-// if (hostname === "localhost") {
-//   exhibition.id = "5cf63b3f96dc6b8929652f27"
-//   console.log('EXHIBITION ID')
-//   console.log(exhibition.id)
-//   httpGetSync(`${API}/exhibitions/${exhibition.id}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
-// }
+if (hostname === "localhost") {
+  exhibition.id = "5cf63b3f96dc6b8929652f27"
+  console.log('EXHIBITION ID')
+  console.log(exhibition.id)
+  httpGetSync(`${API}/exhibitions/${exhibition.id}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+}
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)

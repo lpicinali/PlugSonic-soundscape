@@ -8,8 +8,8 @@ import { clamp, values } from 'lodash'
 import { RoomShape } from 'src/constants.js'
 import { setListenerPosition } from 'src/actions/listener.actions'
 /* ========================================================================== */
-const METERS_PER_STEP = 0.25
-const RADIANS_PER_STEP = Math.PI / 32
+const METERS_PER_STEP = 0.2
+const RADIANS_PER_STEP = Math.PI / 28
 /* ========================================================================== */
 const Listener = styled.div`
   position: absolute;

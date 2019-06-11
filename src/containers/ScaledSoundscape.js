@@ -72,7 +72,13 @@ class ScaledSoundscape extends Component {
     const viewportResolution = viewportWidth / roomWidth
     const relativeScale = viewportResolution / PIXELS_PER_METER
 
-    const sourceSize = relativeScale * SOURCE_SIZE_METERS * PIXELS_PER_METER
+    let sourceSize = relativeScale * SOURCE_SIZE_METERS * PIXELS_PER_METER
+    if (sourceSize > 50) {
+      sourceSize = 50
+    }
+    if (sourceSize < 15) {
+      sourceSize = 15
+    }
 
     const viewportLeft =
       roomRatio >= containerRatio ? rect.left : rect.left + (size.width - viewportWidth) / 2
@@ -107,8 +113,8 @@ class ScaledSoundscape extends Component {
           </div> */}
 
           <ListenerRenderer
-            iconWidth={sourceSize*2}
-            iconHeight={sourceSize*2}
+            iconWidth={sourceSize*1.4}
+            iconHeight={sourceSize*1.4}
             containerSize={{width: viewportWidth, height: viewportHeight}}
             containerRect={{top: viewportTop, bottom: viewportBottom, left: viewportLeft, right: viewportRight}}
           />
