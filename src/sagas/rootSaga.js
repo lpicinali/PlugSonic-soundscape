@@ -42,6 +42,7 @@ import {
   storeSourceRawData,
   getSourceRawData,
   subscribeToSourceStart,
+  subscribeToSourceEnd,
 } from 'src/audio/engine.js'
 
 function isWithinReach(listener, source) {
@@ -565,13 +566,6 @@ function* updateSourcesTimingStatus() {
   while (true) {
     const { source } = yield call(callbackSource.nextMessage)
 
-    // If a non-looping source ended, update its playing state
-    // and stop the audio node
-    if (source.loop === false) {
-      yield call(stopSource, source)
-      yield put(setSourceIsPlaying(source.name, false))
-    }
-
     const playbackState = yield select(state => state.controls.playbackState)
     const dependants = yield select(state =>
       Object.values(state.sources.sources).filter(
@@ -589,6 +583,24 @@ function* updateSourcesTimingStatus() {
           )
         }
       }
+    }
+  }
+}
+
+function* setEndedSourcesAsNotPlaying() {
+  const callbackSource = yield call(
+    createSubscriptionSource,
+    subscribeToSourceEnd
+  )
+
+  while (true) {
+    const { source } = yield call(callbackSource.nextMessage)
+
+    // If a non-looping source ended, update its playing state
+    // and stop the audio node
+    if (source.loop === false) {
+      yield call(stopSource, source)
+      yield put(setSourceIsPlaying(source.name, false))
     }
   }
 }
@@ -708,6 +720,7 @@ export default function* rootSaga() {
     applySourcePlaybackState(),
     conditionallyResetTimings(),
     updateSourcesTimingStatus(),
+    setEndedSourcesAsNotPlaying(),
     applySpatialisedChanges(),
     allowOnlyOneSourceToBeSelected(),
     resetFocusedSourceItemWhenLeavingSourceTab(),

@@ -67,6 +67,9 @@ export const createSourceAudioChain = source => {
   const audioBuffer = sourceAudioBuffers[source.name]
   const node = createSourceAudioNode(audioBuffer)
   node.loop = source.loop
+  node.onended = () => {
+    notifySourceEnded(source)
+  }
 
   const volume = context.createGain()
   const reachGain = context.createGain()
@@ -270,14 +273,23 @@ export const setSourceLoop = (name, loop) => {
 /* ======================================================================== */
 // EVENTS
 /* ======================================================================== */
-const listeners = []
+const startListeners = []
+const endListeners = []
 
 export const subscribeToSourceStart = listener => {
-  listeners.push(listener)
+  startListeners.push(listener)
 }
 
 const notifySourceStarted = source => {
-  listeners.forEach(listener => listener({ source }))
+  startListeners.forEach(listener => listener({ source }))
+}
+
+export const subscribeToSourceEnd = listener => {
+  endListeners.push(listener)
+}
+
+const notifySourceEnded = source => {
+  endListeners.forEach(listener => listener({ source }))
 }
 
 /* ======================================================================== */
