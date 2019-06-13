@@ -133,12 +133,14 @@ function* manageAddSource() {
     if (source.origin === SourceOrigin.REMOTE) {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
     } else if (
-        source.origin === SourceOrigin.LOCAL &&
-        getSourceRawData(source.name) === undefined
-      ) {
+      source.origin === SourceOrigin.LOCAL &&
+      getSourceRawData(source.name) === undefined
+    ) {
       yield spawn(fetchAndStoreRawData(source.name, payload.raw))
     } else {
-      console.log('rootSaga -> manageAddSource: source uploaded from local, bypass fecth audio buffer')
+      console.log(
+        'rootSaga -> manageAddSource: source uploaded from local, bypass fecth audio buffer'
+      )
     }
 
     if (
@@ -194,12 +196,9 @@ function* manageImportSources() {
 
     // Add the new ones
     for (let i = 0; i < sources.length; i++) {
-      if (sources[i].raw !== null ) {
+      if (sources[i].raw !== null) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
-      } else if (
-        sources[i].raw === null &&
-        sources[i].url !== null
-        ) {
+      } else if (sources[i].raw === null && sources[i].url !== null) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
       } else {
         console.log('rootSaga -> manageImportSources: json not valid')
@@ -475,8 +474,7 @@ function* applySourceReachChangesAffectingPlayback() {
 
     if (type === ActionType.SET_SOURCE_REACH_ENABLED) {
       const isReached =
-        source.reach.enabled === false ||
-        source.gameplay.isWithinReach === true
+        source.reach.enabled === false || source.gameplay.isWithinReach === true
       yield put(setSourceIsPlaying(source.name, isReached))
     } else if (type === ActionType.SET_SOURCE_IS_WITHIN_REACH) {
       if (source.reach.enabled === true) {

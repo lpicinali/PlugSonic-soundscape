@@ -82,7 +82,7 @@ const SourceControlsContent = styled(PanelContents)`
 `
 
 function getRelativeDecibelsVolume(gain, minDecibels = -60) {
-  return 1 - (gainToDecibels(gain) / minDecibels)
+  return 1 - gainToDecibels(gain) / minDecibels
 }
 
 /**
@@ -99,7 +99,7 @@ class SourcePanel extends PureComponent {
 
   $item = null
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = prevProps => {
     const { focusedItem, sourceObject } = this.props
 
     if (
@@ -179,7 +179,9 @@ class SourcePanel extends PureComponent {
             <Switch
               color="primary"
               checked={sourceObject.enabled}
-              onChange={(evt, isEnabled) => onSourceOnOff(sourceObject.name, isEnabled)}
+              onChange={(evt, isEnabled) =>
+                onSourceOnOff(sourceObject.name, isEnabled)
+              }
             />
           }
         />
@@ -189,7 +191,12 @@ class SourcePanel extends PureComponent {
     nestedItems.push(
       <FieldGroup key={`${sourceObject.name}-volume`}>
         <div>
-          <SliderValue>{forceDecimals(getRelativeDecibelsVolume(sourceObject.volume, -60), 2)}</SliderValue>
+          <SliderValue>
+            {forceDecimals(
+              getRelativeDecibelsVolume(sourceObject.volume, -60),
+              2
+            )}
+          </SliderValue>
           <H3>Volume</H3>
         </div>
         <SliderBox>
@@ -197,7 +204,9 @@ class SourcePanel extends PureComponent {
             min={-60}
             max={0}
             value={gainToDecibels(sourceObject.volume)}
-            onChange={(event, value) => this.handleSourceVolume(decibelsToGain(value))}
+            onChange={(event, value) =>
+              this.handleSourceVolume(decibelsToGain(value))
+            }
           />
         </SliderBox>
       </FieldGroup>
@@ -376,7 +385,7 @@ class SourcePanel extends PureComponent {
           style={{ width: '100%' }}
           displayEmpty
           value={sourceObject.timings[PlaybackTiming.PLAY_AFTER] || ''}
-          onChange={(evt) =>
+          onChange={evt =>
             onSourceTimingChange(
               sourceObject.name,
               PlaybackTiming.PLAY_AFTER,
@@ -384,7 +393,9 @@ class SourcePanel extends PureComponent {
             )
           }
         >
-          <MenuItem value=""><em>None</em></MenuItem>
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
 
           {sources
             .filter(source => source.name !== sourceObject.name)
@@ -439,9 +450,7 @@ class SourcePanel extends PureComponent {
           </DialogContent>
 
           <DialogActions>
-            <Button
-              onClick={() => this.handleSourceDeletionResponse(false)}
-            >
+            <Button onClick={() => this.handleSourceDeletionResponse(false)}>
               No
             </Button>
 
@@ -515,7 +524,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onSourceOnOff: (name, enabled) => dispatch(sourceOnOff(name, enabled)),
   onSourceDelete: name => dispatch(deleteSources([name])),
-  onSourceHiddenChange: (name, hidden) => dispatch(setSourceHidden(name, hidden)),
+  onSourceHiddenChange: (name, hidden) =>
+    dispatch(setSourceHidden(name, hidden)),
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
   onSourcePositionChange: (name, position) =>
     dispatch(setSourcePosition(name, position)),

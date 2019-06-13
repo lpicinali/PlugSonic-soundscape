@@ -21,7 +21,7 @@ export const addSource = ({
   selected,
   spatialised,
   volume,
-  raw
+  raw,
 }) => ({
   type: ActionType.ADD_SOURCE,
   payload: {
@@ -39,7 +39,7 @@ export const addSource = ({
     selected,
     spatialised,
     volume,
-    raw
+    raw,
   },
 })
 
@@ -133,7 +133,7 @@ export const setSourceIsWithinReach = (name, isWithinReach) => ({
 
 // Misc
 
-export const focusSourcePanelItem = (name) => ({
+export const focusSourcePanelItem = name => ({
   type: ActionType.FOCUS_SOURCE_PANEL_ITEM,
   payload: { name },
 })

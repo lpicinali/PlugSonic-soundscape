@@ -48,7 +48,7 @@ export const storeSourceRawData = (name, rawData) => {
 /**
  * Returns source's raw data
  */
-export const getSourceRawData = (name) => sourceRawData[name]
+export const getSourceRawData = name => sourceRawData[name]
 
 /* ======================================================================== */
 // AUDIO CHAIN
