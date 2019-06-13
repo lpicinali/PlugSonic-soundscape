@@ -50,7 +50,7 @@ class ExhibitionContainer extends Component {
     isPublishDialogOpen: false,
     publishDialogText: '',
   }
-
+  /* -------------------- CREATE EXHIBITION ------------------*/
   createExhibition = () => {
     // soundscape object
     const soundscape = {
@@ -58,8 +58,6 @@ class ExhibitionContainer extends Component {
       room: this.props.room,
       sources: this.props.sources,
     }
-    console.log('CREATE')
-    console.log(soundscape)
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,
@@ -69,6 +67,8 @@ class ExhibitionContainer extends Component {
       title: this.props.exhibition.title,
       type: 'soundscape',
     }
+    console.log('Create Exhibition...')
+    console.log(exhibition)
     httpPostAsync(
       `${API}/exhibitions`,
       this.createExhibitionCallback,
@@ -83,7 +83,7 @@ class ExhibitionContainer extends Component {
     console.log(createdExhibition)
     this.props.exhibition.id = createdExhibition.data._id
   }
-
+  /* -------------------- UPDATE EXHIBITION ------------------*/
   updateExhibition = () => {
     // soundscape object
     const soundscape = {
@@ -103,26 +103,36 @@ class ExhibitionContainer extends Component {
       title: this.props.exhibition.title,
       type: 'soundscape',
     }
-
-    httpPutAsync(`${API}/exhibitions/${this.props.exhibition.id}`, this.updateExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
+    console.log('Update Exhibition...')
+    console.log(exhibition)
+    httpPutAsync(
+      `${API}/exhibitions/${this.props.exhibition.id}`,
+      this.updateExhibitionCallback,
+      this.updateExhibitionErrorCallback,
+      JSON.stringify(exhibition),
+      sessionToken,
+      "application/json"
+    )
   }
 
   updateExhibitionCallback = responseText => {
     const updatedExhibition = JSON.parse(responseText)
     console.log(updatedExhibition)
-    if (updatedExhibition.success) {
-      this.setState({
-        isSaveDialogOpen: true,
-        saveDialogText: 'Save Exhibition Successfull'
-      })
-    } else {
-      this.setState({
-        isSaveDialogOpen: true,
-        saveDialogText: 'Save Exhibition Unsuccessfull. Try Again.'
-      })
-    }
+    this.setState({
+      isSaveDialogOpen: true,
+      saveDialogText: 'Save Exhibition Successfull'
+    })
   }
 
+  updateExhibitionErrorCallback = responseText => {
+    const updatedExhibition = JSON.parse(responseText)
+    console.log(updatedExhibition)
+    this.setState({
+      isSaveDialogOpen: true,
+      saveDialogText: 'Save Exhibition Unsuccessfull. Try Again.'
+    })
+  }
+  /* -------------------- SAVE EXHIBITION ------------------*/
   handleSaveExhibition = () => {
     if (this.props.exhibition.id) {
       this.updateExhibition()
@@ -131,33 +141,44 @@ class ExhibitionContainer extends Component {
     }
   }
 
+  /* -------------------- PUBLISH EXHIBITION ------------------*/
   handlePublishExhibition = () => {
     // exhibition object
     const exhibition = {
       public: !this.props.exhibition.isPublished,
     }
 
-    httpPutAsync(`${API}/exhibitions/${this.props.exhibition.id}`, this.publishExhibitionCallback, JSON.stringify(exhibition), sessionToken, "application/json")
+    httpPutAsync(
+      `${API}/exhibitions/${this.props.exhibition.id}`,
+      this.publishExhibitionCallback,
+      this.publishExhibitionErrorCallback,
+      JSON.stringify(exhibition),
+      sessionToken,
+      "application/json"
+    )
   }
 
   publishExhibitionCallback = (responseText) => {
     const publishExhibition = JSON.parse(responseText)
     console.log(publishExhibition)
-    if (publishExhibition.success) {
-      this.setState({
-        isPublishDialogOpen: true,
-        publishDialogText: this.props.exhibition.isPublished ? 'Unpublish Exhibition Successfull':'Publish Exhibition Successfull'
-      })
-      this.props.onSetPublished(publishExhibition.data.public)
-    } else {
-      this.setState({
-        isPublishDialogOpen: true,
-        publishDialogText: this.props.exhibition.isPublished ? 'Unpublish Exhibition Unsuccessfull. Try Again.':'Publish Exhibition Unuccessfull. Try Again'
-      })
-      this.props.onSetPublished(publishExhibition.data.public)
-    }
+    this.setState({
+      isPublishDialogOpen: true,
+      publishDialogText: this.props.exhibition.isPublished ? 'Unpublish Exhibition Successfull':'Publish Exhibition Successfull'
+    })
+    this.props.onSetPublished(publishExhibition.data.public)
   }
 
+  publishExhibitionErrorCallback = (responseText) => {
+    const publishExhibition = JSON.parse(responseText)
+    console.log(publishExhibition)
+    this.setState({
+      isPublishDialogOpen: true,
+      publishDialogText: this.props.exhibition.isPublished ? 'Unpublish Exhibition Unsuccessfull. Try Again.':'Publish Exhibition Unuccessfull. Try Again'
+    })
+    this.props.onSetPublished(publishExhibition.data.public)
+  }
+
+  /* -------------------- TAGS EXHIBITION ------------------*/
   handleTextFieldChange = (event) => {
     const id = event.target.id
     const val = event.target.value

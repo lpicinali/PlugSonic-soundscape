@@ -33,27 +33,30 @@ export function httpGetAsync(url, callback, token) {
 }
 
 export function httpGetSync(url, callback, errorCallback, token) {
-  const xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        callback(xhr.responseText)
+  const xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = () => {
+    if (xmlHttp.readyState === 4) {
+      if (xmlHttp.status === 200) {
+        callback(xmlHttp.responseText)
       } else {
-        errorCallback(xhr.responseText)
+        errorCallback(xmlHttp.responseText)
       }
     }
   }
-  xhr.open("GET", url, false) // true for asynchronous
+  xmlHttp.open("GET", url, false) // true for asynchronous
   if (token) {
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
   }
-  xhr.send(null);
+  xmlHttp.send(null);
 }
 
 export function httpPostAsync(url, callback, body, token, type) {
   const xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = () => {
-    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+    if (
+      xmlHttp.readyState === 4 &&
+      xmlHttp.status === 200
+    )
       callback(xmlHttp.responseText);
   }
   xmlHttp.open("POST", url, true); // true for asynchronous
@@ -63,11 +66,16 @@ export function httpPostAsync(url, callback, body, token, type) {
   xmlHttp.send(body);
 }
 
-export function httpPutAsync(url, callback, body, token, type) {
+export function httpPutAsync(url, callback, errorCallback, body, token, type) {
   const xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = () => {
-    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-      callback(xmlHttp.responseText);
+    if (xmlHttp.readyState === 4) {
+      if (xmlHttp.status === 200) {
+        callback(xmlHttp.responseText)
+      } else {
+        errorCallback(xmlHttp.responseText)
+      }
+    }
   }
   xmlHttp.open("PUT", url, true); // true for asynchronous
   xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -87,7 +95,7 @@ const hostname = url.hostname
 export let API
 // eslint-disable-next-line
 // export const sessionToken = Pluggy.getToken()
-export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MDI2MDIxNiwiZXhwIjoxNTYwMzQ2NjE2fQ.c47ZWvXfwUF2vtAY5sXzi1KjQ3JRxbwBkb5gDj0TtNc"
+export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MDQzMjczMiwiZXhwIjoxNTYwNTE5MTMyfQ.v7JlLYopUscuWMfiqUmxkR_2V0qIvyvkl4PRt-yx4Sw"
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
