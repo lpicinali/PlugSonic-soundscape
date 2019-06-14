@@ -24,7 +24,11 @@ import Slider from '@material-ui/lab/Slider'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
-import { PlaybackTiming, ReachAction } from 'src/constants.js'
+import {
+  PlaybackTiming,
+  ReachAction,
+  SourcePositioning,
+} from 'src/constants.js'
 import * as CustomPropTypes from 'src/prop-types.js'
 import {
   decibelsToGain,
@@ -36,7 +40,9 @@ import {
   deleteSources,
   setSourceHidden,
   setSourceLoop,
+  setSourcePositioning,
   setSourcePosition,
+  setSourceRelativePosition,
   setSourceReachAction,
   setSourceReachEnabled,
   setSourceReachFadeDuration,
@@ -135,6 +141,17 @@ class SourcePanel extends PureComponent {
     onSourcePositionChange(sourceObject.name, newPosition)
   }
 
+  handleSourceMoveRelative = (prop, value) => {
+    const { sourceObject, onSourceRelativePositionChange } = this.props
+
+    const newPosition = {
+      ...sourceObject.relativePosition,
+      [prop]: value,
+    }
+
+    onSourceRelativePositionChange(sourceObject.name, newPosition)
+  }
+
   handleSourceDelete = () => {
     this.setState({
       isPromptingDelete: true,
@@ -157,6 +174,7 @@ class SourcePanel extends PureComponent {
       sources,
       sourceObject,
       onSourceHiddenChange,
+      onSourcePositioningChange,
       onSourceLoopChange,
       onSourceOnOff,
       onSourceReachActionChange,
@@ -216,53 +234,119 @@ class SourcePanel extends PureComponent {
       <FieldGroup key={`${sourceObject.name}-position`}>
         <H3>Position</H3>
 
-        <div>
-          <Label>X</Label>
-          <SliderValue>
-            {forceDecimals(-sourceObject.position.y, 2)} m
-          </SliderValue>
-        </div>
-        <SliderBox>
-          <Slider
-            min={-roomSize.width / 2}
-            max={roomSize.width / 2}
-            step={0.01}
-            value={-sourceObject.position.y}
-            onChange={(event, value) => this.handleSourceMove('y', -value)}
-          />
-        </SliderBox>
+        <SwitchControlLabel
+          label="Relative to listener"
+          labelPlacement="start"
+          control={
+            <Switch
+              color="primary"
+              checked={sourceObject.positioning === SourcePositioning.RELATIVE}
+              onChange={(event, isRelative) =>
+                onSourcePositioningChange(
+                  sourceObject.name,
+                  isRelative
+                    ? SourcePositioning.RELATIVE
+                    : SourcePositioning.ABSOLUTE
+                )
+              }
+            />
+          }
+        />
 
-        <div>
-          <Label>Y</Label>
-          <SliderValue>
-            {forceDecimals(sourceObject.position.x, 2)} m
-          </SliderValue>
-        </div>
-        <SliderBox>
-          <Slider
-            min={-roomSize.depth / 2}
-            max={roomSize.depth / 2}
-            step={0.01}
-            value={sourceObject.position.x}
-            onChange={(event, value) => this.handleSourceMove('x', value)}
-          />
-        </SliderBox>
+        {sourceObject.positioning === SourcePositioning.ABSOLUTE && (
+          <Fragment>
+            <div>
+              <Label>X</Label>
+              <SliderValue>
+                {forceDecimals(-sourceObject.position.y, 2)} m
+              </SliderValue>
+            </div>
+            <SliderBox>
+              <Slider
+                min={-roomSize.width / 2}
+                max={roomSize.width / 2}
+                step={0.01}
+                value={-sourceObject.position.y}
+                onChange={(event, value) => this.handleSourceMove('y', -value)}
+              />
+            </SliderBox>
 
-        <div>
-          <Label>Z</Label>
-          <SliderValue>
-            {forceDecimals(sourceObject.position.z, 2)} m
-          </SliderValue>
-        </div>
-        <SliderBox>
-          <Slider
-            min={0}
-            max={roomSize.height}
-            step={0.01}
-            value={sourceObject.position.z}
-            onChange={(event, value) => this.handleSourceMove('z', value)}
-          />
-        </SliderBox>
+            <div>
+              <Label>Y</Label>
+              <SliderValue>
+                {forceDecimals(sourceObject.position.x, 2)} m
+              </SliderValue>
+            </div>
+            <SliderBox>
+              <Slider
+                min={-roomSize.depth / 2}
+                max={roomSize.depth / 2}
+                step={0.01}
+                value={sourceObject.position.x}
+                onChange={(event, value) => this.handleSourceMove('x', value)}
+              />
+            </SliderBox>
+
+            <div>
+              <Label>Z</Label>
+              <SliderValue>
+                {forceDecimals(sourceObject.position.z, 2)} m
+              </SliderValue>
+            </div>
+            <SliderBox>
+              <Slider
+                min={0}
+                max={roomSize.height}
+                step={0.01}
+                value={sourceObject.position.z}
+                onChange={(event, value) => this.handleSourceMove('z', value)}
+              />
+            </SliderBox>
+          </Fragment>
+        )}
+
+        {sourceObject.positioning === SourcePositioning.RELATIVE && (
+          <Fragment>
+            <div>
+              <Label>Angle</Label>
+              <SliderValue>
+                {Math.round(
+                  (sourceObject.relativePosition.azimuth * 180) / Math.PI
+                )}{' '}
+                degrees
+              </SliderValue>
+            </div>
+            <SliderBox>
+              <Slider
+                min={-Math.PI}
+                max={Math.PI}
+                step={(Math.PI * 2) / 360}
+                value={sourceObject.relativePosition.azimuth}
+                onChange={(event, value) =>
+                  this.handleSourceMoveRelative('azimuth', value)
+                }
+              />
+            </SliderBox>
+
+            <div>
+              <Label>Distance</Label>
+              <SliderValue>
+                {forceDecimals(sourceObject.relativePosition.distance, 2)} m
+              </SliderValue>
+            </div>
+            <SliderBox>
+              <Slider
+                min={0.3}
+                max={Math.max(roomSize.width, roomSize.depth)}
+                step={0.01}
+                value={sourceObject.relativePosition.distance}
+                onChange={(event, value) =>
+                  this.handleSourceMoveRelative('distance', value)
+                }
+              />
+            </SliderBox>
+          </Fragment>
+        )}
       </FieldGroup>
     )
 
@@ -501,7 +585,9 @@ SourcePanel.propTypes = {
   onSourceHiddenChange: PropTypes.func.isRequired,
   onSourceLoopChange: PropTypes.func.isRequired,
   onSourceOnOff: PropTypes.func.isRequired,
+  onSourcePositioningChange: PropTypes.func.isRequired,
   onSourcePositionChange: PropTypes.func.isRequired,
+  onSourceRelativePositionChange: PropTypes.func.isRequired,
   onSourceReachActionChange: PropTypes.func.isRequired,
   onSourceReachEnabledChange: PropTypes.func.isRequired,
   onSourceReachFadeDurationChange: PropTypes.func.isRequired,
@@ -527,8 +613,12 @@ const mapDispatchToProps = dispatch => ({
   onSourceHiddenChange: (name, hidden) =>
     dispatch(setSourceHidden(name, hidden)),
   onSourceLoopChange: (name, loop) => dispatch(setSourceLoop(name, loop)),
+  onSourcePositioningChange: (name, positioning) =>
+    dispatch(setSourcePositioning(name, positioning)),
   onSourcePositionChange: (name, position) =>
     dispatch(setSourcePosition(name, position)),
+  onSourceRelativePositionChange: (name, position) =>
+    dispatch(setSourceRelativePosition(name, position)),
   onSourceReachActionChange: (name, action) =>
     dispatch(setSourceReachAction(name, action)),
   onSourceReachEnabledChange: (name, isEnabled) =>

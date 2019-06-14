@@ -6,6 +6,7 @@ import {
   PlaybackTiming,
   ReachAction,
   SourceOrigin,
+  SourcePositioning,
   TimingStatus,
 } from 'src/constants.js'
 import {
@@ -312,6 +313,68 @@ function* clampSourceZWhenChangingRoomSize() {
         z: height,
       }
       yield put(setSourcePosition(source.name, clampedPosition))
+    }
+  }
+}
+
+/**
+ * Relative sources
+ */
+function getSourcePositionRelativeListener(
+  sphericalPosition,
+  listenerPosition,
+  listenerRotation
+) {
+  const { azimuth, distance, elevation } = sphericalPosition
+
+  const x = distance * Math.sin(azimuth - listenerRotation + Math.PI / 2)
+  const y = distance * Math.cos(azimuth - listenerRotation + Math.PI / 2)
+
+  return {
+    x: x + listenerPosition.x,
+    y: y + listenerPosition.y,
+    z: elevation,
+  }
+}
+
+function* translateSphericalPositionToCartesian() {
+  while (true) {
+    const { payload } = yield take([
+      ActionType.SET_SOURCE_POSITIONING,
+      ActionType.SET_SOURCE_RELATIVE_POSITION,
+    ])
+
+    const source = yield select(state => state.sources.sources[payload.source])
+    const listenerPosition = yield select(state => state.listener.position)
+
+    const position = getSourcePositionRelativeListener(
+      source.relativePosition,
+      listenerPosition,
+      listenerPosition.rotZAxis
+    )
+    yield put(setSourcePosition(payload.source, position))
+  }
+}
+
+function* moveRelativeSourcesAlongWithListener() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
+
+    const listenerPosition = payload.position
+
+    const relativeSources = yield select(state =>
+      Object.values(state.sources.sources).filter(
+        x => x.positioning === SourcePositioning.RELATIVE
+      )
+    )
+    // eslint-disable-next-line
+    for (const source of relativeSources) {
+      const position = getSourcePositionRelativeListener(
+        source.relativePosition,
+        listenerPosition,
+        listenerPosition.rotZAxis
+      )
+      yield put(setSourcePosition(source.name, position))
     }
   }
 }
@@ -730,6 +793,8 @@ export default function* rootSaga() {
     // applyDirectionalityAttenuation(),
     applySourcePosition(),
     clampSourceZWhenChangingRoomSize(),
+    translateSphericalPositionToCartesian(),
+    moveRelativeSourcesAlongWithListener(),
     applyListenerPosition(),
     initDefaultHrtf(),
     applyHrtfs(),

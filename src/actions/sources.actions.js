@@ -68,8 +68,18 @@ export const sourceOnOff = (name, enabled) => ({
   payload: { name, enabled },
 })
 
+export const setSourcePositioning = (source, positioning) => ({
+  type: ActionType.SET_SOURCE_POSITIONING,
+  payload: { source, positioning },
+})
+
 export const setSourcePosition = (source, position) => ({
   type: ActionType.SET_SOURCE_POSITION,
+  payload: { source, position },
+})
+
+export const setSourceRelativePosition = (source, position) => ({
+  type: ActionType.SET_SOURCE_RELATIVE_POSITION,
   payload: { source, position },
 })
 
