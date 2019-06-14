@@ -4,6 +4,7 @@ import { clamp } from 'lodash'
 import FileSaver from 'file-saver'
 import Recorder from 'recorderjs'
 
+import { SourcePositioning } from 'src/constants.js'
 import { getSourceReachGain } from 'src/utils.js'
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
@@ -76,8 +77,12 @@ export const createSourceAudioChain = source => {
   const muteGain = context.createGain()
 
   node.connect(volume)
-  volume.connect(reachGain)
-  reachGain.connect(muteGain)
+  if (source.positioning === SourcePositioning.ABSOLUTE) {
+    volume.connect(reachGain)
+    reachGain.connect(muteGain)
+  } else {
+    volume.connect(muteGain)
+  }
   muteGain.connect(masterVolume)
 
   volume.gain.value = clamp(source.volume, 0.00001, Infinity)
@@ -135,21 +140,16 @@ export const createSourceAudioNode = audioBuffer => {
  *
  * Previously: addSource()
  */
-export const spatializeSource = (source, spatialised) => {
-  if (spatialised) {
-    getBinauralSpatializer().then(spatializer => {
-      spatializer.addSource(source)
+export const spatializeSource = source => {
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.addSource(source)
 
-      sourceMuteGains[source.name].disconnect()
-      sourceMuteGains[source.name].connect(
-        spatializer.sources[source.name].processor
-      )
-      spatializer.sources[source.name].processor.connect(masterVolume)
-    })
-  } else {
     sourceMuteGains[source.name].disconnect()
-    sourceMuteGains[source.name].connect(masterVolume)
-  }
+    sourceMuteGains[source.name].connect(
+      spatializer.sources[source.name].processor
+    )
+    spatializer.sources[source.name].processor.connect(masterVolume)
+  })
 }
 
 /**
@@ -241,7 +241,12 @@ export const playSource = (source, volume, fadeDuration) => {
   }
 
   createSourceAudioChain(source)
-  spatializeSource(source, source.spatialised)
+  if (
+    source.spatialised === true ||
+    source.positioning === SourcePositioning.RELATIVE
+  ) {
+    spatializeSource(source)
+  }
 
   if (volume !== undefined) {
     setVolume(sourceVolumes[source.name].gain, volume, fadeDuration)

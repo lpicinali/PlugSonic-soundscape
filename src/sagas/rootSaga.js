@@ -54,19 +54,23 @@ function isWithinReach(listener, source) {
   return distance <= source.reach.radius
 }
 
+function mayPlaySource(source) {
+  return (
+    source.gameplay.isPlaying === true &&
+    ((source.reach.enabled === true &&
+      source.gameplay.isWithinReach === true) ||
+      source.reach.action === ReachAction.TOGGLE_VOLUME ||
+      source.reach.enabled === false ||
+      source.positioning === SourcePositioning.RELATIVE)
+  )
+}
+
 /**
  * Plays a source if all a source's necessary conditions are met.
  * This prevents this logic to be all over the place.
  */
 function* requestPlaySource(source) {
-  const shouldPlay =
-    source.gameplay.isPlaying === true &&
-    ((source.reach.enabled === true &&
-      source.gameplay.isWithinReach === true) ||
-      source.reach.action === ReachAction.TOGGLE_VOLUME ||
-      source.reach.enabled === false)
-
-  if (shouldPlay === true) {
+  if (mayPlaySource(source) === true) {
     yield call(playSource, source)
   }
 }
@@ -375,6 +379,23 @@ function* moveRelativeSourcesAlongWithListener() {
         listenerPosition.rotZAxis
       )
       yield put(setSourcePosition(source.name, position))
+    }
+  }
+}
+
+function* manageSourceSwitchingBetweenPositionings() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_SOURCE_POSITIONING)
+
+    const source = yield select(state => state.sources.sources[payload.source])
+    const playbackState = yield select(state => state.controls.playbackState)
+
+    if (
+      playbackState !== PlaybackState.STOP &&
+      mayPlaySource(source) === true
+    ) {
+      yield call(stopSource, source)
+      yield call(playSource, source)
     }
   }
 }
@@ -795,6 +816,7 @@ export default function* rootSaga() {
     clampSourceZWhenChangingRoomSize(),
     translateSphericalPositionToCartesian(),
     moveRelativeSourcesAlongWithListener(),
+    manageSourceSwitchingBetweenPositionings(),
     applyListenerPosition(),
     initDefaultHrtf(),
     applyHrtfs(),
