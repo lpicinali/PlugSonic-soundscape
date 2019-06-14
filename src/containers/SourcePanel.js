@@ -366,7 +366,11 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <div key="spatialisation">
+      <FieldGroup
+        key="spatialisation"
+        style={{ marginBottom: 0 }}
+        disabled={sourceObject.positioning === SourcePositioning.RELATIVE}
+      >
         <SwitchBox>
           <H3>Spatialisation</H3>
           <Switch
@@ -377,11 +381,14 @@ class SourcePanel extends PureComponent {
             }
           />
         </SwitchBox>
-      </div>
+      </FieldGroup>
     )
 
     nestedItems.push(
-      <FieldGroup key="reach">
+      <FieldGroup
+        key="reach"
+        disabled={sourceObject.positioning === SourcePositioning.RELATIVE}
+      >
         <SwitchBox>
           <H3>Reach</H3>
           <Switch
