@@ -70,6 +70,8 @@ export const ActionType = {
 }
 
 export const DEFAULT_Z_POSITION = 1.7
+export const DEFAULT_RELATIVE_AZIMUTH = 0
+export const DEFAULT_RELATIVE_DISTANCE = 3
 
 export const Ear = {
   LEFT: 'LEFT',

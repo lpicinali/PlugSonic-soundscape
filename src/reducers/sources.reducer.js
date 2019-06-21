@@ -7,6 +7,8 @@ import { omit, set } from 'lodash/fp'
 
 import {
   DEFAULT_Z_POSITION,
+  DEFAULT_RELATIVE_AZIMUTH,
+  DEFAULT_RELATIVE_DISTANCE,
   PlaybackTiming,
   ReachAction,
   SourcePositioning,
@@ -29,42 +31,44 @@ export default function(state = initialState, { type, payload }) {
       ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
       z: DEFAULT_Z_POSITION,
     }
-    
+
+    const defaultRelativePosition = {
+      azimuth: DEFAULT_RELATIVE_AZIMUTH,
+      distance: DEFAULT_RELATIVE_DISTANCE,
+      elevation: DEFAULT_Z_POSITION
+    }
+
     const newSource = {
-      enabled: true,
-      filename: payload.filename,
+      enabled:            payload.enabled === undefined ? true : payload.enabled,
+      filename:           payload.filename,
       gameplay: {
-        isPlaying: false,
-        timingStatus: TimingStatus.INDEPENDENT,
-        isWithinReach: false,
+        isPlaying:        false,
+        timingStatus:     TimingStatus.INDEPENDENT,
+        isWithinReach:    false,
       },
-      hidden: payload.hidden || false,
-      loop: true,
-      name: payload.name,
-      origin: payload.origin,
-      platform_asset_id: payload.platform_asset_id || null,
-      platform_media_id: payload.platform_media_id || null,
-      positioning: SourcePositioning.ABSOLUTE,
-      position: payload.position || defaultPosition,
-      relativePosition: {
-        azimuth: 0,
-        distance: 3,
-        elevation: 1.7,
-      },
-      raw: null,
-      reach: payload.reach || {
-        action: ReachAction.TOGGLE_VOLUME,
-        enabled: true,
-        fadeDuration: 1000,
-        radius: 3,
-      },
-      spatialised: true,
-      timings: {
-        [PlaybackTiming.PLAY_AFTER]: null,
-      },
-      url: payload.url || null,
-      volume: payload.volume || 1.0,
-      selected: false,
+      hidden:             payload.hidden === undefined ? false : payload.hidden,
+      loop:               payload.loop === undefined ? true : payload.loop,
+      name:               payload.name,
+      origin:             payload.origin,
+      platform_asset_id:  payload.platform_asset_id || null,
+      platform_media_id:  payload.platform_media_id || null,
+      positioning:        payload.positioning || SourcePositioning.ABSOLUTE,
+      position:           payload.position || defaultPosition,
+      relativePosition:   payload.relativePosition || defaultRelativePosition,
+      raw:                null,
+      reach:              payload.reach || {
+                            action: ReachAction.TOGGLE_VOLUME,
+                            enabled: true,
+                            fadeDuration: 1000,
+                            radius: 3,
+                          },
+      spatialised:        payload.spatialised === undefined ? true : payload.spatialised,
+      timings:            payload.timings || {
+                            [PlaybackTiming.PLAY_AFTER]: null,
+                          },
+      url:                payload.url || null,
+      volume:             payload.volume || 1.0,
+      selected:           false,
     }
 
     azimuthIndex += 1
