@@ -23,12 +23,13 @@ const initialState = {
 let azimuthIndex = Object.keys(initialState.sources).length
 
 export default function(state = initialState, { type, payload }) {
+
   if (type === ActionType.ADD_SOURCE) {
     const defaultPosition = {
       ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
       z: DEFAULT_Z_POSITION,
     }
-
+    
     const newSource = {
       enabled: true,
       filename: payload.filename,

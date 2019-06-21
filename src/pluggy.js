@@ -149,7 +149,7 @@ if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
 }
 
 // if (hostname === "localhost") {
-//   exhibition.id = "5d0cb9a47f20abd27dbef650"
+//   exhibition.id = "5d0ce6e87f20abd27dbef672"
 //   console.log('EXHIBITION ID')
 //   console.log(exhibition.id)
 //   httpGetSync(
