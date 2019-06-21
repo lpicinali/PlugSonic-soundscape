@@ -58,6 +58,12 @@ class ExhibitionContainer extends Component {
       room: this.props.room,
       sources: this.props.sources,
     }
+
+    soundscape.sources = map(soundscape.sources, source => source)
+    // background image needs to be saved in /:exhibitionId/media
+    // the rest goes to /:exhibitionId/metadata
+    soundscape.room.backgroundImage.raw = ''
+
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,
@@ -72,16 +78,24 @@ class ExhibitionContainer extends Component {
     httpPostAsync(
       `${API}/exhibitions`,
       this.createExhibitionCallback,
+      this.createExhibitionErrorCallback,
       JSON.stringify(exhibition),
       sessionToken,
-      'application/json'
+      "application/json"
     )
   }
 
   createExhibitionCallback = responseText => {
     const createdExhibition = JSON.parse(responseText)
+    console.log('createExhibitionCallback')
     console.log(createdExhibition)
     this.props.exhibition.id = createdExhibition.data._id
+  }
+
+  createExhibitionErrorCallback = responseText => {
+    const error = JSON.parse(responseText)
+    console.log('createExhibitionErrorCallback')
+    console.log(error)
   }
   /* -------------------- UPDATE EXHIBITION ------------------*/
   updateExhibition = () => {
@@ -93,6 +107,9 @@ class ExhibitionContainer extends Component {
     }
 
     soundscape.sources = map(soundscape.sources, source => source)
+    // background image needs to be saved in /:exhibitionId/media
+    // the rest goes to /:exhibitionId/metadata
+    soundscape.room.backgroundImage.raw = ''
 
     // exhibition object
     const exhibition = {

@@ -50,19 +50,21 @@ export function httpGetSync(url, callback, errorCallback, token) {
   xmlHttp.send(null);
 }
 
-export function httpPostAsync(url, callback, body, token, type) {
+export function httpPostAsync(url, callback, errorCallback, body, token, type) {
   const xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = () => {
-    if (
-      xmlHttp.readyState === 4 &&
-      xmlHttp.status === 200
-    )
-      callback(xmlHttp.responseText);
+    if (xmlHttp.readyState === 4) {
+      if (xmlHttp.status === 200) {
+        callback(xmlHttp.responseText)
+      } else {
+        errorCallback(xmlHttp.responseText)
+      }
+    }
   }
   xmlHttp.open("POST", url, true); // true for asynchronous
   xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
   if (type)
-    xmlHttp.setRequestHeader("Content-Type", type);
+    xmlHttp.setRequestHeader('Content-Type', type);
   xmlHttp.send(body);
 }
 
@@ -80,8 +82,24 @@ export function httpPutAsync(url, callback, errorCallback, body, token, type) {
   xmlHttp.open("PUT", url, true); // true for asynchronous
   xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
   if (type)
-    xmlHttp.setRequestHeader("Content-Type", type);
+    xmlHttp.setRequestHeader('Content-Type', type);
   xmlHttp.send(body);
+}
+
+export function httpDeleteAsync(url, callback, errorCallback, token) {
+  const xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = () => {
+    if (xmlHttp.readyState === 4) {
+      if (xmlHttp.status === 200) {
+        callback(xmlHttp.responseText)
+      } else {
+        errorCallback(xmlHttp.responseText)
+      }
+    }
+  }
+  xmlHttp.open("DELETE", url, true); // true for asynchronous
+  xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
+  xmlHttp.send(null);
 }
 
 // ========================== SET API ================================== //
@@ -95,7 +113,7 @@ const hostname = url.hostname
 export let API
 // eslint-disable-next-line
 // export const sessionToken = Pluggy.getToken()
-export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MDQzMjczMiwiZXhwIjoxNTYwNTE5MTMyfQ.v7JlLYopUscuWMfiqUmxkR_2V0qIvyvkl4PRt-yx4Sw"
+export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MTAyMzM0NCwiZXhwIjoxNTYxMTA5NzQ0fQ.BLFQa41IypXqrXpgExGc0V6fPkmTMOlqKHgBeHe12jM"
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
@@ -121,25 +139,34 @@ export const exhibition = {
 
 if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
   const exhibitionQuery = window.location.search.substring(1)
-  // console.log('EXHIBITION QUERY')
-  // console.log(exhibitionQuery)
   exhibition.id = getQueryVariable(exhibitionQuery,'exhibitionId')
   console.log('EXHIBITION ID')
   console.log(exhibition.id)
-  httpGetSync(`${API}/exhibitions/${exhibition.id}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+  httpGetSync(
+    `${API}/exhibitions/${exhibition.id}`,
+    getExhibitionCallback,
+    getExhibitionErrorCallback,
+    sessionToken
+  )
 }
 
 if (hostname === "localhost") {
-  exhibition.id = "5cf63b3f96dc6b8929652f27"
+  exhibition.id = "5d0a466062a6caa93306fdbd"
   console.log('EXHIBITION ID')
   console.log(exhibition.id)
-  httpGetSync(`${API}/exhibitions/${exhibition.id}`, getExhibitionCallback, getExhibitionErrorCallback, sessionToken)
+  httpGetSync(
+    `${API}/exhibitions/${exhibition.id}`,
+    getExhibitionCallback,
+    getExhibitionErrorCallback,
+    sessionToken
+  )
 }
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
-  // console.log('RETRIEVE EXHIBITION RESPONSE')
-  // console.log(response)
+  console.log('RETRIEVE EXHIBITION RESPONSE')
+  console.log(response)
+
   if (response.success) {
     exhibition.description = response.data.description
     exhibition.isPublished = response.data.public
@@ -149,15 +176,55 @@ function getExhibitionCallback(responseText) {
       {key: index, label: tag}
     ))
     exhibition.title = response.data.title
-
-    console.log('RETRIEVE SUCCESSFUL')
+    console.log('EXHIBITION')
     console.log(exhibition)
+    let mediaId
+    if (
+      Object.keys(exhibition.metadata).length !== 0 &&
+      exhibition.constructor === Object
+    ) {
+      mediaId = exhibition.metadata.room.backgroundImage.mediaId
+    }
+
+    if (
+      mediaId &&
+      mediaId !== '' &&
+      mediaId === response.data.mediaContent[0]
+    ) {
+      httpGetSync(
+        `${API}/exhibitions/${exhibition.id}/media/${mediaId}`,
+        getBackgroundImageCallback,
+        getBackgroundImageErrorCallback,
+        sessionToken
+      )
+    }
   } else {
     console.log('RETRIEVE FAILED')
   }
 }
 
 function getExhibitionErrorCallback(responseText) {
+    console.log('ERROR CALLBACK')
+    console.log(responseText)
+}
+
+function getBackgroundImageCallback(responseText) {
+  console.log('GET IMAGE CALLBACK')
+  console.log(responseText)
+  // const response = JSON.parse(responseText)
+  // console.log('RETRIEVE BACKGROUND IMAGE RESPONSE')
+  // console.log(response)
+
+  const reader = new FileReader()
+  reader.readAsDataURL(responseText)
+
+  reader.onload = () => {
+    console.log('RAW')
+    console.log(reader.result)
+  }
+}
+
+function getBackgroundImageErrorCallback(responseText) {
     console.log('ERROR CALLBACK')
     console.log(responseText)
 }
