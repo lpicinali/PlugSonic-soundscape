@@ -212,8 +212,8 @@ function* manageImportSources() {
 
     // Add the new ones
     // resetCounter()
-
     for (let i = 0; i < sources.length; i++) {
+      // incrementCounter()
       if (sources[i].raw !== null) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
       } else if (sources[i].raw === null && sources[i].url !== null) {
