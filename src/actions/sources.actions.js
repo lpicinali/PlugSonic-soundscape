@@ -21,7 +21,7 @@ export const addSource = ({
   selected,
   spatialised,
   volume,
-  raw
+  raw,
 }) => ({
   type: ActionType.ADD_SOURCE,
   payload: {
@@ -39,7 +39,7 @@ export const addSource = ({
     selected,
     spatialised,
     volume,
-    raw
+    raw,
   },
 })
 
@@ -68,8 +68,18 @@ export const sourceOnOff = (name, enabled) => ({
   payload: { name, enabled },
 })
 
+export const setSourcePositioning = (source, positioning) => ({
+  type: ActionType.SET_SOURCE_POSITIONING,
+  payload: { source, positioning },
+})
+
 export const setSourcePosition = (source, position) => ({
   type: ActionType.SET_SOURCE_POSITION,
+  payload: { source, position },
+})
+
+export const setSourceRelativePosition = (source, position) => ({
+  type: ActionType.SET_SOURCE_RELATIVE_POSITION,
   payload: { source, position },
 })
 
@@ -133,7 +143,7 @@ export const setSourceIsWithinReach = (name, isWithinReach) => ({
 
 // Misc
 
-export const focusSourcePanelItem = (name) => ({
+export const focusSourcePanelItem = name => ({
   type: ActionType.FOCUS_SOURCE_PANEL_ITEM,
   payload: { name },
 })

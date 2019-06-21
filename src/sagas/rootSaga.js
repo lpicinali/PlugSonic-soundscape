@@ -6,6 +6,7 @@ import {
   PlaybackTiming,
   ReachAction,
   SourceOrigin,
+  SourcePositioning,
   TimingStatus,
 } from 'src/constants.js'
 import {
@@ -43,6 +44,7 @@ import {
   storeSourceRawData,
   getSourceRawData,
   subscribeToSourceStart,
+  subscribeToSourceEnd,
 } from 'src/audio/engine.js'
 
 function isWithinReach(listener, source) {
@@ -53,19 +55,23 @@ function isWithinReach(listener, source) {
   return distance <= source.reach.radius
 }
 
+function mayPlaySource(source) {
+  return (
+    source.gameplay.isPlaying === true &&
+    ((source.reach.enabled === true &&
+      source.gameplay.isWithinReach === true) ||
+      source.reach.action === ReachAction.TOGGLE_VOLUME ||
+      source.reach.enabled === false ||
+      source.positioning === SourcePositioning.RELATIVE)
+  )
+}
+
 /**
  * Plays a source if all a source's necessary conditions are met.
  * This prevents this logic to be all over the place.
  */
 function* requestPlaySource(source) {
-  const shouldPlay =
-    source.gameplay.isPlaying === true &&
-    ((source.reach.enabled === true &&
-      source.gameplay.isWithinReach === true) ||
-      source.reach.action === ReachAction.TOGGLE_VOLUME ||
-      source.reach.enabled === false)
-
-  if (shouldPlay === true) {
+  if (mayPlaySource(source) === true) {
     yield call(playSource, source)
   }
 }
@@ -137,12 +143,14 @@ function* manageAddSource() {
     if (source.origin === SourceOrigin.REMOTE) {
       yield spawn(fetchAndStoreSourceAudio(source.name, source.url))
     } else if (
-        source.origin === SourceOrigin.LOCAL &&
-        getSourceRawData(source.name) === undefined
-      ) {
+      source.origin === SourceOrigin.LOCAL &&
+      getSourceRawData(source.name) === undefined
+    ) {
       yield spawn(fetchAndStoreRawData(source.name, payload.raw))
     } else {
-      console.log('rootSaga -> manageAddSource: source uploaded from local, bypass fecth audio buffer')
+      console.log(
+        'rootSaga -> manageAddSource: source uploaded from local, bypass fecth audio buffer'
+      )
     }
 
     console.log('rootSaga -> manageAddSource')
@@ -206,13 +214,14 @@ function* manageImportSources() {
     // resetCounter()
 
     for (let i = 0; i < sources.length; i++) {
+<<<<<<< HEAD
       // incrementCounter()
       if (sources[i].raw !== null ) {
+=======
+      if (sources[i].raw !== null) {
+>>>>>>> relative-sources
         yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
-      } else if (
-        sources[i].raw === null &&
-        sources[i].url !== null
-        ) {
+      } else if (sources[i].raw === null && sources[i].url !== null) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
       } else {
         console.log('rootSaga -> manageImportSources: json not valid')
@@ -352,6 +361,85 @@ function* clampSourceZWhenChangingRoomSize() {
         z: height,
       }
       yield put(setSourcePosition(source.name, clampedPosition))
+    }
+  }
+}
+
+/**
+ * Relative sources
+ */
+function getSourcePositionRelativeListener(
+  sphericalPosition,
+  listenerPosition,
+  listenerRotation
+) {
+  const { azimuth, distance, elevation } = sphericalPosition
+
+  const x = distance * Math.sin(azimuth - listenerRotation + Math.PI / 2)
+  const y = distance * Math.cos(azimuth - listenerRotation + Math.PI / 2)
+
+  return {
+    x: x + listenerPosition.x,
+    y: y + listenerPosition.y,
+    z: elevation,
+  }
+}
+
+function* translateSphericalPositionToCartesian() {
+  while (true) {
+    const { payload } = yield take([
+      ActionType.SET_SOURCE_POSITIONING,
+      ActionType.SET_SOURCE_RELATIVE_POSITION,
+    ])
+
+    const source = yield select(state => state.sources.sources[payload.source])
+    const listenerPosition = yield select(state => state.listener.position)
+
+    const position = getSourcePositionRelativeListener(
+      source.relativePosition,
+      listenerPosition,
+      listenerPosition.rotZAxis
+    )
+    yield put(setSourcePosition(payload.source, position))
+  }
+}
+
+function* moveRelativeSourcesAlongWithListener() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_LISTENER_POSITION)
+
+    const listenerPosition = payload.position
+
+    const relativeSources = yield select(state =>
+      Object.values(state.sources.sources).filter(
+        x => x.positioning === SourcePositioning.RELATIVE
+      )
+    )
+    // eslint-disable-next-line
+    for (const source of relativeSources) {
+      const position = getSourcePositionRelativeListener(
+        source.relativePosition,
+        listenerPosition,
+        listenerPosition.rotZAxis
+      )
+      yield put(setSourcePosition(source.name, position))
+    }
+  }
+}
+
+function* manageSourceSwitchingBetweenPositionings() {
+  while (true) {
+    const { payload } = yield take(ActionType.SET_SOURCE_POSITIONING)
+
+    const source = yield select(state => state.sources.sources[payload.source])
+    const playbackState = yield select(state => state.controls.playbackState)
+
+    if (
+      playbackState !== PlaybackState.STOP &&
+      mayPlaySource(source) === true
+    ) {
+      yield call(stopSource, source)
+      yield call(playSource, source)
     }
   }
 }
@@ -514,8 +602,7 @@ function* applySourceReachChangesAffectingPlayback() {
 
     if (type === ActionType.SET_SOURCE_REACH_ENABLED) {
       const isReached =
-        source.reach.enabled === false ||
-        source.gameplay.isWithinReach === true
+        source.reach.enabled === false || source.gameplay.isWithinReach === true
       yield put(setSourceIsPlaying(source.name, isReached))
     } else if (type === ActionType.SET_SOURCE_IS_WITHIN_REACH) {
       if (source.reach.enabled === true) {
@@ -605,13 +692,6 @@ function* updateSourcesTimingStatus() {
   while (true) {
     const { source } = yield call(callbackSource.nextMessage)
 
-    // If a non-looping source ended, update its playing state
-    // and stop the audio node
-    if (source.loop === false) {
-      yield call(stopSource, source)
-      yield put(setSourceIsPlaying(source.name, false))
-    }
-
     const playbackState = yield select(state => state.controls.playbackState)
     const dependants = yield select(state =>
       Object.values(state.sources.sources).filter(
@@ -629,6 +709,24 @@ function* updateSourcesTimingStatus() {
           )
         }
       }
+    }
+  }
+}
+
+function* setEndedSourcesAsNotPlaying() {
+  const callbackSource = yield call(
+    createSubscriptionSource,
+    subscribeToSourceEnd
+  )
+
+  while (true) {
+    const { source } = yield call(callbackSource.nextMessage)
+
+    // If a non-looping source ended, update its playing state
+    // and stop the audio node
+    if (source.loop === false) {
+      yield call(stopSource, source)
+      yield put(setSourceIsPlaying(source.name, false))
     }
   }
 }
@@ -748,6 +846,7 @@ export default function* rootSaga() {
     applySourcePlaybackState(),
     conditionallyResetTimings(),
     updateSourcesTimingStatus(),
+    setEndedSourcesAsNotPlaying(),
     applySpatialisedChanges(),
     allowOnlyOneSourceToBeSelected(),
     resetFocusedSourceItemWhenLeavingSourceTab(),
@@ -759,6 +858,9 @@ export default function* rootSaga() {
     // applyDirectionalityAttenuation(),
     applySourcePosition(),
     clampSourceZWhenChangingRoomSize(),
+    translateSphericalPositionToCartesian(),
+    moveRelativeSourcesAlongWithListener(),
+    manageSourceSwitchingBetweenPositionings(),
     applyListenerPosition(),
     initDefaultHrtf(),
     applyHrtfs(),

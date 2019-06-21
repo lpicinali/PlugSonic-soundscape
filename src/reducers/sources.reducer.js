@@ -5,7 +5,14 @@
 */ /* ---------------------------------------------- */
 import { omit, set } from 'lodash/fp'
 
-import { DEFAULT_Z_POSITION, PlaybackTiming, ReachAction, TimingStatus, ActionType } from 'src/constants.js'
+import {
+  DEFAULT_Z_POSITION,
+  PlaybackTiming,
+  ReachAction,
+  SourcePositioning,
+  TimingStatus,
+  ActionType,
+} from 'src/constants.js'
 import { ADEtoXYZ } from 'src/utils.js'
 
 const initialState = {
@@ -16,7 +23,6 @@ const initialState = {
 let azimuthIndex = Object.keys(initialState.sources).length
 
 export default function(state = initialState, { type, payload }) {
-
   if (type === ActionType.ADD_SOURCE) {
     const defaultPosition = {
       ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
@@ -37,7 +43,13 @@ export default function(state = initialState, { type, payload }) {
       origin: payload.origin,
       platform_asset_id: payload.platform_asset_id || null,
       platform_media_id: payload.platform_media_id || null,
+      positioning: SourcePositioning.ABSOLUTE,
       position: payload.position || defaultPosition,
+      relativePosition: {
+        azimuth: 0,
+        distance: 3,
+        elevation: 1.7,
+      },
       raw: null,
       reach: payload.reach || {
         action: ReachAction.TOGGLE_VOLUME,
@@ -93,8 +105,12 @@ export default function(state = initialState, { type, payload }) {
   }
 
   if (type === ActionType.SET_SOURCE_POSITION) {
+    return set(['sources', payload.source, 'position'], payload.position, state)
+  }
+
+  if (type === ActionType.SET_SOURCE_RELATIVE_POSITION) {
     return set(
-      ['sources', payload.source, 'position'],
+      ['sources', payload.source, 'relativePosition'],
       payload.position,
       state
     )
@@ -133,7 +149,19 @@ export default function(state = initialState, { type, payload }) {
   }
 
   if (type === ActionType.SET_SOURCE_SPATIALISED) {
-    return set(['sources', payload.source, 'spatialised'], payload.spatialised, state)
+    return set(
+      ['sources', payload.source, 'spatialised'],
+      payload.spatialised,
+      state
+    )
+  }
+
+  if (type === ActionType.SET_SOURCE_POSITIONING) {
+    return set(
+      ['sources', payload.source, 'positioning'],
+      payload.positioning,
+      state
+    )
   }
 
   if (type === ActionType.SET_SOURCE_TIMING) {

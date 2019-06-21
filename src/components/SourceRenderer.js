@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
 import { clamp, values } from 'lodash'
 
-import { DEFAULT_Z_POSITION, RoomShape } from 'src/constants'
+import { DEFAULT_Z_POSITION, RoomShape, SourcePositioning } from 'src/constants'
 import * as CustomPropTypes from 'src/prop-types.js'
 import { navigateToSourceInMenu } from 'src/actions/navigation.actions.js'
 import {
@@ -30,6 +30,14 @@ function getScaleForZ(z, roomHeight) {
   }
 
   return 1
+}
+
+function getSourceBodyColor(positioning) {
+  if (positioning === SourcePositioning.RELATIVE) {
+    return colors.LIGHTBLUE
+  }
+
+  return colors.BLACK
 }
 
 /* ========================================================================== */
@@ -62,14 +70,13 @@ const SourceBody = styled.div`
     scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
   width: ${props => props.radiusSize * 2}px;
   height: ${props => props.radiusSize * 2}px;
-  background: ${props => (props.enabled ? 'black' : 'transparent')};
   border-radius: 50%;
   border: 2px solid transparent;
 
   ${props =>
     props.isEnabled
       ? css`
-          background: ${colors.BLACK};
+          background: ${getSourceBodyColor(props.positioning)};
           border: 2px solid transparent;
         `
       : css`
@@ -119,6 +126,12 @@ class SourceRenderer extends Component {
   }
 
   handleSourceMouseDown = () => {
+    const { source } = this.props
+
+    if (source.positioning === SourcePositioning.RELATIVE) {
+      return
+    }
+
     this.setState({
       isDragging: true,
     })
@@ -215,17 +228,26 @@ class SourceRenderer extends Component {
     } = this.props
     const { isHovering, isDragging } = this.state
 
+    const mapPosition = {
+      x: 0.5 + (-1 * source.position.x) / roomDepth,
+      y: 0.5 + (-1 * source.position.y) / roomWidth,
+    }
+
     return (
       <Source
         key={name}
         style={{
-          top: `${50 + (100 * -1 * source.position.x) / roomDepth}%`,
-          left: `${50 + (100 * -1 * source.position.y) / roomWidth}%`,
+          top: `${100 * mapPosition.x}%`,
+          left: `${100 * mapPosition.y}%`,
         }}
       >
-        {source.reach.enabled && <SourceReach radiusSize={reachRadiusSize} />}
+        {source.reach.enabled &&
+          source.positioning === SourcePositioning.ABSOLUTE && (
+            <SourceReach radiusSize={reachRadiusSize} />
+          )}
         <SourceBody
           radiusSize={size / 2}
+          positioning={source.positioning}
           position={source.position}
           roomHeight={roomHeight}
           isEnabled={source.enabled}
@@ -233,9 +255,13 @@ class SourceRenderer extends Component {
           onMouseOver={this.handleSourceMouseOver}
           onMouseOut={this.handleSourceMouseOut}
           onMouseDown={this.handleSourceMouseDown}
-          style={{
-            cursor: `${isDragging ? `grabbing` : `grab`}`,
-          }}
+          style={
+            source.positioning === SourcePositioning.ABSOLUTE
+              ? {
+                  cursor: `${isDragging ? `grabbing` : `grab`}`,
+                }
+              : {}
+          }
         />
         {(source.selected || isHovering) && (
           <SourceLabel isActive={source.selected}>{source.name}</SourceLabel>
