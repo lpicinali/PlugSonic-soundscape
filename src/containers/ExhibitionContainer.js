@@ -60,9 +60,6 @@ class ExhibitionContainer extends Component {
     }
 
     soundscape.sources = map(soundscape.sources, source => source)
-    // background image needs to be saved in /:exhibitionId/media
-    // the rest goes to /:exhibitionId/metadata
-    // soundscape.room.backgroundImage.raw = ''
 
     // exhibition object
     const exhibition = {
@@ -111,10 +108,7 @@ class ExhibitionContainer extends Component {
     }
 
     soundscape.sources = map(soundscape.sources, source => source)
-    // background image needs to be saved in /:exhibitionId/media
-    // the rest goes to /:exhibitionId/metadata
-    // soundscape.room.backgroundImage.raw = ''
-
+    
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,

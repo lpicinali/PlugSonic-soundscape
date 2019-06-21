@@ -107,13 +107,11 @@ const url = new URL((window.location !== window.parent.location)
             ? document.referrer
             : document.location.href)
 const hostname = url.hostname
-// console.log('HOSTNAME')
-// console.log(hostname)
 
 export let API
 // eslint-disable-next-line
-// export const sessionToken = Pluggy.getToken()
-export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MTAyMzM0NCwiZXhwIjoxNTYxMTA5NzQ0fQ.BLFQa41IypXqrXpgExGc0V6fPkmTMOlqKHgBeHe12jM"
+export const sessionToken = Pluggy.getToken()
+// export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MTExNDg5NiwiZXhwIjoxNTYxMjAxMjk2fQ.IGruCKs209MahlIxY7VtAxjTjTI8bG4SPL-ezLRh_DE"
 
 if (hostname === "develop.pluggy.eu") {
   API = "https://develop.pluggy.eu/api/v1"
@@ -150,22 +148,20 @@ if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
   )
 }
 
-if (hostname === "localhost") {
-  exhibition.id = "5d0a466062a6caa93306fdbd"
-  console.log('EXHIBITION ID')
-  console.log(exhibition.id)
-  httpGetSync(
-    `${API}/exhibitions/${exhibition.id}`,
-    getExhibitionCallback,
-    getExhibitionErrorCallback,
-    sessionToken
-  )
-}
+// if (hostname === "localhost") {
+//   exhibition.id = "5d0cb9a47f20abd27dbef650"
+//   console.log('EXHIBITION ID')
+//   console.log(exhibition.id)
+//   httpGetSync(
+//     `${API}/exhibitions/${exhibition.id}`,
+//     getExhibitionCallback,
+//     getExhibitionErrorCallback,
+//     sessionToken
+//   )
+// }
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
-  console.log('RETRIEVE EXHIBITION RESPONSE')
-  console.log(response)
 
   if (response.success) {
     exhibition.description = response.data.description
@@ -176,55 +172,15 @@ function getExhibitionCallback(responseText) {
       {key: index, label: tag}
     ))
     exhibition.title = response.data.title
-    console.log('EXHIBITION')
-    console.log(exhibition)
-    let mediaId
-    if (
-      Object.keys(exhibition.metadata).length !== 0 &&
-      exhibition.constructor === Object
-    ) {
-      mediaId = exhibition.metadata.room.backgroundImage.mediaId
-    }
 
-    if (
-      mediaId &&
-      mediaId !== '' &&
-      mediaId === response.data.mediaContent[0]
-    ) {
-      httpGetSync(
-        `${API}/exhibitions/${exhibition.id}/media/${mediaId}`,
-        getBackgroundImageCallback,
-        getBackgroundImageErrorCallback,
-        sessionToken
-      )
-    }
+    console.log('EXHIBITION RETRIEVED')
+    console.log(exhibition)
   } else {
     console.log('RETRIEVE FAILED')
   }
 }
 
 function getExhibitionErrorCallback(responseText) {
-    console.log('ERROR CALLBACK')
-    console.log(responseText)
-}
-
-function getBackgroundImageCallback(responseText) {
-  console.log('GET IMAGE CALLBACK')
-  console.log(responseText)
-  // const response = JSON.parse(responseText)
-  // console.log('RETRIEVE BACKGROUND IMAGE RESPONSE')
-  // console.log(response)
-
-  const reader = new FileReader()
-  reader.readAsDataURL(responseText)
-
-  reader.onload = () => {
-    console.log('RAW')
-    console.log(reader.result)
-  }
-}
-
-function getBackgroundImageErrorCallback(responseText) {
     console.log('ERROR CALLBACK')
     console.log(responseText)
 }
