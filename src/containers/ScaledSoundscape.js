@@ -56,7 +56,6 @@ class ScaledSoundscape extends Component {
       roomDepth,
       roomShape,
       roomImage,
-      listenerPosition,
       listenerRotation,
       sources,
     } = this.props
@@ -162,11 +161,6 @@ ScaledSoundscape.propTypes = {
   roomDepth: PropTypes.number.isRequired,
   roomShape: PropTypes.oneOf(values(RoomShape)).isRequired,
   roomImage: PropTypes.string,
-  listenerPosition: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    z: PropTypes.number.isRequired,
-  }).isRequired,
   listenerRotation: PropTypes.number.isRequired,
   sources: PropTypes.arrayOf(CustomPropTypes.source).isRequired,
 }
@@ -180,7 +174,6 @@ const mapStateToProps = state => ({
   roomDepth: state.room.size.depth,
   roomImage: state.room.backgroundImage.raw,
   roomShape: state.room.shape,
-  listenerPosition: state.listener.position,
   listenerRotation: state.listener.position.rotZAxis,
   sources: values(state.sources.sources),
 })
