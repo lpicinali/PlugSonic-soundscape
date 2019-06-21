@@ -214,12 +214,7 @@ function* manageImportSources() {
     // resetCounter()
 
     for (let i = 0; i < sources.length; i++) {
-<<<<<<< HEAD
-      // incrementCounter()
-      if (sources[i].raw !== null ) {
-=======
       if (sources[i].raw !== null) {
->>>>>>> relative-sources
         yield put(addSource({ ...sources[i], origin: SourceOrigin.LOCAL }))
       } else if (sources[i].raw === null && sources[i].url !== null) {
         yield put(addSource({ ...sources[i], origin: SourceOrigin.REMOTE }))
