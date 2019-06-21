@@ -62,7 +62,7 @@ class ExhibitionContainer extends Component {
     soundscape.sources = map(soundscape.sources, source => source)
     // background image needs to be saved in /:exhibitionId/media
     // the rest goes to /:exhibitionId/metadata
-    soundscape.room.backgroundImage.raw = ''
+    // soundscape.room.backgroundImage.raw = ''
 
     // exhibition object
     const exhibition = {
@@ -73,8 +73,10 @@ class ExhibitionContainer extends Component {
       title: this.props.exhibition.title,
       type: 'soundscape',
     }
+
     console.log('Create Exhibition...')
     console.log(exhibition)
+
     httpPostAsync(
       `${API}/exhibitions`,
       this.createExhibitionCallback,
@@ -89,7 +91,9 @@ class ExhibitionContainer extends Component {
     const createdExhibition = JSON.parse(responseText)
     console.log('createExhibitionCallback')
     console.log(createdExhibition)
-    this.props.exhibition.id = createdExhibition.data._id
+    // this.props.exhibition.id = createdExhibition.data._id
+    // SET Description
+    // SET EXHIBITION_ID etc. etc.
   }
 
   createExhibitionErrorCallback = responseText => {
@@ -109,7 +113,7 @@ class ExhibitionContainer extends Component {
     soundscape.sources = map(soundscape.sources, source => source)
     // background image needs to be saved in /:exhibitionId/media
     // the rest goes to /:exhibitionId/metadata
-    soundscape.room.backgroundImage.raw = ''
+    // soundscape.room.backgroundImage.raw = ''
 
     // exhibition object
     const exhibition = {
@@ -120,8 +124,10 @@ class ExhibitionContainer extends Component {
       title: this.props.exhibition.title,
       type: 'soundscape',
     }
+
     console.log('Update Exhibition...')
     console.log(exhibition)
+
     httpPutAsync(
       `${API}/exhibitions/${this.props.exhibition.id}`,
       this.updateExhibitionCallback,
