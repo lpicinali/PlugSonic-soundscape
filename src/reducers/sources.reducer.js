@@ -52,23 +52,23 @@ export default function(state = initialState, { type, payload }) {
       origin:             payload.origin,
       platform_asset_id:  payload.platform_asset_id || null,
       platform_media_id:  payload.platform_media_id || null,
-      positioning:        payload.positioning || SourcePositioning.ABSOLUTE,
       position:           payload.position || defaultPosition,
-      relativePosition:   payload.relativePosition || defaultRelativePosition,
+      positioning:        payload.positioning || SourcePositioning.ABSOLUTE,
       raw:                null,
+      relativePosition:   payload.relativePosition || defaultRelativePosition,
       reach:              payload.reach || {
                             action: ReachAction.TOGGLE_VOLUME,
                             enabled: true,
                             fadeDuration: 1000,
                             radius: 3,
                           },
+      selected:           false,
       spatialised:        payload.spatialised === undefined ? true : payload.spatialised,
       timings:            payload.timings || {
                             [PlaybackTiming.PLAY_AFTER]: null,
                           },
       url:                payload.url || null,
       volume:             payload.volume || 1.0,
-      selected:           false,
     }
 
     azimuthIndex += 1
