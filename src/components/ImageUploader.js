@@ -31,20 +31,20 @@ class ImageUploader extends Component {
       })
     } else if (accepted.length === 1) {
       const file = accepted[0]
-      console.log('FILE')
-      console.log(file)
-      const formData = new FormData()
+      // console.log('FILE')
+      // console.log(file)
+      // const formData = new FormData()
       // const jsonFile = JSON.stringify(file)
       // const blob = new Blob([jsonFile], {type: 'application/json'});
-      formData.append('file', file, file.name);
+      // formData.append('file', file, file.name);
       // formData.append('file', blob, file.name);
-      console.log('FORMDATA')
-      console.log(formData.get('file'))
+      // console.log('FORMDATA')
+      // console.log(formData.get('file'))
 
       const reader = new FileReader()
       reader.readAsDataURL(file)
-      const reader2 = new FileReader()
-      reader2.readAsDataURL(formData.get('file'))
+      // const reader2 = new FileReader()
+      // reader2.readAsDataURL(formData.get('file'))
 
       reader.onabort = () => {
         this.setState({
@@ -63,9 +63,8 @@ class ImageUploader extends Component {
       }
 
       reader.onload = () => {
-
-        console.log('FILE RAW')
-        console.log(reader.result)
+        // console.log('FILE RAW')
+        // console.log(reader.result)
         // console.log('BtoA')
         // console.log(window.btoa(reader.result))
         // console.log('AtoB')
@@ -77,19 +76,23 @@ class ImageUploader extends Component {
           error: '',
         })
 
-        httpPostAsync(
-          `${API}/exhibitions/${this.props.exhibitionId}/media`,
-          this.uploadImageCallback,
-          this.uploadImageErrorCallback,
-          formData,
-          sessionToken,
-        )
+        this.props.onRoomImageChange({
+          // mediaId: uploadedImage.id,
+          raw: this.state.raw,
+        })
+        // httpPostAsync(
+        //   `${API}/exhibitions/${this.props.exhibitionId}/media`,
+        //   this.uploadImageCallback,
+        //   this.uploadImageErrorCallback,
+        //   formData,
+        //   sessionToken,
+        // )
       }
 
-      reader2.onload = () => {
-        console.log('FORMDATA RAW')
-        console.log(reader2.result)
-      }
+      // reader2.onload = () => {
+      //   console.log('FORMDATA RAW')
+      //   console.log(reader2.result)
+      // }
     } else {
       this.setState({
         ...this.state,
@@ -99,33 +102,49 @@ class ImageUploader extends Component {
     }
   }
 
-  uploadImageCallback = responseText => {
-    const uploadedImage = JSON.parse(responseText)
-    console.log('uploadImageCallback')
-    console.log(uploadedImage)
-
-    this.props.onRoomImageChange({
-      mediaId: uploadedImage.id,
-      raw: this.state.raw,
-    })
-  }
-
-  uploadImageErrorCallback = responseText => {
-    const error = JSON.parse(responseText)
-    console.log('uploadImageErrorCallback')
-    console.log(error)
-  }
+  // uploadImageCallback = responseText => {
+  //   const uploadedImage = JSON.parse(responseText)
+  //   console.log('uploadImageCallback')
+  //   console.log(uploadedImage)
+  //
+  //   this.props.onRoomImageChange({
+  //     mediaId: uploadedImage.id,
+  //     raw: this.state.raw,
+  //   })
+  // }
+  //
+  // uploadImageErrorCallback = responseText => {
+  //   const error = JSON.parse(responseText)
+  //   console.log('uploadImageErrorCallback')
+  //   console.log(error)
+  // }
 
   /* -------------------- RESET IMAGE ------------------*/
   resetImage = () => {
-    if (this.props.backgroundImageMediaId) {
-      httpDeleteAsync(
-        `${API}/exhibitions/${this.props.exhibitionId}/media/${this.props.backgroundImageMediaId}`,
-        this.resetImageCallback,
-        this.resetImageErrorCallback,
-        sessionToken,
-      )
-    }
+    // if (this.props.backgroundImageMediaId) {
+    //   httpDeleteAsync(
+    //     `${API}/exhibitions/${this.props.exhibitionId}/media/${this.props.backgroundImageMediaId}`,
+    //     this.resetImageCallback,
+    //     this.resetImageErrorCallback,
+    //     sessionToken,
+    //   )
+    // }
+    this.setState({
+      ...this.state,
+      // filename: '',
+      // size: '',
+      // type: '',
+      // preview: '',
+      raw: '',
+      error: '',
+    })
+    this.props.onRoomImageChange({
+      // filename: '',
+      // size: '',
+      // type: '',
+      // preview: '',
+      raw: '',
+    })
   }
 
   resetImageCallback = responseText => {
@@ -157,7 +176,7 @@ class ImageUploader extends Component {
         <H2>ROOM FLOORPLAN</H2>
         <Dropzone
           accept="image/*"
-          onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
+          onDrop={(accepted) => this.handleOnDrop(accepted)}
         >
           <ActionIcon />
           <div>
