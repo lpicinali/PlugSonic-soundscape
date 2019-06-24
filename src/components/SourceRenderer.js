@@ -32,7 +32,7 @@ function getScaleForZ(z, roomHeight) {
   return 1
 }
 
-function getSourceBodyColor(positioning) {
+function getSourceColor(positioning) {
   if (positioning === SourcePositioning.RELATIVE) {
     return colors.LIGHTBLUE
   }
@@ -68,26 +68,33 @@ const SourceBody = styled.div`
   left: 50%;
   transform: translate3d(-50%, -50%, 0)
     scale(${props => getScaleForZ(props.position.z, props.roomHeight)});
-  width: ${props => props.radiusSize * 2}px;
-  height: ${props => props.radiusSize * 2}px;
+  width: ${props => props.radiusSize * 2 - 2}px;
+  height: ${props => props.radiusSize * 2 - 2}px;
   border-radius: 50%;
-  border: 2px solid transparent;
+  border: 2px solid;
 
   ${props =>
     props.isEnabled
       ? css`
-          background: ${getSourceBodyColor(props.positioning)};
-          border: 2px solid transparent;
+          background: ${getSourceColor(props.positioning)};
+          border-color: ${getSourceColor(props.positioning)};
         `
       : css`
           background: transparent;
-          border-color: ${colors.GREY};
+          border-color: ${colors.DARKGREY};
         `}
+
+  ${props =>
+    props.isHidden &&
+    css`
+          background: transparent;
+    `}
 
   ${props =>
     props.isSelected &&
     css`
       background: ${colors.DARKBLUE};
+      border-color: ${colors.DARKBLUE};
     `}
 `
 
@@ -251,6 +258,7 @@ class SourceRenderer extends Component {
           position={source.position}
           roomHeight={roomHeight}
           isEnabled={source.enabled}
+          isHidden={source.hidden}
           isSelected={source.selected}
           onMouseOver={this.handleSourceMouseOver}
           onMouseOut={this.handleSourceMouseOut}

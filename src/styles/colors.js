@@ -1,6 +1,8 @@
 export const BLACK = '#000000'
+export const BLACK_TRANSPARENT = `rgba(0,0,0,0.5)`
 export const DARKBLUE = '#2A457A'
 export const LIGHTBLUE = '#099DD9'
+export const LIGHTBLUE_TRANSPARENT = `rgba(9,157,217,0.5)`
 export const DARKGREY = '#808080'
 export const GREY = '#B2B2B2'
 export const GREEN = '#0C8542'
