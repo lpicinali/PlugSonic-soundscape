@@ -113,7 +113,7 @@ class ExhibitionContainer extends Component {
     const exhibition = {
       description: this.props.exhibition.description,
       metadata: soundscape,
-      public: this.state.exhibition.isPublished,
+      public: this.props.exhibition.isPublished,
       tags: this.props.exhibition.tags.map(tag => tag.label),
       title: this.props.exhibition.title,
       type: 'soundscape',
