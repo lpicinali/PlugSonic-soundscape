@@ -28,7 +28,7 @@ export default function(state = initialState, { type, payload }) {
 
   if (type === ActionType.ADD_SOURCE) {
     const defaultPosition = {
-      ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
+      ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 1, 0),
       z: DEFAULT_Z_POSITION,
     }
 

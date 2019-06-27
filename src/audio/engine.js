@@ -4,7 +4,7 @@ import { clamp } from 'lodash'
 import FileSaver from 'file-saver'
 import Recorder from 'recorderjs'
 
-import { SourcePositioning } from 'src/constants.js'
+import { ReachAction, SourcePositioning } from 'src/constants.js'
 import { getSourceReachGain } from 'src/utils.js'
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
@@ -216,7 +216,26 @@ export const setSourceMuted = (name, isMuted) => {
 export const stopSource = source => {
   if (sourceNodes[source.name] && sourcePlaybackStates[source.name] === true) {
     sourcePlaybackStates[source.name] = false
-    sourceNodes[source.name].stop()
+
+    // Store a reference to the current source's audio node
+    // to check that we're not stopping a new node after fading
+    // is done
+    const sourceNode = sourceNodes[source.name]
+
+    if (
+      source.reach.enabled === true &&
+      source.reach.action === ReachAction.TOGGLE_PLAYBACK &&
+      source.gameplay.isPlaying === false
+    ) {
+      setSourceReachGain(source.name, 0, source.reach.fadeDuration)
+      setTimeout(() => {
+        if (sourceNodes[source.name] === sourceNode) {
+          sourceNodes[source.name].stop()
+        }
+      }, source.reach.fadeDuration)
+    } else {
+      sourceNodes[source.name].stop()
+    }
   }
 }
 
@@ -250,6 +269,14 @@ export const playSource = (source, volume, fadeDuration) => {
 
   if (volume !== undefined) {
     setVolume(sourceVolumes[source.name].gain, volume, fadeDuration)
+  }
+
+  if (
+    source.reach.enabled === true &&
+    source.reach.action === ReachAction.TOGGLE_PLAYBACK
+  ) {
+    sourceReachGains[source.name].gain.value = 0.00001
+    setSourceReachGain(source.name, 1, source.reach.fadeDuration)
   }
 
   sourceNodes[source.name].start(0)

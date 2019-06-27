@@ -108,12 +108,12 @@ class ExhibitionContainer extends Component {
     }
 
     soundscape.sources = map(soundscape.sources, source => source)
-    
+
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,
       metadata: soundscape,
-      public: this.state.exhibitionPublic,
+      public: this.props.exhibition.isPublished,
       tags: this.props.exhibition.tags.map(tag => tag.label),
       title: this.props.exhibition.title,
       type: 'soundscape',
