@@ -19,7 +19,7 @@ export const importExhibition = (
     ownerId,
     tags,
     title,
-    isPublished
+    isPublished,
   },
 })
 

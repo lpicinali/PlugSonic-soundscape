@@ -15,18 +15,20 @@ import {
   Divider,
   MenuItem,
   Paper,
-  TextField
+  TextField,
 } from '@material-ui/core'
 
 import { SourceOrigin } from 'src/constants'
 import { fetchAudioBuffer } from 'src/utils'
-import {
-  API,
-  httpHintAsync,
-  httpGetAsync,
-} from 'src/pluggy.js'
+import { API, httpHintAsync, httpGetAsync } from 'src/pluggy.js'
 import { addSource } from 'src/actions/sources.actions.js'
-import { FieldBox, FieldGroup, FullWidthSelect, H2, PanelContents } from 'src/styles/elements'
+import {
+  FieldBox,
+  FieldGroup,
+  FullWidthSelect,
+  H2,
+  PanelContents,
+} from 'src/styles/elements'
 
 /* ========================================================================== */
 
@@ -114,19 +116,21 @@ class SearchAssetContainer extends Component {
     /* ------------------------------------- */
     fetchAudioBuffer(sourceUrl)
       .then(audioBuffer => {
-        if ( audioBuffer.numberOfChannels === 2 ) {
+        if (audioBuffer.numberOfChannels === 2) {
           this.setState({ isPromptingAddStereo: true })
         } else if (audioBuffer.numberOfChannels === 1) {
           this.handleAddSourceResponse(true)
         }
       })
       .catch(err => console.error(err))
-      /* ------------------------------------- */
+    /* ------------------------------------- */
   }
 
-  handleAddSourceResponse = (shouldAdd) => {
+  handleAddSourceResponse = shouldAdd => {
     if (shouldAdd) {
-      const asset = this.state.assets.find(ast => ast._id === this.state.clickedAssetId)
+      const asset = this.state.assets.find(
+        ast => ast._id === this.state.clickedAssetId
+      )
 
       const media = asset.mediaContent[0]
       const sourceFilename = media.filename
@@ -169,20 +173,19 @@ class SearchAssetContainer extends Component {
 
   handleSearchAssets = () => {
     console.log('/nSEARCH ASSETS')
-    let query = `${API}/search?q=${this.state.searchTextFieldValue}&type=audio&limit=1000`
+    let query = `${API}/search?q=${
+      this.state.searchTextFieldValue
+    }&type=audio&limit=1000`
 
     if (this.state.myAssets) {
       query = `${query}&user=${this.props.ownerId}`
     }
 
-    query=`${query}&sort=${this.state.orderBy}`
+    query = `${query}&sort=${this.state.orderBy}`
 
     console.log(query)
 
-    httpGetAsync(
-      query,
-      this.searchAssetCallback
-    )
+    httpGetAsync(query, this.searchAssetCallback)
 
     this.setState({
       ...this.state,
@@ -193,7 +196,7 @@ class SearchAssetContainer extends Component {
 
   searchAssetCallback = responseText => {
     const response = JSON.parse(responseText)
-    console.log("Assets")
+    console.log('Assets')
     console.log(response)
     this.setState({
       ...this.state,
@@ -201,15 +204,15 @@ class SearchAssetContainer extends Component {
     })
   }
 
-  handleSearchDropDownChange = (event) => {
+  handleSearchDropDownChange = event => {
     this.setState({
-      myAssets: event.target.value
+      myAssets: event.target.value,
     })
   }
 
-  handleOrderByDropDownChange = (event) => {
+  handleOrderByDropDownChange = event => {
     this.setState({
-      orderBy: event.target.value
+      orderBy: event.target.value,
     })
   }
 
@@ -241,8 +244,12 @@ class SearchAssetContainer extends Component {
               <Autosuggest
                 renderInputComponent={renderInputComponent}
                 suggestions={this.state.suggestions}
-                onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+                onSuggestionsFetchRequested={
+                  this.handleSuggestionsFetchRequested
+                }
+                onSuggestionsClearRequested={
+                  this.handleSuggestionsClearRequested
+                }
                 getSuggestionValue={getSuggestionValue}
                 renderSuggestion={renderSuggestion}
                 inputProps={{
@@ -260,7 +267,10 @@ class SearchAssetContainer extends Component {
             </FieldBox>
 
             <FieldBox>
-              <FullWidthSelect value={this.state.myAssets} onChange={this.handleSearchDropDownChange}>
+              <FullWidthSelect
+                value={this.state.myAssets}
+                onChange={this.handleSearchDropDownChange}
+              >
                 <MenuItem value={false}>All Pluggy</MenuItem>
                 <MenuItem value>My Assets</MenuItem>
               </FullWidthSelect>
@@ -270,7 +280,10 @@ class SearchAssetContainer extends Component {
           <H2>ORDER BY</H2>
 
           <FieldBox>
-            <FullWidthSelect value={this.state.orderBy} onChange={this.handleOrderByDropDownChange}>
+            <FullWidthSelect
+              value={this.state.orderBy}
+              onChange={this.handleOrderByDropDownChange}
+            >
               <MenuItem value="trending">Trending</MenuItem>
               <MenuItem value="recent">Recent</MenuItem>
               <MenuItem value="title">Title</MenuItem>
@@ -301,16 +314,14 @@ class SearchAssetContainer extends Component {
 
           <DialogContent>
             <DialogContentText>
-              You are importing a stereo file.
-              Please be aware that, when spatialised, the audio engine will sum left and right channels into mono before rendering.
-              Do you want to proceed?
+              You are importing a stereo file. Please be aware that, when
+              spatialised, the audio engine will sum left and right channels
+              into mono before rendering. Do you want to proceed?
             </DialogContentText>
           </DialogContent>
 
           <DialogActions>
-            <Button
-              onClick={() => this.handleAddSourceResponse(false)}
-            >
+            <Button onClick={() => this.handleAddSourceResponse(false)}>
               No
             </Button>
 

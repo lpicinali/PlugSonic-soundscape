@@ -1,10 +1,10 @@
 {
-  "name": "plugsonic",
+  "name": "plugsonic_soundscape",
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "9.x",
-    "npm": "5.x"
+    "node": "10.x",
+    "npm": "6.x"
   },
   "main": "src/index.js",
   "scripts": {

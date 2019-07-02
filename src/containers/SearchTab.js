@@ -1,4 +1,4 @@
-import React, { Component} from "react"
+import React, { Component } from 'react'
 
 import SearchAssetContainer from 'src/containers/SearchAssetContainer'
 /* ========================================================================== */
@@ -7,13 +7,11 @@ import SearchAssetContainer from 'src/containers/SearchAssetContainer'
 /* SEARCH TAB */
 /* ========================================================================== */
 class SearchTab extends Component {
-
   /* ------------------------------------------------------------------------ */
   render() {
-
     return (
       <React.Fragment>
-        <SearchAssetContainer/>
+        <SearchAssetContainer />
       </React.Fragment>
     )
   }

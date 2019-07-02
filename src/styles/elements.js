@@ -1,6 +1,12 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { FormControl, FormControlLabel, Input, Select, Switch, withStyles } from '@material-ui/core'
+import {
+  FormControl,
+  FormControlLabel,
+  Input,
+  Select,
+  withStyles,
+} from '@material-ui/core'
 
 import * as colors from 'src/styles/colors.js'
 
@@ -45,15 +51,19 @@ export const PanelContents = styled.div`
   padding: 24px;
 `
 
-export const FullWidthSelect = props => <Select {...props} input={<Input fullWidth />} />
+export const FullWidthSelect = props => (
+  <Select {...props} input={<Input fullWidth />} />
+)
 
 export const FieldGroup = styled.div`
   margin-bottom: 24px;
 
-  ${props => props.disabled && css`
-    opacity: 0.4;
-    pointer-events: none;
-  `}
+  ${props =>
+    props.disabled &&
+    css`
+      opacity: 0.4;
+      pointer-events: none;
+    `}
 `
 
 export const FieldBox = styled.div`
@@ -73,7 +83,7 @@ export const SwitchControlLabel = withStyles({
   },
   label: {
     fontSize: 14,
-  }
+  },
 })(FormControlLabel)
 
 export const SwitchBox = styled.div`

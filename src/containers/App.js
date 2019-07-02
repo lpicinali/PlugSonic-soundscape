@@ -23,16 +23,14 @@ import {
 } from '@material-ui/core'
 
 class App extends Component {
-
   state = {
-    isDisclaimerOpen: true
+    isDisclaimerOpen: true,
   }
   componentDidMount() {
     if (
       Object.keys(exhibition).length !== 0 &&
       exhibition.constructor === Object
     ) {
-
       if (
         exhibition.description &&
         exhibition.id &&
@@ -47,19 +45,19 @@ class App extends Component {
           exhibition.ownerId,
           exhibition.tags,
           exhibition.title,
-          exhibition.isPublished,
+          exhibition.isPublished
         )
       }
 
-      if (exhibition.metadata.listener){
+      if (exhibition.metadata.listener) {
         this.props.onImportListener(exhibition.metadata.listener)
       }
 
-      if (exhibition.metadata.room){
+      if (exhibition.metadata.room) {
         this.props.onImportRoom(exhibition.metadata.room)
       }
 
-      if (exhibition.metadata.sources){
+      if (exhibition.metadata.sources) {
         this.props.onImportSources(exhibition.metadata.sources)
       }
     }
@@ -68,16 +66,15 @@ class App extends Component {
   render() {
     return (
       <AppContainer>
-        <Dialog
-          open={this.state.isDisclaimerOpen}
-        >
+        <Dialog open={this.state.isDisclaimerOpen}>
           <DialogTitle>Disclaimer</DialogTitle>
 
           <DialogContent>
             <DialogContentText>
               WARNING: This application might result in very loud audio levels,
-              which can cause damage to your hearing, especially if you are wearing headphones.
-              Please ensure you take caution and keep your headphones volume low.
+              which can cause damage to your hearing, especially if you are
+              wearing headphones. Please ensure you take caution and keep your
+              headphones volume low.
             </DialogContentText>
           </DialogContent>
 
@@ -116,7 +113,12 @@ const mapDispatchToProps = dispatch => ({
   onImportRoom: room => dispatch(importRoom(room)),
   onImportSources: sources => dispatch(importSources(sources)),
   onImportExhibition: (description, id, ownerId, tags, title, isPublished) =>
-    dispatch(importExhibition(description, id, ownerId, tags, title, isPublished))
+    dispatch(
+      importExhibition(description, id, ownerId, tags, title, isPublished)
+    ),
 })
 
-export default connect(null, mapDispatchToProps)(App)
+export default connect(
+  null,
+  mapDispatchToProps
+)(App)

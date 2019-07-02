@@ -31,11 +31,14 @@ class ImportButton extends Component {
     results.forEach(result => {
       const [e, file] = result
       const soundscape = JSON.parse(e.target.result)
-      this.setState({soundscapeToImport: soundscape, isImportDialogOpen: true})
+      this.setState({
+        soundscapeToImport: soundscape,
+        isImportDialogOpen: true,
+      })
     })
   }
 
-  handleImportSoundscapeResponse = (confirm) => {
+  handleImportSoundscapeResponse = confirm => {
     if (confirm) {
       const soundscape = this.state.soundscapeToImport
       this.props.onSetPlaybackState(PlaybackState.STOP)
@@ -43,7 +46,7 @@ class ImportButton extends Component {
       this.props.onImportListener(soundscape.listener)
       this.props.onImportRoom(soundscape.room)
     }
-    this.setState({soundscapeToImport: {}, isImportDialogOpen: false})
+    this.setState({ soundscapeToImport: {}, isImportDialogOpen: false })
   }
 
   /* ------------------------------------------------------------------------ */
@@ -69,14 +72,13 @@ class ImportButton extends Component {
 
           <DialogContent>
             <DialogContentText>
-              This action will require some time. Please wait few seconds before playing the soundscape. Press OK to continue...
+              This action will require some time. Please wait few seconds before
+              playing the soundscape. Press OK to continue...
             </DialogContentText>
           </DialogContent>
 
           <DialogActions>
-            <Button
-              onClick={() => this.handleImportSoundscapeResponse(false)}
-            >
+            <Button onClick={() => this.handleImportSoundscapeResponse(false)}>
               Cancel
             </Button>
 
