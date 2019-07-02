@@ -87,7 +87,7 @@ const SourceBody = styled.div`
   ${props =>
     props.isHidden &&
     css`
-          background: transparent;
+      background: transparent;
     `}
 
   ${props =>

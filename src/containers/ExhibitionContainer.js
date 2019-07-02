@@ -20,12 +20,7 @@ import {
   setTags,
   setTitle,
 } from 'src/actions/exhibition.actions.js'
-import {
-  API,
-  httpPostAsync,
-  httpPutAsync,
-  sessionToken,
-} from 'src/pluggy'
+import { API, httpPostAsync, httpPutAsync, sessionToken } from 'src/pluggy'
 import { FieldBox } from 'src/styles/elements'
 
 /* ========================================================================== */
@@ -80,7 +75,7 @@ class ExhibitionContainer extends Component {
       this.createExhibitionErrorCallback,
       JSON.stringify(exhibition),
       sessionToken,
-      "application/json"
+      'application/json'
     )
   }
 
@@ -128,7 +123,7 @@ class ExhibitionContainer extends Component {
       this.updateExhibitionErrorCallback,
       JSON.stringify(exhibition),
       sessionToken,
-      "application/json"
+      'application/json'
     )
   }
 
@@ -137,7 +132,7 @@ class ExhibitionContainer extends Component {
     console.log(updatedExhibition)
     this.setState({
       isSaveDialogOpen: true,
-      saveDialogText: 'Save Exhibition Successfull'
+      saveDialogText: 'Save Exhibition Successfull',
     })
   }
 
@@ -146,7 +141,7 @@ class ExhibitionContainer extends Component {
     console.log(updatedExhibition)
     this.setState({
       isSaveDialogOpen: true,
-      saveDialogText: 'Save Exhibition Unsuccessfull. Try Again.'
+      saveDialogText: 'Save Exhibition Unsuccessfull. Try Again.',
     })
   }
   /* -------------------- SAVE EXHIBITION ------------------*/
@@ -171,32 +166,36 @@ class ExhibitionContainer extends Component {
       this.publishExhibitionErrorCallback,
       JSON.stringify(exhibition),
       sessionToken,
-      "application/json"
+      'application/json'
     )
   }
 
-  publishExhibitionCallback = (responseText) => {
+  publishExhibitionCallback = responseText => {
     const publishExhibition = JSON.parse(responseText)
     console.log(publishExhibition)
     this.setState({
       isPublishDialogOpen: true,
-      publishDialogText: this.props.exhibition.isPublished ? 'Unpublish Exhibition Successfull':'Publish Exhibition Successfull'
+      publishDialogText: this.props.exhibition.isPublished
+        ? 'Unpublish Exhibition Successfull'
+        : 'Publish Exhibition Successfull',
     })
     this.props.onSetPublished(publishExhibition.data.public)
   }
 
-  publishExhibitionErrorCallback = (responseText) => {
+  publishExhibitionErrorCallback = responseText => {
     const publishExhibition = JSON.parse(responseText)
     console.log(publishExhibition)
     this.setState({
       isPublishDialogOpen: true,
-      publishDialogText: this.props.exhibition.isPublished ? 'Unpublish Exhibition Unsuccessfull. Try Again.':'Publish Exhibition Unuccessfull. Try Again'
+      publishDialogText: this.props.exhibition.isPublished
+        ? 'Unpublish Exhibition Unsuccessfull. Try Again.'
+        : 'Publish Exhibition Unuccessfull. Try Again',
     })
     this.props.onSetPublished(publishExhibition.data.public)
   }
 
   /* -------------------- TAGS EXHIBITION ------------------*/
-  handleTextFieldChange = (event) => {
+  handleTextFieldChange = event => {
     const id = event.target.id
     const val = event.target.value
     if (id === 'exhibitionTitle') {
@@ -285,23 +284,22 @@ class ExhibitionContainer extends Component {
             variant="contained"
             color="primary"
             fullWidth
-            disabled={this.props.exhibition.title === '' || this.props.exhibition.description === ''}
+            disabled={
+          this.props.exhibition.title === '' ||
+          this.props.exhibition.description === ''
+            }
             onClick={this.handleSaveExhibition}
           >
             SAVE
           </Button>
 
-          <Dialog
-            open={this.state.isSaveDialogOpen}
-          >
+          <Dialog open={this.state.isSaveDialogOpen}>
             <DialogTitle>Save Exhibition</DialogTitle>
 
             <DialogContent>
-          <DialogContentText>
-          {this.state.saveDialogText}
-          </DialogContentText>
+          <DialogContentText>{this.state.saveDialogText}</DialogContentText>
             </DialogContent>
-
+          
             <DialogActions>
           <Button
           variant="contained"
@@ -320,15 +318,16 @@ class ExhibitionContainer extends Component {
             variant="contained"
             color="primary"
             fullWidth
-            disabled={this.props.exhibition.title === '' || this.props.exhibition.description === ''}
+            disabled={
+              this.props.exhibition.title === '' ||
+              this.props.exhibition.description === ''
+            }
             onClick={this.handlePublishExhibition}
           >
-            {this.props.exhibition.isPublished ? 'UNPUBLISH':'PUBLISH'}
+            {this.props.exhibition.isPublished ? 'UNPUBLISH' : 'PUBLISH'}
           </Button>
 
-          <Dialog
-            open={this.state.isPublishDialogOpen}
-          >
+          <Dialog open={this.state.isPublishDialogOpen}>
             <DialogTitle>Publish Exhibition</DialogTitle>
 
             <DialogContent>

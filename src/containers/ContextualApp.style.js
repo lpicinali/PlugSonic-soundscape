@@ -4,7 +4,20 @@
 /* eslint no-restricted-globals: 0 */
 /* eslint import/prefer-default-export : 0 */
 import styled, { createGlobalStyle } from 'styled-components'
-import { BLACK, DARKBLUE, LIGHTBLUE, GREEN, GREY, LIGHTGREY, ORANGE, RED, TURQOISE, YELLOW, WHITE, WHITESMOKE } from 'src/styles/colors.js'
+import {
+  BLACK,
+  DARKBLUE,
+  LIGHTBLUE,
+  GREEN,
+  GREY,
+  LIGHTGREY,
+  ORANGE,
+  RED,
+  TURQOISE,
+  YELLOW,
+  WHITE,
+  WHITESMOKE,
+} from 'src/styles/colors.js'
 import { MAX_WIDTH } from 'src/styles/layout'
 
 // ======================= _GLOBAL_ ========================================= //

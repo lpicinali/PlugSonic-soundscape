@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { clamp, values } from 'lodash'
+import { values } from 'lodash'
 
 import ArrowButton from 'src/components/ArrowButton'
 
@@ -10,9 +10,16 @@ import { setListenerPosition } from 'src/actions/listener.actions'
 /* ========================================================================== */
 const REPEAT_TIME = 50
 const METERS_PER_STEP = 0.25
-const RADIANS_PER_STEP = Math.PI/32
+const RADIANS_PER_STEP = Math.PI / 32
 /* ========================================================================== */
-function calculateNewListenerPosition(roomShape, roomWidth, roomDepth, listenerPosition, listenerRotation, key) {
+function calculateNewListenerPosition(
+  roomShape,
+  roomWidth,
+  roomDepth,
+  listenerPosition,
+  listenerRotation,
+  key
+) {
   let newX = listenerPosition.x
   let newY = listenerPosition.y
   let rotZAxis = listenerRotation
@@ -28,11 +35,11 @@ function calculateNewListenerPosition(roomShape, roomWidth, roomDepth, listenerP
   }
 
   if (roomShape === RoomShape.RECTANGULAR) {
-    if (Math.abs(newX + deltaX) > roomDepth/2) {
+    if (Math.abs(newX + deltaX) > roomDepth / 2) {
       if (newX >= 0) {
-        deltaX = roomDepth/2 - newX
+        deltaX = roomDepth / 2 - newX
       } else {
-        deltaX = -roomDepth/2 - newX
+        deltaX = -roomDepth / 2 - newX
       }
       if (Math.abs(deltaY) >= 0.01) {
         deltaY = deltaX * Math.tan(listenerRotation)
@@ -40,11 +47,11 @@ function calculateNewListenerPosition(roomShape, roomWidth, roomDepth, listenerP
         deltaY = 0
       }
     }
-    if (Math.abs(newY + deltaY) > roomWidth/2) {
+    if (Math.abs(newY + deltaY) > roomWidth / 2) {
       if (newY >= 0) {
-        deltaY = roomWidth/2 - newY
+        deltaY = roomWidth / 2 - newY
       } else {
-        deltaY = -roomWidth/2 - newY
+        deltaY = -roomWidth / 2 - newY
       }
       if (Math.abs(deltaX) >= 0.01) {
         deltaX = deltaY * (1 / Math.tan(listenerRotation))
@@ -73,7 +80,7 @@ function calculateNewListenerPosition(roomShape, roomWidth, roomDepth, listenerP
   }
 
   const radius = roomWidth / 2
-  if (roomShape === RoomShape.ROUND && newX**2 + newY**2 > radius**2) {
+  if (roomShape === RoomShape.ROUND && newX ** 2 + newY ** 2 > radius ** 2) {
     const theta = Math.atan(newY / newX) + (newX < 0 ? Math.PI : 0)
     newX = radius * Math.cos(theta)
     newY = radius * Math.sin(theta)
@@ -124,15 +131,20 @@ class ArrowControlsContainer extends Component {
   //   this.state.key = ''
   // }
 
-  onTouchStart = (evt) => {
+  onTouchStart = evt => {
     this.state.key = evt
     this.state.isMoving = true
     // window.addEventListener('touchmove', this.handleTouchMove, {passive: false}, false)
-    window.addEventListener('touchend', this.onTouchEnd, {passive: false}, false)
+    window.addEventListener(
+      'touchend',
+      this.onTouchEnd,
+      { passive: false },
+      false
+    )
     this.repeat()
   }
 
-  onTouchMove = (evt) => {
+  onTouchMove = evt => {
     evt.preventDefault()
     evt.stopPropagation()
     this.state.key = evt
@@ -149,9 +161,22 @@ class ArrowControlsContainer extends Component {
   }
 
   updatePosition = () => {
-    const { roomShape, roomWidth, roomDepth, listenerPosition, listenerRotation } = this.props
+    const {
+      roomShape,
+      roomWidth,
+      roomDepth,
+      listenerPosition,
+      listenerRotation,
+    } = this.props
     const key = this.state.key
-    const newPos = calculateNewListenerPosition(roomShape, roomWidth, roomDepth, listenerPosition, listenerRotation, key)
+    const newPos = calculateNewListenerPosition(
+      roomShape,
+      roomWidth,
+      roomDepth,
+      listenerPosition,
+      listenerRotation,
+      key
+    )
     this.props.setListenerPosition(newPos)
   }
 
@@ -161,8 +186,7 @@ class ArrowControlsContainer extends Component {
   }
   /* ------------------------------------------------------------------------ */
   render() {
-
-    const arrowControls =
+    const arrowControls = (
       <div>
         <div style={{ justifyContent: 'center', textAlign: 'center' }}>
           <ArrowButton
@@ -193,7 +217,6 @@ class ArrowControlsContainer extends Component {
             onTouchStart={() => this.onTouchStart('down')}
             onTouchMove={() => {}}
             onTouchEnd={this.onTouchEnd}
-
           />
           <ArrowButton
             rotation={0}
@@ -206,10 +229,9 @@ class ArrowControlsContainer extends Component {
           />
         </div>
       </div>
-
-    return (
-      arrowControls
     )
+
+    return arrowControls
   }
 }
 
@@ -238,4 +260,7 @@ const mapDispatchToProps = dispatch => ({
   setListenerPosition: position => dispatch(setListenerPosition(position)),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(ArrowControlsContainer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ArrowControlsContainer)

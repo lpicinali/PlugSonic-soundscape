@@ -2,11 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
-import {
-  Button,
-  FormHelperText,
-  TextField,
-} from '@material-ui/core'
+import { Button, FormHelperText, TextField } from '@material-ui/core'
 
 import { SourceOrigin } from 'src/constants.js'
 import { fetchAudioBufferRaw } from 'src/utils.js'
@@ -42,15 +38,15 @@ class SourceUploader extends Component {
       this.setState({
         ...this.state,
         name: val,
-        errorTextField: ''
+        errorTextField: '',
       })
     }
   }
 
-  handleOnDrop = (accepted) => {
+  handleOnDrop = accepted => {
     if (accepted.length === 0) {
       this.setState({
-        errorFile: 'Unsupported file format'
+        errorFile: 'Unsupported file format',
       })
     } else if (accepted.length === 1) {
       const reader = new FileReader()
@@ -107,7 +103,7 @@ class SourceUploader extends Component {
         ...this.state,
         filename: '',
         size: '',
-        errorFile: 'Please load only one file'
+        errorFile: 'Please load only one file',
       })
     }
   }
@@ -143,12 +139,9 @@ class SourceUploader extends Component {
         >
           <ActionIcon />
           <div>
-            {this.state.filename === '' ? (
-                'Drop an mp3 file here (or click) to load it.'
-            ) : (
-                `${this.state.filename} - ${this.state.size} bytes`
-            )
-            }
+            {this.state.filename === ''
+              ? 'Drop an mp3 file here (or click) to load it.'
+              : `${this.state.filename} - ${this.state.size} bytes`}
           </div>
           <div style={{ height: `12px`, marginBottom: `10px` }}>
             {this.state.errorFile === '' ? '' : `${this.state.errorFile}`}
@@ -197,7 +190,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  onAddSource: (filename, name ) =>
+  onAddSource: (filename, name) =>
     dispatch(addSource({ filename, name, origin: SourceOrigin.LOCAL })),
 })
 

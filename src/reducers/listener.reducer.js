@@ -1,4 +1,8 @@
-import { ActionType, DEFAULT_Z_POSITION, SpatializationMode } from 'src/constants.js'
+import {
+  ActionType,
+  DEFAULT_Z_POSITION,
+  SpatializationMode,
+} from 'src/constants.js'
 
 const initialState = {
   headRadius: 0.0875,
@@ -13,7 +17,6 @@ const initialState = {
 }
 
 export default function(state = initialState, { type, payload }) {
-
   if (type === ActionType.SET_LISTENER_POSITION) {
     const newPosition = Object.assign({}, state.position)
     Object.assign(newPosition, payload.position)

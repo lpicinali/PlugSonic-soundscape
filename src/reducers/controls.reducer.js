@@ -12,7 +12,6 @@ const initialState = {
 }
 
 export default function(state = initialState, { type, payload }) {
-
   if (type === ActionType.SET_MASTER_VOLUME) {
     return { ...state, masterVolume: payload.volume }
   }
@@ -23,19 +22,19 @@ export default function(state = initialState, { type, payload }) {
   }
 
   if (type === ActionType.SHOW_ARROWS_DRAWER) {
-    return { ...state, showArrowsDrawer: true, }
+    return { ...state, showArrowsDrawer: true }
   }
 
   if (type === ActionType.HIDE_ARROWS_DRAWER) {
-    return { ...state, showArrowsDrawer: false, }
+    return { ...state, showArrowsDrawer: false }
   }
 
   if (type === ActionType.SHOW_SETTINGS_DRAWER) {
-    return { ...state, showSettingsDrawer: true, }
+    return { ...state, showSettingsDrawer: true }
   }
 
   if (type === ActionType.HIDE_SETTINGS_DRAWER) {
-    return { ...state, showSettingsDrawer: false, }
+    return { ...state, showSettingsDrawer: false }
   }
 
   return state

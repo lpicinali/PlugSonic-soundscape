@@ -8,7 +8,7 @@ import { MenuItem } from '@material-ui/core'
 import {
   setHrtfFilename,
   setHighPerformanceMode,
-  setHighQualityMode
+  setHighQualityMode,
 } from 'src/actions/listener.actions.js'
 import { FieldGroup, FullWidthSelect, H3 } from 'src/styles/elements.js'
 import { SpatializationMode } from 'src/constants'
@@ -42,7 +42,6 @@ function getHrtfFromFilename(url) {
  * Hrtf Select
  */
 class HrtfSelect extends PureComponent {
-
   handleChange = (key, newValue) => {
     const { value, onChange } = this.props
 
@@ -56,10 +55,9 @@ class HrtfSelect extends PureComponent {
 
     onChange(getHrtfFilename(newHrtf.fn, newHrtf.len))
 
-    this.props.spatializationMode === SpatializationMode.HighQuality ?
-      this.props.onSetHighQualityMode()
-        :
-      this.props.onSetHighPerformanceMode()
+    this.props.spatializationMode === SpatializationMode.HighQuality
+      ? this.props.onSetHighQualityMode()
+      : this.props.onSetHighPerformanceMode()
   }
 
   render() {
@@ -73,7 +71,7 @@ class HrtfSelect extends PureComponent {
           <H3>HRTF function</H3>
           <FullWidthSelect
             value={fn}
-            onChange={(evt) => this.handleChange('fn', evt.target.value)}
+            onChange={evt => this.handleChange('fn', evt.target.value)}
           >
             {hrtfFunctions.map(hrtfFunction => (
               <MenuItem key={hrtfFunction} value={hrtfFunction}>
@@ -87,7 +85,7 @@ class HrtfSelect extends PureComponent {
           <H3>HRTF sample length</H3>
           <FullWidthSelect
             value={len}
-            onChange={(evt) => this.handleChange('len', evt.target.value)}
+            onChange={evt => this.handleChange('len', evt.target.value)}
           >
             {hrtfLengths.map(hrtfLength => (
               <MenuItem key={hrtfLength} value={hrtfLength}>
@@ -124,4 +122,7 @@ const mapDispatchToProps = dispatch => ({
   onSetHighQualityMode: () => dispatch(setHighQualityMode()),
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(HrtfSelect)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HrtfSelect)

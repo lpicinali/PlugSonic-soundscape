@@ -37,10 +37,10 @@ export function fetchAudioBuffer(url) {
   return got(url, { encoding: null })
     .then(response => bufferToArrayBuffer(response.body))
     .then(arrayBuffer => decode(arrayBuffer, context))
-    // .then(() => {
-    //   console.log(`decode ${url} complete!`)
-    //   decrementCounter()
-    // })
+  // .then(() => {
+  //   console.log(`decode ${url} complete!`)
+  //   decrementCounter()
+  // })
 }
 
 export function ArrayBufferCycle(array) {

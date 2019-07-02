@@ -9,14 +9,14 @@ import { MAX_WIDTH } from 'src/styles/layout'
 
 // ======================= _APP CONTAINER_ ==================================== //
 
-export const  AppContainer  = styled.div`
-    background: ${colors.WHITE};
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+export const AppContainer = styled.div`
+  background: ${colors.WHITE};
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 
-    width: 100vw;
-    overflow-y: scroll;
+  width: 100vw;
+  overflow-y: scroll;
 `
 
 export const Nav = styled.div`
@@ -28,33 +28,6 @@ export const Nav = styled.div`
   height: 48px;
   justify-content: center;
 `
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // // ======================= _SCAPE CONTAINER_ ================================ //
 //

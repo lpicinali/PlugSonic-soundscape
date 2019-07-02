@@ -16,13 +16,12 @@ import {
 /* EXHIBITION TAB */
 /* ========================================================================== */
 class ExhibitionTab extends Component {
-
   /* ------------------------------------------------------------------------ */
   render() {
     return (
       <React.Fragment>
         <PanelContents>
-          <ExhibitionContainer/>
+          <ExhibitionContainer />
         </PanelContents>
 
         {/* <Divider /> */}
@@ -30,16 +29,23 @@ class ExhibitionTab extends Component {
         {/* <PanelContents>
           <FieldGroup>
             <H2>IMPORT</H2>
-            <ImportButton/>
+            <ImportButton />
           </FieldGroup>
 
           <FieldGroup>
             <H2>EXPORT</H2>
             <FieldBox>
+<<<<<<< HEAD
           <ExportMetaButton/>
             </FieldBox>
             <FieldBox>
           <ExportRawButton/>
+=======
+              <ExportMetaButton />
+            </FieldBox>
+            <FieldBox>
+              <ExportRawButton />
+>>>>>>> master
             </FieldBox>
           </FieldGroup>
         </PanelContents> */}

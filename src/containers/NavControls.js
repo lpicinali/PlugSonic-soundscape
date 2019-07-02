@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { values } from 'lodash'
-import * as colors from 'src/styles/colors'
 
 import { IconButton } from '@material-ui/core'
 import PlayIcon from '@material-ui/icons/PlayArrow'
@@ -66,11 +65,13 @@ class NavControls extends Component {
           }
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.PLAY)}
         >
-          <PlayIcon color={
-            (this.props.playbackState === PlaybackState.PLAY ||
-            this.props.playbackState === PlaybackState.RECORD)
-              ? 'error' 
-              : 'secondary'}
+          <PlayIcon
+            color={
+              this.props.playbackState === PlaybackState.PLAY ||
+              this.props.playbackState === PlaybackState.RECORD
+                ? 'error'
+                : 'secondary'
+            }
           />
         </IconButton>
 
@@ -87,7 +88,13 @@ class NavControls extends Component {
           disabled={this.props.playbackState === PlaybackState.RECORD}
           onClick={() => this.props.onPlaybackStateChange(PlaybackState.RECORD)}
         >
-          <RecordIcon color={this.props.playbackState === PlaybackState.RECORD ? 'error' : 'secondary'} />
+          <RecordIcon
+            color={
+              this.props.playbackState === PlaybackState.RECORD
+                ? 'error'
+                : 'secondary'
+            }
+          />
         </IconButton>
 
         <IconButton style={FlatButtonStyle} onClick={this.toggleArrows}>
