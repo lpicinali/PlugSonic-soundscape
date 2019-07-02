@@ -1,1 +1,1 @@
-# Pluggy - PlugSonic App
+# Pluggy - PlugSonic Soundscape App

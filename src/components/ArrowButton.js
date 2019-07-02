@@ -8,44 +8,44 @@ import { PlayIcon } from 'src/resources/icons.js'
  */
 class ArrowButton extends Component {
   static propTypes = {
-    isEnabled     : PropTypes.bool,
-    isActive      : PropTypes.bool,
-    rotateIcon    : PropTypes.number,
-    onClick       : PropTypes.func,
-    onMouseEnter  : PropTypes.func,
-    onMouseLeave  : PropTypes.func,
-    onMouseDown   : PropTypes.func,
-    onMouseUp     : PropTypes.func,
-    onMouseOver   : PropTypes.func,
-    onMouseOut    : PropTypes.func,
-    onFocus       : PropTypes.func,
-    onBlur        : PropTypes.func,
-    onTouchStart  : PropTypes.func,
-    onTouchMove   : PropTypes.func,
-    onTouchEnd    : PropTypes.func,
-    className     : PropTypes.string,
-    children      : PropTypes.node,
+    isEnabled: PropTypes.bool,
+    isActive: PropTypes.bool,
+    rotateIcon: PropTypes.number,
+    onClick: PropTypes.func,
+    onMouseEnter: PropTypes.func,
+    onMouseLeave: PropTypes.func,
+    onMouseDown: PropTypes.func,
+    onMouseUp: PropTypes.func,
+    onMouseOver: PropTypes.func,
+    onMouseOut: PropTypes.func,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
+    onTouchStart: PropTypes.func,
+    onTouchMove: PropTypes.func,
+    onTouchEnd: PropTypes.func,
+    className: PropTypes.string,
+    children: PropTypes.node,
   }
 
   static defaultProps = {
-    isEnabled     : true,
-    isActive      : false,
-    rotateIcon    : 0,
-    className     : '',
-    onClick       : () => {},
-    onMouseEnter  : () => {},
-    onMouseLeave  : () => {},
-    onMouseDown   : () => {},
-    onMouseUp     : () => {},
-    onMouseOver   : () => {},
-    onMouseOut    : () => {},
-    onFocus       : () => {},
-    onBlur        : () => {},
-    onTouchStart  : () => {},
-    onTouchMove   : () => {},
-    onTouchEnd    : () => {},
-    children      : <PlayIcon />,
-    }
+    isEnabled: true,
+    isActive: false,
+    rotateIcon: 0,
+    className: '',
+    onClick: () => {},
+    onMouseEnter: () => {},
+    onMouseLeave: () => {},
+    onMouseDown: () => {},
+    onMouseUp: () => {},
+    onMouseOver: () => {},
+    onMouseOut: () => {},
+    onFocus: () => {},
+    onBlur: () => {},
+    onTouchStart: () => {},
+    onTouchMove: () => {},
+    onTouchEnd: () => {},
+    children: <PlayIcon />,
+  }
 
   render() {
     const {
@@ -65,7 +65,7 @@ class ArrowButton extends Component {
       onTouchStart,
       onTouchMove,
       onTouchEnd,
-      children
+      children,
     } = this.props
 
     return (

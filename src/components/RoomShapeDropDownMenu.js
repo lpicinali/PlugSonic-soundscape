@@ -12,7 +12,7 @@ import { FullWidthSelect, H2 } from 'src/styles/elements.js'
 /* ROOM SHAPE DROPDOWN MENU */
 /* ========================================================================== */
 class RoomShapeDropDownMenu extends Component {
-  handleChange = (evt) => {
+  handleChange = evt => {
     const { value } = evt.target
 
     this.props.onRoomShapeChange(value)
@@ -30,7 +30,10 @@ class RoomShapeDropDownMenu extends Component {
     return (
       <React.Fragment>
         <H2>ROOM SHAPE</H2>
-        <FullWidthSelect value={this.props.roomShape} onChange={this.handleChange}>
+        <FullWidthSelect
+          value={this.props.roomShape}
+          onChange={this.handleChange}
+        >
           <MenuItem value={RoomShape.RECTANGULAR}>Rectangular</MenuItem>
           <MenuItem value={RoomShape.ROUND}>Round</MenuItem>
         </FullWidthSelect>

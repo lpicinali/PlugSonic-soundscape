@@ -34,19 +34,19 @@ const SoundscapeRoom = styled.div`
   background-color: ${colors.GREY};
   background-image: url(${props => props.imageUrl});
   background-size: cover;
-  border-radius: ${props => props.roomShape === RoomShape.ROUND ? '9999px' : '5px'};
+  border-radius: ${props =>
+    props.roomShape === RoomShape.ROUND ? '9999px' : '5px'};
 `
 /* ========================================================================== */
 /* SOUNDSCAPE INTERFACE
 /* ========================================================================== */
 /*
-* The listener and sources are positioned using a meter-based coordinate
-* system, with {0, 0} being in the center and {1, 1} pointing north-west.
-*
-* Points are {x, y}.
-*/
+ * The listener and sources are positioned using a meter-based coordinate
+ * system, with {0, 0} being in the center and {1, 1} pointing north-west.
+ *
+ * Points are {x, y}.
+ */
 class ScaledSoundscape extends Component {
-
   /* ------------------------------------------------------------------------ */
   render() {
     const {
@@ -80,15 +80,17 @@ class ScaledSoundscape extends Component {
     }
 
     const viewportLeft =
-      roomRatio >= containerRatio ? rect.left : rect.left + (size.width - viewportWidth) / 2
+      roomRatio >= containerRatio
+        ? rect.left
+        : rect.left + (size.width - viewportWidth) / 2
     const viewportRight =
       roomRatio >= containerRatio ? rect.right : viewportLeft + viewportWidth
     const viewportTop =
-      roomRatio >= containerRatio ? rect.top + (size.height - viewportHeight) / 2 : rect.top
+      roomRatio >= containerRatio
+        ? rect.top + (size.height - viewportHeight) / 2
+        : rect.top
     const viewportBottom =
       roomRatio >= containerRatio ? viewportTop + viewportHeight : rect.bottom
-
-
 
     return (
       <SoundscapeContainer>
@@ -100,7 +102,6 @@ class ScaledSoundscape extends Component {
           roomShape={roomShape}
           imageUrl={roomImage}
         >
-
           {/* <div>
             Soundscape
             <br />
@@ -112,10 +113,15 @@ class ScaledSoundscape extends Component {
           </div> */}
 
           <ListenerRenderer
-            iconWidth={sourceSize*1.4}
-            iconHeight={sourceSize*1.4}
-            containerSize={{width: viewportWidth, height: viewportHeight}}
-            containerRect={{top: viewportTop, bottom: viewportBottom, left: viewportLeft, right: viewportRight}}
+            iconWidth={sourceSize * 1.4}
+            iconHeight={sourceSize * 1.4}
+            containerSize={{ width: viewportWidth, height: viewportHeight }}
+            containerRect={{
+              top: viewportTop,
+              bottom: viewportBottom,
+              left: viewportLeft,
+              right: viewportRight,
+            }}
           />
 
           {/* {sources.map(source => (
@@ -135,9 +141,16 @@ class ScaledSoundscape extends Component {
               key={source.name}
               source={source}
               size={sourceSize}
-              reachRadiusSize={source.reach.radius * PIXELS_PER_METER * relativeScale}
-              containerSize={{width: viewportWidth, height: viewportHeight}}
-              containerRect={{top: viewportTop, bottom: viewportBottom, left: viewportLeft, right: viewportRight}}
+              reachRadiusSize={
+                source.reach.radius * PIXELS_PER_METER * relativeScale
+              }
+              containerSize={{ width: viewportWidth, height: viewportHeight }}
+              containerRect={{
+                top: viewportTop,
+                bottom: viewportBottom,
+                left: viewportLeft,
+                right: viewportRight,
+              }}
             />
           ))}
         </SoundscapeRoom>
@@ -178,4 +191,7 @@ const mapStateToProps = state => ({
   sources: values(state.sources.sources),
 })
 
-export default connect(mapStateToProps,null)(ScaledSoundscape)
+export default connect(
+  mapStateToProps,
+  null
+)(ScaledSoundscape)

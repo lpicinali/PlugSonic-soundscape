@@ -10,7 +10,6 @@ import ScaledSoundscape from 'src/containers/ScaledSoundscape.js'
 import * as colors from 'src/styles/colors.js'
 import { H4 } from 'src/styles/elements'
 
-
 /* ========================================================================== */
 const SoundscapeInterfaceContainer = styled.div`
   height: calc(100% - 70px);
@@ -58,8 +57,6 @@ class SoundscapeInterface extends PureComponent {
   render() {
     const { showSettingsDrawer, showArrowsDrawer } = this.props
 
-    const showTouchArrowsDrawer = false
-
     return (
       <SoundscapeInterfaceContainer>
         <SoundscapeArea>
@@ -83,7 +80,7 @@ class SoundscapeInterface extends PureComponent {
           {showArrowsDrawer === true && (
             <ArrowsDrawer>
               <H4>Work only on touchscreens</H4>
-              <ArrowControlsContainer/>
+              <ArrowControlsContainer />
             </ArrowsDrawer>
           )}
         </DrawersContainer>

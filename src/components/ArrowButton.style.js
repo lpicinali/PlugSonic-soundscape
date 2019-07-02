@@ -34,13 +34,7 @@ export const StyledArrowButton = styled.button`
     fill: ${colors.WHITE};
   }
 
-  ${props =>
-    props.isActive
-      ? ``
-      : ``};
-  ${props =>
-    props.isEnabled
-      ? ``
-      : ``};
+  ${props => (props.isActive ? `` : ``)};
+  ${props => (props.isEnabled ? `` : ``)};
 `
 export default StyledArrowButton

@@ -1,39 +1,37 @@
 export function getQueryVariable(query, variable) {
-  const vars = query.split("&");
-  for (let i=0; i < vars.length; i++) {
-    const pair = vars[i].split("=");
+  const vars = query.split('&')
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split('=')
     if (pair[0] === variable) {
       return pair[1]
     }
   }
-  return(false);
+  return false
 }
 
 export function httpHintAsync(url, callback) {
   const xhr = new XMLHttpRequest()
   xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4 && xhr.status === 200)
-      callback(xhr.responseText)
+    if (xhr.readyState === 4 && xhr.status === 200) callback(xhr.responseText)
   }
-  xhr.open("GET", url, true) // true for asynchronous
-  xhr.send(null);
+  xhr.open('GET', url, true) // true for asynchronous
+  xhr.send(null)
 }
 
 export function httpGetAsync(url, callback, token) {
-  const xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest()
   xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4 && xhr.status === 200)
-      callback(xhr.responseText)
+    if (xhr.readyState === 4 && xhr.status === 200) callback(xhr.responseText)
   }
-  xhr.open("GET", url, true) // true for asynchronous
+  xhr.open('GET', url, true) // true for asynchronous
   if (token) {
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`)
   }
-  xhr.send(null);
+  xhr.send(null)
 }
 
 export function httpGetSync(url, callback, errorCallback, token) {
-  const xmlHttp = new XMLHttpRequest();
+  const xmlHttp = new XMLHttpRequest()
   xmlHttp.onreadystatechange = () => {
     if (xmlHttp.readyState === 4) {
       if (xmlHttp.status === 200) {
@@ -43,15 +41,15 @@ export function httpGetSync(url, callback, errorCallback, token) {
       }
     }
   }
-  xmlHttp.open("GET", url, false) // true for asynchronous
+  xmlHttp.open('GET', url, false) // true for asynchronous
   if (token) {
-    xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
+    xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`)
   }
-  xmlHttp.send(null);
+  xmlHttp.send(null)
 }
 
 export function httpPostAsync(url, callback, errorCallback, body, token, type) {
-  const xmlHttp = new XMLHttpRequest();
+  const xmlHttp = new XMLHttpRequest()
   xmlHttp.onreadystatechange = () => {
     if (xmlHttp.readyState === 4) {
       if (xmlHttp.status === 200) {
@@ -61,15 +59,14 @@ export function httpPostAsync(url, callback, errorCallback, body, token, type) {
       }
     }
   }
-  xmlHttp.open("POST", url, true); // true for asynchronous
-  xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
-  if (type)
-    xmlHttp.setRequestHeader('Content-Type', type);
-  xmlHttp.send(body);
+  xmlHttp.open('POST', url, true) // true for asynchronous
+  xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`)
+  if (type) xmlHttp.setRequestHeader('Content-Type', type)
+  xmlHttp.send(body)
 }
 
 export function httpPutAsync(url, callback, errorCallback, body, token, type) {
-  const xmlHttp = new XMLHttpRequest();
+  const xmlHttp = new XMLHttpRequest()
   xmlHttp.onreadystatechange = () => {
     if (xmlHttp.readyState === 4) {
       if (xmlHttp.status === 200) {
@@ -79,15 +76,14 @@ export function httpPutAsync(url, callback, errorCallback, body, token, type) {
       }
     }
   }
-  xmlHttp.open("PUT", url, true); // true for asynchronous
-  xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
-  if (type)
-    xmlHttp.setRequestHeader('Content-Type', type);
-  xmlHttp.send(body);
+  xmlHttp.open('PUT', url, true) // true for asynchronous
+  xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`)
+  if (type) xmlHttp.setRequestHeader('Content-Type', type)
+  xmlHttp.send(body)
 }
 
 export function httpDeleteAsync(url, callback, errorCallback, token) {
-  const xmlHttp = new XMLHttpRequest();
+  const xmlHttp = new XMLHttpRequest()
   xmlHttp.onreadystatechange = () => {
     if (xmlHttp.readyState === 4) {
       if (xmlHttp.status === 200) {
@@ -97,15 +93,17 @@ export function httpDeleteAsync(url, callback, errorCallback, token) {
       }
     }
   }
-  xmlHttp.open("DELETE", url, true); // true for asynchronous
-  xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`);
-  xmlHttp.send(null);
+  xmlHttp.open('DELETE', url, true) // true for asynchronous
+  xmlHttp.setRequestHeader('Authorization', `Bearer ${token}`)
+  xmlHttp.send(null)
 }
 
 // ========================== SET API ================================== //
-const url = new URL((window.location !== window.parent.location)
-            ? document.referrer
-            : document.location.href)
+const url = new URL(
+  window.location !== window.parent.location
+    ? document.referrer
+    : document.location.href
+)
 const hostname = url.hostname
 
 export let API
@@ -113,12 +111,12 @@ export let API
 export const sessionToken = Pluggy.getToken()
 // export const sessionToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MTExNDg5NiwiZXhwIjoxNTYxMjAxMjk2fQ.IGruCKs209MahlIxY7VtAxjTjTI8bG4SPL-ezLRh_DE"
 
-if (hostname === "develop.pluggy.eu") {
-  API = "https://develop.pluggy.eu/api/v1"
-} else if (hostname === "beta.pluggy.eu") {
-  API = "https://beta.pluggy.eu/api/v1"
+if (hostname === 'develop.pluggy.eu') {
+  API = 'https://develop.pluggy.eu/api/v1'
+} else if (hostname === 'beta.pluggy.eu') {
+  API = 'https://beta.pluggy.eu/api/v1'
 } else {
-  API = "https://develop.pluggy.eu/api/v1"
+  API = 'https://develop.pluggy.eu/api/v1'
 }
 
 console.log('API SETTING:')
@@ -135,9 +133,9 @@ export const exhibition = {
   // isPublished: false,
 }
 
-if (hostname === "develop.pluggy.eu" || hostname === "beta.pluggy.eu") {
+if (hostname === 'develop.pluggy.eu' || hostname === 'beta.pluggy.eu') {
   const exhibitionQuery = window.location.search.substring(1)
-  exhibition.id = getQueryVariable(exhibitionQuery,'exhibitionId')
+  exhibition.id = getQueryVariable(exhibitionQuery, 'exhibitionId')
   console.log('EXHIBITION ID')
   console.log(exhibition.id)
   httpGetSync(
@@ -168,9 +166,10 @@ function getExhibitionCallback(responseText) {
     exhibition.isPublished = response.data.public
     exhibition.metadata = response.data.metadata
     exhibition.ownerId = response.data.owner._id
-    exhibition.tags = response.data.tags.map((tag,index) => (
-      {key: index, label: tag}
-    ))
+    exhibition.tags = response.data.tags.map((tag, index) => ({
+      key: index,
+      label: tag,
+    }))
     exhibition.title = response.data.title
 
     console.log('EXHIBITION RETRIEVED')
@@ -181,6 +180,6 @@ function getExhibitionCallback(responseText) {
 }
 
 function getExhibitionErrorCallback(responseText) {
-    console.log('ERROR CALLBACK')
-    console.log(responseText)
+  console.log('ERROR CALLBACK')
+  console.log(responseText)
 }

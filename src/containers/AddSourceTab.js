@@ -1,4 +1,4 @@
-import React, { Component} from "react"
+import React, { Component } from 'react'
 
 import SourceUploader from 'src/components/SourceUploader'
 
@@ -8,15 +8,12 @@ import SourceUploader from 'src/components/SourceUploader'
 /* ADD SOURCE TAB */
 /* ========================================================================== */
 class AddSourceTab extends Component {
-
   /* ------------------------------------------------------------------------ */
   render() {
-
     return (
       <React.Fragment>
-        <SourceUploader/>
+        <SourceUploader />
       </React.Fragment>
-
     )
   }
 }

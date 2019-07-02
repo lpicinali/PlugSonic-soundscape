@@ -33,10 +33,7 @@ class RoomSizeTextFields extends Component {
     // ROUND
     if (this.props.roomShape === RoomShape.ROUND) {
       // WIDTH or DEPTH
-      if (
-        event.target.id === 'width' ||
-        event.target.id === 'depth'
-      ) {
+      if (event.target.id === 'width' || event.target.id === 'depth') {
         // Empty string
         if (val.length === 0) {
           const newSize = { ...this.state.size, width: '', depth: '' }
@@ -50,7 +47,11 @@ class RoomSizeTextFields extends Component {
         // Number
         else if (!isNaN(toNumber(val))) {
           if (val >= minSize && val <= maxSize) {
-            const newSize = { ...this.state.size, width: toNumber(val), depth: toNumber(val) }
+            const newSize = {
+              ...this.state.size,
+              width: toNumber(val),
+              depth: toNumber(val),
+            }
             this.setState({
               ...this.state,
               size: newSize,
@@ -59,7 +60,11 @@ class RoomSizeTextFields extends Component {
             })
             this.props.onRoomSizeChange(newSize)
           } else {
-            const newSize = { ...this.state.size, width: toNumber(val), depth: toNumber(val) }
+            const newSize = {
+              ...this.state.size,
+              width: toNumber(val),
+              depth: toNumber(val),
+            }
             this.setState({
               ...this.state,
               size: newSize,
@@ -79,46 +84,46 @@ class RoomSizeTextFields extends Component {
           })
         }
       }
-        // DEPTH
-        else {
-          // Empty string
-          if (val.length === 0) {
-            const newSize = { ...this.state.size, height: '' }
+      // DEPTH
+      else {
+        // Empty string
+        if (val.length === 0) {
+          const newSize = { ...this.state.size, height: '' }
+          this.setState({
+            ...this.state,
+            size: newSize,
+            errorTextH: `Invalid: ${minSize} < H < ${maxSize}`,
+          })
+        }
+        // Number
+        else if (!isNaN(toNumber(val))) {
+          if (val >= minSize && val <= maxSize) {
+            const newSize = { ...this.state.size, height: toNumber(val) }
+            this.setState({
+              ...this.state,
+              size: newSize,
+              errorTextH: '',
+            })
+            this.props.onRoomSizeChange(newSize)
+          } else {
+            const newSize = { ...this.state.size, height: toNumber(val) }
             this.setState({
               ...this.state,
               size: newSize,
               errorTextH: `Invalid: ${minSize} < H < ${maxSize}`,
             })
           }
-          // Number
-          else if (!isNaN(toNumber(val))) {
-            if (val >= minSize && val <= maxSize) {
-              const newSize = { ...this.state.size, height: toNumber(val) }
-              this.setState({
-                ...this.state,
-                size: newSize,
-                errorTextH: '',
-              })
-              this.props.onRoomSizeChange(newSize)
-            } else {
-              const newSize = { ...this.state.size, height: toNumber(val) }
-              this.setState({
-                ...this.state,
-                size: newSize,
-                errorTextH: `Invalid: ${minSize} < H < ${maxSize}`,
-              })
-            }
-          }
-          // Not a Number
-          else {
-            const newSize = { ...this.state.size, height: val }
-            this.setState({
-              ...this.state,
-              size: newSize,
-              errorTextH: 'Invalid: NaN',
-            })
-          }
         }
+        // Not a Number
+        else {
+          const newSize = { ...this.state.size, height: val }
+          this.setState({
+            ...this.state,
+            size: newSize,
+            errorTextH: 'Invalid: NaN',
+          })
+        }
+      }
     }
     // RECTANGULAR
     else {

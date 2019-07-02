@@ -17,7 +17,7 @@ class ImageUploader extends Component {
   }
 
   /* -------------------- UPLOAD IMAGE ------------------*/
-  handleOnDrop = (accepted) => {
+  handleOnDrop = accepted => {
     if (accepted.length === 0) {
       this.setState({
         ...this.state,
@@ -31,7 +31,7 @@ class ImageUploader extends Component {
       reader.onabort = () => {
         this.setState({
           ...this.state,
-          raw:'',
+          raw: '',
           error: 'File reading was aborted',
         })
       }
@@ -39,13 +39,12 @@ class ImageUploader extends Component {
       reader.onerror = () => {
         this.setState({
           ...this.state,
-          raw:'',
+          raw: '',
           error: 'File reading has failed',
         })
       }
 
       reader.onload = () => {
-
         this.setState({
           ...this.state,
           raw: reader.result,
@@ -83,12 +82,10 @@ class ImageUploader extends Component {
         <H2>ROOM FLOORPLAN</H2>
         <Dropzone
           accept="image/*"
-          onDrop={(accepted) => this.handleOnDrop(accepted)}
+          onDrop={accepted => this.handleOnDrop(accepted)}
         >
           <ActionIcon />
-          <div>
-            {'Drop an image file here (or click) to load.'}
-          </div>
+          <div>{'Drop an image file here (or click) to load.'}</div>
           <div style={{ height: `12px`, marginBottom: `10px` }}>
             {this.state.error === '' ? '' : `${this.state.error}`}
           </div>

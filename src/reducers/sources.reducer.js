@@ -25,7 +25,6 @@ const initialState = {
 let azimuthIndex = Object.keys(initialState.sources).length
 
 export default function(state = initialState, { type, payload }) {
-
   if (type === ActionType.ADD_SOURCE) {
     const defaultPosition = {
       ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 1, 0),
@@ -35,40 +34,41 @@ export default function(state = initialState, { type, payload }) {
     const defaultRelativePosition = {
       azimuth: DEFAULT_RELATIVE_AZIMUTH,
       distance: DEFAULT_RELATIVE_DISTANCE,
-      elevation: DEFAULT_Z_POSITION
+      elevation: DEFAULT_Z_POSITION,
     }
 
     const newSource = {
-      enabled:            payload.enabled === undefined ? true : payload.enabled,
-      filename:           payload.filename,
+      enabled: payload.enabled === undefined ? true : payload.enabled,
+      filename: payload.filename,
       gameplay: {
-        isPlaying:        false,
-        timingStatus:     TimingStatus.INDEPENDENT,
-        isWithinReach:    false,
+        isPlaying: false,
+        timingStatus: TimingStatus.INDEPENDENT,
+        isWithinReach: false,
       },
-      hidden:             payload.hidden === undefined ? false : payload.hidden,
-      loop:               payload.loop === undefined ? true : payload.loop,
-      name:               payload.name,
-      origin:             payload.origin,
-      platform_asset_id:  payload.platform_asset_id || null,
-      platform_media_id:  payload.platform_media_id || null,
-      position:           payload.position || defaultPosition,
-      positioning:        payload.positioning || SourcePositioning.ABSOLUTE,
-      raw:                null,
-      relativePosition:   payload.relativePosition || defaultRelativePosition,
-      reach:              payload.reach || {
-                            action: ReachAction.TOGGLE_VOLUME,
-                            enabled: true,
-                            fadeDuration: 1000,
-                            radius: 3,
-                          },
-      selected:           false,
-      spatialised:        payload.spatialised === undefined ? true : payload.spatialised,
-      timings:            payload.timings || {
-                            [PlaybackTiming.PLAY_AFTER]: null,
-                          },
-      url:                payload.url || null,
-      volume:             payload.volume || 1.0,
+      hidden: payload.hidden === undefined ? false : payload.hidden,
+      loop: payload.loop === undefined ? true : payload.loop,
+      name: payload.name,
+      origin: payload.origin,
+      platform_asset_id: payload.platform_asset_id || null,
+      platform_media_id: payload.platform_media_id || null,
+      position: payload.position || defaultPosition,
+      positioning: payload.positioning || SourcePositioning.ABSOLUTE,
+      raw: null,
+      relativePosition: payload.relativePosition || defaultRelativePosition,
+      reach: payload.reach || {
+        action: ReachAction.TOGGLE_VOLUME,
+        enabled: true,
+        fadeDuration: 1000,
+        radius: 3,
+      },
+      selected: false,
+      spatialised:
+        payload.spatialised === undefined ? true : payload.spatialised,
+      timings: payload.timings || {
+        [PlaybackTiming.PLAY_AFTER]: null,
+      },
+      url: payload.url || null,
+      volume: payload.volume || 1.0,
     }
 
     azimuthIndex += 1
@@ -94,11 +94,7 @@ export default function(state = initialState, { type, payload }) {
   }
 
   if (type === ActionType.SET_SOURCE_SELECTED) {
-    return set(
-      ['sources', payload.source, 'selected'],
-      payload.selected,
-      state
-    )
+    return set(['sources', payload.source, 'selected'], payload.selected, state)
   }
 
   if (type === ActionType.SET_SOURCE_HIDDEN) {

@@ -14,9 +14,13 @@ const initialState = {
 }
 
 export default function(state = initialState, { type, payload }) {
-
   if (type === ActionType.IMPORT_ROOM) {
-    return { ...state, shape: payload.room.shape, size: payload.room.size, backgroundImage: payload.room.backgroundImage }
+    return {
+      ...state,
+      shape: payload.room.shape,
+      size: payload.room.size,
+      backgroundImage: payload.room.backgroundImage,
+    }
   }
 
   if (type === ActionType.SET_ROOM_IMAGE) {
