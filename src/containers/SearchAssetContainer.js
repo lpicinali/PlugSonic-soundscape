@@ -22,7 +22,6 @@ import { SourceOrigin } from 'src/constants'
 import { fetchAudioBuffer } from 'src/utils'
 import {
   API,
-  userId,
   httpHintAsync,
   httpGetAsync,
 } from 'src/pluggy.js'
@@ -173,7 +172,7 @@ class SearchAssetContainer extends Component {
     let query = `${API}/search?q=${this.state.searchTextFieldValue}&type=audio&limit=1000`
 
     if (this.state.myAssets) {
-      query = `${query}&user=${userId}`
+      query = `${query}&user=${this.props.ownerId}`
     }
 
     query=`${query}&sort=${this.state.orderBy}`
@@ -330,11 +329,13 @@ class SearchAssetContainer extends Component {
 }
 
 SearchAssetContainer.propTypes = {
+  ownerId: PropTypes.string.isRequired,
   sources: PropTypes.object.isRequired,
   onAddSource: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
+  ownerId: state.exhibition.ownerId,
   sources: state.sources.sources,
 })
 

@@ -53,7 +53,7 @@ class ImportButton extends Component {
         <Button variant="contained" color="primary" fullWidth>
           <FileReaderInput
             type="file"
-            accept=".json"
+            accept=".soundscape"
             as="binary"
             onChange={this.handleImportSoundscape}
           >

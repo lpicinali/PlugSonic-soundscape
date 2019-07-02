@@ -35,7 +35,9 @@ class ExportMetaButton extends Component {
         platform_asset_id:  source.platform_asset_id,
         platform_media_id:  source.platform_media_id,
         position:           source.position,
+        positioning:        source.positioning,
         raw:                null,
+        relativePosition:   source.relativePosition,
         reach:              source.reach,
         spatialised:        source.spatialised,
         timings:            source.timings,
@@ -67,7 +69,7 @@ class ExportMetaButton extends Component {
       .then(() => {
         const json = JSON.stringify(soundscape)
         const file = new File([json], { type: 'application/json' })
-        FileSaver.saveAs(file, 'soundscape_whole.json')
+        FileSaver.saveAs(file, 'soundscape_whole.soundscape')
       })
     }
 

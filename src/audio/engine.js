@@ -4,6 +4,7 @@ import { clamp } from 'lodash'
 import FileSaver from 'file-saver'
 import Recorder from 'recorderjs'
 
+import { ReachAction, SourcePositioning } from 'src/constants.js'
 import { getSourceReachGain } from 'src/utils.js'
 import context from 'src/audio/context.js'
 import { getInstance as getBinauralSpatializer } from 'src/audio/binauralSpatializer.js'
@@ -48,7 +49,7 @@ export const storeSourceRawData = (name, rawData) => {
 /**
  * Returns source's raw data
  */
-export const getSourceRawData = (name) => sourceRawData[name]
+export const getSourceRawData = name => sourceRawData[name]
 
 /* ======================================================================== */
 // AUDIO CHAIN
@@ -67,14 +68,21 @@ export const createSourceAudioChain = source => {
   const audioBuffer = sourceAudioBuffers[source.name]
   const node = createSourceAudioNode(audioBuffer)
   node.loop = source.loop
+  node.onended = () => {
+    notifySourceEnded(source)
+  }
 
   const volume = context.createGain()
   const reachGain = context.createGain()
   const muteGain = context.createGain()
 
   node.connect(volume)
-  volume.connect(reachGain)
-  reachGain.connect(muteGain)
+  if (source.positioning === SourcePositioning.ABSOLUTE) {
+    volume.connect(reachGain)
+    reachGain.connect(muteGain)
+  } else {
+    volume.connect(muteGain)
+  }
   muteGain.connect(masterVolume)
 
   volume.gain.value = clamp(source.volume, 0.00001, Infinity)
@@ -132,21 +140,16 @@ export const createSourceAudioNode = audioBuffer => {
  *
  * Previously: addSource()
  */
-export const spatializeSource = (source, spatialised) => {
-  if (spatialised) {
-    getBinauralSpatializer().then(spatializer => {
-      spatializer.addSource(source)
+export const spatializeSource = source => {
+  getBinauralSpatializer().then(spatializer => {
+    spatializer.addSource(source)
 
-      sourceMuteGains[source.name].disconnect()
-      sourceMuteGains[source.name].connect(
-        spatializer.sources[source.name].processor
-      )
-      spatializer.sources[source.name].processor.connect(masterVolume)
-    })
-  } else {
     sourceMuteGains[source.name].disconnect()
-    sourceMuteGains[source.name].connect(masterVolume)
-  }
+    sourceMuteGains[source.name].connect(
+      spatializer.sources[source.name].processor
+    )
+    spatializer.sources[source.name].processor.connect(masterVolume)
+  })
 }
 
 /**
@@ -213,7 +216,26 @@ export const setSourceMuted = (name, isMuted) => {
 export const stopSource = source => {
   if (sourceNodes[source.name] && sourcePlaybackStates[source.name] === true) {
     sourcePlaybackStates[source.name] = false
-    sourceNodes[source.name].stop()
+
+    // Store a reference to the current source's audio node
+    // to check that we're not stopping a new node after fading
+    // is done
+    const sourceNode = sourceNodes[source.name]
+
+    if (
+      source.reach.enabled === true &&
+      source.reach.action === ReachAction.TOGGLE_PLAYBACK &&
+      source.gameplay.isPlaying === false
+    ) {
+      setSourceReachGain(source.name, 0, source.reach.fadeDuration)
+      setTimeout(() => {
+        if (sourceNodes[source.name] === sourceNode) {
+          sourceNodes[source.name].stop()
+        }
+      }, source.reach.fadeDuration)
+    } else {
+      sourceNodes[source.name].stop()
+    }
   }
 }
 
@@ -238,10 +260,23 @@ export const playSource = (source, volume, fadeDuration) => {
   }
 
   createSourceAudioChain(source)
-  spatializeSource(source, source.spatialised)
+  if (
+    source.spatialised === true ||
+    source.positioning === SourcePositioning.RELATIVE
+  ) {
+    spatializeSource(source)
+  }
 
   if (volume !== undefined) {
     setVolume(sourceVolumes[source.name].gain, volume, fadeDuration)
+  }
+
+  if (
+    source.reach.enabled === true &&
+    source.reach.action === ReachAction.TOGGLE_PLAYBACK
+  ) {
+    sourceReachGains[source.name].gain.value = 0.00001
+    setSourceReachGain(source.name, 1, source.reach.fadeDuration)
   }
 
   sourceNodes[source.name].start(0)
@@ -270,14 +305,23 @@ export const setSourceLoop = (name, loop) => {
 /* ======================================================================== */
 // EVENTS
 /* ======================================================================== */
-const listeners = []
+const startListeners = []
+const endListeners = []
 
 export const subscribeToSourceStart = listener => {
-  listeners.push(listener)
+  startListeners.push(listener)
 }
 
 const notifySourceStarted = source => {
-  listeners.forEach(listener => listener({ source }))
+  startListeners.forEach(listener => listener({ source }))
+}
+
+export const subscribeToSourceEnd = listener => {
+  endListeners.push(listener)
+}
+
+const notifySourceEnded = source => {
+  endListeners.forEach(listener => listener({ source }))
 }
 
 /* ======================================================================== */

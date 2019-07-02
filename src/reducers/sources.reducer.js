@@ -5,7 +5,16 @@
 */ /* ---------------------------------------------- */
 import { omit, set } from 'lodash/fp'
 
-import { DEFAULT_Z_POSITION, PlaybackTiming, ReachAction, TimingStatus, ActionType } from 'src/constants.js'
+import {
+  DEFAULT_Z_POSITION,
+  DEFAULT_RELATIVE_AZIMUTH,
+  DEFAULT_RELATIVE_DISTANCE,
+  PlaybackTiming,
+  ReachAction,
+  SourcePositioning,
+  TimingStatus,
+  ActionType,
+} from 'src/constants.js'
 import { ADEtoXYZ } from 'src/utils.js'
 
 const initialState = {
@@ -19,39 +28,47 @@ export default function(state = initialState, { type, payload }) {
 
   if (type === ActionType.ADD_SOURCE) {
     const defaultPosition = {
-      ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 3, 0),
+      ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 1, 0),
       z: DEFAULT_Z_POSITION,
     }
 
+    const defaultRelativePosition = {
+      azimuth: DEFAULT_RELATIVE_AZIMUTH,
+      distance: DEFAULT_RELATIVE_DISTANCE,
+      elevation: DEFAULT_Z_POSITION
+    }
+
     const newSource = {
-      enabled: true,
-      filename: payload.filename,
+      enabled:            payload.enabled === undefined ? true : payload.enabled,
+      filename:           payload.filename,
       gameplay: {
-        isPlaying: false,
-        timingStatus: TimingStatus.INDEPENDENT,
-        isWithinReach: false,
+        isPlaying:        false,
+        timingStatus:     TimingStatus.INDEPENDENT,
+        isWithinReach:    false,
       },
-      hidden: payload.hidden || false,
-      loop: true,
-      name: payload.name,
-      origin: payload.origin,
-      platform_asset_id: payload.platform_asset_id || null,
-      platform_media_id: payload.platform_media_id || null,
-      position: payload.position || defaultPosition,
-      raw: null,
-      reach: payload.reach || {
-        action: ReachAction.TOGGLE_VOLUME,
-        enabled: true,
-        fadeDuration: 1000,
-        radius: 3,
-      },
-      spatialised: true,
-      timings: {
-        [PlaybackTiming.PLAY_AFTER]: null,
-      },
-      url: payload.url || null,
-      volume: payload.volume || 1.0,
-      selected: false,
+      hidden:             payload.hidden === undefined ? false : payload.hidden,
+      loop:               payload.loop === undefined ? true : payload.loop,
+      name:               payload.name,
+      origin:             payload.origin,
+      platform_asset_id:  payload.platform_asset_id || null,
+      platform_media_id:  payload.platform_media_id || null,
+      position:           payload.position || defaultPosition,
+      positioning:        payload.positioning || SourcePositioning.ABSOLUTE,
+      raw:                null,
+      relativePosition:   payload.relativePosition || defaultRelativePosition,
+      reach:              payload.reach || {
+                            action: ReachAction.TOGGLE_VOLUME,
+                            enabled: true,
+                            fadeDuration: 1000,
+                            radius: 3,
+                          },
+      selected:           false,
+      spatialised:        payload.spatialised === undefined ? true : payload.spatialised,
+      timings:            payload.timings || {
+                            [PlaybackTiming.PLAY_AFTER]: null,
+                          },
+      url:                payload.url || null,
+      volume:             payload.volume || 1.0,
     }
 
     azimuthIndex += 1
@@ -93,8 +110,12 @@ export default function(state = initialState, { type, payload }) {
   }
 
   if (type === ActionType.SET_SOURCE_POSITION) {
+    return set(['sources', payload.source, 'position'], payload.position, state)
+  }
+
+  if (type === ActionType.SET_SOURCE_RELATIVE_POSITION) {
     return set(
-      ['sources', payload.source, 'position'],
+      ['sources', payload.source, 'relativePosition'],
       payload.position,
       state
     )
@@ -133,7 +154,19 @@ export default function(state = initialState, { type, payload }) {
   }
 
   if (type === ActionType.SET_SOURCE_SPATIALISED) {
-    return set(['sources', payload.source, 'spatialised'], payload.spatialised, state)
+    return set(
+      ['sources', payload.source, 'spatialised'],
+      payload.spatialised,
+      state
+    )
+  }
+
+  if (type === ActionType.SET_SOURCE_POSITIONING) {
+    return set(
+      ['sources', payload.source, 'positioning'],
+      payload.positioning,
+      state
+    )
   }
 
   if (type === ActionType.SET_SOURCE_TIMING) {
