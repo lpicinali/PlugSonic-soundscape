@@ -6,6 +6,7 @@ import { ActionType, RoomShape } from 'src/constants.js'
 
 const initialState = {
   backgroundImage: {
+    assetId: '',
     mediaId: '',
     raw: '',
   },

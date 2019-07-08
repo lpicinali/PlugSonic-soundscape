@@ -27,7 +27,6 @@ import {
   FieldGroup,
   FullWidthSelect,
   H2,
-  PanelContents,
 } from 'src/styles/elements'
 
 /* ========================================================================== */
@@ -72,9 +71,9 @@ const renderInputComponent = inputProps => {
   )
 }
 /* ========================================================================== */
-/* SEARCH ASSET CONTAINER */
+/* SEARCH AUDIO ASSET CONTAINER */
 /* ========================================================================== */
-class SearchAssetContainer extends Component {
+class SearchAudioAssetContainer extends Component {
   state = {
     title: '',
     url: '',
@@ -238,58 +237,58 @@ class SearchAssetContainer extends Component {
 
     return (
       <Fragment>
-        <PanelContents>
-          <FieldGroup>
-            <FieldBox>
-              <Autosuggest
-                renderInputComponent={renderInputComponent}
-                suggestions={this.state.suggestions}
-                onSuggestionsFetchRequested={
+        <FieldGroup>
+          <FieldBox>
+            <Autosuggest
+              renderInputComponent={renderInputComponent}
+              suggestions={this.state.suggestions}
+              onSuggestionsFetchRequested={
                   this.handleSuggestionsFetchRequested
-                }
-                onSuggestionsClearRequested={
+              }
+              onSuggestionsClearRequested={
                   this.handleSuggestionsClearRequested
-                }
-                getSuggestionValue={getSuggestionValue}
-                renderSuggestion={renderSuggestion}
-                inputProps={{
-                  placeholder: 'Search asset...',
+              }
+              getSuggestionValue={getSuggestionValue}
+              renderSuggestion={renderSuggestion}
+              inputProps={{
+                  placeholder: 'Search soundfile asset...',
                   value: this.state.searchTextFieldValue,
                   onChange: this.onChangeSearchTextField,
                   type: 'search',
                   fullWidth: true,
-                }}
-                renderSuggestionsContainer={options => (
-                  <Paper {...options.containerProps}>{options.children}</Paper>
-                )}
-                focusInputOnSuggestionClick={false}
-              />
-            </FieldBox>
-
-            <FieldBox>
-              <FullWidthSelect
-                value={this.state.myAssets}
-                onChange={this.handleSearchDropDownChange}
-              >
-                <MenuItem value={false}>All Pluggy</MenuItem>
-                <MenuItem value>My Assets</MenuItem>
-              </FullWidthSelect>
-            </FieldBox>
-          </FieldGroup>
-
-          <H2>ORDER BY</H2>
+              }}
+              renderSuggestionsContainer={options => (
+                <Paper {...options.containerProps}>{options.children}</Paper>
+              )}
+              focusInputOnSuggestionClick={false}
+            />
+          </FieldBox>
 
           <FieldBox>
             <FullWidthSelect
-              value={this.state.orderBy}
-              onChange={this.handleOrderByDropDownChange}
+              value={this.state.myAssets}
+              onChange={this.handleSearchDropDownChange}
             >
-              <MenuItem value="trending">Trending</MenuItem>
-              <MenuItem value="recent">Recent</MenuItem>
-              <MenuItem value="title">Title</MenuItem>
+              <MenuItem value={false}>All Pluggy</MenuItem>
+              <MenuItem value>My Assets</MenuItem>
             </FullWidthSelect>
           </FieldBox>
+        </FieldGroup>
 
+        <H2>ORDER BY</H2>
+
+        <FieldBox>
+          <FullWidthSelect
+            value={this.state.orderBy}
+            onChange={this.handleOrderByDropDownChange}
+          >
+            <MenuItem value="trending">Trending</MenuItem>
+            <MenuItem value="recent">Recent</MenuItem>
+            <MenuItem value="title">Title</MenuItem>
+          </FullWidthSelect>
+        </FieldBox>
+
+        <FieldBox>
           <Button
             variant="contained"
             color="primary"
@@ -298,13 +297,11 @@ class SearchAssetContainer extends Component {
           >
             SEARCH
           </Button>
-        </PanelContents>
+        </FieldBox>
 
         <Divider />
 
-        <PanelContents>
-          {this.state.assets.length > 0 && searchResults}
-        </PanelContents>
+        {this.state.assets.length > 0 && searchResults}
 
         <Dialog
           open={this.state.isPromptingAddStereo}
@@ -339,7 +336,7 @@ class SearchAssetContainer extends Component {
   }
 }
 
-SearchAssetContainer.propTypes = {
+SearchAudioAssetContainer.propTypes = {
   ownerId: PropTypes.string.isRequired,
   sources: PropTypes.object.isRequired,
   onAddSource: PropTypes.func.isRequired,
@@ -367,4 +364,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SearchAssetContainer)
+)(SearchAudioAssetContainer)
