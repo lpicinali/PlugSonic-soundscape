@@ -23,6 +23,11 @@ export const importExhibition = (
   },
 })
 
+export const setCoverLegal = coverLegal => ({
+  type: ActionType.SET_COVERLEGAL,
+  payload: { coverLegal },
+})
+
 export const setDescription = description => ({
   type: ActionType.SET_DESCRIPTION,
   payload: { description },

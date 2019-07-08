@@ -121,7 +121,7 @@ const hostname = url.hostname
 export let API
 // eslint-disable-next-line
 export const sessionToken = Pluggy.getToken()
-// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MjU4MzQwOSwiZXhwIjoxNTYyNjY5ODA5fQ.BVMAysr6qhXnoxdBkpMtnvhCAJ_e1nejfzjZ4V1y030'
+// export const sessionToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJyb2xlcyI6WyJNZW1iZXIiLCJEZXZlbG9wZXIiXSwiYmVoYWxmT2ZVc2VySWQiOiI1YzQxYmJlZTYyN2E0ZWQ5OGZlMzRjMmEiLCJ1c2VybmFtZSI6Ik1hcmNvIENvbXVuaXRhIiwidGVhbVJvbGUiOiIiLCJraW5kIjoiVXNlclBlcnNvbiIsImlhdCI6MTU2MjYwNDU3NSwiZXhwIjoxNTYyNjkwOTc1fQ.E2MUJtVNWBuiUUHUOr-B8mvB6uDwGCdKMMKyb7i7aMk'
 
 if (hostname === 'develop.pluggy.eu') {
   API = 'https://develop.pluggy.eu/api/v1'
@@ -138,7 +138,7 @@ console.log(API)
 export const exhibition = {
   // description: '',
   // id: '',
-  // metadata: {},
+  // arrayMetadata: [{...}, {...}, ... , {...}],
   // ownerId: '',
   // tags: [],
   // title: '',
@@ -159,7 +159,7 @@ if (hostname === 'develop.pluggy.eu' || hostname === 'beta.pluggy.eu') {
 }
 
 // if (hostname === "localhost") {
-//   exhibition.id = "5d1e15641487686ffc8069f6"
+//   exhibition.id = "5d237638c111af88e9026a80"
 //   console.log('EXHIBITION ID')
 //   console.log(exhibition.id)
 //   httpGetSync(
@@ -172,11 +172,11 @@ if (hostname === 'develop.pluggy.eu' || hostname === 'beta.pluggy.eu') {
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
-
+  
   if (response.success) {
     exhibition.description = response.data.description
     exhibition.isPublished = response.data.public
-    exhibition.metadata = response.data.metadata
+    exhibition.arrayMetadata = response.data.metadata
     exhibition.ownerId = response.data.owner._id
     exhibition.tags = response.data.tags.map((tag, index) => ({
       key: index,
