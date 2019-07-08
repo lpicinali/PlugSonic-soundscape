@@ -58,10 +58,15 @@ class ExhibitionContainer extends Component {
 
     soundscape.room.backgroundImage.raw = ''
 
+    const metadata = [
+      {coverLegal:  this.props.exhibition.coverLegal},
+      {soundscape:    soundscape},
+    ]
+
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,
-      metadata: soundscape,
+      metadata: metadata,
       public: false,
       tags: this.props.exhibition.tags.map(tag => tag.label),
       title: this.props.exhibition.title,
@@ -108,10 +113,15 @@ class ExhibitionContainer extends Component {
 
     soundscape.room.backgroundImage.raw = ''
 
+    const metadata = [
+      {coverLegal:  this.props.exhibition.coverLegal},
+      {soundscape:    soundscape},
+    ]
+
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,
-      metadata: soundscape,
+      metadata: metadata,
       public: this.props.exhibition.isPublished,
       tags: this.props.exhibition.tags.map(tag => tag.label),
       title: this.props.exhibition.title,
