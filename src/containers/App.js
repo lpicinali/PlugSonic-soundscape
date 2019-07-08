@@ -7,10 +7,10 @@ import { AppContainer, Nav } from 'src/containers/App.style'
 import NavControls from 'src/containers/NavControls'
 import SoundscapeInterface from 'src/containers/SoundscapeInterface'
 
-import { exhibition } from 'src/pluggy'
+import { API, exhibition, httpGetAsync } from 'src/pluggy'
 import { importExhibition } from 'src/actions/exhibition.actions.js'
 import { importListener } from 'src/actions/listener.actions.js'
-import { importRoom } from 'src/actions/room.actions.js'
+import { importRoom, setRoomImage } from 'src/actions/room.actions.js'
 import { importSources } from 'src/actions/sources.actions.js'
 
 import {
@@ -55,6 +55,17 @@ class App extends Component {
 
       if (exhibition.metadata.room) {
         this.props.onImportRoom(exhibition.metadata.room)
+
+        const backgroundImageAssetId = exhibition.metadata.room.backgroundImage.assetId
+        const backgroundImageMediaId = exhibition.metadata.room.backgroundImage.mediaId
+
+        const imageUrl = `${API}/assets/${
+          backgroundImageAssetId
+        }/media/${
+          backgroundImageMediaId
+        }`
+
+        httpGetAsync(imageUrl, this.getImageAssetCallback, null, null, 'blob')
       }
 
       if (exhibition.metadata.sources) {
@@ -63,31 +74,44 @@ class App extends Component {
     }
   }
 
+  getImageAssetCallback = response => {
+    const reader = new FileReader()
+    reader.readAsDataURL(response)
+
+    reader.onload = () => {
+      this.props.onRoomImageChange({
+        assetId: exhibition.metadata.room.backgroundImage.assetId,
+        mediaId: exhibition.metadata.room.backgroundImage.mediaId,
+        raw: reader.result,
+      })
+    }
+  }
+
   render() {
     return (
       <AppContainer>
-        <Dialog open={this.state.isDisclaimerOpen}>
+        {/* <Dialog open={this.state.isDisclaimerOpen}>
           <DialogTitle>Disclaimer</DialogTitle>
 
           <DialogContent>
             <DialogContentText>
-              WARNING: This application might result in very loud audio levels,
-              which can cause damage to your hearing, especially if you are
-              wearing headphones. Please ensure you take caution and keep your
-              headphones volume low.
+          WARNING: This application might result in very loud audio levels,
+          which can cause damage to your hearing, especially if you are
+          wearing headphones. Please ensure you take caution and keep your
+          headphones volume low.
             </DialogContentText>
           </DialogContent>
 
           <DialogActions>
             <Button
-              variant="contained"
-              color="primary"
-              onClick={() => this.setState({ isDisclaimerOpen: false })}
+          variant="contained"
+          color="primary"
+          onClick={() => this.setState({ isDisclaimerOpen: false })}
             >
-              Understood
+          Understood
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
 
         <Nav>
           <NavControls />
@@ -106,6 +130,7 @@ App.propTypes = {
   onImportListener: PropTypes.func.isRequired,
   onImportRoom: PropTypes.func.isRequired,
   onImportSources: PropTypes.func.isRequired,
+  onRoomImageChange: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -116,6 +141,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(
       importExhibition(description, id, ownerId, tags, title, isPublished)
     ),
+  onRoomImageChange: image => dispatch(setRoomImage(image)),
 })
 
 export default connect(
