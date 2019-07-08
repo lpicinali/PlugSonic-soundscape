@@ -56,6 +56,8 @@ class ExhibitionContainer extends Component {
 
     soundscape.sources = map(soundscape.sources, source => source)
 
+    soundscape.room.backgroundImage.raw = ''
+
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,
@@ -103,6 +105,8 @@ class ExhibitionContainer extends Component {
     }
 
     soundscape.sources = map(soundscape.sources, source => source)
+
+    soundscape.room.backgroundImage.raw = ''
 
     // exhibition object
     const exhibition = {

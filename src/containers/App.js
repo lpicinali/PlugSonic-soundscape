@@ -7,10 +7,10 @@ import { AppContainer, Nav } from 'src/containers/App.style'
 import NavControls from 'src/containers/NavControls'
 import SoundscapeInterface from 'src/containers/SoundscapeInterface'
 
-import { exhibition } from 'src/pluggy'
+import { API, exhibition, httpGetAsync } from 'src/pluggy'
 import { importExhibition } from 'src/actions/exhibition.actions.js'
 import { importListener } from 'src/actions/listener.actions.js'
-import { importRoom } from 'src/actions/room.actions.js'
+import { importRoom, setRoomImage } from 'src/actions/room.actions.js'
 import { importSources } from 'src/actions/sources.actions.js'
 
 import {
@@ -55,11 +55,35 @@ class App extends Component {
 
       if (exhibition.metadata.room) {
         this.props.onImportRoom(exhibition.metadata.room)
+
+        const backgroundImageAssetId = exhibition.metadata.room.backgroundImage.assetId
+        const backgroundImageMediaId = exhibition.metadata.room.backgroundImage.mediaId
+
+        const imageUrl = `${API}/assets/${
+          backgroundImageAssetId
+        }/media/${
+          backgroundImageMediaId
+        }`
+
+        httpGetAsync(imageUrl, this.getImageAssetCallback, null, null, 'blob')
       }
 
       if (exhibition.metadata.sources) {
         this.props.onImportSources(exhibition.metadata.sources)
       }
+    }
+  }
+
+  getImageAssetCallback = response => {
+    const reader = new FileReader()
+    reader.readAsDataURL(response)
+
+    reader.onload = () => {
+      this.props.onRoomImageChange({
+        assetId: exhibition.metadata.room.backgroundImage.assetId,
+        mediaId: exhibition.metadata.room.backgroundImage.mediaId,
+        raw: reader.result,
+      })
     }
   }
 
@@ -106,6 +130,7 @@ App.propTypes = {
   onImportListener: PropTypes.func.isRequired,
   onImportRoom: PropTypes.func.isRequired,
   onImportSources: PropTypes.func.isRequired,
+  onRoomImageChange: PropTypes.func.isRequired,
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -116,6 +141,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(
       importExhibition(description, id, ownerId, tags, title, isPublished)
     ),
+  onRoomImageChange: image => dispatch(setRoomImage(image)),
 })
 
 export default connect(

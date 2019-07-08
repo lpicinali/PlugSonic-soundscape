@@ -95,7 +95,7 @@ export function httpPutAsync(url, callback, errorCallback, body, token, type) {
 }
 
 export function httpDeleteAsync(url, callback, errorCallback, token) {
-  const xhr = new xhrRequest()
+  const xhr = new XMLHttpRequest()
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
