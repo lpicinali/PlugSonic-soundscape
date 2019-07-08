@@ -3,7 +3,7 @@ import { set } from 'lodash/fp'
 import { ActionType } from 'src/constants.js'
 
 const initialState = {
-  currentTabIndex: 2,
+  currentTabIndex: 4,
 }
 
 export default function(state = initialState, { type, payload }) {
