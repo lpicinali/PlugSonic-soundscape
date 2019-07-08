@@ -50,42 +50,46 @@ class App extends Component {
         )
       }
 
-      // convert metadata from array of objects to object
-      const objectMetadata = {}
-      for(let i = 0; i < exhibition.arrayMetadata.length; i++) {
-        objectMetadata[Object.keys(exhibition.arrayMetadata[i])[0]] = Object.values(exhibition.arrayMetadata[i])[0]
-      }
-
-      if (objectMetadata.coverLegal) {
-        this.props.onSetCoverLegal(objectMetadata.coverLegal)
-      }
-
-      if (objectMetadata.soundscape.listener) {
-        this.props.onImportListener(objectMetadata.soundscape.listener)
-      }
-
-      if (objectMetadata.soundscape.room) {
-        this.props.onImportRoom(objectMetadata.soundscape.room)
-
-        if (
-          objectMetadata.soundscape.room.backgroundImage.assetId &&
-          objectMetadata.soundscape.room.backgroundImage.mediaId
-        ) {
-          const backgroundImageAssetId = objectMetadata.soundscape.room.backgroundImage.assetId
-          const backgroundImageMediaId = objectMetadata.soundscape.room.backgroundImage.mediaId
-
-          const imageUrl = `${API}/assets/${
-            backgroundImageAssetId
-          }/media/${
-            backgroundImageMediaId
-          }`
-
-          httpGetAsync(imageUrl, this.getImageAssetCallback, null, null, 'blob')
+      if (exhibition.arrayMetadata !== []) {
+        // convert metadata from array of objects to object
+        const objectMetadata = {}
+        for(let i = 0; i < exhibition.arrayMetadata.length; i++) {
+          objectMetadata[Object.keys(exhibition.arrayMetadata[i])[0]] = Object.values(exhibition.arrayMetadata[i])[0]
         }
-      }
 
-      if (objectMetadata.soundscape.sources) {
-        this.props.onImportSources(objectMetadata.soundscape.sources)
+        if(objectMetadata.coverLegal) {
+          this.props.onSetCoverLegal(objectMetadata.coverLegal)
+        }
+
+        if (objectMetadata.soundscape) {
+          if (objectMetadata.soundscape.listener) {
+            this.props.onImportListener(objectMetadata.soundscape.listener)
+          }
+
+          if (objectMetadata.soundscape.room) {
+            this.props.onImportRoom(objectMetadata.soundscape.room)
+
+            if (
+              objectMetadata.soundscape.room.backgroundImage.assetId &&
+              objectMetadata.soundscape.room.backgroundImage.mediaId
+            ) {
+              const backgroundImageAssetId = objectMetadata.soundscape.room.backgroundImage.assetId
+              const backgroundImageMediaId = objectMetadata.soundscape.room.backgroundImage.mediaId
+
+              const imageUrl = `${API}/assets/${
+                backgroundImageAssetId
+              }/media/${
+                backgroundImageMediaId
+              }`
+
+              httpGetAsync(imageUrl, this.getImageAssetCallback, null, null, 'blob')
+            }
+          }
+
+          if (objectMetadata.soundscape.sources) {
+            this.props.onImportSources(objectMetadata.soundscape.sources)
+          }
+        }
       }
     }
   }
