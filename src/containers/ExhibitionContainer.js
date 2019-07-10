@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { map } from 'lodash'
+import { map, cloneDeep } from 'lodash'
 import {
   Button,
   Chip,
@@ -54,14 +54,20 @@ class ExhibitionContainer extends Component {
       sources: this.props.sources,
     }
 
-    soundscape.sources = map(soundscape.sources, source => source)
+    const sondscapeClone = cloneDeep(soundscape)
 
-    soundscape.room.backgroundImage.raw = ''
+    sondscapeClone.sources = map(sondscapeClone.sources, source => source)
+    sondscapeClone.room.backgroundImage.raw = ''
 
-    const metadata = [
-      {coverLegal:  this.props.exhibition.coverLegal},
-      {soundscape:    soundscape},
-    ]
+    const metadata = []
+    if (this.props.exhibition.coverLegal) {
+      metadata.push(
+        {coverLegal:  this.props.exhibition.coverLegal}
+      )
+    }
+    metadata.push(
+      {soundscape:  sondscapeClone}
+    )
 
     // exhibition object
     const exhibition = {
@@ -108,15 +114,21 @@ class ExhibitionContainer extends Component {
       room: this.props.room,
       sources: this.props.sources,
     }
+    
+    const sondscapeClone = cloneDeep(soundscape)
 
-    soundscape.sources = map(soundscape.sources, source => source)
+    sondscapeClone.sources = map(sondscapeClone.sources, source => source)
+    sondscapeClone.room.backgroundImage.raw = ''
 
-    soundscape.room.backgroundImage.raw = ''
-
-    const metadata = [
-      {coverLegal:  this.props.exhibition.coverLegal},
-      {soundscape:    soundscape},
-    ]
+    const metadata = []
+    if (this.props.exhibition.coverLegal) {
+      metadata.push(
+        {coverLegal:  this.props.exhibition.coverLegal}
+      )
+    }
+    metadata.push(
+      {soundscape:  sondscapeClone}
+    )
 
     // exhibition object
     const exhibition = {

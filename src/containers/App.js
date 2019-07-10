@@ -26,7 +26,10 @@ class App extends Component {
   state = {
     isDisclaimerOpen: true,
   }
+
   componentDidMount() {
+    console.log('APP')
+    console.log('componentDidMount')
     if (
       Object.keys(exhibition).length !== 0 &&
       exhibition.constructor === Object
@@ -54,7 +57,9 @@ class App extends Component {
         // convert metadata from array of objects to object
         const objectMetadata = {}
         for(let i = 0; i < exhibition.arrayMetadata.length; i++) {
-          objectMetadata[Object.keys(exhibition.arrayMetadata[i])[0]] = Object.values(exhibition.arrayMetadata[i])[0]
+          if (exhibition.arrayMetadata[i]) {
+            objectMetadata[Object.keys(exhibition.arrayMetadata[i])[0]] = Object.values(exhibition.arrayMetadata[i])[0]
+          }
         }
 
         if(objectMetadata.coverLegal) {
@@ -100,8 +105,10 @@ class App extends Component {
 
     reader.onload = () => {
       this.props.onRoomImageChange({
-        assetId: this.props.exhibition.assetId,
-        mediaId: this.props.exhibition.mediaId,
+        // assetId: this.props.exhibition.assetId,
+        assetId: this.state.backgroundImageAssetId,
+        // mediaId: this.props.exhibition.mediaId,
+        mediaId: this.state.backgroundImageMediaId,
         raw: reader.result,
       })
     }
@@ -121,7 +128,7 @@ class App extends Component {
               headphones volume low.
             </DialogContentText>
           </DialogContent>
-          
+
           <DialogActions>
             <Button
               variant="contained"
