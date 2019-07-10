@@ -172,7 +172,7 @@ if (hostname === 'develop.pluggy.eu' || hostname === 'beta.pluggy.eu') {
 
 function getExhibitionCallback(responseText) {
   const response = JSON.parse(responseText)
-  
+
   if (response.success) {
     exhibition.description = response.data.description
     exhibition.isPublished = response.data.public
