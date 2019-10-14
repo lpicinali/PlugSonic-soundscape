@@ -35,7 +35,7 @@ class FetchingSourceOverlay extends PureComponent {
 
     return (
       <FetchingSourceOverlayContainer isVisible={isFetchingSource}>
-        Fetching sources...
+        Loading asset...
       </FetchingSourceOverlayContainer>
     )
   }
