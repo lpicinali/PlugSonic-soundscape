@@ -8,7 +8,7 @@ export const ActionType = {
   // SET_MASTER_VOLUME: 'SET_MASTER_VOLUME',
 
   // DIALOGS
-  // IMPORT_SOUNDSCAPE_COMPLETED: 'IMPORT_SOUNDSCAPE_COMPLETED',
+  SET_SHOULD_SHOW_DIALOG: 'SET_SHOULD_SHOW_DIALOG',
 
   // EXHIBITION
   IMPORT_EXHIBITION: 'IMPORT_EXHIBITION',
@@ -74,6 +74,8 @@ export const ActionType = {
 export const DEFAULT_Z_POSITION = 1.7
 export const DEFAULT_RELATIVE_AZIMUTH = 0
 export const DEFAULT_RELATIVE_DISTANCE = 3
+
+export const Dialog = {}
 
 export const Ear = {
   LEFT: 'LEFT',

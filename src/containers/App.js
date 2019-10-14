@@ -7,6 +7,7 @@ import { AppContainer, Nav } from 'src/containers/App.style'
 import FetchingSourceOverlay from 'src/components/FetchingSourceOverlay.js'
 import NavControls from 'src/containers/NavControls'
 import SoundscapeInterface from 'src/containers/SoundscapeInterface'
+import WindowClosePrompt from 'src/containers/WindowClosePrompt.js'
 
 import { API, exhibition, httpGetAsync } from 'src/pluggy'
 import {
@@ -158,6 +159,7 @@ class App extends Component {
         <H4>Tested on Google Chrome only.</H4>
 
         <FetchingSourceOverlay />
+        <WindowClosePrompt />
       </AppContainer>
     )
   }

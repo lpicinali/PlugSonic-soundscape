@@ -1,17 +1,16 @@
-/* ------------------- NOTES -------------------- */ /*
+import { set } from 'lodash/fp'
 
-*/ /* ---------------------------------------------- */
-
-import { ActionType } from 'src/constants.js'
+import { ActionType, Dialog } from 'src/constants.js'
 
 const initialState = {
-  importSoundscapeCompleted: false,
+  dialogs: {
+    [Dialog.CLOSE_PROMPT]: false,
+  },
 }
 
 export default function(state = initialState, { type, payload }) {
-  if (type === ActionType.IMPORT_SOUNDSCAPE_COMPLETED) {
-    console.log('IMPORT SOUNDSCAPE COMPLETED')
-    return { ...state, importSoundscapeCompleted: payload.completed }
+  if (type === ActionType.SET_SHOULD_SHOW_DIALOG) {
+    return set(['dialogs', payload.dialog], payload.show, state)
   }
 
   return state

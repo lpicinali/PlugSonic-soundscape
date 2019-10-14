@@ -1,7 +1,9 @@
 import { all, call, put, select, spawn, take } from 'redux-saga/effects'
+import { debounceFor } from 'redux-saga-debounce-effect'
 
 import {
   ActionType,
+  Dialog,
   PlaybackState,
   PlaybackTiming,
   ReachAction,
@@ -18,7 +20,7 @@ import {
 } from 'src/utils.js'
 import { selectTab } from 'src/actions/navigation.actions.js'
 import { setListenerPosition } from 'src/actions/listener.actions.js'
-// import { importSoundscapeCompleted } from 'src/actions/dialogs.actions.js'
+import { setShouldShowDialog } from 'src/actions/dialogs.actions.js'
 import {
   addSource,
   deleteSources,
@@ -822,6 +824,69 @@ function* applyHrtfs() {
   }
 }
 
+/**
+ * Prompts the user about leaving the page when they've got
+ * unsaved changes.
+ */
+function* confirmDirtyClose() {
+  function* showDialog() {
+    yield put(setShouldShowDialog(Dialog.CLOSE_PROMPT, true))
+  }
+
+  function* activatePrompt() {
+    while (true) {
+      yield debounceFor(
+        [
+          // Exhibition
+          ActionType.SET_TITLE,
+          ActionType.SET_DESCRIPTION,
+          ActionType.SET_TAGS,
+          // Listener
+          ActionType.IMPORT_LISTENER,
+          ActionType.SET_HEAD_RADIUS,
+          ActionType.SET_HIGH_PERFORMANCE_MODE,
+          ActionType.SET_HIGH_QUALITY_MODE,
+          ActionType.SET_HRTF_FILENAME,
+          ActionType.SET_LISTENER_POSITION,
+          // Room
+          ActionType.IMPORT_ROOM,
+          ActionType.SET_ROOM_IMAGE,
+          ActionType.SET_ROOM_SHAPE,
+          ActionType.SET_ROOM_SIZE,
+          // Sources
+          ActionType.IMPORT_SOURCES,
+          ActionType.ADD_SOURCE,
+          ActionType.DELETE_SOURCES,
+          ActionType.SET_SOURCE_HIDDEN,
+          ActionType.SET_SOURCE_LOOP,
+          ActionType.SET_SOURCE_POSITIONING,
+          ActionType.SET_SOURCE_POSITION,
+          ActionType.SET_SOURCE_RELATIVE_POSITION,
+          ActionType.SET_SOURCE_REACH_ACTION,
+          ActionType.SET_SOURCE_REACH_ENABLED,
+          ActionType.SET_SOURCE_REACH_FADE_DURATION,
+          ActionType.SET_SOURCE_REACH_RADIUS,
+          ActionType.SET_SOURCE_SPATIALISED,
+          ActionType.SET_SOURCE_TIMING,
+          ActionType.SET_SOURCE_VOLUME,
+          ActionType.SOURCE_ONOFF,
+        ],
+        showDialog,
+        1000
+      )
+    }
+  }
+
+  function* updatePrompt() {
+    while (true) {
+      const { payload } = yield take([ActionType.SET_SHOULD_SHOW_DIALOG])
+      yield put(setShouldShowDialog(Dialog.CLOSE_PROMPT, payload.show))
+    }
+  }
+
+  yield all([activatePrompt(), updatePrompt()])
+}
+
 export default function* rootSaga() {
   yield [
     applyPlayStop(),
@@ -859,5 +924,6 @@ export default function* rootSaga() {
     applyListenerPosition(),
     initDefaultHrtf(),
     applyHrtfs(),
+    confirmDirtyClose(),
   ]
 }

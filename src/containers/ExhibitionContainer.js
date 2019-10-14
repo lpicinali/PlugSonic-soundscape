@@ -14,6 +14,8 @@ import {
   DialogTitle,
 } from '@material-ui/core'
 
+import { Dialog as DialogType } from 'src/constants.js'
+import { setShouldShowDialog } from 'src/actions/dialogs.actions.js'
 import {
   setDescription,
   setPublished,
@@ -61,13 +63,9 @@ class ExhibitionContainer extends Component {
 
     const metadata = []
     if (this.props.exhibition.coverLegal) {
-      metadata.push(
-        {coverLegal:  this.props.exhibition.coverLegal}
-      )
+      metadata.push({ coverLegal: this.props.exhibition.coverLegal })
     }
-    metadata.push(
-      {soundscape:  sondscapeClone}
-    )
+    metadata.push({ soundscape: sondscapeClone })
 
     // exhibition object
     const exhibition = {
@@ -81,6 +79,8 @@ class ExhibitionContainer extends Component {
 
     console.log('Create Exhibition...')
     console.log(exhibition)
+
+    this.props.onPersistAttempt()
 
     httpPostAsync(
       `${API}/exhibitions`,
@@ -114,7 +114,7 @@ class ExhibitionContainer extends Component {
       room: this.props.room,
       sources: this.props.sources,
     }
-    
+
     const sondscapeClone = cloneDeep(soundscape)
 
     sondscapeClone.sources = map(sondscapeClone.sources, source => source)
@@ -122,13 +122,9 @@ class ExhibitionContainer extends Component {
 
     const metadata = []
     if (this.props.exhibition.coverLegal) {
-      metadata.push(
-        {coverLegal:  this.props.exhibition.coverLegal}
-      )
+      metadata.push({ coverLegal: this.props.exhibition.coverLegal })
     }
-    metadata.push(
-      {soundscape:  sondscapeClone}
-    )
+    metadata.push({ soundscape: sondscapeClone })
 
     // exhibition object
     const exhibition = {
@@ -142,6 +138,8 @@ class ExhibitionContainer extends Component {
 
     console.log('Update Exhibition...')
     console.log(exhibition)
+
+    this.props.onPersistAttempt()
 
     httpPutAsync(
       `${API}/exhibitions/${this.props.exhibition.id}`,
@@ -382,6 +380,7 @@ ExhibitionContainer.propTypes = {
   onSetPublished: PropTypes.func.isRequired,
   onSetTags: PropTypes.func.isRequired,
   onSetTitle: PropTypes.func.isRequired,
+  onPersistAttempt: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -396,6 +395,8 @@ const mapDispatchToProps = dispatch => ({
   onSetPublished: isPublished => dispatch(setPublished(isPublished)),
   onSetTags: tags => dispatch(setTags(tags)),
   onSetTitle: title => dispatch(setTitle(title)),
+  onPersistAttempt: () =>
+    dispatch(setShouldShowDialog(DialogType.CLOSE_PROMPT, false)),
 })
 
 export default connect(
