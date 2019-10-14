@@ -21,13 +21,8 @@ import {
 import { SourceOrigin } from 'src/constants'
 import { fetchAudioBuffer } from 'src/utils'
 import { API, httpHintAsync, httpGetAsync } from 'src/pluggy.js'
-import { addSource } from 'src/actions/sources.actions.js'
-import {
-  FieldBox,
-  FieldGroup,
-  FullWidthSelect,
-  H2,
-} from 'src/styles/elements'
+import { addSource, setIsFetchingSource } from 'src/actions/sources.actions.js'
+import { FieldBox, FieldGroup, FullWidthSelect, H2 } from 'src/styles/elements'
 
 /* ========================================================================== */
 
@@ -112,6 +107,8 @@ class SearchAudioAssetContainer extends Component {
 
     this.setState({ clickedAssetId: assetId })
 
+    this.props.onSourceFetchChange(true)
+
     /* ------------------------------------- */
     fetchAudioBuffer(sourceUrl)
       .then(audioBuffer => {
@@ -127,6 +124,8 @@ class SearchAudioAssetContainer extends Component {
 
   handleAddSourceResponse = shouldAdd => {
     if (shouldAdd) {
+      this.props.onSourceFetchChange(false)
+
       const asset = this.state.assets.find(
         ast => ast._id === this.state.clickedAssetId
       )
@@ -242,20 +241,16 @@ class SearchAudioAssetContainer extends Component {
             <Autosuggest
               renderInputComponent={renderInputComponent}
               suggestions={this.state.suggestions}
-              onSuggestionsFetchRequested={
-                  this.handleSuggestionsFetchRequested
-              }
-              onSuggestionsClearRequested={
-                  this.handleSuggestionsClearRequested
-              }
+              onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
+              onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
               getSuggestionValue={getSuggestionValue}
               renderSuggestion={renderSuggestion}
               inputProps={{
-                  placeholder: 'Search soundfile asset...',
-                  value: this.state.searchTextFieldValue,
-                  onChange: this.onChangeSearchTextField,
-                  type: 'search',
-                  fullWidth: true,
+                placeholder: 'Search soundfile asset...',
+                value: this.state.searchTextFieldValue,
+                onChange: this.onChangeSearchTextField,
+                type: 'search',
+                fullWidth: true,
               }}
               renderSuggestionsContainer={options => (
                 <Paper {...options.containerProps}>{options.children}</Paper>
@@ -348,6 +343,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  onSourceFetchChange: isFetching => dispatch(setIsFetchingSource(isFetching)),
   onAddSource: (filename, name, url, platform_asset_id, platform_media_id) =>
     dispatch(
       addSource({

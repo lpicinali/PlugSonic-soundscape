@@ -6,6 +6,11 @@
 
 import { ActionType } from 'src/constants.js'
 
+export const setIsFetchingSource = isFetching => ({
+  type: ActionType.SET_IS_FETCHING_SOURCE,
+  payload: { isFetching },
+})
+
 export const addSource = ({
   enabled,
   filename,
