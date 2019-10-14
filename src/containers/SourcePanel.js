@@ -258,14 +258,14 @@ class SourcePanel extends PureComponent {
             <div>
               <Label>X</Label>
               <SliderValue>
-                {forceDecimals(-sourceObject.position.y, 2)} m
+                {forceDecimals(-sourceObject.position.y, 1)} m
               </SliderValue>
             </div>
             <SliderBox>
               <Slider
                 min={-roomSize.width / 2}
                 max={roomSize.width / 2}
-                step={0.01}
+                step={0.1}
                 value={-sourceObject.position.y}
                 onChange={(event, value) => this.handleSourceMove('y', -value)}
               />
@@ -274,14 +274,14 @@ class SourcePanel extends PureComponent {
             <div>
               <Label>Y</Label>
               <SliderValue>
-                {forceDecimals(sourceObject.position.x, 2)} m
+                {forceDecimals(sourceObject.position.x, 1)} m
               </SliderValue>
             </div>
             <SliderBox>
               <Slider
                 min={-roomSize.depth / 2}
                 max={roomSize.depth / 2}
-                step={0.01}
+                step={0.1}
                 value={sourceObject.position.x}
                 onChange={(event, value) => this.handleSourceMove('x', value)}
               />
@@ -290,14 +290,14 @@ class SourcePanel extends PureComponent {
             <div>
               <Label>Z</Label>
               <SliderValue>
-                {forceDecimals(sourceObject.position.z, 2)} m
+                {forceDecimals(sourceObject.position.z, 1)} m
               </SliderValue>
             </div>
             <SliderBox>
               <Slider
                 min={0}
                 max={roomSize.height}
-                step={0.01}
+                step={0.1}
                 value={sourceObject.position.z}
                 onChange={(event, value) => this.handleSourceMove('z', value)}
               />
@@ -404,7 +404,7 @@ class SourcePanel extends PureComponent {
           <div>
             <Label>Radius</Label>
             <SliderValue>
-              {forceDecimals(sourceObject.reach.radius, 2)} m
+              {forceDecimals(sourceObject.reach.radius, 1)} m
             </SliderValue>
           </div>
           <SliderBox>
