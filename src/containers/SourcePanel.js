@@ -52,6 +52,7 @@ import {
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
+import { BLACK } from 'src/styles/colors.js'
 import {
   FieldBox,
   FieldGroup,
@@ -79,6 +80,7 @@ const SourceListItem = withStyles({
 const SourceListItemText = withStyles({
   primary: {
     fontSize: 16,
+    fontWeight: 'bold',
   },
 })(ListItemText)
 
@@ -86,6 +88,19 @@ const SourceControlsContent = styled(PanelContents)`
   padding-top: 8px;
   border-top: 1px solid #eee;
 `
+
+const ThinDivider = withStyles({
+  root: {
+    backgroundColor: BLACK,
+  },
+})(Divider)
+
+const ThickDivider = withStyles({
+  root: {
+    height: 4,
+    backgroundColor: BLACK,
+  },
+})(Divider)
 
 function getRelativeDecibelsVolume(gain, minDecibels = -60) {
   return 1 - gainToDecibels(gain) / minDecibels
@@ -576,7 +591,7 @@ class SourcePanel extends PureComponent {
           <SourceControlsContent>{nestedItems}</SourceControlsContent>
         </Collapse>
 
-        <Divider />
+        {isOpen ? <ThickDivider /> : <ThinDivider />}
       </Fragment>
     )
   }
