@@ -410,7 +410,10 @@ class SourcePanel extends PureComponent {
           <SliderBox>
             <Slider
               min={0}
-              max={Math.max(roomSize.width, roomSize.height) / 2}
+              max={Math.max(
+                Math.sqrt(roomSize.width ** 2 + roomSize.depth ** 2),
+                roomSize.height
+              )}
               step={0.1}
               value={sourceObject.reach.radius}
               disabled={sourceObject.reach.enabled === false}
