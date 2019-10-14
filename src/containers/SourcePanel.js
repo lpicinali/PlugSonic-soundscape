@@ -366,7 +366,7 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <div key="loop">
+      <FieldGroup key="loop">
         <SwitchBox>
           <H3>Loop</H3>
           <Switch
@@ -377,13 +377,12 @@ class SourcePanel extends PureComponent {
             }
           />
         </SwitchBox>
-      </div>
+      </FieldGroup>
     )
 
     nestedItems.push(
       <FieldGroup
         key="spatialisation"
-        style={{ marginBottom: 0 }}
         disabled={sourceObject.positioning === SourcePositioning.RELATIVE}
       >
         <SwitchBox>
@@ -417,7 +416,7 @@ class SourcePanel extends PureComponent {
 
         <FieldBox>
           <div>
-            <Label>Radius</Label>
+            <Label>Reach radius</Label>
             <SliderValue>
               {forceDecimals(sourceObject.reach.radius, 1)} m
             </SliderValue>
@@ -537,7 +536,7 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <FieldGroup key={`${sourceObject.name}-delete`}>
+      <div key={`${sourceObject.name}-delete`} style={{ marginTop: 24 }}>
         <Button
           variant="contained"
           color="primary"
@@ -572,7 +571,7 @@ class SourcePanel extends PureComponent {
             </Button>
           </DialogActions>
         </Dialog>
-      </FieldGroup>
+      </div>
     )
 
     return (
