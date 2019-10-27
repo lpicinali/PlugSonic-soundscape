@@ -84,6 +84,7 @@
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
     "redux-saga": "^0.15.6",
+    "redux-saga-debounce-effect": "^0.2.2",
     "styled-components": "^4.1.1",
     "workerify": "^0.3.0"
   }

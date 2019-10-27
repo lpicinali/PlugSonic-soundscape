@@ -19,12 +19,16 @@ import { ADEtoXYZ } from 'src/utils.js'
 
 const initialState = {
   sources: {},
+  isFetchingSource: false,
   focusedItem: null,
 }
 
 let azimuthIndex = Object.keys(initialState.sources).length
 
 export default function(state = initialState, { type, payload }) {
+  if (type === ActionType.SET_IS_FETCHING_SOURCE) {
+    return set('isFetchingSource', payload.isFetching, state)
+  }
   if (type === ActionType.ADD_SOURCE) {
     const defaultPosition = {
       ...ADEtoXYZ((azimuthIndex * Math.PI) / 6, 1, 0),

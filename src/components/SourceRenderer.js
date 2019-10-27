@@ -57,9 +57,11 @@ const SourceReach = styled.div`
   transform: translate3d(-50%, -50%, 0);
   width: ${props => props.radiusSize * 2}px;
   height: ${props => props.radiusSize * 2}px;
-  background: rgba(255, 255, 0, 0.2);
+  background-color: ${props =>
+    props.isReached ? 'rgba(255, 202, 24, 0.6)' : 'rgba(255, 235, 168, 0.3)'};
   border-radius: 50%;
   pointer-events: none;
+  transition: background-color 0.3s;
 `
 
 const SourceBody = styled.div`
@@ -232,6 +234,7 @@ class SourceRenderer extends Component {
       roomWidth,
       roomHeight,
       roomDepth,
+      isWithinReach,
     } = this.props
     const { isHovering, isDragging } = this.state
 
@@ -250,7 +253,10 @@ class SourceRenderer extends Component {
       >
         {source.reach.enabled &&
           source.positioning === SourcePositioning.ABSOLUTE && (
-            <SourceReach radiusSize={reachRadiusSize} />
+            <SourceReach
+              radiusSize={reachRadiusSize}
+              isReached={isWithinReach}
+            />
           )}
         <SourceBody
           radiusSize={size / 2}
@@ -302,11 +308,12 @@ SourceRenderer.propTypes = {
   onClickSource: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, { source }) => ({
   roomWidth: state.room.size.width,
   roomDepth: state.room.size.depth,
   roomHeight: state.room.size.height,
   roomShape: state.room.shape,
+  isWithinReach: state.sources.sources[source.name].gameplay.isWithinReach,
 })
 
 const mapDispatchToProps = dispatch => ({

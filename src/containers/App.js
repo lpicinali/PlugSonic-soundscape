@@ -4,11 +4,16 @@ import { connect } from 'react-redux'
 
 import { H4 } from 'src/styles/elements'
 import { AppContainer, Nav } from 'src/containers/App.style'
+import FetchingSourceOverlay from 'src/components/FetchingSourceOverlay.js'
 import NavControls from 'src/containers/NavControls'
 import SoundscapeInterface from 'src/containers/SoundscapeInterface'
+import WindowClosePrompt from 'src/containers/WindowClosePrompt.js'
 
 import { API, exhibition, httpGetAsync } from 'src/pluggy'
-import { importExhibition, setCoverLegal } from 'src/actions/exhibition.actions.js'
+import {
+  importExhibition,
+  setCoverLegal,
+} from 'src/actions/exhibition.actions.js'
 import { importListener } from 'src/actions/listener.actions.js'
 import { importRoom, setRoomImage } from 'src/actions/room.actions.js'
 import { importSources } from 'src/actions/sources.actions.js'
@@ -34,7 +39,6 @@ class App extends Component {
       Object.keys(exhibition).length !== 0 &&
       exhibition.constructor === Object
     ) {
-
       if (
         exhibition.description &&
         exhibition.id &&
@@ -56,13 +60,15 @@ class App extends Component {
       if (exhibition.arrayMetadata !== []) {
         // convert metadata from array of objects to object
         const objectMetadata = {}
-        for(let i = 0; i < exhibition.arrayMetadata.length; i++) {
+        for (let i = 0; i < exhibition.arrayMetadata.length; i++) {
           if (exhibition.arrayMetadata[i]) {
-            objectMetadata[Object.keys(exhibition.arrayMetadata[i])[0]] = Object.values(exhibition.arrayMetadata[i])[0]
+            objectMetadata[
+              Object.keys(exhibition.arrayMetadata[i])[0]
+            ] = Object.values(exhibition.arrayMetadata[i])[0]
           }
         }
 
-        if(objectMetadata.coverLegal) {
+        if (objectMetadata.coverLegal) {
           this.props.onSetCoverLegal(objectMetadata.coverLegal)
         }
 
@@ -78,16 +84,20 @@ class App extends Component {
               objectMetadata.soundscape.room.backgroundImage.assetId &&
               objectMetadata.soundscape.room.backgroundImage.mediaId
             ) {
-              const backgroundImageAssetId = objectMetadata.soundscape.room.backgroundImage.assetId
-              const backgroundImageMediaId = objectMetadata.soundscape.room.backgroundImage.mediaId
+              const backgroundImageAssetId =
+                objectMetadata.soundscape.room.backgroundImage.assetId
+              const backgroundImageMediaId =
+                objectMetadata.soundscape.room.backgroundImage.mediaId
 
-              const imageUrl = `${API}/assets/${
-                backgroundImageAssetId
-              }/media/${
-                backgroundImageMediaId
-              }`
+              const imageUrl = `${API}/assets/${backgroundImageAssetId}/media/${backgroundImageMediaId}`
 
-              httpGetAsync(imageUrl, this.getImageAssetCallback, null, null, 'blob')
+              httpGetAsync(
+                imageUrl,
+                this.getImageAssetCallback,
+                null,
+                null,
+                'blob'
+              )
             }
           }
 
@@ -147,6 +157,9 @@ class App extends Component {
         <SoundscapeInterface />
 
         <H4>Tested on Google Chrome only.</H4>
+
+        <FetchingSourceOverlay />
+        <WindowClosePrompt />
       </AppContainer>
     )
   }
@@ -175,7 +188,7 @@ const mapDispatchToProps = dispatch => ({
       importExhibition(description, id, ownerId, tags, title, isPublished)
     ),
   onRoomImageChange: image => dispatch(setRoomImage(image)),
-  onSetCoverLegal: license => dispatch(setCoverLegal(license))
+  onSetCoverLegal: license => dispatch(setCoverLegal(license)),
 })
 
 export default connect(
