@@ -21,14 +21,8 @@ import {
 import { SourceOrigin } from 'src/constants'
 import { fetchAudioBuffer } from 'src/utils'
 import { API, httpHintAsync, httpGetAsync } from 'src/pluggy.js'
-import { addSource } from 'src/actions/sources.actions.js'
-import {
-  FieldBox,
-  FieldGroup,
-  FullWidthSelect,
-  H2,
-  PanelContents,
-} from 'src/styles/elements'
+import { addSource, setIsFetchingSource } from 'src/actions/sources.actions.js'
+import { FieldBox, FieldGroup, FullWidthSelect, H2 } from 'src/styles/elements'
 
 /* ========================================================================== */
 
@@ -72,9 +66,9 @@ const renderInputComponent = inputProps => {
   )
 }
 /* ========================================================================== */
-/* SEARCH ASSET CONTAINER */
+/* SEARCH AUDIO ASSET CONTAINER */
 /* ========================================================================== */
-class SearchAssetContainer extends Component {
+class SearchAudioAssetContainer extends Component {
   state = {
     title: '',
     url: '',
@@ -113,6 +107,8 @@ class SearchAssetContainer extends Component {
 
     this.setState({ clickedAssetId: assetId })
 
+    this.props.onSourceFetchChange(true)
+
     /* ------------------------------------- */
     fetchAudioBuffer(sourceUrl)
       .then(audioBuffer => {
@@ -128,6 +124,8 @@ class SearchAssetContainer extends Component {
 
   handleAddSourceResponse = shouldAdd => {
     if (shouldAdd) {
+      this.props.onSourceFetchChange(false)
+
       const asset = this.state.assets.find(
         ast => ast._id === this.state.clickedAssetId
       )
@@ -238,58 +236,54 @@ class SearchAssetContainer extends Component {
 
     return (
       <Fragment>
-        <PanelContents>
-          <FieldGroup>
-            <FieldBox>
-              <Autosuggest
-                renderInputComponent={renderInputComponent}
-                suggestions={this.state.suggestions}
-                onSuggestionsFetchRequested={
-                  this.handleSuggestionsFetchRequested
-                }
-                onSuggestionsClearRequested={
-                  this.handleSuggestionsClearRequested
-                }
-                getSuggestionValue={getSuggestionValue}
-                renderSuggestion={renderSuggestion}
-                inputProps={{
-                  placeholder: 'Search asset...',
-                  value: this.state.searchTextFieldValue,
-                  onChange: this.onChangeSearchTextField,
-                  type: 'search',
-                  fullWidth: true,
-                }}
-                renderSuggestionsContainer={options => (
-                  <Paper {...options.containerProps}>{options.children}</Paper>
-                )}
-                focusInputOnSuggestionClick={false}
-              />
-            </FieldBox>
-
-            <FieldBox>
-              <FullWidthSelect
-                value={this.state.myAssets}
-                onChange={this.handleSearchDropDownChange}
-              >
-                <MenuItem value={false}>All Pluggy</MenuItem>
-                <MenuItem value>My Assets</MenuItem>
-              </FullWidthSelect>
-            </FieldBox>
-          </FieldGroup>
-
-          <H2>ORDER BY</H2>
+        <FieldGroup>
+          <FieldBox>
+            <Autosuggest
+              renderInputComponent={renderInputComponent}
+              suggestions={this.state.suggestions}
+              onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
+              onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+              getSuggestionValue={getSuggestionValue}
+              renderSuggestion={renderSuggestion}
+              inputProps={{
+                placeholder: 'Search soundfile asset...',
+                value: this.state.searchTextFieldValue,
+                onChange: this.onChangeSearchTextField,
+                type: 'search',
+                fullWidth: true,
+              }}
+              renderSuggestionsContainer={options => (
+                <Paper {...options.containerProps}>{options.children}</Paper>
+              )}
+              focusInputOnSuggestionClick={false}
+            />
+          </FieldBox>
 
           <FieldBox>
             <FullWidthSelect
-              value={this.state.orderBy}
-              onChange={this.handleOrderByDropDownChange}
+              value={this.state.myAssets}
+              onChange={this.handleSearchDropDownChange}
             >
-              <MenuItem value="trending">Trending</MenuItem>
-              <MenuItem value="recent">Recent</MenuItem>
-              <MenuItem value="title">Title</MenuItem>
+              <MenuItem value={false}>All Pluggy</MenuItem>
+              <MenuItem value>My Assets</MenuItem>
             </FullWidthSelect>
           </FieldBox>
+        </FieldGroup>
 
+        <H2>ORDER BY</H2>
+
+        <FieldBox>
+          <FullWidthSelect
+            value={this.state.orderBy}
+            onChange={this.handleOrderByDropDownChange}
+          >
+            <MenuItem value="trending">Trending</MenuItem>
+            <MenuItem value="recent">Recent</MenuItem>
+            <MenuItem value="title">Title</MenuItem>
+          </FullWidthSelect>
+        </FieldBox>
+
+        <FieldBox>
           <Button
             variant="contained"
             color="primary"
@@ -298,13 +292,11 @@ class SearchAssetContainer extends Component {
           >
             SEARCH
           </Button>
-        </PanelContents>
+        </FieldBox>
 
         <Divider />
 
-        <PanelContents>
-          {this.state.assets.length > 0 && searchResults}
-        </PanelContents>
+        {this.state.assets.length > 0 && searchResults}
 
         <Dialog
           open={this.state.isPromptingAddStereo}
@@ -339,7 +331,7 @@ class SearchAssetContainer extends Component {
   }
 }
 
-SearchAssetContainer.propTypes = {
+SearchAudioAssetContainer.propTypes = {
   ownerId: PropTypes.string.isRequired,
   sources: PropTypes.object.isRequired,
   onAddSource: PropTypes.func.isRequired,
@@ -351,6 +343,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  onSourceFetchChange: isFetching => dispatch(setIsFetchingSource(isFetching)),
   onAddSource: (filename, name, url, platform_asset_id, platform_media_id) =>
     dispatch(
       addSource({
@@ -367,4 +360,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SearchAssetContainer)
+)(SearchAudioAssetContainer)

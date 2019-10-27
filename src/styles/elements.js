@@ -56,7 +56,8 @@ export const FullWidthSelect = props => (
 )
 
 export const FieldGroup = styled.div`
-  margin-bottom: 24px;
+  padding: 8px 0;
+  border-bottom: 1px solid ${colors.LIGHTGREY};
 
   ${props =>
     props.disabled &&

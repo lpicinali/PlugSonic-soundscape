@@ -52,6 +52,7 @@ import {
   setSourceVolume,
   sourceOnOff,
 } from 'src/actions/sources.actions'
+import { BLACK } from 'src/styles/colors.js'
 import {
   FieldBox,
   FieldGroup,
@@ -79,6 +80,7 @@ const SourceListItem = withStyles({
 const SourceListItemText = withStyles({
   primary: {
     fontSize: 16,
+    fontWeight: 'bold',
   },
 })(ListItemText)
 
@@ -86,6 +88,19 @@ const SourceControlsContent = styled(PanelContents)`
   padding-top: 8px;
   border-top: 1px solid #eee;
 `
+
+const ThinDivider = withStyles({
+  root: {
+    backgroundColor: BLACK,
+  },
+})(Divider)
+
+const ThickDivider = withStyles({
+  root: {
+    height: 4,
+    backgroundColor: BLACK,
+  },
+})(Divider)
 
 function getRelativeDecibelsVolume(gain, minDecibels = -60) {
   return 1 - gainToDecibels(gain) / minDecibels
@@ -258,14 +273,14 @@ class SourcePanel extends PureComponent {
             <div>
               <Label>X</Label>
               <SliderValue>
-                {forceDecimals(-sourceObject.position.y, 2)} m
+                {forceDecimals(-sourceObject.position.y, 1)} m
               </SliderValue>
             </div>
             <SliderBox>
               <Slider
                 min={-roomSize.width / 2}
                 max={roomSize.width / 2}
-                step={0.01}
+                step={0.1}
                 value={-sourceObject.position.y}
                 onChange={(event, value) => this.handleSourceMove('y', -value)}
               />
@@ -274,14 +289,14 @@ class SourcePanel extends PureComponent {
             <div>
               <Label>Y</Label>
               <SliderValue>
-                {forceDecimals(sourceObject.position.x, 2)} m
+                {forceDecimals(sourceObject.position.x, 1)} m
               </SliderValue>
             </div>
             <SliderBox>
               <Slider
                 min={-roomSize.depth / 2}
                 max={roomSize.depth / 2}
-                step={0.01}
+                step={0.1}
                 value={sourceObject.position.x}
                 onChange={(event, value) => this.handleSourceMove('x', value)}
               />
@@ -290,14 +305,14 @@ class SourcePanel extends PureComponent {
             <div>
               <Label>Z</Label>
               <SliderValue>
-                {forceDecimals(sourceObject.position.z, 2)} m
+                {forceDecimals(sourceObject.position.z, 1)} m
               </SliderValue>
             </div>
             <SliderBox>
               <Slider
                 min={0}
                 max={roomSize.height}
-                step={0.01}
+                step={0.1}
                 value={sourceObject.position.z}
                 onChange={(event, value) => this.handleSourceMove('z', value)}
               />
@@ -351,7 +366,7 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <div key="loop">
+      <FieldGroup key="loop">
         <SwitchBox>
           <H3>Loop</H3>
           <Switch
@@ -362,13 +377,12 @@ class SourcePanel extends PureComponent {
             }
           />
         </SwitchBox>
-      </div>
+      </FieldGroup>
     )
 
     nestedItems.push(
       <FieldGroup
         key="spatialisation"
-        style={{ marginBottom: 0 }}
         disabled={sourceObject.positioning === SourcePositioning.RELATIVE}
       >
         <SwitchBox>
@@ -402,15 +416,18 @@ class SourcePanel extends PureComponent {
 
         <FieldBox>
           <div>
-            <Label>Radius</Label>
+            <Label>Reach radius</Label>
             <SliderValue>
-              {forceDecimals(sourceObject.reach.radius, 2)} m
+              {forceDecimals(sourceObject.reach.radius, 1)} m
             </SliderValue>
           </div>
           <SliderBox>
             <Slider
               min={0}
-              max={Math.max(roomSize.width, roomSize.height) / 2}
+              max={Math.max(
+                Math.sqrt(roomSize.width ** 2 + roomSize.depth ** 2),
+                roomSize.height
+              )}
               step={0.1}
               value={sourceObject.reach.radius}
               disabled={sourceObject.reach.enabled === false}
@@ -519,7 +536,7 @@ class SourcePanel extends PureComponent {
     )
 
     nestedItems.push(
-      <FieldGroup key={`${sourceObject.name}-delete`}>
+      <div key={`${sourceObject.name}-delete`} style={{ marginTop: 24 }}>
         <Button
           variant="contained"
           color="primary"
@@ -554,7 +571,7 @@ class SourcePanel extends PureComponent {
             </Button>
           </DialogActions>
         </Dialog>
-      </FieldGroup>
+      </div>
     )
 
     return (
@@ -573,7 +590,7 @@ class SourcePanel extends PureComponent {
           <SourceControlsContent>{nestedItems}</SourceControlsContent>
         </Collapse>
 
-        <Divider />
+        {isOpen ? <ThickDivider /> : <ThinDivider />}
       </Fragment>
     )
   }

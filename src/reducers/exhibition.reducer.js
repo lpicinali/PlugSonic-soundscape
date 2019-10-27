@@ -5,6 +5,7 @@
 import { ActionType } from 'src/constants.js'
 
 const initialState = {
+  coverLegal: {},
   description: '',
   id: '',
   ownerId: '',
@@ -24,6 +25,10 @@ export default function(state = initialState, { type, payload }) {
       title: payload.title,
       isPublished: payload.isPublished,
     }
+  }
+
+  if (type === ActionType.SET_COVERLEGAL) {
+    return { ...state, coverLegal: payload.coverLegal }
   }
 
   if (type === ActionType.SET_DESCRIPTION) {

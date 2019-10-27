@@ -9,7 +9,7 @@ import Search from '@material-ui/icons/Search'
 import Sources from '@material-ui/icons/QueueMusic'
 import Room from '@material-ui/icons/AspectRatio'
 import Listener from '@material-ui/icons/Hearing'
-import Exhibition from '@material-ui/icons/Save'
+import Exhibition from '@material-ui/icons/AccountBalance'
 
 import { selectTab } from 'src/actions/navigation.actions.js'
 import AddSourceTab from 'src/containers/AddSourceTab'

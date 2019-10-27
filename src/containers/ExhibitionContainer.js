@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { map } from 'lodash'
+import { map, cloneDeep } from 'lodash'
 import {
   Button,
   Chip,
@@ -14,6 +14,8 @@ import {
   DialogTitle,
 } from '@material-ui/core'
 
+import { Dialog as DialogType } from 'src/constants.js'
+import { setShouldShowDialog } from 'src/actions/dialogs.actions.js'
 import {
   setDescription,
   setPublished,
@@ -54,12 +56,21 @@ class ExhibitionContainer extends Component {
       sources: this.props.sources,
     }
 
-    soundscape.sources = map(soundscape.sources, source => source)
+    const sondscapeClone = cloneDeep(soundscape)
+
+    sondscapeClone.sources = map(sondscapeClone.sources, source => source)
+    sondscapeClone.room.backgroundImage.raw = ''
+
+    const metadata = []
+    if (this.props.exhibition.coverLegal) {
+      metadata.push({ coverLegal: this.props.exhibition.coverLegal })
+    }
+    metadata.push({ soundscape: sondscapeClone })
 
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,
-      metadata: soundscape,
+      metadata: metadata,
       public: false,
       tags: this.props.exhibition.tags.map(tag => tag.label),
       title: this.props.exhibition.title,
@@ -68,6 +79,8 @@ class ExhibitionContainer extends Component {
 
     console.log('Create Exhibition...')
     console.log(exhibition)
+
+    this.props.onPersistAttempt()
 
     httpPostAsync(
       `${API}/exhibitions`,
@@ -102,12 +115,21 @@ class ExhibitionContainer extends Component {
       sources: this.props.sources,
     }
 
-    soundscape.sources = map(soundscape.sources, source => source)
+    const sondscapeClone = cloneDeep(soundscape)
+
+    sondscapeClone.sources = map(sondscapeClone.sources, source => source)
+    sondscapeClone.room.backgroundImage.raw = ''
+
+    const metadata = []
+    if (this.props.exhibition.coverLegal) {
+      metadata.push({ coverLegal: this.props.exhibition.coverLegal })
+    }
+    metadata.push({ soundscape: sondscapeClone })
 
     // exhibition object
     const exhibition = {
       description: this.props.exhibition.description,
-      metadata: soundscape,
+      metadata: metadata,
       public: this.props.exhibition.isPublished,
       tags: this.props.exhibition.tags.map(tag => tag.label),
       title: this.props.exhibition.title,
@@ -116,6 +138,8 @@ class ExhibitionContainer extends Component {
 
     console.log('Update Exhibition...')
     console.log(exhibition)
+
+    this.props.onPersistAttempt()
 
     httpPutAsync(
       `${API}/exhibitions/${this.props.exhibition.id}`,
@@ -356,6 +380,7 @@ ExhibitionContainer.propTypes = {
   onSetPublished: PropTypes.func.isRequired,
   onSetTags: PropTypes.func.isRequired,
   onSetTitle: PropTypes.func.isRequired,
+  onPersistAttempt: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -370,6 +395,8 @@ const mapDispatchToProps = dispatch => ({
   onSetPublished: isPublished => dispatch(setPublished(isPublished)),
   onSetTags: tags => dispatch(setTags(tags)),
   onSetTitle: title => dispatch(setTitle(title)),
+  onPersistAttempt: () =>
+    dispatch(setShouldShowDialog(DialogType.CLOSE_PROMPT, false)),
 })
 
 export default connect(

@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 
-import SearchAssetContainer from 'src/containers/SearchAssetContainer'
+import SearchAudioAssetContainer from 'src/containers/SearchAudioAssetContainer'
+import { FieldGroup, PanelContents } from 'src/styles/elements'
 /* ========================================================================== */
 
 /* ========================================================================== */
@@ -10,9 +11,11 @@ class SearchTab extends Component {
   /* ------------------------------------------------------------------------ */
   render() {
     return (
-      <React.Fragment>
-        <SearchAssetContainer />
-      </React.Fragment>
+      <PanelContents>
+        <FieldGroup>
+          <SearchAudioAssetContainer />
+        </FieldGroup>
+      </PanelContents>
     )
   }
 }
