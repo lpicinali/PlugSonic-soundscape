@@ -28,8 +28,8 @@ class RoomTab extends Component {
         </FieldGroup>
 
         <FieldGroup>
-          {/* <ImageUploader /> */}
-          <SearchImageAssetContainer />
+          <ImageUploader />
+          {/* <SearchImageAssetContainer /> */}
         </FieldGroup>
 
         <FieldGroup>
