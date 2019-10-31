@@ -15,11 +15,11 @@ class ExhibitionTab extends Component {
   render() {
     return (
       <React.Fragment>
-        <PanelContents>
+        {/* <PanelContents>
           <ExhibitionContainer />
-        </PanelContents>
+          </PanelContents>
 
-        <Divider />
+        <Divider /> */}
 
         <PanelContents>
           <FieldGroup>
