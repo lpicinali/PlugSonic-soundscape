@@ -147,17 +147,19 @@ export const exhibition = {
   // isPublished: false,
 }
 
-if (hostname === 'develop.pluggy.eu' || hostname === 'beta.pluggy.eu') {
-  const exhibitionQuery = window.location.search.substring(1)
-  exhibition.id = getQueryVariable(exhibitionQuery, 'exhibitionId')
-  console.log('EXHIBITION ID')
-  console.log(exhibition.id)
-  httpGetSync(
-    `${API}/exhibitions/${exhibition.id}`,
-    getExhibitionCallback,
-    getExhibitionErrorCallback,
-    sessionToken
-  )
+if (hostname === 'develop.pluggy.eu' ||
+    hostname === 'beta.pluggy.eu' ||
+    hostname === 'pluggy.eu' ) {
+      const exhibitionQuery = window.location.search.substring(1)
+      exhibition.id = getQueryVariable(exhibitionQuery, 'exhibitionId')
+      console.log('EXHIBITION ID')
+      console.log(exhibition.id)
+      httpGetSync(
+        `${API}/exhibitions/${exhibition.id}`,
+        getExhibitionCallback,
+        getExhibitionErrorCallback,
+        sessionToken
+      )
 }
 
 // if (hostname === "localhost") {
