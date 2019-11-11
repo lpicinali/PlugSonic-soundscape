@@ -127,6 +127,8 @@ if (hostname === 'develop.pluggy.eu') {
   API = 'https://develop.pluggy.eu/api/v1'
 } else if (hostname === 'beta.pluggy.eu') {
   API = 'https://beta.pluggy.eu/api/v1'
+} else if (hostname === 'pluggy.eu') {
+  API = 'https://pluggy.eu/api/v1'
 } else {
   API = 'https://develop.pluggy.eu/api/v1'
 }
